@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<resources>
+    <string-array name="heartmonitor_values">
+        <item>AliveTech A101EC</item>
+    </string-array>
+    <string-array name="heartmonitor_entries">
+        <item>00:14:C5:A1:01:EC</item>
+    </string-array>
+    <string-array name="audiohandler_values">
+        <item>8000 Hz</item>
+        <item>11025 Hz</item>
+        <item>16000 Hz</item>
+        <item>22050 Hz</item>
+    </string-array>
+     <string-array name="audiohandler_entries">
+        <item>8000</item>
+        <item>11025</item>
+        <item>16000</item>
+        <item>22050</item>
+    </string-array>   
+    <string-array name="gpshandler_values">
+        <item>30 m</item>
+        <item>50 m</item>
+        <item>100 m</item>
+        <item>500 m</item>
+        <item>1000 m</item>
+    </string-array>
+     <string-array name="gpshandler_entries">
+        <item>30</item>
+        <item>50</item>
+        <item>100</item>
+        <item>500</item>
+        <item>1000</item>
+    </string-array>   
+</resources>

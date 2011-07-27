@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.android.airs"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".AIRS"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"
+                  android:configChanges="locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|fontScale" 
+                  android:finishOnCloseSystemDialogs="false">
+	          <intent-filter>
+	              <action android:name="android.intent.action.MAIN" />
+	              <category android:name="android.intent.category.LAUNCHER" />
+	          </intent-filter>
+        </activity>
+     <service android:enabled="true" android:name="AIRS_local" android:exported="false" android:label="AIRS Local Sensing"/>
+     <service android:enabled="true" android:name="AIRS_remote" android:exported="false" android:label="AIRS Remote Sensing"/>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Local Sensing"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Remote Sensing"></activity>
+     <activity android:name="Prefs" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Preferences"></activity>
+     <receiver android:name=".AIRS_widget" android:label="AIRS Event Button">
+         <meta-data android:name="android.appwidget.provider"
+                 android:resource="@xml/nors_widgetprovider"/>
+         <intent-filter>
+             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+         </intent-filter>
+     </receiver>
+    </application>
+
+
+<supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true"></supports-screens>
+
+<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"></uses-permission>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
+<uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+<uses-permission android:name="android.permission.BATTERY_STATS"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
+<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+</manifest> 

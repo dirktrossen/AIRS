@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:title="Proximity Sampling Settings">
+   <PreferenceCategory android:title="Bluetooth Settings">
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Enable BT" 
+    	android:key="ProximityHandler::BTON" 
+    	android:defaultValue="false"
+    	android:selectable="true" 
+    	android:summaryOn="Programmatically enable BT, if switched off" 
+    	android:summaryOff="Do not enable BT"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Ask before enabling" 
+    	android:key="ProximityHandler::BTONAsk" 
+    	android:selectable="true" 
+    	android:defaultValue="false"
+    	android:summaryOn="Requests user permission when enabling BT" 
+    	android:summaryOff="Switch on BT without explicit user permission"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="BT discoverable" 
+    	android:key="ProximityHandler::BTdiscoverable" 
+    	android:selectable="true" 
+    	android:defaultValue="true"
+    	android:summaryOn="Programmatically make BT discoverable to enable proximity recording by others" 
+    	android:summaryOff="Do not make BT discoverable, preventing others to detect you"/>
+    <EditTextPreference
+        android:summary="Poll interval for proximity detection in seconds"
+        android:defaultValue="5"
+        android:numeric="integer"
+        android:title="Poll Interval [s]"
+        android:key="ProximityHandler::samplingpoll"/>        
+   </PreferenceCategory>    
+   <PreferenceCategory android:title="Audio Settings">
+    <ListPreference
+    	android:dialogIcon="@drawable/audio"
+        android:key="ProximityHandler::SamplingRate"
+        android:title="Sampling Rate"
+        android:summary="Sampling rate for audio capture in Hertz"
+        android:positiveButtonText="Select"
+        android:entries="@array/audiohandler_values"
+        android:entryValues="@array/audiohandler_entries"
+        android:defaultValue="8000"
+        android:dialogTitle="Choose Sampling Rate" />
+   </PreferenceCategory>    
+</PreferenceScreen>

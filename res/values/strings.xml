@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<resources>
+<string name="app_name">AIRS</string>
+<string name="Copyright">(C) 2004-2006 Nokia Corporation\n(C) 2008-2011 Dirk Trossen\n\nContact: nors@dirk-trossen.de\n\nReview license.txt for full license terms!</string>
+<string name="general_menu">General Menu</string>
+<string name="configure_menu">Configuration Menu</string>
+<string name="settings_menu">General Settings Menu</string>
+<string name="handlers_menu">Handlers Menu</string>
+<string name="main_About">About</string>
+<string name="main_Configure">Configure</string>
+<string name="GeneralSettings">\'Server\' defines the address of the AIRS application server (must be public), followed by the port.\n\n
+\'Local Display\' toggles the output of sensor values in local sensing\n\n
+\'Local Storage\' switches the local storage on/off in local sensing. \n\n
+\'Safe Writing\' writes sensor values directly to the memory in order to avoid loss in case of crashes.\n\n
+\'Wakeup\' only senses in local mode when there is any other (user) activity, i.e., it does not hold a wake-lock.\n\n
+\'Watchdog Interval\' defines the vibration interval for the local sensing watchdog (0 switches the vibrate off)\n\n
+\'Debug\' switches the debug output on/off. \n</string>
+<string name="ConfigureAbout">Configure the general settings for AIRS and the specific handlers settings here!</string>
+<string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record and press <b>Start</b> to record.</string>
+<string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the measurement only).</string>
+<string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
+<string name="HandlersList">Select item to configure specific handler settings!</string>
+<string name="BackLocal">BACK not supported in this activity!\n\nUse <b>Exit</b> menu option instead!</string>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Location Settings">
+   <PreferenceCategory android:title="GPS Settings">
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Enable GPS" 
+    	android:key="LocationHandler::GPSON" 
+    	android:selectable="true" 
+    	android:summaryOn="Enable GPS to show up in sensor list" 
+    	android:summaryOff="Do not use GPS"/>
+   <EditTextPreference
+        android:summary="Poll interval for GPS location in seconds"
+        android:defaultValue="30"
+        android:numeric="integer"
+        android:title="GPS Interval [s]"
+        android:key="LocationHandler::LocationPoll"/>
+    <ListPreference
+    	android:dialogIcon="@drawable/location"
+        android:key="LocationHandler::LocationUpdate"
+        android:title="GPS Accurary [m]"
+        android:defaultValue="100"
+        android:summary="Update accuracy for GPS location in meters"
+        android:positiveButtonText="Select"
+        android:entries="@array/gpshandler_values"
+        android:entryValues="@array/gpshandler_entries"
+        android:dialogTitle="Choose Update Accuracy" />
+   </PreferenceCategory>    
+   <PreferenceCategory android:title="Wifi Settings">
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Enable WiFi" 
+    	android:key="LocationHandler::WIFION" 
+    	android:selectable="true" 
+    	android:summaryOn="Programmatically enable WiFi, if switched off" 
+    	android:summaryOff="Do not enable WiFi, if switched off"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Prevent WiFi Sleep" 
+    	android:key="LocationHandler::WIFION" 
+    	android:selectable="true" 
+    	android:summaryOn="Prevent WiFi from sleeping (keeps wake-lock!)" 
+    	android:summaryOff="Let WiFi sleep according to system settings"/>
+   <EditTextPreference
+        android:summary="Poll interval for WiFi scanning in seconds"
+        android:defaultValue="30"
+        android:numeric="integer"
+        android:title="WiFi Interval [s]"
+        android:key="LocationHandler::WifiPoll"/>
+  </PreferenceCategory>    
+</PreferenceScreen>

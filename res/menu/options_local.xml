@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/main_about"
+          android:icon="@android:drawable/ic_menu_info_details"
+          android:title="@string/main_About" />
+    <item android:id="@+id/local_start"
+          android:icon="@android:drawable/ic_menu_mylocation"
+          android:title="Start" />
+    <item android:id="@+id/local_sensorinfo"
+          android:icon="@android:drawable/ic_menu_search"
+          android:title="Info" />
+    <item android:id="@+id/local_selectall"
+          android:icon="@android:drawable/ic_menu_edit"
+          android:title="Select All" />
+    <item android:id="@+id/local_unselectall"
+          android:icon="@android:drawable/ic_menu_edit"
+          android:title="Unselect All" />
+    <item android:id="@+id/local_exit"
+          android:icon="@android:drawable/ic_menu_close_clear_cancel"
+          android:title="Exit" />
+</menu>

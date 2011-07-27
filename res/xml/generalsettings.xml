@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:title="AIRS General Settings">
+   <PreferenceCategory android:title="AIRS Remote Settings">
+    <EditTextPreference
+        android:summary="Address of your AIRS application server"
+        android:defaultValue="127.0.0.1"
+        android:title="Server name"
+        android:key="IPStore" android:name="Server name"/>
+    <EditTextPreference
+        android:summary="Port of your AIRS application server"
+        android:defaultValue="9000"
+        android:title="Server port"
+        android:key="IPPort" android:name="Port name"/>
+   </PreferenceCategory>    
+   <PreferenceCategory android:title="AIRS Local Settings">
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Local Display" 
+    	android:key="localDisplay" 
+    	android:selectable="true" 
+    	android:summaryOn="Display sensor values you subscribed to" 
+    	android:summaryOff="Do not display sensor values, only number of values sensed"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Local Storage" 
+    	android:key="LocalStore" 
+    	android:selectable="true" 
+    	android:summaryOn="Store sensor values in\n/mnt/sdcard/AIRS_values\nwith current millisecs as filename" 
+    	android:summaryOff="Do not store sensor values"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Safe Writing" 
+    	android:key="SafeWriting" 
+    	android:selectable="true" 
+    	android:summaryOn="Save sensor values directly after being sensed - it's safer but requires more write operations" 
+    	android:summaryOff="Save sensor values in buffered mode - might result in loss when service crashes but requires less write operations"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Wakeup" 
+    	android:key="Wakeup" 
+    	android:selectable="true" 
+    	android:summaryOn="Wakeup phone during sensing only when there is other user activity" 
+    	android:summaryOff="Keep wake lock to prevent sleeping"/>    
+   </PreferenceCategory>    
+   <PreferenceCategory android:title="Debug Settings"> 	
+    <EditTextPreference
+        android:summary="Interval for vibrate watchdog"
+        android:defaultValue="0"
+        android:title="Watchdog Interval [s]"
+        android:key="Vibrate" android:name="Vibrate"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Debug" 
+    	android:key="Debug" 
+    	android:selectable="true" 
+    	android:summaryOn="Write debug messages in AIRS_debug.txt" 
+    	android:summaryOff="Do not debug anything"/>    
+   </PreferenceCategory>    
+</PreferenceScreen>
+

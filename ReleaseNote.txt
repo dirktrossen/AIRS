@@ -1,0 +1,109 @@
+V1.0:
+- first version of Android Remote Sensing (AIRS) platform
+- added various phone sensors to original NORS code, such as phone sensors, SMS, ...
+- established various activities for Android for displaying sensor values
+- implemented remote and local sensing as foreground services
+
+-----------------
+
+Included here are the release notes for NORS, the originating project! NORS has been discontinued in development although the release notes below show the changes that were applied to the code, relevant to AIRS
+
+V1.2.5:
+- Alive event button and battery now sent in differential mode (i.e., when changes)
+- RAM now sent in differential mode (i.e., when changes)
+- ECG now improved, using double buffering for reading from BT and sending to AS
+- ECG-based pulse now based on entire one second sample rather than currently read one (which is usually about 70 bytes only!)
+- repackaged midlet into NORS package, removing old m2m references
+
+V1.2.4:
+- added simple syntax for subscription request: symbol:polltime can be sent from server for changing default polltime for that subscription
+- removed HTML creation from server
+- added MySQL support to server (tested for mySQL 5.1.5), needs now libmysql.dll in server's exe path
+- binary (img and arr types) sensor values are stored in configurable storage directory with name being stored in SQL table
+  - are types are appended in a single file with entry in SQL being filename:offset (for performance reasons)
+- server middleware window now stores location of last placement on desktop
+- viewing windows on server are now located in tile fashion on desktop when opened
+- zooming for viewing window now possible with double click with draw area
+- corrected bug in Audiohandler resulting in positive dBs
+- added accelerometer handler for phones with JSR256 support 
+- added support for several cameras (usually devcam0: back and devcam1: front) in CameraHandler
+- removed application error bug when exiting midlet
+- allowed for IMG and ARR sensor types in local NORS mode, now written in data files (same directory than measurement file)
+- introduced GPSHandler class to decouple GPS handling from other location handling -> allows for unblocked usage of other location stuff!
+- added pen color support to view windows
+- added pen size support to view windows
+- pen size and color can now be set individually for each acquisition, including scripted ones (see script file for syntax)
+
+v1.2.3:
+- removed support for Symbianserver supplying cellular info (signal strength, ID), now only using system properties for this
+- changed local mode to run in full threaded fashion, not sequentially anymore
+- create now unique file everytime local recording is done - use current milliseconds as suffix
+- tweaked audio handler
+- store local mode sensor on/off settings in RMS
+- added 'BS' sensor for (cell) broadcast service, a string-type information that often holds location (such as names or area codes)
+
+V1.2.2:
+- added system handler to read cellID, battery and ram on S60 FP2 phones
+- changed audio handler to dBm
+
+V1.2:
+- ceased support or NORS GW (Imlet)
+- all handlers are enabled by default, access to be handled by consent and policy (to be done)
+- added GPS support through JSR179 (location API) - works with internal GPS as tested on N95
+- added handler for heart monitor by Alive Technology
+- improved resource usage overall, e.g., camera handler only opens camera on subscription not at startup
+- improved overall stability
+- improved local execution ability
+- added ability to store locally on memory card when executing NORS locally only
+
+V1.1:
+- removed SMS sending in BT scan within SSI handler
+- changed remaining server window titles to NORS from N-RSA
+- commented lifetime validity check for sensor discovery data in server middleware - new publish in gateways makes this obsolete (since any change is reported)
+- debug window in remote sensing now has Exit button
+- added PositioningHandler as framework handler for positioning based on location information, using the LocationHandler
+  - require JSR75 (PIM and file access) to be available on phone
+- added AudioHandler for audio sampling
+  - allows for sampling frequency (AF) and level (AL) but not at same time
+  - handles incoming calls (stops sampling) although still somewhat unstable - need to test if this is device dependent or a code issue
+- added proper JSR availability check in HandlerManager and HandlerManagerUI so that midlet now only shows and enables handlers when the optional JSR is available
+- improved stability of SymbianServer interface. Can now stop & restart Symbian server during midlet running
+- IMEI is now stored in RMS once read in TCPClient via SymbianServer, no user input anymore after that for IMEI!
+- when server fails in remote sensing mode, the GW code correctly goes in offline mode, i.e., restart required
+- added option asking for user content, set in General Settings. With this on, every subscription needs to be confirmed by the user.
+- included certificate in package for generating signed midlets, if required
+- added GPS code to LocationHandler
+  - reads only simple sequence xxGGA
+  - has not been tested yet!
+
+V1.1: 
+- official release of NORS to sourceforge
+Differences between "NORS GW" and "NORS Phone GW":
+- phone has UI with selection for certain things in N_RSA_GW.java
+- TCPClient
+  Phone: - Server IP is given through RSA_Start() (delivered through different constructors down) 
+         and TCPClient directly connects!
+         - reads IMEI through SymbianServer, if existing, or RMS
+  N12: uses own ORB code for reading text SMS -> supposed to be changed when using WMA, i.e., port-destined SMS
+- IRHandler:
+  Phone: removed since it does not support Imlet-IO, comment out line in HandlerManager
+- SerialPortLogger:
+  Phone: changed for display output rather than serial port output
+- SSIHandler::ComPortInit()
+  Phone: Reads from Java RMS to get BT address of Mette and connects via BT serial port profile 
+  N12: connects to COM3 of N12
+- RSA::RSA_start(), RSA::RSA_start_non_blocking()
+  Phone: input Display in RSA_start() for disconnection alerter
+- EventComponent::EventComponent()
+  Phone: input Display pointer for disconnection alerter
+- EventComponent::run()
+  Phone: show Alert in exception handling
+- handlerUIs package
+  Imlet: does not exist here since there is no UI!!!
+- handler package
+  Phone: lots more of handlers
+- Acquisition:
+  Phone: handle online verification for requests -> handling LCDUI parts for requesters
+
+V1.0:
+first release
