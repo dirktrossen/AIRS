@@ -35,7 +35,7 @@
     <ListPreference
     	android:dialogIcon="@drawable/location"
         android:key="LocationHandler::LocationUpdate"
-        android:title="GPS Accurary [m]"
+        android:title="GPS Accuracy [m]"
         android:defaultValue="100"
         android:summary="Update accuracy for GPS location in meters"
         android:positiveButtonText="Select"

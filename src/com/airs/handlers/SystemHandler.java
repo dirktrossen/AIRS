@@ -16,11 +16,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +41,7 @@ import android.telephony.TelephonyManager;
  */
 public class SystemHandler implements Handler
 {
-	private Context nors;
+	private Context airs;
 	private int oldBattery = -1;
 	private int Battery = 0;
 	private int oldRAM = 0;
@@ -48,6 +51,8 @@ public class SystemHandler implements Handler
 	private int oldbattery_charging = -1;
 	private int headset = 0, oldheadset = -1;
 	private String caller = null, callee = null, smsReceived = null;
+	private int polltime = 5000;
+	private ActivityManager am;
 	private Semaphore battery_semaphore 	= new Semaphore(1);
 	private Semaphore screen_semaphore 		= new Semaphore(1);
 	private Semaphore charger_semaphore 	= new Semaphore(1);
@@ -95,6 +100,7 @@ public class SystemHandler implements Handler
 		byte[] readings = null;
 		int reading_value = 0;
 		boolean read;
+		int i;
 		
 		read = false;
 
@@ -220,6 +226,38 @@ public class SystemHandler implements Handler
 			}
 		}
 
+		// Recently visited/started tasks?
+		if(sensor.compareTo("TR") == 0)
+		{
+			try
+			{
+				List<ActivityManager.RunningTaskInfo> tasks;
+				ActivityManager.RunningTaskInfo tinfo;
+				
+				// get current tasks running
+				tasks = am.getRunningTasks(100);
+
+				// none???
+				if (tasks == null)
+					return null;
+				
+				// now create list
+				StringBuffer buffer = new StringBuffer("TR");
+		
+				for (i=0; i<tasks.size(); i++)
+				{
+					tinfo = tasks.get(i);
+					
+				    buffer.append(tinfo.baseActivity.getPackageName() + "\n");
+				}
+					
+	    		return buffer.toString().getBytes();
+			}
+			catch(Exception err)
+			{
+			}
+		}
+
 		// anything read?
 		if (read == true)
 		{
@@ -250,21 +288,25 @@ public class SystemHandler implements Handler
 		{
 			SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, 0, this);	    
 			SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, 0, this);	    
-			SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("VM Memory available"), new String("int"), 0, 0, 512000000, 10000, this);	    
+			SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("VM Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
 			SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, 0, this);	    
 			SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, 0, this);	    
 	    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, 0, this);	    
 	    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, 0, this);	    
 	    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, 0, this);	    
+	    	SensorRepository.insertSensor(new String("TR"), new String("Names"), new String("Running tasks"), new String("txt"), 0, 0, 1, polltime, this);	    	    	
 		}
 		catch(Exception err)
 		{
 		}
 	}
 	
-	public SystemHandler(Context nors)
+	public SystemHandler(Context airs)
 	{
-		this.nors = nors;
+		// read polltime
+		polltime  = HandlerManager.readRMS_i("SystemSensorsHandler::SystemPoll", 5) * 1000;
+
+		this.airs = airs;
 		try
 		{
 			// charge the semaphores to block at next call!
@@ -278,22 +320,26 @@ public class SystemHandler implements Handler
 			
 			// check intents and set booleans for discovery
 			IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+			airs.registerReceiver(SystemReceiver, intentFilter);
 	        intentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        airs.registerReceiver(SystemReceiver, intentFilter);
 	        intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        airs.registerReceiver(SystemReceiver, intentFilter);
 	        intentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        airs.registerReceiver(SystemReceiver, intentFilter);
 	        intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        airs.registerReceiver(SystemReceiver, intentFilter);
 	        intentFilter = new IntentFilter("android.intent.action.NEW_OUTGOING_CALL");
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        airs.registerReceiver(SystemReceiver, intentFilter);
 	        intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
 	        // since SMS_RECEIVED is sent via ordered broadcast, we have to make sure that we 
 	        // receive this with highest priority in case a receiver aborts the broadcast!
 	        intentFilter.setPriority(1000000);		
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        airs.registerReceiver(SystemReceiver, intentFilter);
+	        
+	        // get ActivityManager for list of tasks
+		    am  = (ActivityManager) airs.getSystemService(Context.ACTIVITY_SERVICE); 			// if something returned, enter sensor value
+
 		}
 		catch(Exception e)
 		{
@@ -303,7 +349,7 @@ public class SystemHandler implements Handler
 	
 	public void destroyHandler()
 	{
-		nors.unregisterReceiver(SystemReceiver);
+		airs.unregisterReceiver(SystemReceiver);
 	}
 		
 	private final BroadcastReceiver SystemReceiver = new BroadcastReceiver() 

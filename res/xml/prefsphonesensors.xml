@@ -17,7 +17,7 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Phone Sensor Settings">
+    android:title="Phone and System Sensor Settings">
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:defaultValue="true"
@@ -38,4 +38,10 @@
         android:numeric="integer"
         android:title="Proximity Interval [s]"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
+    <EditTextPreference
+        android:summary="Poll interval for system information like RAM, tasks, etc"
+        android:defaultValue="5"
+        android:numeric="integer"
+        android:title="System Poll Interval [s]"
+        android:key="SystemSensorsHandler::SystemPoll"/>    
 </PreferenceScreen>
