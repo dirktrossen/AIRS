@@ -43,5 +43,5 @@
         android:defaultValue="5"
         android:numeric="integer"
         android:title="System Poll Interval [s]"
-        android:key="SystemSensorsHandler::SystemPoll"/>    
+        android:key="SystemSensorsHandler::SystemPoll"/>           
 </PreferenceScreen>

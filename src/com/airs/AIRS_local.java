@@ -382,7 +382,7 @@ public class AIRS_local extends Service
 	private void start_AIRS_local()
 	{
 		// find out whether or not to vibrate
-		Vibrate_i = HandlerManager.readRMS_i("Vibrate", 30) * 1000;
+		Vibrate_i = HandlerManager.readRMS_i("Vibrate", 0) * 1000;
 
 		// find out whether or not to wakeup the sensing on user activity
 		Wakeup_b = HandlerManager.readRMS_b("Wakeup", false);

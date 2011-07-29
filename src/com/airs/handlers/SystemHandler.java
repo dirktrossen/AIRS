@@ -17,6 +17,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
@@ -233,6 +234,7 @@ public class SystemHandler implements Handler
 			{
 				List<ActivityManager.RunningTaskInfo> tasks;
 				ActivityManager.RunningTaskInfo tinfo;
+				String task;
 				
 				// get current tasks running
 				tasks = am.getRunningTasks(100);
@@ -248,7 +250,20 @@ public class SystemHandler implements Handler
 				{
 					tinfo = tasks.get(i);
 					
-				    buffer.append(tinfo.baseActivity.getPackageName() + "\n");
+					// separate package parts
+					StringTokenizer Tok = new StringTokenizer(tinfo.baseActivity.getPackageName());
+					try
+					{
+						task = Tok.nextToken(".");
+						
+						while(Tok.hasMoreTokens())
+							task = Tok.nextToken(".");
+					}
+					catch(Exception e)
+					{
+						task = "";
+					}
+				    buffer.append(task + "\n");
 				}
 					
 	    		return buffer.toString().getBytes();
@@ -294,7 +309,7 @@ public class SystemHandler implements Handler
 	    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, 0, this);	    
 	    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, 0, this);	    
 	    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, 0, this);	    
-	    	SensorRepository.insertSensor(new String("TR"), new String("Names"), new String("Running tasks"), new String("txt"), 0, 0, 1, polltime, this);	    	    	
+	    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, polltime, this);	    	    	
 		}
 		catch(Exception err)
 		{

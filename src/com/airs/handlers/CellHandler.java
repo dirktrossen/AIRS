@@ -138,8 +138,12 @@ public class CellHandler extends PhoneStateListener implements Handler
 		{
 			// try getting phone manager
 		    tm  = (TelephonyManager) nors.getSystemService(Context.TELEPHONY_SERVICE); 			// if something returned, enter sensor value
-			if (tm != null)
+		    if (tm != null)
 			{
+		    	// if it is not a GSM phone, return right away
+				if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_GSM)
+					return;
+
 				// arm semaphores
 				wait(data_semaphore); 
 				wait(signal_semaphore); 

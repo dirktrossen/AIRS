@@ -1,3 +1,7 @@
+V1.1.1:
+- changed TR to only give back suffix of package name
+- check GSM type in cell sensors
+
 V1.1:
 - add TR sensor for running tasks
 
