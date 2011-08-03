@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2011, Dirk Trossen, nors@dirk-trossen.de
+Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ public class AIRS_widget extends AppWidgetProvider
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetlayout);
         
         // create our own broadcast event for event button pressing -> EventButtonHandler subscribes to this!
-        Intent defineIntent = new Intent("com.android.nors.event_button");
+        Intent defineIntent = new Intent("com.airs.event_button");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, defineIntent, PendingIntent.FLAG_UPDATE_CURRENT); 
         views.setOnClickPendingIntent(R.id.event_button_local, pendingIntent);
 

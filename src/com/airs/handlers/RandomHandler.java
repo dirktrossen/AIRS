@@ -1,6 +1,6 @@
 /*
 Copyright (C) 2005-2006 Nokia Corporation, Contact: Dirk Trossen, airs@dirk-trossen.de
-Copyright (C) 2010-2011, Dirk Trossen, nors@dirk-trossen.de
+Copyright (C) 2010-2011, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by

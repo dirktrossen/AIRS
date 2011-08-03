@@ -128,7 +128,7 @@ public class EventButtonHandler implements Handler
 			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);
 			
 			// check intents and set booleans for discovery
-			IntentFilter intentFilter = new IntentFilter("com.android.nors.event_button");
+			IntentFilter intentFilter = new IntentFilter("com.airs.event_button");
 	        nors.registerReceiver(SystemReceiver, intentFilter);
 		}
 		catch(Exception e)
