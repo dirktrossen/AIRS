@@ -163,8 +163,9 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
        if (AIRS_locally!=null)
 		   if (AIRS_locally.running == false)
 			   stopService(new Intent(this, AIRS_local.class));
-	   if (AIRS_remotely.running == false)
-		   stopService(new Intent(this, AIRS_remote.class));
+       if (AIRS_remotely!=null)
+    	   if (AIRS_remotely.running == false)
+    		   stopService(new Intent(this, AIRS_remote.class));
 
        super.onDestroy();
     }
