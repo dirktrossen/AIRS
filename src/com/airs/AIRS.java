@@ -55,12 +55,11 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 {
 	// Menu being in what mode?
     public static final int MENU_MAIN = 1;
-    public static final int MENU_CONFIGURE 	= 2;
-    public static final int MENU_SETTINGS 	= 3;
-    public static final int MENU_HANDLERS 	= 4;
-    public static final int MENU_HANDLER 	= 5;
-    public static final int MENU_LOCAL 		= 6;
-    public static final int MENU_VALUES		= 7;
+    public static final int MENU_SETTINGS 	= 2;
+    public static final int MENU_HANDLERS 	= 3;
+    public static final int MENU_HANDLER 	= 4;
+    public static final int MENU_LOCAL 		= 5;
+    public static final int MENU_VALUES		= 6;
     
     public int currentMenu = MENU_MAIN;
 
@@ -75,8 +74,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     public  TextView mTitle2;
     private ImageButton main_remote; 
     private ImageButton main_local;
-    private ImageButton configure_general; 
-    private ImageButton configure_handlers;
     private ArrayList<HandlerEntry> mHandlerArrayList;
     private ProgressDialog progressdialog;
     
@@ -191,23 +188,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 
         currentMenu = MENU_MAIN;
     }
-    
-    private void setupConfigure() 
-    {
-        setContentView(R.layout.configure);
-
-        // Set up the custom title
-        mTitle.setText(R.string.app_name);
-        mTitle2.setText(R.string.configure_menu);
-
-        // get buttons and set onclick listener
-        configure_general 	= (ImageButton)findViewById(R.id.button_general);
-        configure_handlers 	= (ImageButton)findViewById(R.id.button_handlers);
-        configure_general.setOnClickListener(this); 
-        configure_handlers.setOnClickListener(this);
-
-        currentMenu = MENU_CONFIGURE;
-    }
 
     private void setupHandlerUIs() 
     {
@@ -272,9 +252,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         	case MENU_MAIN:	
         		HandlerUIManager.AboutDialog("AIRS Phone Gateway", getString(R.string.Copyright));
         		break;
-        	case MENU_CONFIGURE:
-        		HandlerUIManager.AboutDialog("Configure AIRS", getString(R.string.ConfigureAbout));
-        		break;
         	case MENU_HANDLERS:
         		HandlerUIManager.AboutDialog("List of available handlers", getString(R.string.HandlersList));
         		break;
@@ -286,9 +263,18 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         	}
             return true;
         case R.id.main_configure:
-        	// call configure menu
-        	setupConfigure();
+        	// call main settings menu
+    		currentMenu = MENU_MAIN;
+            Intent settingsActivity = new Intent(getBaseContext(), Prefs.class);
+            settingsActivity.putExtra("Resource", R.xml.generalsettings);
+            settingsActivity.putExtra("About", getString(R.string.GeneralSettings));
+            settingsActivity.putExtra("AboutTitle", "General Settings");            
+            startActivity(settingsActivity);
             return true;
+        case R.id.main_configure_handlers:
+        	// call handler settings list menu
+       		setupHandlerUIs();
+        	return true;
         case R.id.local_start:
         	// debugging on during measurements?
        		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
@@ -363,17 +349,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 		            start_sensing();
 	        	}
             break;
-    	case R.id.button_general:
-    		currentMenu = MENU_SETTINGS;
-            Intent settingsActivity = new Intent(getBaseContext(), Prefs.class);
-            settingsActivity.putExtra("Resource", R.xml.generalsettings);
-            settingsActivity.putExtra("About", getString(R.string.GeneralSettings));
-            settingsActivity.putExtra("AboutTitle", "General Settings");            
-            startActivity(settingsActivity);
-    		break;
-       	case R.id.button_handlers:
-       		setupHandlerUIs();
-    		break;
      	default:
     		break;
     	}
@@ -440,21 +415,18 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
             		AlertDialog alert = builder.create();
             		alert.show();
             		break;
-            	case MENU_CONFIGURE:
-	            	setupMain();
-	            	break;
             	case MENU_VALUES:
             	case MENU_LOCAL:
             		Toast.makeText(getApplicationContext(), R.string.BackLocal, Toast.LENGTH_SHORT).show();
             		break;
             	case MENU_HANDLERS:
-            		setupConfigure();
+	            	setupMain();
             		break;
             	case MENU_HANDLER:
             		setupHandlerUIs();
             		break;
             	case MENU_SETTINGS:
-            		currentMenu = MENU_CONFIGURE;
+            		currentMenu = MENU_MAIN;
                     break;
             	default:
             		break;
