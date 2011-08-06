@@ -1,3 +1,7 @@
+V1.2.1: 
+- improved BT sensor timing so that it now senses more accurately every X seconds
+- added BV sensor for battery voltage
+
 V1.2:
 - simplified settings dialogs by moving configuration screen into main options menu
 

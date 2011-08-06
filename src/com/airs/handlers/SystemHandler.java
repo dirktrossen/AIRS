@@ -45,6 +45,8 @@ public class SystemHandler implements Handler
 	private Context airs;
 	private int oldBattery = -1;
 	private int Battery = 0;
+	private int voltage = 0;
+	private int old_voltage = -1;
 	private int oldRAM = 0;
 	private int ScreenOn = 0;
 	private int oldScreenOn = -1;
@@ -116,6 +118,20 @@ public class SystemHandler implements Handler
 				read = true;
 				reading_value = Battery; 
 				oldBattery = Battery;
+			}
+		}
+
+		// battery voltage?
+		if(sensor.compareTo("BV") == 0)
+		{
+			wait(battery_semaphore); // block until semaphore available
+
+			// any difference in value?
+			if (voltage != old_voltage)
+			{
+				read = true;
+				reading_value = voltage; 
+				old_voltage = voltage;
 			}
 		}
 
@@ -302,6 +318,7 @@ public class SystemHandler implements Handler
 		try
 		{
 			SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, 0, this);	    
+			SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, 0, this);	    
 			SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, 0, this);	    
 			SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("VM Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
 			SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, 0, this);	    
@@ -379,6 +396,7 @@ public class SystemHandler implements Handler
             {
 	            int rawlevel = intent.getIntExtra("level", -1);
 	            int scale = intent.getIntExtra("scale", -1);
+	            voltage = intent.getIntExtra("voltage", -1);
 	            int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
 	            if (rawlevel >= 0 && scale > 0) 
 	                Battery = (rawlevel * 100) / scale;

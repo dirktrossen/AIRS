@@ -29,7 +29,7 @@ import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
-public class BeaconHandler extends Activity implements Handler 
+public class BeaconHandler extends Activity implements Handler, Runnable 
 {
 	// BT stuff
 	private Context		nors;
@@ -45,6 +45,8 @@ public class BeaconHandler extends Activity implements Handler
 	private boolean 	 bt_finished	= false;
 	private boolean 	 bt_registered  = false;
 	private boolean 	 bt_first		= false;
+	private Thread 		 runnable = null;
+	private boolean		 running = true;
 //	private char EOL = 13;
 
 	// config data
@@ -77,11 +79,11 @@ public class BeaconHandler extends Activity implements Handler
 	***********************************************************************/
 	public synchronized byte[] Acquire(String sensor, String query)
 	{		
-		// try to discover when it's time to do so
-		if (oldtime+polltime<System.currentTimeMillis())
+
+		if (runnable == null)
 		{
-			oldtime = System.currentTimeMillis();
-			discover();
+			runnable = new Thread(this);
+			runnable.start();	
 		}
 		
 		switch(sensor.charAt(1))
@@ -114,6 +116,22 @@ public class BeaconHandler extends Activity implements Handler
 		}
 		
 		return null;		
+	}
+	
+	// run discovery in separate thread
+	public void run() 
+	{
+		while(running==true)
+		{
+			// try to discover when it's time to do so
+			if (oldtime+polltime<System.currentTimeMillis())
+			{
+				oldtime = System.currentTimeMillis();
+				discover();
+			}
+			
+			sleep(1000);
+		}
 	}
 	
 	/***********************************************************************
@@ -181,10 +199,18 @@ public class BeaconHandler extends Activity implements Handler
 	
 	public void destroyHandler()
 	{
+		// signal thread to close down
+		running = false;
+		
+		// cancel any discovery
+		bt_finished = true;
 		if (mBtAdapter != null)
 			mBtAdapter.cancelDiscovery();
 		if (bt_registered == true)
+		{
 			nors.unregisterReceiver(mReceiver);
+			bt_registered = false;
+		}
 	}
 	
     private void discover()
@@ -222,7 +248,8 @@ public class BeaconHandler extends Activity implements Handler
         new_current = new_current_no = true;
         
         // unregister broadcast receiver
-		nors.unregisterReceiver(mReceiver);
+        if (bt_registered == true)
+        	nors.unregisterReceiver(mReceiver);
 		bt_registered = false;
     }	 
     
