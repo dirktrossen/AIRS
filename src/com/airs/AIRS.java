@@ -365,7 +365,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 	    	{
 	    		if (j == (int)arg3)
 	    		{
-	    	        currentMenu = MENU_HANDLER;
+	    	        currentMenu = MENU_HANDLERS;
 	    			current_handler = HandlerUIManager.handlers[i];
 	    			// start preferences activity with intent being set to resource ID for preferences
 	                Intent settingsActivity = new Intent(getBaseContext(), Prefs.class);
