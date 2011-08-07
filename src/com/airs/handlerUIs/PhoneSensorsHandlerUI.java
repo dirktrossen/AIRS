@@ -27,8 +27,8 @@ public class PhoneSensorsHandlerUI implements HandlerUI
 	public HandlerEntry init()
 	{
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Phone Sensors");
-		entry.description = new String("Senses various phone-based information like orientation etc");
+		entry.name = new String("Phone & System");
+		entry.description = new String("Various phone-based information like orientation, light, RAM, battery etc");
 		entry.resid = R.drawable.phone;
 		return (entry);
 	}
@@ -41,8 +41,8 @@ public class PhoneSensorsHandlerUI implements HandlerUI
 	public String About()
 	{
 	    String AboutText = new String(
-	    		"Senses various phone-based sensors.\n\n"+
-	    		"The orientation is only supported for models with internal compass.");
+	    		"Senses various phone-based sensors & system information.\n\n"+
+	    		"The orientation is only supported for models with internal compass. Other information includes light, proximity as well as system information such as battery, RAM and tasks.");
 
 		return AboutText;
 	}

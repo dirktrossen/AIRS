@@ -54,7 +54,7 @@ public class ProximityHandlerUI implements HandlerUI
 	
 	public String AboutTitle()
 	{
-		return "Audio Sampling";
+		return "Proximity Sampling";
 	}
 	
 	public void configurePreference(PreferenceActivity prefs)

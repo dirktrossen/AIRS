@@ -27,7 +27,7 @@ public class LocationHandlerUI implements HandlerUI
 	{
 		HandlerEntry entry = new HandlerEntry();
 		entry.name = new String("Location");
-		entry.description = new String("Senses various location sources like GPS, Wifi and cell");
+		entry.description = new String("Various location sources like GPS, Wifi and cell");
 		entry.resid = R.drawable.location;
 		return (entry);
 	}

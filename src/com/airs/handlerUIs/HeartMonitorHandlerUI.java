@@ -33,7 +33,7 @@ public class HeartMonitorHandlerUI implements HandlerUI
 	{				
 		HandlerEntry entry = new HandlerEntry();
 		entry.name = new String("Heart Monitor");
-		entry.description = new String("Senses ECG, heart rate, accelerometer and others from Alive Heart Monitor");
+		entry.description = new String("ECG, heart rate, accelerometer & event button from Alive Heart Monitor");
 		entry.resid = R.drawable.heart_monitor;
 		return (entry);
 	}

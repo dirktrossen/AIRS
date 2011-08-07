@@ -1,3 +1,6 @@
+V1.2.3:
+- various handlerUI settings refinements
+
 V1.2.2.1:
 - addressed layout problems in handler settings
 

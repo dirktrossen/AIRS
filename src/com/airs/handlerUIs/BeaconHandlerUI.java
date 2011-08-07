@@ -27,7 +27,7 @@ public class BeaconHandlerUI implements HandlerUI
 	{
 		HandlerEntry entry = new HandlerEntry();
 		entry.name = new String("Bluetooth Beacon");
-		entry.description = new String("Senses surrounding BT devices");
+		entry.description = new String("Surrounding BT devices");
 		entry.resid = R.drawable.bt2;
 		return (entry);
 	}

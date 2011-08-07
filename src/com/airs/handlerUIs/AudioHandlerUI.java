@@ -28,7 +28,7 @@ public class AudioHandlerUI implements HandlerUI
 	{
 		HandlerEntry entry = new HandlerEntry();
 		entry.name = new String("Audio Sampling");
-		entry.description = new String("Senses surround sound environment");
+		entry.description = new String("Surrounding sound environment (level and frequency)");
 		entry.resid = R.drawable.audio;
 		return (entry);
 	}

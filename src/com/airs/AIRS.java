@@ -253,7 +253,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         		HandlerUIManager.AboutDialog("AIRS Phone Gateway", getString(R.string.Copyright));
         		break;
         	case MENU_HANDLERS:
-        		HandlerUIManager.AboutDialog("List of available handlers", getString(R.string.HandlersList));
+        		HandlerUIManager.AboutDialog("List of handlers with settings", getString(R.string.HandlersList));
         		break;
         	case MENU_LOCAL:
         		HandlerUIManager.AboutDialog("AIRS Local", getString(R.string.LocalAbout));
