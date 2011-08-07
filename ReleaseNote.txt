@@ -1,5 +1,8 @@
+V1.2.2.1:
+- addressed layout problems in handler settings
+
 V1.2.2: 
-- repaired broken EB sensor (even button widget) - works again now!
+- repaired broken EB sensor (event button widget) - works again now!
 - sensor values in measurement window now shown with 24h format
 
 V1.2.1: 
