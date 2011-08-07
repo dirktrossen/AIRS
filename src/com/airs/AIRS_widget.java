@@ -36,7 +36,7 @@ public class AIRS_widget extends AppWidgetProvider
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetlayout);
         
         // create our own broadcast event for event button pressing -> EventButtonHandler subscribes to this!
-        Intent defineIntent = new Intent("com.airs.event_button");
+        Intent defineIntent = new Intent("com.airs.eventbutton");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, defineIntent, PendingIntent.FLAG_UPDATE_CURRENT); 
         views.setOnClickPendingIntent(R.id.event_button_local, pendingIntent);
 

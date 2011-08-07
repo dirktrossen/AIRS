@@ -128,7 +128,7 @@ public class EventButtonHandler implements Handler
 			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);
 			
 			// check intents and set booleans for discovery
-			IntentFilter intentFilter = new IntentFilter("com.airs.event_button");
+			IntentFilter intentFilter = new IntentFilter("com.airs.eventbutton");
 	        nors.registerReceiver(SystemReceiver, intentFilter);
 		}
 		catch(Exception e)
@@ -150,7 +150,7 @@ public class EventButtonHandler implements Handler
             String action = intent.getAction();
 
             // When battery changed...
-            if (action.equals("com.android.nors.event_button")) 
+            if (action.equals("com.airs.eventbutton")) 
             {
             	Event = 1;
 				event_semaphore.release();		// release semaphore

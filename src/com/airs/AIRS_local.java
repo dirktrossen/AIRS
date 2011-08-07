@@ -133,7 +133,7 @@ public class AIRS_local extends Service
 				Calendar cal = Calendar.getInstance();
 				
 				cal.setTimeInMillis(values_time);
-				return new String("'" + current.Description + "' sensed " + number_values + " times\nLast sensing at " + DateFormat.format("dd MMM yyyy h:mm.ssaa", cal) + " with value : " + values_output);
+				return new String("'" + current.Description + "' sensed " + number_values + " times\nLast sensing at " + DateFormat.format("dd MMM yyyy k:mm:ss", cal) + " with value :\n" + values_output);
 			}
 			
 			private void output(String text)

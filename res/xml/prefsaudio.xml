@@ -29,7 +29,7 @@
         android:defaultValue="8000"
         android:dialogTitle="Choose Sampling Rate" />
     <EditTextPreference
-        android:summary="Poll interval for audio capture in seconds"
+        android:summary="Interval to wait after each audio capture in seconds"
         android:defaultValue="5"
         android:numeric="integer"
         android:title="Audio Interval [s]"
