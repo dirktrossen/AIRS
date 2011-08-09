@@ -64,6 +64,7 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = new CellHandler(nors);
 	   handlers[inst_handlers++]  = new GPSHandler(nors);	   
 	   handlers[inst_handlers++]  = new EventButtonHandler(nors);
+	   handlers[inst_handlers++]  = new MoodButtonHandler(nors);
 	   handlers[inst_handlers++]  = new AudioHandler(nors);
 	   handlers[inst_handlers++]  = new HeartMonitorHandler(nors);
 	   handlers[inst_handlers++]  = new SystemHandler(nors);

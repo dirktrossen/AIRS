@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+<LinearLayout
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+    <ImageButton android:src="@drawable/mood_happy" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/mood_happy"></ImageButton>
+	<TextView android:layout_width="wrap_content" android:layout_marginLeft="15dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:textSize="24sp" android:text="Happy"/>
+</LinearLayout>    
+<LinearLayout
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+    <ImageButton android:src="@drawable/mood_content" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/mood_content"></ImageButton>
+	<TextView android:layout_width="wrap_content" android:layout_marginLeft="15dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:textSize="24sp" android:text="Content"/>
+</LinearLayout>    
+<LinearLayout
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+    <ImageButton android:src="@drawable/mood_surprised" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/mood_surprised"></ImageButton>
+	<TextView android:layout_width="wrap_content" android:layout_marginLeft="15dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:textSize="24sp" android:text="Surprised"/>
+</LinearLayout>    
+<LinearLayout
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+    <ImageButton android:src="@drawable/mood_sad" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/mood_sad"></ImageButton>
+	<TextView android:layout_width="wrap_content" android:layout_marginLeft="15dp" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:textSize="24sp" android:text="Sad"/>
+</LinearLayout>    
+<LinearLayout
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+    <ImageButton android:src="@drawable/mood_angry" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/mood_angry"></ImageButton>
+    <TextView android:text="Angry" android:layout_gravity="center_vertical" android:layout_marginLeft="15dp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="24sp"></TextView>
+</LinearLayout>    
+    
+</LinearLayout>

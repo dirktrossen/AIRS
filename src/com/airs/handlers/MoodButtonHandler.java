@@ -20,6 +20,7 @@ import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.SensorRepository;
+import com.airs.*;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,13 +34,12 @@ import android.os.Vibrator;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class EventButtonHandler implements Handler
+public class MoodButtonHandler implements Handler
 {
 	private Context nors;
-	private int Event = 0;
 	private Semaphore event_semaphore 	= new Semaphore(1);
-	private byte[] readings = new byte[6];
 	private Vibrator vibrator;
+	private String mood= null;
 
 	/**
 	 * Sleep function 
@@ -78,27 +78,28 @@ public class EventButtonHandler implements Handler
 	public byte[] Acquire(String sensor, String query)
 	{
 		long[] pattern = {0l, 450l, 250l, 450l, 250l, 450l};
+		StringBuffer readings;
 		
-		// event button?
-		if(sensor.compareTo("EB") == 0)
+		// mood button?
+		if(sensor.compareTo("MO") == 0)
 		{
 			wait(event_semaphore); // block until semaphore available -> fired
 
-			if (Event == 1)
+			if (mood != null)
 			{
-				readings[0] = (byte)sensor.charAt(0);
-				readings[1] = (byte)sensor.charAt(1);
-				readings[2] = (byte)((Event>>24) & 0xff);
-				readings[3] = (byte)((Event>>16) & 0xff);
-				readings[4] = (byte)((Event>>8) & 0xff);
-				readings[5] = (byte)(Event & 0xff);
-				Event = 0;
-
+				// prepare readings
+				readings = new StringBuffer(sensor);
+				readings.append(mood);
+	
+				mood = null;
+				
 				// vibrate with pattern
 				vibrator.vibrate(pattern, -1);
 		        
-				return readings;
+				return readings.toString().getBytes();
 			}
+			else 
+				return null;
 		}
 		
 		return null;
@@ -114,10 +115,10 @@ public class EventButtonHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("EB"), new String("boolean"), new String("Event button widget"), new String("int"), 0, 0, 1, 0, this);	    
+		SensorRepository.insertSensor(new String("MO"), new String("Mood"), new String("Mood button widget"), new String("str"), 0, 0, 6, 0, this);	    
 	}
 	
-	public EventButtonHandler(Context nors)
+	public MoodButtonHandler(Context nors)
 	{
 		this.nors = nors;
 		try
@@ -129,7 +130,9 @@ public class EventButtonHandler implements Handler
 			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);
 			
 			// check intents and set booleans for discovery
-			IntentFilter intentFilter = new IntentFilter("com.airs.eventbutton");
+			IntentFilter intentFilter = new IntentFilter("com.airs.moodbutton");
+	        nors.registerReceiver(SystemReceiver, intentFilter);
+	        intentFilter = new IntentFilter("com.airs.moodselected");
 	        nors.registerReceiver(SystemReceiver, intentFilter);
 		}
 		catch(Exception e)
@@ -150,14 +153,30 @@ public class EventButtonHandler implements Handler
         {
             String action = intent.getAction();
 
-            // If event button pressed, signal to Acquire()
-            if (action.equals("com.airs.eventbutton")) 
+            // if mood button widget has been pressed -> start Activity for selecting mood icon
+            if (action.equals("com.airs.moodbutton")) 
             {
-            	Event = 1;
+    			try
+    			{
+    	            Intent startintent = new Intent(nors, AIRS_mood_selector.class);
+    	            startintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    	            nors.startActivity(startintent);          
+    			}
+    			catch(Exception e)
+    			{
+    			}
+    			return;
+            }
+            
+            // if mood has been selected, signal to handler
+            if (action.equals("com.airs.moodselected")) 
+            {
+            	// get mood from intent
+            	mood = intent.getStringExtra("Mood");
+            	
 				event_semaphore.release();		// release semaphore
 				return;
             }
         }
     };
 }
-

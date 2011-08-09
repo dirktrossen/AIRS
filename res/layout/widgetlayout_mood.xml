@@ -15,10 +15,18 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
- <selector xmlns:android="http://schemas.android.com/apk/res/android">
-     <item android:state_pressed="true"
-           android:drawable="@drawable/start2_pressed" /> <!-- pressed -->
-     <item android:state_focused="true"
-           android:drawable="@drawable/start2_pressed" /> <!-- focused -->
-     <item android:drawable="@drawable/start2" /> <!-- default -->
- </selector>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+		<ImageButton 
+		  android:id="@+id/mood_button_local"
+		  android:layout_width="fill_parent"
+		  android:layout_height="fill_parent"
+	 	  android:layout_centerInParent="true"
+	 	  android:background="#00000000"
+	      android:layout_margin="10dip"
+	      android:clickable="true"
+	      android:hapticFeedbackEnabled="false"
+	 	  android:src="@drawable/widget_mood"/>
+</LinearLayout>

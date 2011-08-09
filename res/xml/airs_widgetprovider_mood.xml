@@ -15,10 +15,10 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
- <selector xmlns:android="http://schemas.android.com/apk/res/android">
-     <item android:state_pressed="true"
-           android:drawable="@drawable/start2_pressed" /> <!-- pressed -->
-     <item android:state_focused="true"
-           android:drawable="@drawable/start2_pressed" /> <!-- focused -->
-     <item android:drawable="@drawable/start2" /> <!-- default -->
- </selector>
+<appwidget-provider
+  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="74px"
+    android:minHeight="106px"
+    android:updatePeriodMillis="86400000"
+    android:initialLayout="@layout/widgetlayout_mood">
+</appwidget-provider>
