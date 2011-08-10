@@ -1,3 +1,8 @@
+V1.3.1:
+- mood selector only appears when subscribed to "MO"
+- changed internal structure of widgets -> YOU NEED TO RE-ADD WIDGETS TO HOME SCREENS!
+- added more mood icons in selector
+
 V1.3:
 - added 'mood button' widget, allowing for setting your mood, being delivered as "MO" sensor with various states
 

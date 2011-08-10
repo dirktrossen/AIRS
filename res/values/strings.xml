@@ -34,6 +34,7 @@
 <string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record and press <b>Start</b> to record.</string>
 <string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the measurement only).</string>
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
+<string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="BackLocal">BACK not supported in this activity!\n\nUse <b>Exit</b> menu option instead!</string>
 </resources>

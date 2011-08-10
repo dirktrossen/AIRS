@@ -13,7 +13,8 @@ License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
-*/package com.airs;
+*/
+package com.airs.handlers;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -21,8 +22,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+import com.airs.*;
 
-public class AIRS_widget_mood extends AppWidgetProvider
+public class MoodButton_widget extends AppWidgetProvider
 {
 	Context context;
 	
@@ -64,4 +66,3 @@ public class AIRS_widget_mood extends AppWidgetProvider
     	// remove intent to broadcast?
     }
 }
-

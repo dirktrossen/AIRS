@@ -20,7 +20,6 @@ import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.SensorRepository;
-import com.airs.*;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -40,6 +39,7 @@ public class MoodButtonHandler implements Handler
 	private Semaphore event_semaphore 	= new Semaphore(1);
 	private Vibrator vibrator;
 	private String mood= null;
+	private boolean registered = false;
 
 	/**
 	 * Sleep function 
@@ -83,7 +83,19 @@ public class MoodButtonHandler implements Handler
 		// mood button?
 		if(sensor.compareTo("MO") == 0)
 		{
-			wait(event_semaphore); // block until semaphore available -> fired
+			// not yet registered -> then do so!!
+			if (registered == false)
+			{
+				// check intents and set booleans for discovery
+				IntentFilter intentFilter = new IntentFilter("com.airs.moodbutton");
+		        nors.registerReceiver(SystemReceiver, intentFilter);
+		        intentFilter = new IntentFilter("com.airs.moodselected");
+		        nors.registerReceiver(SystemReceiver, intentFilter);
+		        registered = true;
+			}
+			
+			// block until semaphore available -> fired
+			wait(event_semaphore); 
 
 			if (mood != null)
 			{
@@ -127,13 +139,7 @@ public class MoodButtonHandler implements Handler
 			wait(event_semaphore); 
 
 			// get system service for Vibrator
-			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);
-			
-			// check intents and set booleans for discovery
-			IntentFilter intentFilter = new IntentFilter("com.airs.moodbutton");
-	        nors.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter("com.airs.moodselected");
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);			
 		}
 		catch(Exception e)
 		{
@@ -143,7 +149,8 @@ public class MoodButtonHandler implements Handler
 	
 	public void destroyHandler()
 	{
-		nors.unregisterReceiver(SystemReceiver);
+		if (registered == true)
+			nors.unregisterReceiver(SystemReceiver);
 	}
 		
 	private final BroadcastReceiver SystemReceiver = new BroadcastReceiver() 
@@ -158,7 +165,7 @@ public class MoodButtonHandler implements Handler
             {
     			try
     			{
-    	            Intent startintent = new Intent(nors, AIRS_mood_selector.class);
+    	            Intent startintent = new Intent(nors, MoodButton_selector.class);
     	            startintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     	            nors.startActivity(startintent);          
     			}
