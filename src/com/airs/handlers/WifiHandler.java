@@ -127,7 +127,7 @@ public class WifiHandler extends PhoneStateListener implements Handler
 	{
 		this.nors = nors;
 		
-		polltime	= HandlerManager.readRMS_i("LocationHandler::WifiPoll", 20) * 1000;
+		polltime	= HandlerManager.readRMS_i("LocationHandler::WifiPoll", 30) * 1000;
 
 		// read whether or not we need to enable Wifi
 		enableWIFI = HandlerManager.readRMS_b("LocationHandler::WIFION", false);

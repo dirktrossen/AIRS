@@ -139,7 +139,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 		nors = activity;
 		
 		// get preferences
-		polltime	= HandlerManager.readRMS_i("LocationHandler::LocationPoll", 15) * 1000;
+		polltime	= HandlerManager.readRMS_i("LocationHandler::LocationPoll", 30) * 1000;
 		updatemeter	= HandlerManager.readRMS_i("LocationHandler::LocationUpdate", 100);
 		// read whether or not we need to enable GPS
 		enableGPS = HandlerManager.readRMS_b("LocationHandler::GPSON", false);

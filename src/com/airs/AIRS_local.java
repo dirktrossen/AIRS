@@ -388,13 +388,13 @@ public class AIRS_local extends Service
 		Wakeup_b = HandlerManager.readRMS_b("Wakeup", false);
 
 		// find out whether or not to store locally
-		localStore_b = HandlerManager.readRMS_b("LocalStore", false);
+		localStore_b = HandlerManager.readRMS_b("LocalStore", true);
 
 		// find out whether or not to save safely
 		localStoreSafe_b = HandlerManager.readRMS_b("SafeWriting", false);
 
 		// find out whether or not to display locally
-		localDisplay_b = HandlerManager.readRMS_b("localDisplay", false);
+		localDisplay_b = HandlerManager.readRMS_b("localDisplay", true);
 		
 		// if to store locally -> try to open write file on memory card
 		if (localStore_b == true)

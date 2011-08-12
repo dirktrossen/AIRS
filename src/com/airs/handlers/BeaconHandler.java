@@ -191,7 +191,7 @@ public class BeaconHandler extends Activity implements Handler, Runnable
 		// should ask before enabling?
 		bt_ask = HandlerManager.readRMS_b("BeaconHandler::BTONAsk", false);
 
-		polltime = HandlerManager.readRMS_i("BeaconHandler::Poll", 15) * 1000;
+		polltime = HandlerManager.readRMS_i("BeaconHandler::Poll", 30) * 1000;
 		
 		// save current time and set so that first Acquire() will discover
 		oldtime = System.currentTimeMillis() - polltime;

@@ -187,8 +187,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		nors = activity;
 		
 		// read polltime
-		polltime  = HandlerManager.readRMS_i("PhoneSensorsHandler::OrientationPoll", 10) * 1000;
-		polltime2 = HandlerManager.readRMS_i("PhoneSensorsHandler::ProximityPoll", 10) * 1000;
+		polltime  = HandlerManager.readRMS_i("PhoneSensorsHandler::OrientationPoll", 5) * 1000;
+		polltime2 = HandlerManager.readRMS_i("PhoneSensorsHandler::ProximityPoll", 5) * 1000;
 		// read whether or not we need to enable GPS
 		sensor_enable = HandlerManager.readRMS_b("PhoneSensorsHandler::SensorsON", false);
 

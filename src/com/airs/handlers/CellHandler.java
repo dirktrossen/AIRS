@@ -40,16 +40,18 @@ public class CellHandler extends PhoneStateListener implements Handler
 	// sensor data   
 	private int cellID, cellLac, mcc;
 	private int oldCellID = -1, oldcellLac = -1, oldNCC = -1;
-	private int oldcellStrength = -1;
+	private int oldcellStrength = -1, oldcellStrength_bar = -1;
 	private int roaming = 0, oldroaming = -1;
 	private int data_state, olddata_state = -1;
 	private boolean signal_read = false;
-	private boolean data_read = false;
-	private boolean cell_read = false;
-	private boolean lac_read = false;
-	private boolean ncc_read = false;
+	private boolean bar_read 	= false;
+	private boolean data_read 	= false;
+	private boolean cell_read 	= false;
+	private boolean lac_read 	= false;
+	private boolean ncc_read 	= false;
 	
 	private Semaphore signal_semaphore	 	= new Semaphore(1);
+	private Semaphore bar_semaphore	 		= new Semaphore(1);
 	private Semaphore data_semaphore	 	= new Semaphore(1);
 	private Semaphore cellid_semaphore	 	= new Semaphore(1);
 	private Semaphore lac_semaphore	 		= new Semaphore(1);
@@ -124,6 +126,7 @@ public class CellHandler extends PhoneStateListener implements Handler
 		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), new String("Roaming"), new String("int"), 0, 0, 1, 60000, this);	    
 		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), new String("Data connected"), new String("int"), 0, 0, 1, 0, this);	    
 		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), new String("Signal strength"), new String("int"), 0, -120, 0, 0, this);	    
+		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Signal strength"), new String("int"), 0, 0, 7, 0, this);	    
 		    SensorRepository.insertSensor(new String("CI"), new String("ID"), new String("Cell identifier"), new String("int"), 0, 0, 65535, 0, this);	    
 		    SensorRepository.insertSensor(new String("CL"), new String("ID"), new String("Location Area Code"), new String("int"), 0, 0, 65535, 0, this);	    
 		    SensorRepository.insertSensor(new String("CC"), new String("NCC"), new String("Net Country Code"), new String("int"), 0, 0, 65535, 0, this);
@@ -147,6 +150,7 @@ public class CellHandler extends PhoneStateListener implements Handler
 				// arm semaphores
 				wait(data_semaphore); 
 				wait(signal_semaphore); 
+				wait(bar_semaphore); 
 				wait(cellid_semaphore); 
 				wait(lac_semaphore); 
 				wait(mcc_semaphore); 
@@ -251,6 +255,25 @@ public class CellHandler extends PhoneStateListener implements Handler
 					}
 					
 					break;
+				case 'B':
+					wait(bar_semaphore); // block until semaphore available
+
+					// if listener was triggered, create reading
+					if (bar_read == true)
+					{						
+						reading = new byte[6];
+						reading[0] = (byte)sensor.charAt(0);
+						reading[1] = (byte)sensor.charAt(1);
+						reading[2] = (byte)((oldcellStrength_bar>>24) & 0xff);
+						reading[3] = (byte)((oldcellStrength_bar>>16) & 0xff);
+						reading[4] = (byte)((oldcellStrength_bar>>8) & 0xff);
+						reading[5] = (byte)(oldcellStrength_bar & 0xff);
+						
+						// clear flag
+						bar_read = false;
+					}
+					
+					break;
 				case 'D':
 					wait(data_semaphore); // block until semaphore available
 
@@ -315,16 +338,40 @@ public class CellHandler extends PhoneStateListener implements Handler
 	@Override
 	public void onSignalStrengthsChanged(SignalStrength signalStrength)
     {
-		int strength;
+		int strength, signal;
 	
+		// signal strength in ASU
 		strength = signalStrength.getGsmSignalStrength();
-		if (strength != oldcellStrength)
+		
+		// convert ASU in dBm
+		signal = -113 + 2*strength;
+		
+		// has anything changed?
+		if (signal != oldcellStrength)
 		{
-			oldcellStrength = -113 + 2*strength;
+			// convert ASU into bars
+			if (strength <= 2 || strength == 99) 
+				oldcellStrength_bar = 0;
+			else 
+				if (strength >= 12) 
+					oldcellStrength_bar = 4;
+				else 
+					if (strength >= 8) 
+						oldcellStrength_bar = 3;
+					else 
+						if (strength >= 5) 
+							oldcellStrength_bar = 2;
+						else oldcellStrength_bar = 1;
+			
+			oldcellStrength = signal;
+			
+			// stuff can be read now
 			signal_read = true;
+			bar_read = true;
 
-			// release semaphore
+			// release semaphores
 			signal_semaphore.release();
+			bar_semaphore.release();
 		}
     }
 	

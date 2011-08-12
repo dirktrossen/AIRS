@@ -99,7 +99,9 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        addMoodIcon("Very Happy", R.drawable.mood_very_happy);
 	        addMoodIcon("Happy", R.drawable.mood_happy);
 	        addMoodIcon("Feeling Good", R.drawable.mood_feeling_good);	       
+	        addMoodIcon("Positively Excited", R.drawable.mood_feeling_good);	       
 	        addMoodIcon("Confused", R.drawable.mood_confused);
+	        addMoodIcon("Anxious", R.drawable.mood_doubtful);
 	        addMoodIcon("Doubtful", R.drawable.mood_doubtful);
 	        addMoodIcon("Not Sure", R.drawable.mood_not_sure);
 	        addMoodIcon("Upset", R.drawable.mood_upset);

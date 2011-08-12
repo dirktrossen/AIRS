@@ -1,3 +1,9 @@
+V1.3.2:
+- corrections to CS sensor
+- added CB sensors (signal strength in bars)
+- aligned some default settings
+- added two more moods
+
 V1.3.1:
 - mood selector only appears when subscribed to "MO"
 - changed internal structure of widgets -> YOU NEED TO RE-ADD WIDGETS TO HOME SCREENS!
