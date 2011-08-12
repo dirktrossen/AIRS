@@ -1,6 +1,9 @@
+V1.4:
+- can now share measurements before exiting!
+
 V1.3.2:
 - corrections to CS sensor
-- added CB sensors (signal strength in bars)
+- added CB sensor (signal strength in bars)
 - aligned some default settings
 - added two more moods
 

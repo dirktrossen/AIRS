@@ -74,7 +74,8 @@ public class AIRS_local extends Service
     private int Vibrate_i;
     private boolean Wakeup_b;
 	private String url = "AIRS_values";
-	private File fconn, mconn, path;
+	public  File fconn;
+	private File mconn, path;
 	private BufferedOutputStream os, os2;
 	private long		currentmilli;
 	private Calendar cal = Calendar.getInstance();

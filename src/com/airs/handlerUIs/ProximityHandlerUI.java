@@ -47,7 +47,7 @@ public class ProximityHandlerUI implements HandlerUI
 	    		"When recording this sensor, you should disable the BT Beacon sensor since both will compete for the BT discovery, which might lead to misfunction.\n" +
 	    		"The sampling rate and the polling interval for the sampling can be set in order to optimize the reading and processing requirements.\n\n" +
 	    		"WARNING: Recording audio is considered illegal in many countries when taking place without the other party's consent!\n\n" +
-	    		"NORS takes no responsibility as to the legality of the recordings undertaken by the user of this software!");
+	    		"AIRS takes no responsibility as to the legality of the recordings undertaken by the user of this software!");
 
 		return AboutText;
 	}

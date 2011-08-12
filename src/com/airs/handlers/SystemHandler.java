@@ -102,7 +102,7 @@ public class SystemHandler implements Handler
 	{
 		byte[] readings = null;
 		int reading_value = 0;
-		boolean read;
+		boolean read, task_first;
 		int i;
 		
 		read = false;
@@ -262,11 +262,20 @@ public class SystemHandler implements Handler
 				// now create list
 				StringBuffer buffer = new StringBuffer("TR");
 		
+				// start with first task
+				task_first=true;
+				
 				for (i=0; i<tasks.size(); i++)
 				{
 					tinfo = tasks.get(i);
 					
-					// separate package parts
+	            	// first task? -> then no \n at the end of it!
+	            	if (task_first == true)
+	            		task_first = false;
+	            	else
+	        	        buffer.append("\n");
+
+	            	// separate package parts
 					StringTokenizer Tok = new StringTokenizer(tinfo.baseActivity.getPackageName());
 					try
 					{
@@ -279,7 +288,7 @@ public class SystemHandler implements Handler
 					{
 						task = "";
 					}
-				    buffer.append(task + "\n");
+				    buffer.append(task);
 				}
 					
 	    		return buffer.toString().getBytes();

@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
@@ -142,6 +143,25 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 	    		           {
 	    		    		   if (AIRS_locally != null)
 	    		    			   stopService(new Intent(act, AIRS_local.class));
+	    		        	   finish();
+	    		           }
+	    		       })
+	    		       .setNeutralButton("Yes & Share", new DialogInterface.OnClickListener() 
+	    		       {
+	    		           public void onClick(DialogInterface dialog, int id) 
+	    		           {
+	    		    		   if (AIRS_locally != null)
+	    		    		   {
+	    		    			   // first stop service to clear up all resources and close the file
+	    		    			   stopService(new Intent(act, AIRS_local.class));
+	    		    			   // build URI
+	    		    		       Uri U = Uri.fromFile(AIRS_locally.fconn);
+	    		    		       // now build and start chooser intent
+	    		                   Intent intent = new Intent(Intent.ACTION_SEND);
+	    		                   intent.setType("text/plain");
+	    		                   intent.putExtra(Intent.EXTRA_STREAM, U);
+	    		                   act.startActivity(Intent.createChooser(intent,"Send AIRS Measurements To:"));
+	    		               }
 	    		        	   finish();
 	    		           }
 	    		       })
