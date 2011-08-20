@@ -34,8 +34,8 @@ import com.airs.handlers.*;
 public class HandlerManager 
 {
     // currently we have maximal 3 handlers
-    static public Handler handlers[] = new Handler[14];
-    public final static int max_handlers = 14;
+    static public Handler handlers[] = new Handler[20];
+    public final static int max_handlers = 20;
     static int inst_handlers = 0; 
     static private SharedPreferences settings;
     static private Editor editor;
@@ -51,8 +51,11 @@ public class HandlerManager
        settings = PreferenceManager.getDefaultSharedPreferences(nors);
        editor = settings.edit();
 
+       // clear array
+       for (int i = 0; i<max_handlers; i++)
+    	   handlers[i] = null;
+
        inst_handlers = 0;
-	   handlers[0] = handlers[1] = handlers[2] = handlers[3] = handlers[4] = handlers[5] = handlers[6] = handlers[7] = handlers[8] = handlers[9] = handlers[10] = handlers [11] = handlers[12] = handlers[13] = null;
 
 	   // here the handlers are inserted in the field
 	   // the rule is that raw sensors are inserted first before aggregated sensors are inserted.
@@ -69,6 +72,7 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = new HeartMonitorHandler(nors);
 	   handlers[inst_handlers++]  = new SystemHandler(nors);
 	   handlers[inst_handlers++]  = new PhoneSensorHandler(nors);
+	   handlers[inst_handlers++]  = new WeatherHandler(nors);
 	   
 	   return true;
 	}

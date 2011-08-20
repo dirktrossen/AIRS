@@ -21,7 +21,7 @@
     <ListPreference
     	android:dialogIcon="@drawable/audio"
         android:key="AudioHandler::SamplingRate"
-        android:title="Sampling Rate"
+        android:title="Sampling Rate [Hz]"
         android:summary="Sampling rate for audio capture in Hertz"
         android:positiveButtonText="Select"
         android:entries="@array/audiohandler_values"

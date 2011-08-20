@@ -38,7 +38,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 
 	Context nors;
 	// are these there?
-	private boolean enableGPS = false, startedGPS = false;
+	private boolean enableGPS = false, startedGPS = false, useWifi = false;
 	// polltime
 	private int 		polltime = 10000, updatemeter = 100;
 	// sensor data
@@ -143,6 +143,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 		updatemeter	= HandlerManager.readRMS_i("LocationHandler::LocationUpdate", 100);
 		// read whether or not we need to enable GPS
 		enableGPS = HandlerManager.readRMS_b("LocationHandler::GPSON", false);
+		useWifi = HandlerManager.readRMS_b("LocationHandler::UseWifi", false);
 		
 		if (enableGPS == false)
 			return;
@@ -272,6 +273,8 @@ public class GPSHandler implements com.airs.handlers.Handler
         	   {
         		   // request location updates
         		   manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, polltime, (float)updatemeter, mReceiver);  
+        		   if (useWifi == true)
+            		   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, polltime, (float)updatemeter, mReceiver);  
         		   // signal starting to Acquire() thread
         		   startedGPS = true;
         	   }

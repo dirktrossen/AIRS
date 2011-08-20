@@ -44,6 +44,7 @@
         <item>30 m</item>
         <item>50 m</item>
         <item>100 m</item>
+        <item>200 m</item>
         <item>500 m</item>
         <item>1000 m</item>
     </string-array>
@@ -51,7 +52,22 @@
         <item>30</item>
         <item>50</item>
         <item>100</item>
+        <item>200</item>
         <item>500</item>
         <item>1000</item>
+    </string-array>   
+    <string-array name="weatherhandler_values">
+        <item>1km</item>
+        <item>2km</item>
+        <item>5km</item>
+        <item>10km</item>
+        <item>20km</item>
+    </string-array>
+     <string-array name="weatherhandler_entries">
+        <item>1000</item>
+        <item>2000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>20000</item>
     </string-array>   
 </resources>

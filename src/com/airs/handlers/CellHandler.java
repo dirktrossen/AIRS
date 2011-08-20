@@ -19,6 +19,8 @@ package com.airs.handlers;
 import java.util.concurrent.Semaphore;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.telephony.CellLocation;
 import android.telephony.SignalStrength;
@@ -29,11 +31,16 @@ import android.telephony.PhoneStateListener;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.SensorRepository;
 
-public class CellHandler extends PhoneStateListener implements Handler
+public class CellHandler extends PhoneStateListener implements com.airs.handlers.Handler
 {
+	public static final int INIT_SIGNALSTRENGTH = 1;
+	public static final int INIT_DATACONNECTED = 2;
+	public static final int INIT_CELLLOCATION = 3;
+	
 	Context nors;
 	// phone state classes
 	private TelephonyManager tm;
+	private CellHandler cellhandler;
 
 	// are these there?
 	private boolean enableProperties = false;
@@ -49,6 +56,8 @@ public class CellHandler extends PhoneStateListener implements Handler
 	private boolean cell_read 	= false;
 	private boolean lac_read 	= false;
 	private boolean ncc_read 	= false;
+	
+	private boolean startedData = false, startedSignal = false, startedLocation = false;
 	
 	private Semaphore signal_semaphore	 	= new Semaphore(1);
 	private Semaphore bar_semaphore	 		= new Semaphore(1);
@@ -136,6 +145,7 @@ public class CellHandler extends PhoneStateListener implements Handler
 	public CellHandler(Context nors)
 	{
 		this.nors = nors;
+		this.cellhandler = this;
 		
 		try
 		{
@@ -158,10 +168,7 @@ public class CellHandler extends PhoneStateListener implements Handler
 				// register my listener for getting signal strength, location changes and data connection state events
 				// but only if airplane mode is not enabled!
 				if ((Settings.System.getInt(nors.getContentResolver(),Settings.System.AIRPLANE_MODE_ON, 0) == 0))
-				{
-					tm.listen(this, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_DATA_CONNECTION_STATE | PhoneStateListener.LISTEN_CELL_LOCATION);
 					enableProperties = true;
-				}
 			}
 		}
 		catch(Exception e)
@@ -185,9 +192,17 @@ public class CellHandler extends PhoneStateListener implements Handler
 				switch(sensor.charAt(1))
 				{
 				case 'I':
+					// has location been started?
+					if (startedLocation == false)
+					{
+						// send message to handler thread to start location listener
+				        Message msg = mHandler.obtainMessage(INIT_CELLLOCATION);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(cellid_semaphore); // block until semaphore available
 
-				    // cellID changed?
+					// cellID changed?
 				    if (cell_read == true)
 					{		
 				    	cell_read = false;
@@ -202,6 +217,14 @@ public class CellHandler extends PhoneStateListener implements Handler
 					}
 					break;
 				case 'L':
+					// has location been started?
+					if (startedLocation == false)
+					{
+						// send message to handler thread to start location listener
+				        Message msg = mHandler.obtainMessage(INIT_CELLLOCATION);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(lac_semaphore); // block until semaphore available
 
 				    if (lac_read == true)
@@ -237,6 +260,14 @@ public class CellHandler extends PhoneStateListener implements Handler
 					}
 					break;
 				case 'S':
+					// has signal strength been started?
+					if (startedSignal == false)
+					{
+						// send message to handler thread to start signal strength listener
+				        Message msg = mHandler.obtainMessage(INIT_SIGNALSTRENGTH);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(signal_semaphore); // block until semaphore available
 
 					// if listener was triggered, create reading
@@ -256,6 +287,14 @@ public class CellHandler extends PhoneStateListener implements Handler
 					
 					break;
 				case 'B':
+					// has signal strength been started?
+					if (startedSignal == false)
+					{
+						// send message to handler thread to start signal strength listener
+				        Message msg = mHandler.obtainMessage(INIT_SIGNALSTRENGTH);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(bar_semaphore); // block until semaphore available
 
 					// if listener was triggered, create reading
@@ -275,6 +314,14 @@ public class CellHandler extends PhoneStateListener implements Handler
 					
 					break;
 				case 'D':
+					// has signal strength been started?
+					if (startedData == false)
+					{
+						// send message to handler thread to start signal strength listener
+				        Message msg = mHandler.obtainMessage(INIT_DATACONNECTED);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(data_semaphore); // block until semaphore available
 
 					// if listener was triggered, create reading
@@ -292,6 +339,14 @@ public class CellHandler extends PhoneStateListener implements Handler
 					}
 					break;
 				case 'C':
+					// has location been started?
+					if (startedLocation == false)
+					{
+						// send message to handler thread to start location listener
+				        Message msg = mHandler.obtainMessage(INIT_CELLLOCATION);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(mcc_semaphore); // block until semaphore available
 
 				    if (ncc_read == true)
@@ -317,6 +372,45 @@ public class CellHandler extends PhoneStateListener implements Handler
 		return reading;
 	}
 
+	// The Handler that gets information back from the other threads, initializing phone sensors
+	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the invidiaul sensors
+	// since registerListener() can only be called from the main Looper thread!!
+	public final Handler mHandler = new Handler() 
+    {
+       @Override
+       public void handleMessage(Message msg) 
+       {      
+    	   int events = 0;
+    	   
+           switch (msg.what) 
+           {
+           case INIT_DATACONNECTED:
+        	   startedData = true;
+	           break;  
+           case INIT_SIGNALSTRENGTH:
+        	   startedSignal = true;
+	           break;  
+           case INIT_CELLLOCATION:
+        	   startedLocation = true;
+	           break;  
+           default:  
+           	break;
+           }
+           
+           // build mask of events to listen to
+           if (startedData == true)
+        	   events |= PhoneStateListener.LISTEN_DATA_CONNECTION_STATE;
+           if (startedSignal == true)
+        	   events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTHS;
+           if (startedLocation == true)
+        	   events |= PhoneStateListener.LISTEN_CELL_LOCATION;
+        	   
+           // register listener now
+           tm.listen(cellhandler, events);
+       }
+    };
+
+	
 	@Override
 	public void onDataConnectionStateChanged (int state)
 	{
@@ -400,11 +494,17 @@ public class CellHandler extends PhoneStateListener implements Handler
 	    	lac_semaphore.release();
 		}
 	    
-		String networkOperator = tm.getNetworkOperator();
-	    if (networkOperator != null) 
-	        mcc = Integer.parseInt(networkOperator.substring(0, 3));
-	    else
+	    try
+	    {
+			String networkOperator = tm.getNetworkOperator();
+		    if (networkOperator != null) 
+		        mcc = Integer.parseInt(networkOperator.substring(0, 3));
+		    else
+		    	mcc = 0;
+	    }catch(Exception e)
+	    {
 	    	mcc = 0;
+	    }
 
 	    // NCC changed?
 	    if (mcc != oldNCC)

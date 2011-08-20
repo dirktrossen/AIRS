@@ -20,12 +20,21 @@
     android:title="Location Settings">
    <PreferenceCategory android:title="GPS Settings">
     <CheckBoxPreference 
+        android:defaultValue="false"
     	android:enabled="true" 
     	android:title="Enable GPS" 
     	android:key="LocationHandler::GPSON" 
     	android:selectable="true" 
     	android:summaryOn="Enable GPS to show up in sensor list" 
     	android:summaryOff="Do not use GPS"/>
+    <CheckBoxPreference 
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="Use Network Location" 
+    	android:key="LocationHandler::UseWifi" 
+    	android:selectable="true" 
+    	android:summaryOn="Use Wifi and network information for location" 
+    	android:summaryOff="Use only GPS"/>
    <EditTextPreference
         android:summary="Poll interval for GPS location in seconds"
         android:defaultValue="30"

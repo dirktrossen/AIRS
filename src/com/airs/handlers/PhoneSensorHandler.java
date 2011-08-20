@@ -23,15 +23,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.Sensor;
+import android.os.Handler;
+import android.os.Message;
 
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
 public class PhoneSensorHandler implements com.airs.handlers.Handler
 {
-	private Context nors;
+	public static final int INIT_LIGHT = 1;
+	public static final int INIT_PROXIMITY = 2;
+	public static final int INIT_ORIENTATION = 3;
 
+	private Context nors;
 	private boolean sensor_enable = false;
+	private boolean startedOrientation = false, startedLight = false, startedProximity = false;
 	private SensorManager sensorManager;
 	private android.hardware.Sensor Orientation, Proximity, Light;
 	// polltime for sensor
@@ -90,7 +96,15 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		{
 			// see which sensors are requested
 			if (sensor.equals("Az") == true)
-			{				
+			{	
+				// has Azimuth been started?
+				if (startedOrientation == false)
+				{
+					// send message to handler thread to start GPS
+			        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+			        mHandler.sendMessage(msg);	
+				}
+
 				wait(azimuth_semaphore); 
 				if (azimuth != azimuth_old)
 				{
@@ -103,6 +117,14 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			if (read == false)
 				if (sensor.equals("Pi") == true)
 				{					
+					// has Pitch been started?
+					if (startedOrientation == false)
+					{
+						// send message to handler thread to start GPS
+				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(pitch_semaphore); 
 					if (pitch != pitch_old)
 					{
@@ -115,6 +137,14 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			if (read == false)
 				if (sensor.equals("Ro") == true)
 				{					
+					// has Roll been started?
+					if (startedOrientation == false)
+					{
+						// send message to handler thread to start GPS
+				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(roll_semaphore); 
 					if (roll != roll_old)
 					{
@@ -126,6 +156,14 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			if (read == false)
 				if (sensor.equals("PR") == true)
 				{					
+					// has Proximity been started?
+					if (startedProximity == false)
+					{
+						// send message to handler thread to start proximity
+				        Message msg = mHandler.obtainMessage(INIT_PROXIMITY);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(proximity_semaphore); 
 					if (proximity != proximity_old)
 					{
@@ -137,6 +175,14 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			if (read == false)
 				if (sensor.equals("LI") == true)
 				{					
+					// has Light been started?
+					if (startedLight == false)
+					{
+						// send message to handler thread to start light
+				        Message msg = mHandler.obtainMessage(INIT_LIGHT);
+				        mHandler.sendMessage(msg);	
+					}
+
 					wait(light_semaphore); 
 					if (light != light_old)
 					{
@@ -189,12 +235,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		// read polltime
 		polltime  = HandlerManager.readRMS_i("PhoneSensorsHandler::OrientationPoll", 5) * 1000;
 		polltime2 = HandlerManager.readRMS_i("PhoneSensorsHandler::ProximityPoll", 5) * 1000;
-		// read whether or not we need to enable GPS
-		sensor_enable = HandlerManager.readRMS_b("PhoneSensorsHandler::SensorsON", false);
-
-		// no sensors being shown?
-		if (sensor_enable == false)
-			return;
 		
 		// try to open sensor services
 		try
@@ -203,9 +243,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			Orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 			Proximity 	= sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 			Light		= sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-     	    sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
-     	    sensorManager.registerListener(sensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL);
-     	    sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL);
 			sensor_enable = true;
 			// arm semaphores
 			wait(light_semaphore); 
@@ -222,10 +259,36 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
-		if (sensor_enable == true)
+		if (startedLight == true || startedProximity == true || startedOrientation == true)
 			sensorManager.unregisterListener(sensorlistener);	
 	}
 
+	// The Handler that gets information back from the other threads, initializing phone sensors
+	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the invidiaul sensors
+	// since registerListener() can only be called from the main Looper thread!!
+	public final Handler mHandler = new Handler() 
+    {
+       @Override
+       public void handleMessage(Message msg) 
+       {        	
+           switch (msg.what) 
+           {
+           case INIT_LIGHT:
+        	   startedLight = sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
+	           break;  
+           case INIT_PROXIMITY:
+        	   startedProximity = sensorManager.registerListener(sensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL);
+	           break;  
+           case INIT_ORIENTATION:
+        	   startedOrientation = sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL);
+	           break;  
+           default:  
+           	break;
+           }
+       }
+    };
+
+	
     private SensorEventListener sensorlistener = new SensorEventListener() 
     {
     	public void	 onSensorChanged(SensorEvent event)    

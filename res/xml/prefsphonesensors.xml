@@ -18,14 +18,6 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="Phone and System Sensor Settings">
-    <CheckBoxPreference 
-    	android:enabled="true" 
-    	android:defaultValue="true"
-    	android:title="Enable Phone Sensors" 
-    	android:key="PhoneSensorsHandler::SensorsON" 
-    	android:selectable="true" 
-    	android:summaryOn="Enable Phone sensors, like orientation, light etc, to show up in sensor list" 
-    	android:summaryOff="Do not use Phone sensors"/>
     <EditTextPreference
         android:summary="Poll interval for orientation sensor in seconds"
         android:defaultValue="5"

@@ -60,7 +60,7 @@ public class HandlerUIManager
 	   // verify the proper availability for the resources required to implement the desired functionality
 	   handlers[index++] = new PhoneSensorsHandlerUI();
 	   handlers[index++] = new LocationHandlerUI();
-//	   handlers[index++] = new CameraHandlerUI();
+	   handlers[index++] = new WeatherHandlerUI();
 	   handlers[index++] = new AudioHandlerUI();
 	   handlers[index++] = new ProximityHandlerUI();
 	   handlers[index++] = new HeartMonitorHandlerUI();

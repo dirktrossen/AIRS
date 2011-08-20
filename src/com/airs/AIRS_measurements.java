@@ -207,6 +207,9 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 				// set threads to show values and refresh latest they have
 				AIRS_locally.show_values = true;
 				AIRS_locally.refresh_values();
+		        // set title according to paused state of local service
+		        if (AIRS_locally.paused == true)
+			        mTitle2.setText("Local Sensing...Paused");
 	  	    }
 
 	  	    public void onServiceDisconnected(ComponentName className) {

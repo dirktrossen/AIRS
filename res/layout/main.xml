@@ -21,52 +21,65 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:clickable="true">
-
    	<LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-		<ImageButton android:id="@+id/button_remote"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-	 	  android:layout_centerInParent="true"
-	 	  android:background="#ff000000"
-	      android:layout_margin="30dip"
-	      android:clickable="true"
-	      android:hapticFeedbackEnabled="true"
-	      android:onClick="onClick"
-	 	  android:src="@drawable/main_remote">
-		</ImageButton>
-		<TextView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-  			android:textSize="24sp"
-	        android:text="Remote"/>
-		
-    </LinearLayout>
-
-   	<LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="0.5">
 		<ImageButton android:id="@+id/button_local"
 		  android:layout_width="wrap_content"
 		  android:layout_height="wrap_content"
-	 	  android:layout_centerInParent="true"
+ 	      android:layout_gravity="center_horizontal"
 	 	  android:background="#ff000000"
 	      android:layout_margin="30dip"
 	      android:clickable="true"
 	      android:hapticFeedbackEnabled="true"
 	      android:onClick="onClick"
-	 	  android:src="@drawable/main_local">
+	 	  android:src="@drawable/main_local" 
+	 	  android:layout_weight="0.5">
 		</ImageButton>
 		<TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_gravity="center_vertical"
-  			android:textSize="24sp"
-	        android:text="Local"/>
+	        android:layout_gravity="center_horizontal"
+  			android:textSize="16sp"
+	        android:text="Sense locally into text file"
+	        android:layout_marginBottom="10dp"/>
     </LinearLayout>
+  	<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ffffffff"
+        />
+    </LinearLayout>
+   	<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"        
+        android:layout_weight="0.5">
+		<ImageButton android:id="@+id/button_remote"
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+ 	      android:layout_gravity="center_horizontal"
+	 	  android:background="#ff000000"
+	      android:layout_margin="30dip"
+	      android:clickable="true"
+	      android:hapticFeedbackEnabled="true"
+	      android:onClick="onClick"
+	 	  android:src="@drawable/main_remote" 
+	 	  android:layout_weight="0.5">
+		</ImageButton>
+		<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+  			android:textSize="16sp"
+	        android:text="Sense remotely to own application server"
+	        android:layout_marginBottom="10dp"/>
+    </LinearLayout>	
  </LinearLayout>
-

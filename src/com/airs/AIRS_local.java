@@ -74,7 +74,7 @@ public class AIRS_local extends Service
     private int Vibrate_i;
     private boolean Wakeup_b;
 	private String url = "AIRS_values";
-	public  File fconn;
+	public  File fconn;				// public for sharing file when exiting
 	private File mconn, path;
 	private BufferedOutputStream os, os2;
 	private long		currentmilli;
@@ -82,7 +82,7 @@ public class AIRS_local extends Service
 	private long milliStart;
 	private int numberSensors = 0;
     private ListView sensors;
-    public boolean discovered = false, running = false, started = false, start = false;
+    public boolean discovered = false, running = false, started = false, start = false, paused = false;
     private ArrayAdapter<String> mSensorsArrayAdapter;
     public ArrayAdapter<String> mValuesArrayAdapter;
     // This is the object that receives interactions from clients
@@ -535,6 +535,8 @@ public class AIRS_local extends Service
 		 
 		 for (i=0; i<no_threads;i++)
 			 threads[i].pause = true;
+		 // signal paused sate
+		 paused = true;
 	 }
 	 
 	 // show info for sensor entry
@@ -551,6 +553,8 @@ public class AIRS_local extends Service
 		 
 		 for (i=0; i<no_threads;i++)
 			 threads[i].pause = false;
+		 // signal paused sate
+		 paused = false;
 	 }
 
 	 public void selectall()

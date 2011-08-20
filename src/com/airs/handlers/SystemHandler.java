@@ -31,6 +31,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 
@@ -40,8 +42,15 @@ import android.telephony.TelephonyManager;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class SystemHandler implements Handler
+public class SystemHandler implements com.airs.handlers.Handler
 {
+	public static final int INIT_BATTERY 		= 1;
+	public static final int INIT_SCREEN 		= 2;
+	public static final int INIT_HEADSET 		= 3;
+	public static final int INIT_PHONESTATE 	= 4;
+	public static final int INIT_OUTGOINGCALL 	= 5;
+	public static final int INIT_SMSRECEIVED 	= 6;
+
 	private Context airs;
 	private int oldBattery = -1;
 	private int Battery = 0;
@@ -56,6 +65,8 @@ public class SystemHandler implements Handler
 	private String caller = null, callee = null, smsReceived = null;
 	private int polltime = 5000;
 	private ActivityManager am;
+	private boolean startedBattery = false, startedScreen = false, startedHeadset = false;
+	private boolean startedPhoneState = false, startedOutgoingCall = false, startedSMSReceived = false;
 	private Semaphore battery_semaphore 	= new Semaphore(1);
 	private Semaphore screen_semaphore 		= new Semaphore(1);
 	private Semaphore charger_semaphore 	= new Semaphore(1);
@@ -110,6 +121,14 @@ public class SystemHandler implements Handler
 		// battery level?
 		if(sensor.compareTo("Ba") == 0)
 		{
+			// has Battery been started?
+			if (startedBattery == false)
+			{
+				// send message to handler thread to start Battery
+		        Message msg = mHandler.obtainMessage(INIT_BATTERY);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(battery_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -124,6 +143,14 @@ public class SystemHandler implements Handler
 		// battery voltage?
 		if(sensor.compareTo("BV") == 0)
 		{
+			// has Battery been started?
+			if (startedBattery == false)
+			{
+				// send message to handler thread to start Battery
+		        Message msg = mHandler.obtainMessage(INIT_BATTERY);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(battery_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -138,6 +165,14 @@ public class SystemHandler implements Handler
 		// battery discharging?
 		if(sensor.compareTo("Bc") == 0)
 		{
+			// has Battery been started?
+			if (startedBattery == false)
+			{
+				// send message to handler thread to start Battery
+		        Message msg = mHandler.obtainMessage(INIT_BATTERY);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(charger_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -152,6 +187,14 @@ public class SystemHandler implements Handler
 		// screen on/off?
 		if(sensor.compareTo("Sc") == 0)
 		{
+			// has Screen been started?
+			if (startedScreen == false)
+			{
+				// send message to handler thread to start Screen
+		        Message msg = mHandler.obtainMessage(INIT_SCREEN);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(screen_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -166,6 +209,14 @@ public class SystemHandler implements Handler
 		// headset plugged/unplugged?
 		if(sensor.compareTo("HS") == 0)
 		{
+			// has Headset been started?
+			if (startedHeadset == false)
+			{
+				// send message to handler thread to start Headset
+		        Message msg = mHandler.obtainMessage(INIT_HEADSET);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(headset_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -180,6 +231,14 @@ public class SystemHandler implements Handler
 		// received SMS?
 		if(sensor.compareTo("SR") == 0)
 		{
+			// has SMS received been started?
+			if (startedSMSReceived == false)
+			{
+				// send message to handler thread to start SMS receive
+		        Message msg = mHandler.obtainMessage(INIT_SMSRECEIVED);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(received_semaphore);  // block until semaphore available
 
 			// any difference in value?
@@ -196,6 +255,14 @@ public class SystemHandler implements Handler
 		// incoming call?
 		if(sensor.compareTo("IC") == 0)
 		{
+			// has PhoneState been started?
+			if (startedPhoneState == false)
+			{
+				// send message to handler thread to start PhoneState
+		        Message msg = mHandler.obtainMessage(INIT_PHONESTATE);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(caller_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -212,6 +279,14 @@ public class SystemHandler implements Handler
 		// outgoing call?
 		if(sensor.compareTo("OC") == 0)
 		{
+			// has Outgoing Call been started?
+			if (startedOutgoingCall == false)
+			{
+				// send message to handler thread to start Outgoing Call
+		        Message msg = mHandler.obtainMessage(INIT_OUTGOINGCALL);
+		        mHandler.sendMessage(msg);	
+			}
+
 			wait(callee_semaphore); // block until semaphore available
 
 			// any difference in value?
@@ -324,22 +399,16 @@ public class SystemHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		try
-		{
-			SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, 0, this);	    
-			SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, 0, this);	    
-			SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, 0, this);	    
-			SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("VM Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
-			SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, 0, this);	    
-			SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, 0, this);	    
-	    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, 0, this);	    
-	    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, 0, this);	    
-	    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, 0, this);	    
-	    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, polltime, this);	    	    	
-		}
-		catch(Exception err)
-		{
-		}
+		SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, 0, this);	    
+		SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, 0, this);	    
+		SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, 0, this);	    
+		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("VM Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
+		SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, 0, this);	    
+		SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, 0, this);	    
+    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, 0, this);	    
+    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, 0, this);	    
+    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, 0, this);	    
+    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, polltime, this);	    	    	
 	}
 	
 	public SystemHandler(Context airs)
@@ -359,25 +428,6 @@ public class SystemHandler implements Handler
 			callee_semaphore.acquire(); 
 			received_semaphore.acquire(); 
 			
-			// check intents and set booleans for discovery
-			IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-			airs.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
-	        airs.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-	        airs.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-	        airs.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-	        airs.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter("android.intent.action.NEW_OUTGOING_CALL");
-	        airs.registerReceiver(SystemReceiver, intentFilter);
-	        intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-	        // since SMS_RECEIVED is sent via ordered broadcast, we have to make sure that we 
-	        // receive this with highest priority in case a receiver aborts the broadcast!
-	        intentFilter.setPriority(1000000);		
-	        airs.registerReceiver(SystemReceiver, intentFilter);
-	        
 	        // get ActivityManager for list of tasks
 		    am  = (ActivityManager) airs.getSystemService(Context.ACTIVITY_SERVICE); 			// if something returned, enter sensor value
 
@@ -390,8 +440,65 @@ public class SystemHandler implements Handler
 	
 	public void destroyHandler()
 	{
-		airs.unregisterReceiver(SystemReceiver);
+		if (startedBattery == true || startedScreen==true || startedHeadset == true || startedPhoneState == true || startedOutgoingCall == true || startedSMSReceived == true)
+			airs.unregisterReceiver(SystemReceiver);
 	}
+	
+	// The Handler that gets information back from the other threads, initializing phone sensors
+	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the invidiual sensors
+	// since registerListener() can only be called from the main Looper thread!!
+	public final Handler mHandler = new Handler() 
+    {
+       @Override
+       public void handleMessage(Message msg) 
+       {     
+    	   IntentFilter intentFilter;
+    	   
+           switch (msg.what) 
+           {
+           case INIT_BATTERY:
+	   		   	intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+	   		   	airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedBattery = true;
+	   		   	break;  
+           case INIT_SCREEN:
+	   	        intentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
+		        airs.registerReceiver(SystemReceiver, intentFilter);
+		        intentFilter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		        airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedScreen = true;
+		        break;  
+           case INIT_HEADSET:
+	   	        intentFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+		        airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedHeadset = true;
+		        break;
+           case INIT_PHONESTATE:
+	   	        intentFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+		        airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedPhoneState = true;
+		        break;
+           case INIT_OUTGOINGCALL:
+	   	        intentFilter = new IntentFilter("android.intent.action.NEW_OUTGOING_CALL");
+		        airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedOutgoingCall = true;
+		        break;
+           case INIT_SMSRECEIVED:
+	   	        intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+		        // since SMS_RECEIVED is sent via ordered broadcast, we have to make sure that we 
+		        // receive this with highest priority in case a receiver aborts the broadcast!
+		        intentFilter.setPriority(1000000);		
+		        airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedSMSReceived = true;
+		        break;
+           default:  
+           		break;
+           }
+           
+
+       }
+    };
+
 		
 	private final BroadcastReceiver SystemReceiver = new BroadcastReceiver() 
 	{

@@ -17,7 +17,11 @@
  -->
 <resources>
 <string name="app_name">AIRS</string>
-<string name="Copyright">(C) 2004-2006 Nokia Corporation\n(C) 2008-2011 Dirk Trossen\n\nContact: airs@dirk-trossen.de\n\nAIRS source code is licensed under LGPL2.0 license - for more information review license.txt for full license terms!\n\nThe authors assume no responsibility for any potential misuse of this software for spying purposes. The operation is exposed through notification bar icons in order to make users aware of ongoing recordings!</string>
+<string name="Copyright">(C) 2004-2006 Nokia Corp.\n(C) 2008-2011 Dirk Trossen
+\n\nContact: airs@dirk-trossen.de
+\n\nAIRS source code is licensed under LGPL 2.0 license and hosted on Github. For more information on license terms, review <b>license.txt</b>!
+\n\nNOTE that the authors assume no responsibility for any potential misuse of this software for spying purposes. The operation is exposed through notification bar icons in order to make users aware of ongoing recordings!
+</string>
 <string name="general_menu">General Menu</string>
 <string name="settings_menu">General Settings Menu</string>
 <string name="handlers_menu">Handlers Menu</string>
@@ -36,5 +40,43 @@
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
-<string name="BackLocal">BACK not supported in this activity!\n\nUse <b>Exit</b> menu option instead!</string>
+<string name="WhatsNew">
+- added weather sensors (requires Internet) for current weather @ location\n
+- paused state in measurement value window now properly shown\n
+- layout of main screen changed\n
+- show release notes in About dialogue\n
+- improved registration of system callbacks; no Android callbacks when not monitoring!\n
+- allow for using wifi and network in Location handler -> saves power!\n
+- bugfixes
+</string>
+<string name="ReleaseNotes">
+\n-----------------------------
+\n<b>ReleaseNotes:</b>
+\n\nV1.5.2:\n
+- repaired network code (CC) sensor, hopefully\n\n
+V1.5.1:\n
+- bugfixes\n\n
+V1.5:\n
+- added weather sensors (requires Internet) for current weather @ location\n
+- paused state in measurement value window now properly shown\n
+- layout of main screen changed\n
+- show release notes in About dialogue\n
+- improved registration of system callbacks; no Android callbacks when not monitoring!
+- allow for using wifi and network in Location handler -> saves power!\n\n
+V1.4:\n
+- can now share measurements before exiting!\n\n
+V1.3.2:\n
+- corrections to CS sensor\n
+- added CB sensor (signal strength in bars)\n
+- aligned some default settings\n
+- added two more moods\n\n
+V1.3.1:\n
+- mood selector only appears when subscribed to MO\n
+- changed internal structure of widgets -> YOU NEED TO RE-ADD WIDGETS TO HOME SCREENS!\n
+- added more mood icons in selector\n\n
+V1.3:\n
+- added <b>mood button</b> widget, allowing for setting your mood, being delivered as MO sensor with various states\n\n
+V1.2.3:\n
+- various handler settings refinements\n\n
+</string>
 </resources>

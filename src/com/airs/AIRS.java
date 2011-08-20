@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.*;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 
 import com.airs.handlerUIs.HandlerUI;
@@ -139,6 +140,28 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         // start service and connect to it
         startService(new Intent(this, AIRS_remote.class));
         bindService(new Intent(this, AIRS_remote.class), mConnection2, 0);  
+        
+        // check if app has been updated
+        try
+        {
+        	// is stored version code different from the package's?
+	        if (this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode != settings.getInt("Version", 0))
+	        {
+	        	// get editor for settings
+	        	Editor editor = settings.edit();
+    			// put version code into store
+                editor.putInt("Version", this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode);
+                
+                // finally commit to storing values!!
+                editor.commit();
+                
+                // and now show what's new
+    			HandlerUIManager.AboutDialog("What's new in AIRS?" , getString(R.string.WhatsNew));
+	        }
+        }
+        catch(Exception e)
+        {
+        }
         
     }
     
@@ -250,7 +273,13 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         	switch (currentMenu)
         	{
         	case MENU_MAIN:	
-        		HandlerUIManager.AboutDialog("AIRS Phone Gateway", getString(R.string.Copyright));
+        		try
+        		{
+        			HandlerUIManager.AboutDialog("AIRS V" + this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName , getString(R.string.Copyright) + getString(R.string.ReleaseNotes));
+        		}
+        		catch(Exception e)
+        		{
+        		}
         		break;
         	case MENU_HANDLERS:
         		HandlerUIManager.AboutDialog("List of handlers with settings", getString(R.string.HandlersList));
@@ -395,6 +424,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
             	switch(currentMenu)
             	{
             	case MENU_MAIN:
+            	case MENU_LOCAL:
             		AlertDialog.Builder builder = new AlertDialog.Builder(this);
             		builder.setMessage("Are you sure you want to exit?")
             		       .setCancelable(false)
@@ -414,10 +444,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
             		       });
             		AlertDialog alert = builder.create();
             		alert.show();
-            		break;
-            	case MENU_VALUES:
-            	case MENU_LOCAL:
-            		Toast.makeText(getApplicationContext(), R.string.BackLocal, Toast.LENGTH_SHORT).show();
             		break;
             	case MENU_HANDLERS:
 	            	setupMain();

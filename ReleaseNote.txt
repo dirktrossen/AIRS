@@ -1,3 +1,17 @@
+V1.5.2: 
+- repaired network code (CC) sensor, hopefully
+
+V1.5.1: 
+- bugfixes
+
+V1.5:
+- added weather sensors (requires Internet) for current weather @ location
+- paused state in measurement value window now properly shown
+- layout of main screen changed
+- show release notes in About dialogue
+- improved registration of system callbacks; no Android callbacks when not monitoring!
+- allow for using wifi and network in Location handler -> saves power!
+
 V1.4:
 - can now share measurements before exiting!
 
