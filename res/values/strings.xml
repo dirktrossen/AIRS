@@ -41,19 +41,17 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- added weather sensors (requires Internet) for current weather @ location\n
-- paused state in measurement value window now properly shown\n
-- layout of main screen changed\n
-- show release notes in About dialogue\n
-- improved registration of system callbacks; no Android callbacks when not monitoring!\n
-- allow for using wifi and network in Location handler -> saves power!\n
+- improved battery usage of weather sensors\n
+- new main screen icons\n
 - bugfixes
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\nV1.5.2:\n
-- repaired network code (CC) sensor, hopefully\n\n
+- repaired network code (CC) sensor, hopefully\n
+- improved battery usage of weather sensor(s)\n
+- new main screen icons\n\n
 V1.5.1:\n
 - bugfixes\n\n
 V1.5:\n

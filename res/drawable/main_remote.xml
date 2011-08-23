@@ -17,8 +17,8 @@
  -->
  <selector xmlns:android="http://schemas.android.com/apk/res/android">
      <item android:state_pressed="true"
-           android:drawable="@drawable/start2_pressed" /> <!-- pressed -->
+           android:drawable="@drawable/remote_sensing2" /> <!-- pressed -->
      <item android:state_focused="true"
-           android:drawable="@drawable/start2_pressed" /> <!-- focused -->
-     <item android:drawable="@drawable/start2" /> <!-- default -->
+           android:drawable="@drawable/remote_sensing2" /> <!-- focused -->
+     <item android:drawable="@drawable/remote_sensing" /> <!-- default -->
  </selector>

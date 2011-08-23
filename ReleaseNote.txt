@@ -1,5 +1,7 @@
 V1.5.2: 
 - repaired network code (CC) sensor, hopefully
+- improved battery usage of weather sensor(s)
+- new main screen icons
 
 V1.5.1: 
 - bugfixes

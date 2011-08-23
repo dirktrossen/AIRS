@@ -138,7 +138,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Signal strength"), new String("int"), 0, 0, 7, 0, this);	    
 		    SensorRepository.insertSensor(new String("CI"), new String("ID"), new String("Cell identifier"), new String("int"), 0, 0, 65535, 0, this);	    
 		    SensorRepository.insertSensor(new String("CL"), new String("ID"), new String("Location Area Code"), new String("int"), 0, 0, 65535, 0, this);	    
-		    SensorRepository.insertSensor(new String("CC"), new String("NCC"), new String("Net Country Code"), new String("int"), 0, 0, 65535, 0, this);
+		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), new String("Mobile Country Code"), new String("int"), 0, 0, 65535, 0, this);
 		}		
 	}
 	

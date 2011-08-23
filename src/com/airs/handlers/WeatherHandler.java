@@ -71,6 +71,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private LocationListener mReceiver;
     private double Longitude = 0, Latitude = 0; 
     private boolean startedLocation = false;
+    private boolean first_fix = false, movedAway = false;
+    private Location old_location;
     // connectvity stuff
     private ConnectivityManager cm;
 	// semaphores for multi-threading
@@ -201,7 +203,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		if(sensor.compareTo("VI") == 0)
 		{
 			// wait for semaphore
-			wait(wind_semaphore); 
+			wait(info_semaphore); 
 
 			String vw = new String("VW" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
 			return vw.getBytes();
@@ -219,45 +221,61 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("VT"), new String("C"), new String("Temperature (C)"), new String("int"), 0, -50, 100, polltime, this);	    
-		SensorRepository.insertSensor(new String("VF"), new String("F"), new String("Temperature (F)"), new String("int"), 0, -50, 100, polltime, this);	    
-		SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, polltime, this);	    
-		SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, polltime, this);	    
-		SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, polltime, this);	    
-		SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, polltime, this);	    
+		SensorRepository.insertSensor(new String("VT"), new String("C"), new String("Temperature (C)"), new String("int"), 0, -50, 100, 0, this);	    
+		SensorRepository.insertSensor(new String("VF"), new String("F"), new String("Temperature (F)"), new String("int"), 0, -50, 100, 0, this);	    
+		SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, 0, this);	    
+		SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, 0, this);	    
+		SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, 0, this);	    
+		SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, 0, this);	    
 	}
 	
 	// run discovery in separate thread
 	public void run() 
 	{
 		InputSource input;
-		int sleeptime = 1000;
+		int sleeptime = polltime; 
+		long started = 0, ended = 0;
+		boolean startReading = true;
+		boolean firstReading = true;
 
 		// run until destroyed
 		while(running==true)
 		{
-			// try to discover when it's time to do so
-			if (oldtime+polltime<System.currentTimeMillis())
-			{	
-				// only do location check etc if there's any connectivity to retrieve the weather!
-				if (cm.getActiveNetworkInfo() != null)
+			// sleep until next reading if it is not the first reading
+			if (firstReading == false)
+				sleep(sleeptime);
+			
+			firstReading = false;
+			
+			// store timestamp when start reading
+			if (startReading == true)
+			{
+				started = System.currentTimeMillis();
+				startReading = false;
+			}
+
+			// only do location check etc if there's any connectivity to retrieve the weather!
+			if (cm.getActiveNetworkInfo() != null)
+			{
+				// get current weather conditions
+				try
 				{
-					// get current weather conditions
-					try
+					// try to get current location
+					if (manager!=null)
 					{
-						// try to get current location
-						if (manager!=null)
-						{
-						   // send message to handler thread to start GPS
-					       Message msg = mHandler.obtainMessage(INIT_GPS);
-					       mHandler.sendMessage(msg);	
-		        		   // wait for update
-		        		   wait(location_semaphore);
-		        		   // now unregister again -> saves power
-					       msg = mHandler.obtainMessage(KILL_GPS);
-					       mHandler.sendMessage(msg);	
-						}
-						
+					   // send message to handler thread to start GPS
+				       Message msg = mHandler.obtainMessage(INIT_GPS);
+				       mHandler.sendMessage(msg);	
+	        		   // wait for update
+	        		   wait(location_semaphore);
+	        		   // now unregister again -> saves power
+				       msg = mHandler.obtainMessage(KILL_GPS);
+				       mHandler.sendMessage(msg);	
+					}
+					
+					// if we moved, try to get weather
+					if (movedAway == true)
+					{
 						// request update for that long,lat pair!
 			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
 			            // 51914540,900690");
@@ -266,24 +284,27 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			            input = new InputSource(url.openStream());
 			            XMLreader.parse(input);	   
 			            input = null;
-			            
-			            // store new time only after successful reading
-						oldtime = System.currentTimeMillis();
 					}
-					catch(Exception e)
-					{
-						// try again to read/locate in 5 secs
-						sleeptime = 5000;
-					}
+		            
+		            // get current timestamp to see how long the weather reading took all along
+					ended = System.currentTimeMillis();
+					// if there's still something to wait until next weather reading, do so
+					if ((int)(ended - started) < polltime)
+						sleeptime = polltime - (int)(ended - started);
+					else
+						sleeptime = 1;	// otherwise start right away
+					
+					// store start timestamp the next time around
+					startReading = true;
 				}
-				else	
-					sleeptime = 5000;	// try again to see if there's connectivity!
+				catch(Exception e)
+				{
+					// try again to read/locate in 15 secs
+					sleeptime = 15000;
+				}
 			}
-			else
-				sleeptime = 2000;		// check every 2 secs for need to read weather
-			
-			// wait, either if reading failed or to check new time to poll
-			sleep(sleeptime);
+			else	
+				sleeptime = 15000;	// try again to see if there's connectivity!
 		}
 	}
 
@@ -337,6 +358,15 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	{
 		// signal thread to close down
 		running = false;
+		// wake up thread
+		try
+		{
+			runnable.interrupt();
+		}
+		catch(Exception e)
+		{
+		}
+		
 		if (startedLocation == true)
 			manager.removeUpdates(mReceiver);
 	}
@@ -355,8 +385,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
     		   // request location updates
         	   if (manager!=null)
         	   {
-        		   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, (float)updatemeter, mReceiver);  
-        		   manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float)updatemeter, mReceiver);  
+        		   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, (float)0, mReceiver);  
+        		   manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float)0, mReceiver);  
         		   startedLocation = true;
         	   }
 	           break;  
@@ -454,9 +484,34 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         public void	 onLocationChanged(Location location)        
         {
         	if (location != null)
-        	{
+        	{				
 				Longitude 	= location.getLongitude();
 				Latitude 	= location.getLatitude();
+
+				// shall we check for moving?
+				if (updatemeter>0)
+				{
+					// is this the first fix?
+					if (first_fix == false)
+					{
+						// have we moved?
+						if (location.distanceTo(old_location)>updatemeter)
+						{
+							movedAway = true;
+							old_location = location;
+						}
+						else
+							movedAway = false;
+					}
+					else
+					{
+						old_location = location;
+						movedAway = true;
+					}
+				}
+				else
+					// we're always moving since we're always updating!
+					movedAway = true;
 				
 				// now release the semaphores
 				location_semaphore.release(); 

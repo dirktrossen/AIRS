@@ -57,6 +57,7 @@
         <item>1000</item>
     </string-array>   
     <string-array name="weatherhandler_values">
+        <item>0 (Always)</item>
         <item>1km</item>
         <item>2km</item>
         <item>5km</item>
@@ -64,6 +65,7 @@
         <item>20km</item>
     </string-array>
      <string-array name="weatherhandler_entries">
+        <item>0</item>
         <item>1000</item>
         <item>2000</item>
         <item>5000</item>
