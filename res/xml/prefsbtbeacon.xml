@@ -33,6 +33,7 @@
     	android:summaryOn="Requests user permission when enabling BT" 
     	android:summaryOff="Switch on BT without explicit user permission"/>
    <EditTextPreference
+		android:dialogIcon="@drawable/time"
         android:summary="Poll interval for BT scanning in seconds"
         android:defaultValue="30"
         android:numeric="integer"

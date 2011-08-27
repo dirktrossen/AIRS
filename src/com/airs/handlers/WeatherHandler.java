@@ -71,7 +71,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private LocationListener mReceiver;
     private double Longitude = 0, Latitude = 0; 
     private boolean startedLocation = false;
-    private boolean first_fix = false, movedAway = false;
+    private boolean first_fix = true, movedAway = false;
     private Location old_location;
     // connectvity stuff
     private ConnectivityManager cm;
@@ -505,6 +505,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 					}
 					else
 					{
+						first_fix = false;
 						old_location = location;
 						movedAway = true;
 					}

@@ -20,18 +20,21 @@
     android:title="Phone and System Sensor Settings">
     <EditTextPreference
         android:summary="Poll interval for orientation sensor in seconds"
+		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
         android:title="Orientation Interval [s]"
         android:key="PhoneSensorsHandler::OrientationPoll"/>
     <EditTextPreference
         android:summary="Poll interval for proximity sensor in seconds"
+		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
         android:title="Proximity Interval [s]"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
     <EditTextPreference
         android:summary="Poll interval for system information like RAM, tasks, etc"
+		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
         android:title="System Poll Interval [s]"

@@ -65,6 +65,7 @@
    </PreferenceCategory>    
    <PreferenceCategory android:title="Debug Settings"> 	
     <EditTextPreference
+		android:dialogIcon="@drawable/time"
         android:summary="Interval for vibrate watchdog"
         android:defaultValue="0"
         android:title="Watchdog Interval [s]"

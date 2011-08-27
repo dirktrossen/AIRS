@@ -36,6 +36,7 @@
     	android:summaryOn="Use Wifi and network information for location" 
     	android:summaryOff="Use only GPS"/>
    <EditTextPreference
+ 		android:dialogIcon="@drawable/time"
         android:summary="Poll interval for GPS location in seconds"
         android:defaultValue="30"
         android:numeric="integer"
@@ -69,6 +70,7 @@
     	android:summaryOff="Let WiFi sleep according to system settings"/>
    <EditTextPreference
         android:summary="Poll interval for WiFi scanning in seconds"
+ 		android:dialogIcon="@drawable/time"
         android:defaultValue="30"
         android:numeric="integer"
         android:title="WiFi Interval [s]"

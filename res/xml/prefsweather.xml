@@ -20,6 +20,7 @@
     android:title="Local Weather Settings">
     <EditTextPreference
         android:summary="Poll interval for weather update in minutes"
+  		android:dialogIcon="@drawable/time"
         android:defaultValue="10"
         android:numeric="integer"
         android:title="Weather Interval [min]"

@@ -45,6 +45,7 @@
     	android:summaryOff="Do not make BT discoverable, preventing others to detect you"/>
     <EditTextPreference
         android:summary="Poll interval for proximity detection in seconds"
+ 		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
         android:title="Poll Interval [s]"

@@ -20,6 +20,7 @@
     android:title="Random Numbers Settings">
     <EditTextPreference
         android:summary="Poll interval for random handler in seconds"
+ 		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
         android:title="Random Interval [s]"
