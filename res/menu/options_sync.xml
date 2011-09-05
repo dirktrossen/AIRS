@@ -15,17 +15,19 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-   <ListView android:id="@+id/sensorList"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-    	android:fastScrollEnabled="true"
-        android:stackFromBottom="false"
-        android:layout_weight="1"
-        android:clickable="true"
-    />
-</LinearLayout>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/main_about"
+          android:icon="@android:drawable/ic_menu_info_details"
+          android:title="@string/main_About" />
+    <item android:id="@+id/sync_start"
+          android:icon="@android:drawable/ic_menu_share"
+          android:title="Sync" />
+    <item android:id="@+id/sync_selectall"
+          android:icon="@android:drawable/ic_menu_agenda"
+          android:title="Select All" />
+    <item android:id="@+id/sync_unselectall"
+          android:icon="@android:drawable/ic_menu_delete"
+          android:title="Unselect All" />
+</menu>
 

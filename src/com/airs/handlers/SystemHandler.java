@@ -344,26 +344,30 @@ public class SystemHandler implements com.airs.handlers.Handler
 				{
 					tinfo = tasks.get(i);
 					
-	            	// first task? -> then no \n at the end of it!
-	            	if (task_first == true)
-	            		task_first = false;
-	            	else
-	        	        buffer.append("\n");
-
-	            	// separate package parts
-					StringTokenizer Tok = new StringTokenizer(tinfo.baseActivity.getPackageName());
-					try
+					// is there at least one task running?
+					if (tinfo.numRunning > 0)
 					{
-						task = Tok.nextToken(".");
-						
-						while(Tok.hasMoreTokens())
+		            	// first task? -> then no \n at the end of it!
+		            	if (task_first == true)
+		            		task_first = false;
+		            	else
+		        	        buffer.append("\n");
+	
+		            	// separate package parts
+						StringTokenizer Tok = new StringTokenizer(tinfo.baseActivity.getPackageName());
+						try
+						{
 							task = Tok.nextToken(".");
+							
+							while(Tok.hasMoreTokens())
+								task = Tok.nextToken(".");
+						}
+						catch(Exception e)
+						{
+							task = "";
+						}
+					    buffer.append(task);
 					}
-					catch(Exception e)
-					{
-						task = "";
-					}
-				    buffer.append(task);
 				}
 					
 	    		return buffer.toString().getBytes();

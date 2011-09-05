@@ -44,6 +44,8 @@ public class GPSHandler implements com.airs.handlers.Handler
 	// sensor data
     private double Longitude = 0, Latitude = 0, Altitude = 0, Speed, Bearing; 
     private double oldLongitude = -1, oldLatitude = -1, oldAltitude = -1;
+    private Location oldLocation = null;
+    private long oldTime;
 	// for GPS
 	private LocationManager manager;
 	private LocationListener mReceiver;
@@ -289,23 +291,49 @@ public class GPSHandler implements com.airs.handlers.Handler
     {
         public void	 onLocationChanged(Location location)        
         {
+        	boolean validLocation = true;
+        	int speed;
+			// get current timestamp
+        	long newTime = System.currentTimeMillis();
+        	
         	if (location != null)
         	{
-				Longitude 	= location.getLongitude();
-				Latitude 	= location.getLatitude();
-				Altitude 	= location.getAltitude();
-				if (location.hasSpeed())
-					Speed		= (double)location.getSpeed();
-				if (location.hasBearing())
-					Bearing		= (double)location.getBearing();
-				
-				// now release the semaphores
-				longitude_semaphore.release(); 
-				latitude_semaphore.release(); 
-				altitude_semaphore.release(); 
-				speed_semaphore.release(); 
-				bearing_semaphore.release(); 
-				full_semaphore.release(); 
+        		// is there an old location?
+        		if (oldLocation != null)
+        		{
+        			// speed in m/s
+        			speed = (int)oldLocation.distanceTo(location)/((int)(newTime - oldTime)/1000);
+        			// convert to km/h
+        			speed = (speed * 3600)/1000; 
+        			
+        			// let's assume we're not flying
+        			if (speed>1000)
+        				validLocation = false;
+        		}
+        		
+        		// do we have a valid location?
+        		if (validLocation == true)
+        		{
+					Longitude 	= location.getLongitude();
+					Latitude 	= location.getLatitude();
+					Altitude 	= location.getAltitude();
+					if (location.hasSpeed())
+						Speed		= (double)location.getSpeed();
+					if (location.hasBearing())
+						Bearing		= (double)location.getBearing();
+					
+					// now release the semaphores
+					longitude_semaphore.release(); 
+					latitude_semaphore.release(); 
+					altitude_semaphore.release(); 
+					speed_semaphore.release(); 
+					bearing_semaphore.release(); 
+					full_semaphore.release(); 
+					
+					// save current location for later
+					oldLocation = location;
+					oldTime = newTime;
+        		}
         	}
         }
         

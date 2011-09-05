@@ -20,6 +20,9 @@
     <item android:id="@+id/main_about"
           android:icon="@drawable/about"
           android:title="@string/main_About" />
+    <item android:id="@+id/main_sync"
+          android:icon="@drawable/sync"
+          android:title="@string/main_Sync" />
     <item android:id="@+id/main_configure"
           android:icon="@drawable/general"
           android:title="@string/main_Configure" />

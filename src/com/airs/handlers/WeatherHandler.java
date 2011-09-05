@@ -245,6 +245,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			if (firstReading == false)
 				sleep(sleeptime);
 			
+			// if killed during sleeping then return now!
+			if (running == false)
+				return;
+			
 			firstReading = false;
 			
 			// store timestamp when start reading

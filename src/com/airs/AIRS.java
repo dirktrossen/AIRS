@@ -17,13 +17,17 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -39,6 +43,7 @@ import android.widget.ImageButton;
 import android.view.View.OnClickListener;
 import android.view.KeyEvent;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,6 +66,9 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     public static final int MENU_HANDLER 	= 4;
     public static final int MENU_LOCAL 		= 5;
     public static final int MENU_VALUES		= 6;
+    public static final int MENU_SYNC		= 7;
+
+    public static final int SYNC_FINISHED	= 18;
     
     public int currentMenu = MENU_MAIN;
 
@@ -77,7 +85,8 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     private ImageButton main_local;
     private ArrayList<HandlerEntry> mHandlerArrayList;
     private ProgressDialog progressdialog;
-    
+    private ListView syncFiles;
+    private ArrayAdapter<String> mSyncArrayAdapter;
     
     // preferences
     private SharedPreferences settings;
@@ -90,6 +99,9 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     private AIRS_remote	AIRS_remotely;
     private AIRS		airs;
     public  static HandlerUI	current_handler;
+    private int sync_files;
+    private long synctime;
+	File[] files;
 
 	protected void sleep(long millis) 
 	{
@@ -233,6 +245,86 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 
         currentMenu = MENU_HANDLERS;
     }
+    
+    private void setupSync() 
+    {
+    	File path;
+    	String filename;
+    	String timestamp_s;
+    	long synctime;
+    	long timestamp;
+    	long length;
+    	int i;
+    	
+    	//set view
+		setContentView(R.layout.sensors);
+        // Set up the custom title
+        mTitle.setText(R.string.app_name);
+		mTitle2.setText("Choose files to be synchronized");
+ 
+		// build up list of files
+		syncFiles 	= (ListView)airs.findViewById(R.id.sensorList);
+        syncFiles.setItemsCanFocus(false); 
+        syncFiles.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        mSyncArrayAdapter = new ArrayAdapter<String>(airs, android.R.layout.simple_list_item_multiple_choice);
+        // Find and set up the ListView for paired devices
+        syncFiles.setAdapter(mSyncArrayAdapter);
+
+        // get timestamp of last sync
+        synctime = settings.getLong("SyncTimestamp", 0);
+        
+        sync_files = 0;
+    	// open file in public directory
+    	path = new File(Environment.getExternalStorageDirectory(), "AIRS_values");
+    	if (path.exists() == true)
+    	{
+    		// get files in directory
+    		files = path.listFiles();
+    		
+    		// look through all files
+    		for (i=0; i<files.length;i++)
+    		{
+    			filename = files[i].getName();
+    			
+    			// consider all text files that are still writeable
+    			if ((filename.endsWith(".txt") == true))
+    			{
+    				try
+    				{
+    					// file name is timestamp
+    					timestamp_s = filename.substring(0, filename.lastIndexOf(".txt"));
+    					timestamp = (long)(Long.parseLong(timestamp_s));
+    					
+    					// if timestamp of filename more recent than synctime
+    					if (timestamp > synctime)
+    					{
+	    					Date date = new Date(timestamp);
+	    					length = files[i].length();
+	    					
+	    					// add timestamp with size to list adapter
+	    					if (length >1000)
+	    						mSyncArrayAdapter.add(date.toLocaleString() + " (" + String.valueOf(length/1000) + " kB)");
+	    					else
+	    						mSyncArrayAdapter.add(date.toLocaleString() + " (" + String.valueOf(length) + " B)");
+	    					
+	    					// count files to be shown
+	        				sync_files++;
+    					}
+
+    				}
+    				catch(Exception e)
+    				{
+    				}
+    			}
+    		}
+    	}
+    	
+    	if (sync_files == 0)
+           	Toast.makeText(getApplicationContext(), "There are no files to be synchronized!", Toast.LENGTH_LONG).show();          
+    	
+        currentMenu = MENU_SYNC;
+    }
+
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
@@ -255,6 +347,11 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 	        inflater = getMenuInflater();
 	        inflater.inflate(R.menu.options_local_sensing, menu);    		
     		return true;
+    	case MENU_SYNC:
+	        menu.clear();    		
+	        inflater = getMenuInflater();
+	        inflater.inflate(R.menu.options_sync, menu);    		
+    		return true;    		
     	default:
 	        menu.clear();    		
 	        inflater = getMenuInflater();
@@ -266,6 +363,8 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
+    	int i;
+    	
         switch (item.getItemId()) 
         {
         case R.id.main_about:
@@ -286,6 +385,9 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         		break;
         	case MENU_LOCAL:
         		HandlerUIManager.AboutDialog("AIRS Local", getString(R.string.LocalAbout));
+        		break;
+        	case MENU_SYNC:
+        		HandlerUIManager.AboutDialog("Synchronize Local Recordings", getString(R.string.SyncAbout));
         		break;
         	default:
         		break;
@@ -315,10 +417,29 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
             finish();
         	return true;
         case R.id.local_selectall:
-        	AIRS_locally.selectall();
+       		AIRS_locally.selectall();
+        	return true;
+        case R.id.sync_selectall:
+    		if (sync_files>0)
+    			for (i=0;i<sync_files;i++)
+    				syncFiles.setItemChecked(i, true);
+        	return true;
+        case R.id.main_sync:
+        	if (locally_running == true)
+        		Toast.makeText(getApplicationContext(), "AIRS local sensing service is still running!\nFinish your recording before synchronizing!", Toast.LENGTH_LONG).show();  
+        	else
+        		setupSync();
         	return true;
         case R.id.local_unselectall:
-        	AIRS_locally.unselectall();
+       		AIRS_locally.unselectall();
+       		return true;
+        case R.id.sync_unselectall:
+    		if (sync_files>0)
+    			for (i=0;i<sync_files;i++)
+    				syncFiles.setItemChecked(i, false);
+        	return true;
+        case R.id.sync_start:
+        	sync_recordings();
         	return true;
         case R.id.local_exit:
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -451,6 +572,9 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
             	case MENU_HANDLER:
             		setupHandlerUIs();
             		break;
+            	case MENU_SYNC:
+	            	setupMain();
+	            	break;
             	case MENU_SETTINGS:
             		currentMenu = MENU_MAIN;
                     break;
@@ -462,6 +586,67 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 		}
 
         return super.dispatchKeyEvent(event);
+    }
+    
+    // sync recordings
+    private void sync_recordings()
+    {
+    	int i, j=0;
+    	String filename, timestamp_s;
+    	long timestamp;
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+    	Intent intent;
+    	boolean checked_one = false;
+    	
+    	// prepare intent
+        intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.setType("text/plain");
+    	
+		// look through all files
+		for (i=0; i<files.length;i++)
+		{
+			filename = files[i].getName();
+			
+			// consider all text files
+			if ((filename.endsWith(".txt") == true))
+			{
+				try
+				{
+					// file name is timestamp
+					timestamp_s = filename.substring(0, filename.lastIndexOf(".txt"));
+					timestamp = (long)(Long.parseLong(timestamp_s));
+					
+					// if timestamp of filename more recent than synctime
+					if (timestamp > synctime)
+					{
+						// is item checked in list?
+						if (syncFiles.isItemChecked(j) == true)
+						{
+							// build and add URI   
+							uris.add(Uri.fromFile(files[i]));							
+							
+							// checked at least one
+							checked_one = true;
+						}
+						// count all txt files to sync in directory
+						j++;
+					}
+				}
+				catch(Exception e)
+				{
+				}	
+			}
+		}
+		
+        // now build and start chooser intent
+		if (checked_one == true)
+		{
+		    intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+			startActivityForResult(Intent.createChooser(intent,"Send Local Recordings To:"), SYNC_FINISHED);
+			setupMain();
+		}
+		else
+    		Toast.makeText(getApplicationContext(), "Select at least one file to share!", Toast.LENGTH_LONG).show();          
     }
     
 	// start RSA
@@ -504,6 +689,20 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) 
     {
+		if (requestCode == SYNC_FINISHED)
+		{
+			// if anything has been done, store timestamp for later syncs
+			if (resultCode != 0)
+			{
+				// write current timestamp for later syncs
+	        	Editor editor = settings.edit();
+				// put version code into store
+	            editor.putLong("SyncTimestamp", System.currentTimeMillis());
+	            
+	            // finally commit to storing values!!
+	            editor.commit();
+			}
+		}
     	return;
     }
 	

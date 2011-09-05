@@ -1,3 +1,8 @@
+V1.6:
+- sync menu option that allows for sharing recently recorded files
+- filter in GPS handler for invalid location changes
+- bug fixes and improvements
+
 V1.5.3:
 - caught bug in weather sensor
 - smaller bug fixes
