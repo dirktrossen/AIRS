@@ -17,7 +17,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
@@ -29,6 +28,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -330,6 +331,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 				List<ActivityManager.RunningTaskInfo> tasks;
 				ActivityManager.RunningTaskInfo tinfo;
 				String task;
+				PackageManager pm = airs.getPackageManager();
 				
 				// get current tasks running
 				tasks = am.getRunningTasks(100);
@@ -357,20 +359,17 @@ public class SystemHandler implements com.airs.handlers.Handler
 		            	else
 		        	        buffer.append("\n");
 	
-		            	// separate package parts
-						StringTokenizer Tok = new StringTokenizer(tinfo.baseActivity.getPackageName());
-						try
-						{
-							task = Tok.nextToken(".");
-							
-							while(Tok.hasMoreTokens())
-								task = Tok.nextToken(".");
-						}
-						catch(Exception e)
-						{
-							task = "";
-						}
-					    buffer.append(task);
+		            	// get package name
+		            	task = tinfo.baseActivity.getPackageName();
+		            	try
+		            	{
+		            		ApplicationInfo ai = pm.getApplicationInfo(task, 0);
+		            		task = (String)pm.getApplicationLabel(ai);
+						    buffer.append(task);
+		            	}
+		            	catch(Exception e)
+		            	{
+		            	}
 					}
 				}
 					

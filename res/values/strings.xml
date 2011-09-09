@@ -45,11 +45,14 @@
 <string name="WhatsNew">
 - read contacts (display name) for SR, IC and OC sensors\n
 - addressed service shutdowns\n
+- changed TR sensor to show application labels instead!\n
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.6.2:\n
+- changed TR sensor to show application label instead!\n\n
 V1.6.1:\n
 - read contacts (display name) for SR, IC and OC sensors\n
 - addressed service shutdowns\n\n

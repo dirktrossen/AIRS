@@ -1,3 +1,6 @@
+V1.6.2:
+- changed TR sensor to show application label instead!
+
 V1.6.1:
 - read contacts (display name) for SR, IC and OC sensors
 - addressed service shutdowns
