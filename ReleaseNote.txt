@@ -1,3 +1,7 @@
+V1.6.1:
+- read contacts (display name) for SR, IC and OC sensors
+- addressed service shutdowns
+
 V1.6:
 - sync menu option that allows for sharing recently recorded files
 - filter in GPS handler for invalid location changes

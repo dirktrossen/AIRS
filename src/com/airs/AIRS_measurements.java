@@ -95,8 +95,11 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 	    {
 	    	// stop service from updating value adapter
 	    	if (AIRS_locally!=null)
+	    	{
 	    		AIRS_locally.show_values = false;
-	    	
+	    		unbindService(mConnection);
+	    	}
+	    		    	
 	        super.onDestroy();
 	    }
 

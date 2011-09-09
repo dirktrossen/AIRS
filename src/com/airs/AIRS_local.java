@@ -369,7 +369,7 @@ public class AIRS_local extends Service
 	@Override
 	public IBinder onBind(Intent intent) 
 	{
-		debug("AIRS_local::bound service!");
+		SerialPortLogger.debugForced("AIRS_local::bound service!");
 		return mBinder;
 	}
 		
@@ -377,7 +377,7 @@ public class AIRS_local extends Service
 	@Override
 	public void onCreate() 
 	{
-		debug("AIRS_local::created service!");
+		SerialPortLogger.debugForced("AIRS_local::created service!");
 	}
 
 	private void start_AIRS_local()
@@ -430,7 +430,7 @@ public class AIRS_local extends Service
 	{
 		int i;
 		
-		debug("RSA_local::destroyed service!");
+		SerialPortLogger.debugForced("AIRS_local::destroyed service!");
 
 	   	 // is local storage ongoing -> close file!
 	   	 if (localStore_b == true)
@@ -449,7 +449,7 @@ public class AIRS_local extends Service
 	   	 {
 	   		 try
 	   		 {
-	   			 debug("RSA_local::terminating HandlerThreads");
+	   			SerialPortLogger.debugForced("AIRS_local::terminating HandlerThreads");
 		   		 // interrupt all threads for terminated
 		   		 for (i = 0; i<no_threads;i++)
 		   			 if (threads[i] != null)
@@ -490,15 +490,26 @@ public class AIRS_local extends Service
 	// 5. startService() again for measurements
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-		debug("AIRS_local::started service ID " + Integer.toString(startId));
+		SerialPortLogger.debugForced("AIRS_local::started service ID " + Integer.toString(startId));
 		
 		// return if intent is null -> service was restarted
 		if (intent == null)
-			return Service.START_NOT_STICKY;
+		{
+			SerialPortLogger.debugForced("AIRS_local::restarted!");
+			 Notification notification = new Notification(R.drawable.icon, "Started AIRS", System.currentTimeMillis());
+
+			 // create pending intent for starting the activity
+			 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_measurements.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
+			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is restarted since...", contentIntent);
+			 notification.flags = Notification.FLAG_NO_CLEAR;
+			 startForeground(R.string.app_name, notification);
+			 
+			return Service.START_STICKY;
+		}
 		
 		// sensing running?
 		if (running == true)
-			return Service.START_NOT_STICKY;
+			return Service.START_STICKY;
 
 		// handlers created?
 		if (start == true && started == false)
@@ -506,17 +517,17 @@ public class AIRS_local extends Service
 			// create handlers
 			HandlerManager.createHandlers(this.getApplicationContext());	
 			started = true;
-			return Service.START_NOT_STICKY;
+			return Service.START_STICKY;
 		}
 
 		// not yet discovered?
 		if (discovered == false)
-			return Service.START_NOT_STICKY;
+			return Service.START_STICKY;
 		
 		// start the measurements if discovered
 		running = startMeasurements();
 
-		return Service.START_NOT_STICKY;
+		return Service.START_STICKY;
 	}
 
 	// ask threads to refresh latest value

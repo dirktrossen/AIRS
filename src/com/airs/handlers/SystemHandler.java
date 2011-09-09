@@ -29,10 +29,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 
@@ -448,10 +452,45 @@ public class SystemHandler implements com.airs.handlers.Handler
 			airs.unregisterReceiver(SystemReceiver);
 	}
 	
+	private String getContactByNumber(String number)
+	{
+		try
+		{
+			// Form an array specifying which columns to return. 
+			String[] projection = new String[] {
+			                             Contacts._ID,
+			                             Contacts.DISPLAY_NAME
+			                          };
+			
+			// lookup URI for callee
+			Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+
+			// query contact database
+			Cursor cur = airs.getContentResolver().query(uri, projection, null, null, null);
+			
+			// move to first returned element
+			if (cur.moveToFirst() == true)
+			{
+    			String name = cur.getString(cur.getColumnIndex(Contacts.DISPLAY_NAME));
+    			
+    			if (name != null)
+    				return name;
+			}
+			else
+				return "---";
+		}
+		catch(Exception e)
+		{
+			return "---";
+		}
+		
+		return "---";
+	}
+	
 	// The Handler that gets information back from the other threads, initializing phone sensors
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the invidiual sensors
 	// since registerListener() can only be called from the main Looper thread!!
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -560,6 +599,9 @@ public class SystemHandler implements com.airs.handlers.Handler
         		if (TelephonyManager.EXTRA_STATE_RINGING.equals(state))
         		{
         			caller = new String(intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)); 
+        			
+        			// append caller display name, if available
+        			caller = caller.concat(":" + getContactByNumber(caller));        			
     				caller_semaphore.release();			// release semaphore
         		}
         		return;
@@ -569,6 +611,9 @@ public class SystemHandler implements com.airs.handlers.Handler
             if (action.compareTo("android.intent.action.NEW_OUTGOING_CALL") == 0) 
             {
         		callee = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+        		
+    			// append caller display name, if available
+    			callee = callee.concat(":" + getContactByNumber(callee));        			
 				callee_semaphore.release();			// release semaphore
 				return;
             }
@@ -584,7 +629,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 
                 // get first PDU to extract originating address
                 SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);
-                smsReceived = new String(message.getOriginatingAddress() + ":" + message.getMessageBody());
+                String Address = message.getOriginatingAddress();
+                
+                smsReceived = new String(Address + ":" + getContactByNumber(Address) + ":" + message.getMessageBody());
                 
                 // more than one PDU?
                 if (pdus.length >1)

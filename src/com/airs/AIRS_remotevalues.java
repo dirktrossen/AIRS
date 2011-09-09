@@ -96,6 +96,11 @@ public class AIRS_remotevalues extends Activity
 	   		catch(Exception e)
 	   		{
 	   		}
+	   		
+	   		// unbind from service
+	   		if (AIRS_remote != null)
+	 		   unbindService(mConnection);
+
 
 	   		// remove handler messages from queue
    		 	mHandler.removeMessages(REFRESH_VALUES);
