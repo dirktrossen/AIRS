@@ -155,8 +155,8 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 	    		           {
 	    		    		   if (AIRS_locally != null)
 	    		    		   {
-	    		    			   // first stop service to clear up all resources and close the file
-	    		    			   stopService(new Intent(act, AIRS_local.class));
+	    		    			   // pause threads to prevent updates to file
+	    		    			   AIRS_locally.pause_threads();
 	    		    			   // build URI
 	    		    		       Uri U = Uri.fromFile(AIRS_locally.fconn);
 	    		    		       // now build and start chooser intent
@@ -164,6 +164,8 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 	    		                   intent.setType("text/plain");
 	    		                   intent.putExtra(Intent.EXTRA_STREAM, U);
 	    		                   act.startActivity(Intent.createChooser(intent,"Send AIRS Measurements To:"));
+	    		    			   // then stop service to clear up all resources and close the file
+	    		    			   stopService(new Intent(act, AIRS_local.class));
 	    		               }
 	    		        	   finish();
 	    		           }

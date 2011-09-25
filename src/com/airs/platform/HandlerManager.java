@@ -150,4 +150,21 @@ public class HandlerManager
 			SerialPortLogger.debug("ERROR " +  "Exception: " + e.toString());
 		}
 	}
+	
+	// write boolean to RMS
+	static public void writeRMS_b(String store, boolean value)
+	{
+		try
+		{
+			// put string into store
+            editor.putBoolean(store, value);
+            
+            // finally commit to storing values!!
+            editor.commit();
+		}
+		catch(Exception e)
+		{
+			SerialPortLogger.debug("ERROR " +  "Exception: " + e.toString());
+		}
+	}
 }

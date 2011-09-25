@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -43,6 +44,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
@@ -369,15 +371,57 @@ public class AIRS_local extends Service
 	@Override
 	public IBinder onBind(Intent intent) 
 	{
-		SerialPortLogger.debugForced("AIRS_local::bound service!");
+		SerialPortLogger.debug("AIRS_local::bound service!");
 		return mBinder;
 	}
 		
+	@Override
+	public void onLowMemory()
+	{
+		SerialPortLogger.debugForced("AIRS_local::low memory warning from system - about to get killed!");
+	}
 
 	@Override
 	public void onCreate() 
 	{
-		SerialPortLogger.debugForced("AIRS_local::created service!");
+		boolean p_running;
+		SharedPreferences   settings = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+
+		SerialPortLogger.debug("AIRS_local::created service!");
+		
+		try
+		{
+			p_running	= settings.getBoolean("AIRS_local::running", false);
+			// should the service been running and was it therefore re-started?
+			if (p_running == true)
+			{
+				SerialPortLogger.debug("AIRS_local::service was running before, trying to restart recording!");
+
+				// set debug state
+		   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
+
+				// create handlers
+				HandlerManager.createHandlers(this.getApplicationContext());	
+				started = true;
+
+				SerialPortLogger.debug("AIRS_local::re-created handlers");
+
+				// re-discover the sensors
+				ReDiscover();
+				
+				SerialPortLogger.debug("AIRS_local::re-discovered sensors");
+
+				// start the measurements as being restarted, i.e., it takes the latest discovery and selection that is stored persistently
+				running = startMeasurements(true);
+
+				SerialPortLogger.debug("AIRS_local::re-started measurements");
+			}
+
+		}
+		catch(Exception e)
+		{
+			SerialPortLogger.debug("AIRS_local::onCreate():ERROR " +  "Exception: " + e.toString());
+		}
 	}
 
 	private void start_AIRS_local()
@@ -419,7 +463,7 @@ public class AIRS_local extends Service
 		    } 
 		    catch(Exception e)
 		    {
-	    		debug("RSA_local::Exception in opening file connection");
+	    		debug("AIRS_local::Exception in opening file connection");
 		    	localStore_b = false;
 		    }
 		}
@@ -430,7 +474,7 @@ public class AIRS_local extends Service
 	{
 		int i;
 		
-		SerialPortLogger.debugForced("AIRS_local::destroyed service!");
+		SerialPortLogger.debug("AIRS_local::destroyed service!");
 
 	   	 // is local storage ongoing -> close file!
 	   	 if (localStore_b == true)
@@ -449,7 +493,7 @@ public class AIRS_local extends Service
 	   	 {
 	   		 try
 	   		 {
-	   			SerialPortLogger.debugForced("AIRS_local::terminating HandlerThreads");
+	   			SerialPortLogger.debug("AIRS_local::terminating HandlerThreads");
 		   		 // interrupt all threads for terminated
 		   		 for (i = 0; i<no_threads;i++)
 		   			 if (threads[i] != null)
@@ -479,6 +523,9 @@ public class AIRS_local extends Service
 		 // clear notifications
 		 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		 mNotificationManager.cancelAll();
+		 
+		 // and kill persistent flag
+         HandlerManager.writeRMS_b("AIRS_local::running", false);
 	}
 	
 	@Override
@@ -494,18 +541,7 @@ public class AIRS_local extends Service
 		
 		// return if intent is null -> service was restarted
 		if (intent == null)
-		{
-			SerialPortLogger.debugForced("AIRS_local::restarted!");
-			 Notification notification = new Notification(R.drawable.icon, "Started AIRS", System.currentTimeMillis());
-
-			 // create pending intent for starting the activity
-			 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_measurements.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
-			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is restarted since...", contentIntent);
-			 notification.flags = Notification.FLAG_NO_CLEAR;
-			 startForeground(R.string.app_name, notification);
-			 
 			return Service.START_STICKY;
-		}
 		
 		// sensing running?
 		if (running == true)
@@ -525,7 +561,7 @@ public class AIRS_local extends Service
 			return Service.START_STICKY;
 		
 		// start the measurements if discovered
-		running = startMeasurements();
+		running = startMeasurements(false);
 
 		return Service.START_STICKY;
 	}
@@ -621,7 +657,7 @@ public class AIRS_local extends Service
 	 }
 	 
 	 // main thread to run, acquires values, stores them locally and displays them (if wanted)
-	 public boolean startMeasurements()
+	 public boolean startMeasurements(boolean restarted)
 	 {
 		 int i, j;
 		 Sensor current = null;
@@ -649,7 +685,11 @@ public class AIRS_local extends Service
 
 		 // create pending intent for starting the activity
 		 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_measurements.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
-		 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is running since...", contentIntent);
+		 // has it been started or restarted?
+		 if (restarted == false)
+			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is running since...", contentIntent);
+		 else
+			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is restarted since...", contentIntent);
 		 notification.flags = Notification.FLAG_NO_CLEAR;
 		 startForeground(R.string.app_name, notification);
 		 
@@ -731,6 +771,9 @@ public class AIRS_local extends Service
 			 wl.acquire();
 		 }
 
+		 // store persistently that AIRS is running
+         HandlerManager.writeRMS_b("AIRS_local::running", true);
+
 		 return true;
 	 }
 	 
@@ -793,7 +836,60 @@ public class AIRS_local extends Service
 			// signal that it is discovered
 			discovered = true;
 	 }	
-	 
+
+	 public void ReDiscover()
+	 {
+			int i;
+			String sensor_setting;
+			Sensor current;
+			
+			// start other stuff
+			start_AIRS_local();
+     
+	        sensors 	= (ListView)new ListView(this.getApplicationContext());
+	        sensors.setItemsCanFocus(false); 
+		    sensors.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+	        mSensorsArrayAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_multiple_choice);
+	        // Find and set up the ListView for paired devices
+	        sensors.setAdapter(mSensorsArrayAdapter);
+
+	        // do discovery on all handlers
+			SensorRepository.deleteSensor();
+		    // run through all handlers and discover locally first
+		    for (i=0; i<HandlerManager.max_handlers;i++)
+		    {
+		        // is there any handler entry?
+		        if (HandlerManager.handlers[i] != null)
+		            // call discovery function of handler 
+		            HandlerManager.handlers[i].Discover();
+		    }
+		    		    
+		    // now build actual forms
+		    current = SensorRepository.root_sensor;
+		    i= 0 ;
+		    while(current != null)
+		    {
+	    		// add new sensor choice field
+		        mSensorsArrayAdapter.add(current.Symbol + " (" + current.Description + ")");
+
+		    	// try to read RMS
+		    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
+		    	// set selected index to setting in RMS
+		    	if (sensor_setting.compareTo("On") == 0)
+		    		sensors.setItemChecked(i, true);
+		    	else
+		    		sensors.setItemChecked(i, false);
+		    	// count sensors
+		    	i++;
+		        current = current.next;
+		    }
+		    // save number of sensors for later!
+		    numberSensors = i;
+
+			// signal that it is discovered
+			discovered = true;
+	 }	
+
 	 // Vibrate watchdog
 	 private class VibrateThread implements Runnable
 	 {

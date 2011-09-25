@@ -20,6 +20,10 @@ package com.airs;
 import android.app.AlertDialog;
 import android.content.*;
 import android.preference.PreferenceManager;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.widget.TextView;
 
 import com.airs.handlerUIs.*;
 import com.airs.helper.SerialPortLogger;
@@ -88,9 +92,13 @@ public class HandlerUIManager
 	
 	static public void AboutDialog(String title, String text)
 	{				
+		// Linkify the message
+	    final SpannableString s = new SpannableString(text);
+	    Linkify.addLinks(s, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(airs);
 		builder.setTitle(title)
-			   .setMessage(text)
+			   .setMessage(s)
 			   .setIcon(R.drawable.about)
 		       .setNeutralButton("OK", new DialogInterface.OnClickListener() 
 		       {
@@ -101,5 +109,8 @@ public class HandlerUIManager
 		       });
 		AlertDialog alert = builder.create();
 		alert.show();
+		
+		// Make the textview clickable. Must be called after show()
+	    ((TextView)alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 	}
 }

@@ -1,3 +1,8 @@
+V1.6.3:
+- added clickable links to About dialog
+- improved on restarting service if killed by system (it should now restart with new local recording file being created)
+- addressed bug in Exit&Share function
+
 V1.6.2:
 - changed TR sensor to show application label instead!
 
