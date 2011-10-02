@@ -27,4 +27,5 @@ public interface Handler
     public byte[] Acquire(String sensor, String query);
     public void   Discover();
     public void   destroyHandler();
+    public String Share(String sensor);
 }

@@ -212,6 +212,44 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	}
 	
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		// temperature in Celcius
+		if(sensor.compareTo("VT") == 0)
+			return "The current temperature is " + String.valueOf(temperature_c) + " C" + "\nRecorded at " + "http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+
+		// temperature in Farenheit
+		if(sensor.compareTo("VF") == 0)
+			return "The current temperature is " + String.valueOf(temperature_f) + " F" + "\nRecorded at " + "http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+		
+		// Humidity
+		if(sensor.compareTo("VH") == 0)
+			return "The current humidity is " + String.valueOf(humidity) + " %" + "\nRecorded at " + "http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+
+		// Conditions
+		if(sensor.compareTo("VC") == 0)
+			return "The current weather condition is " + condition + "\nRecorded at " + "http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+		
+		// Wind Conditions
+		if(sensor.compareTo("VW") == 0)
+			return "The current wind condition is " + wind + "\nRecorded at " + "http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+
+		// All information together
+		if(sensor.compareTo("VI") == 0)
+			return "The current weather condition is " + String.valueOf(temperature_c) + " C (" + String.valueOf(temperature_f) + " F) with a humidity of " + String.valueOf(humidity) + " %, conditions '" + condition + "' and " + wind + " wind conditions!" + "\nRecorded at " + "http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+
+		return null;		
+	}
+
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information

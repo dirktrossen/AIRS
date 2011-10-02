@@ -160,6 +160,33 @@ public class AudioHandler implements Handler
 	}
 	
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{
+		// acquire data and send out
+		try
+		{
+			switch(sensor.charAt(1))
+			{
+				case 'A' :
+					return "My current ambient sound level is at "+String.valueOf((double)level / 100) + " dBm";
+				default:
+					return null;
+			}
+		}
+		catch (Exception e) 
+		{
+			debug("AudioHandler::Acquire: Exception: " + e.toString());
+			return null;
+		}
+	}
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information

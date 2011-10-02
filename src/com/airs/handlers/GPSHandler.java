@@ -115,6 +115,36 @@ public class GPSHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		// now read the sensor values
+		switch(sensor.charAt(1))
+		{
+		case 'O':
+		    return "My current longitude is " + String.valueOf(Longitude) + " degrees";
+		case 'L':
+		    return "My current latitude is " + String.valueOf(Latitude) + " degrees";
+		case 'A':
+		    return "My current altitude is " + String.valueOf(Altitude) + " meters";
+		case 'S':
+		    return "My current speed is " + String.valueOf(Speed) + " km/h";
+		case 'C':
+		    return "My current bearing is " + String.valueOf(Bearing) + " degrees";
+		case 'I':
+		    return "My current location is http://maps.google.com?q=(" + String.valueOf(Latitude) + "," + String.valueOf(Longitude) + ")";
+		default:
+			return null;
+		}
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information

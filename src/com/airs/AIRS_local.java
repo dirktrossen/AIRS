@@ -130,7 +130,12 @@ public class AIRS_local extends Service
 				
 				(thread = new Thread(this)).start();
 			}
-			
+
+			public String share()
+			{
+				return current.handler.Share(current.Symbol);
+			}
+
 			public String info()
 			{
 				Calendar cal = Calendar.getInstance();
@@ -387,7 +392,7 @@ public class AIRS_local extends Service
 		boolean p_running;
 		SharedPreferences   settings = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
 
-		SerialPortLogger.debug("AIRS_local::created service!");
+		SerialPortLogger.debugForced("AIRS_local::created service!");
 		
 		try
 		{
@@ -395,7 +400,7 @@ public class AIRS_local extends Service
 			// should the service been running and was it therefore re-started?
 			if (p_running == true)
 			{
-				SerialPortLogger.debug("AIRS_local::service was running before, trying to restart recording!");
+				SerialPortLogger.debugForced("AIRS_local::service was running before, trying to restart recording!");
 
 				// set debug state
 		   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
@@ -404,23 +409,23 @@ public class AIRS_local extends Service
 				HandlerManager.createHandlers(this.getApplicationContext());	
 				started = true;
 
-				SerialPortLogger.debug("AIRS_local::re-created handlers");
+				SerialPortLogger.debugForced("AIRS_local::re-created handlers");
 
 				// re-discover the sensors
 				ReDiscover();
 				
-				SerialPortLogger.debug("AIRS_local::re-discovered sensors");
+				SerialPortLogger.debugForced("AIRS_local::re-discovered sensors");
 
 				// start the measurements as being restarted, i.e., it takes the latest discovery and selection that is stored persistently
 				running = startMeasurements(true);
 
-				SerialPortLogger.debug("AIRS_local::re-started measurements");
+				SerialPortLogger.debugForced("AIRS_local::re-started measurements");
 			}
 
 		}
 		catch(Exception e)
 		{
-			SerialPortLogger.debug("AIRS_local::onCreate():ERROR " +  "Exception: " + e.toString());
+			SerialPortLogger.debugForced("AIRS_local::onCreate():ERROR " +  "Exception: " + e.toString());
 		}
 	}
 
@@ -585,7 +590,13 @@ public class AIRS_local extends Service
 		 // signal paused sate
 		 paused = true;
 	 }
-	 
+
+	 // show info for sensor entry
+	 public String share(int j)
+	 {
+		return threads[j].share();
+	 }
+
 	 // show info for sensor entry
 	 public void show_info(int j)
 	 {

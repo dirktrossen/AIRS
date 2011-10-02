@@ -209,6 +209,35 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		// see which sensors are requested
+		if (sensor.equals("Az") == true)
+			return "The current azimuth is " + String.valueOf(azimuth) + " degrees!";
+		
+		if (sensor.equals("Pi") == true)
+			return "The current pitch is " + String.valueOf(pitch) + " degrees!";
+
+		if (sensor.equals("Ro") == true)
+			return "The current roll is " + String.valueOf(roll) + " degrees!";
+
+		if (sensor.equals("PR") == true)
+			return "The current proximity is " + String.valueOf(proximity);
+
+		if (sensor.equals("LI") == true)
+			return "The current light is " + String.valueOf(light) + " lux!";
+		
+		return null;		
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information

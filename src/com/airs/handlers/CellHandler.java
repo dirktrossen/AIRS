@@ -121,6 +121,42 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	}
 	
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		switch(sensor.charAt(1))
+		{
+		case 'I':
+		    return "The current cell identifier I am connected to is " + String.valueOf(oldCellID);
+		case 'L':
+		    return "The current cell area identifier I am connected to is " + String.valueOf(oldcellLac);
+		case 'R':
+	        if (roaming == 1)
+			    return "I'm currently roaming!";
+	        else
+			    return "I'm currently NOT roaming!";
+		case 'S':
+		    return "The current cell signal strength is " + String.valueOf(oldcellStrength) + " dB";
+		case 'B':
+		    return "The current cell signal strength is " + String.valueOf(oldcellStrength_bar) + " bars";
+		case 'D':
+	        if (olddata_state == 1)
+			    return "I'm currently using cellular data!";
+	        else
+			    return "I'm currently NOT using cellular data!";
+		case 'C':
+		    return "My current cell network country code is " + String.valueOf(oldNCC);
+		}		
+		return null;		
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information

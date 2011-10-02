@@ -286,6 +286,26 @@ public class HeartMonitorHandler implements Handler, Runnable
 	}
 
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		switch(sensor.charAt(1))
+		{
+			case 'T' :
+			case 'N' :
+				return null;
+		}
+		
+		return null;		
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information

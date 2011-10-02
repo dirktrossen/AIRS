@@ -102,9 +102,7 @@ public class MoodButtonHandler implements Handler
 				// prepare readings
 				readings = new StringBuffer(sensor);
 				readings.append(mood);
-	
-				mood = null;
-				
+					
 				// vibrate with pattern
 				vibrator.vibrate(pattern, -1);
 		        
@@ -115,6 +113,22 @@ public class MoodButtonHandler implements Handler
 		}
 		
 		return null;
+	}
+	
+	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		if (mood != null)
+			return "I'm currently " + mood + "!";
+		else
+			return null;
 	}
 	
 	/***********************************************************************

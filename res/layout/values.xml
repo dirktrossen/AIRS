@@ -25,7 +25,7 @@
         android:stackFromBottom="false"
 	    android:textSize="18sp"
 	    android:padding="10dp"
-	    android:clickable="false"
+	    android:clickable="true"
         android:layout_weight="1"
     />
 </LinearLayout>

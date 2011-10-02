@@ -31,11 +31,12 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AIRS_measurements extends Activity implements OnItemClickListener
+public class AIRS_measurements extends Activity implements OnItemClickListener, OnItemLongClickListener
 {
 	 private TextView mTitle;
 	 private TextView mTitle2;
@@ -64,6 +65,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 			values 	= (ListView)findViewById(R.id.valueList);        
 	        // set listener for sensor list
 			values.setOnItemClickListener(this);
+			values.setOnItemLongClickListener(this);
 	        // bind to service
 	        if (bindService(new Intent(this, AIRS_local.class), mConnection, 0)==false)
 	     		Toast.makeText(getApplicationContext(), "Measurement Activity::Binding to service unsuccessful!", Toast.LENGTH_LONG).show();
@@ -185,6 +187,20 @@ public class AIRS_measurements extends Activity implements OnItemClickListener
 	        return false;
 	    }
 
+	    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+	    {
+	    	// show info for sensor selected
+		    if (AIRS_locally != null)
+		    {
+ 		       // now build and start chooser intent
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, AIRS_locally.share((int)id) + "\n\n-------------------------------------------\nPublished from AIRS (https://market.android.com/details?id=com.airs)\n");
+                act.startActivity(Intent.createChooser(intent,"Share AIRS Measurements via:"));
+		    }
+	    	return true;
+	    }
+	    
 	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) 
 	    {
 	    	// show info for sensor selected

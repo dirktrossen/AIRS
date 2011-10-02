@@ -1,3 +1,6 @@
+V1.7:
+- long click in measurement window can now share measurements, e.g., on G+, FB, ...
+
 V1.6.3:
 - added clickable links to About dialog
 - improved on restarting service if killed by system (it should now restart with new local recording file being created)

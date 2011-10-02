@@ -397,6 +397,41 @@ public class SystemHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : Share()
+	 Input       : sensor input is ignored here!
+	 Output      :
+	 Return      :
+	 Description : acquires current sensors values and sends to
+	 		 	   QueryResolver component
+	***********************************************************************/
+	public synchronized String Share(String sensor)
+	{		
+		// battery level?
+		if(sensor.compareTo("Ba") == 0)
+			return "The current battery is " + String.valueOf(oldBattery) + " %";
+		
+		// battery voltage?
+		if(sensor.compareTo("BV") == 0)
+			return "The current battery voltage is " + String.valueOf(old_voltage) + " mV";
+
+		// battery discharging?
+		if(sensor.compareTo("Bc") == 0)
+			if (oldbattery_charging ==1)
+				return "The battery is currently charging";
+			else
+				return "The battery is currently not charging";
+
+		// headset plugged/unplugged?
+		if(sensor.compareTo("HS") == 0)
+			if (oldheadset ==1)
+				return "The headset is currently plugged in";
+			else
+				return "The headset is currently plugged in";
+
+		return null;		
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
