@@ -322,9 +322,9 @@ public class GPSHandler implements com.airs.handlers.Handler
         public void	 onLocationChanged(Location location)        
         {
         	boolean validLocation = true;
-        	int speed;
+        	long speed;
 			// get current timestamp
-        	long newTime = System.currentTimeMillis();
+        	long newTime = System.currentTimeMillis(), elapsed;
         	
         	if (location != null)
         	{
@@ -332,7 +332,8 @@ public class GPSHandler implements com.airs.handlers.Handler
         		if (oldLocation != null)
         		{
         			// speed in m/s
-        			speed = (int)oldLocation.distanceTo(location)/((int)(newTime - oldTime)/1000);
+        			elapsed = (newTime-oldTime)/1000;
+        			speed = (long)oldLocation.distanceTo(location)/elapsed;
         			// convert to km/h
         			speed = (speed * 3600)/1000; 
         			

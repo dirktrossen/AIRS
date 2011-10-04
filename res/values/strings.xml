@@ -44,12 +44,14 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- long click in measurement window can now share measurements, e.g., on G+, FB, ...\n
+- addressed bug in GPS handler\n
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.7.1:\n 
+- addressed bug in GPS handler\n\n
 V1.7:\n
 - long click in measurement window can now share measurements, e.g., on G+, FB, ...\n\n
 V1.6.3:\n
