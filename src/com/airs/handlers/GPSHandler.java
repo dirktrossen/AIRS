@@ -324,16 +324,18 @@ public class GPSHandler implements com.airs.handlers.Handler
         	boolean validLocation = true;
         	long speed;
 			// get current timestamp
-        	long newTime = System.currentTimeMillis(), elapsed;
+        	long newTime = System.currentTimeMillis();
+        	float elapsed;
         	
         	if (location != null)
         	{
         		// is there an old location?
         		if (oldLocation != null)
         		{
+        			// time elapsed since last reading
+        			elapsed = (float)(newTime-oldTime)/1000;
         			// speed in m/s
-        			elapsed = (newTime-oldTime)/1000;
-        			speed = (long)oldLocation.distanceTo(location)/elapsed;
+        			speed = (long)(oldLocation.distanceTo(location)/elapsed);
         			// convert to km/h
         			speed = (speed * 3600)/1000; 
         			

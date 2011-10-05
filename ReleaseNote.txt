@@ -1,3 +1,6 @@
+V1.7.2: 
+- addressed bug in GPS handler for real now (sorry)
+
 V1.7.1: 
 - addressed bug in GPS handler
 
