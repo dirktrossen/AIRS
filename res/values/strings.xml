@@ -44,13 +44,15 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- addressed bug in GPS handler for real now (sorry)\n
+- added MP, MA, ML, MT sensors for currently playing song information\n
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
-V1.7.2\n
+V1.8:\n
+- added MP, MA, ML, MT sensors for currently playing song information\n\n
+V1.7.2:\n
 - addressed bug in GPS handler for real now (sorry)\n\n
 V1.7.1:\n 
 - addressed bug in GPS handler\n\n
@@ -98,7 +100,5 @@ V1.3.1:\n
 - added more mood icons in selector\n\n
 V1.3:\n
 - added <b>mood button</b> widget, allowing for setting your mood, being delivered as MO sensor with various states\n\n
-V1.2.3:\n
-- various handler settings refinements
 </string>
 </resources>

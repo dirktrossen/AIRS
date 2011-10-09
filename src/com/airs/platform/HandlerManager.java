@@ -70,6 +70,7 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = new MoodButtonHandler(nors);
 	   handlers[inst_handlers++]  = new AudioHandler(nors);
 	   handlers[inst_handlers++]  = new HeartMonitorHandler(nors);
+	   handlers[inst_handlers++]  = new MusicPlayerHandler(nors);
 	   handlers[inst_handlers++]  = new SystemHandler(nors);
 	   handlers[inst_handlers++]  = new PhoneSensorHandler(nors);
 	   handlers[inst_handlers++]  = new WeatherHandler(nors);

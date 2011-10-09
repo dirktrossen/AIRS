@@ -365,7 +365,8 @@ public class SystemHandler implements com.airs.handlers.Handler
 		            	{
 		            		ApplicationInfo ai = pm.getApplicationInfo(task, 0);
 		            		task = (String)pm.getApplicationLabel(ai);
-						    buffer.append(task);
+		            		if (task != null)
+		            			buffer.append(task);
 		            	}
 		            	catch(Exception e)
 		            	{
@@ -469,7 +470,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			caller_semaphore.acquire(); 
 			callee_semaphore.acquire(); 
 			received_semaphore.acquire(); 
-			
+
 	        // get ActivityManager for list of tasks
 		    am  = (ActivityManager) airs.getSystemService(Context.ACTIVITY_SERVICE); 			// if something returned, enter sensor value
 

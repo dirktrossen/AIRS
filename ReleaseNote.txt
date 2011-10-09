@@ -1,3 +1,6 @@
+V1.8:
+- added MP, MA, ML, MT sensors for currently playing song information
+
 V1.7.2: 
 - addressed bug in GPS handler for real now (sorry)
 
