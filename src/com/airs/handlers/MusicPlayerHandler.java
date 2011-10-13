@@ -95,6 +95,9 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 
 			wait(music_semaphore); // block until semaphore available
 
+			if (Music == null)
+				return null;
+			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("MP");
 		    buffer.append(Music);
@@ -114,6 +117,9 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 
 			wait(artist_semaphore); // block until semaphore available
 
+			if (Artist == null)
+				return null;
+			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("MA");
 		    buffer.append(Artist);
@@ -133,6 +139,9 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 
 			wait(album_semaphore); // block until semaphore available
 
+			if (Album == null)
+				return null;
+			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("ML");
 		    buffer.append(Album);
@@ -152,8 +161,11 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 
 			wait(track_semaphore); // block until semaphore available
 
+			if (Track == null)
+				return null;
+			
 			// create reading buffer with callee number
-		    StringBuffer buffer = new StringBuffer("MP");
+		    StringBuffer buffer = new StringBuffer("MT");
 		    buffer.append(Track);
     		return buffer.toString().getBytes();
 		}
@@ -172,16 +184,16 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	public synchronized String Share(String sensor)
 	{		
 		// battery level?
-		if(sensor.compareTo("MP") == 0)
+		if(sensor.compareTo("MP") == 0 && Artist != null && Album != null && Track != null)
 			return "The current music playing is " + Artist + " from album '" + Album + "' with song '" + Track + "'";
 		
-		if(sensor.compareTo("MA") == 0)
+		if(sensor.compareTo("MA") == 0 && Artist != null)
 			return "The current artist playing is " + "'" + Artist + "'";
 
-		if(sensor.compareTo("ML") == 0)
+		if(sensor.compareTo("ML") == 0 && Album != null)
 			return "The current album playing is " + "'" + Album + "'";
 
-		if(sensor.compareTo("MT") == 0)
+		if(sensor.compareTo("MT") == 0 && Track != null)
 			return "The current track playing is " + "'" + Track + "'";
 
 		return null;		
@@ -263,22 +275,21 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
         {
             String action = intent.getAction();
             
-            if (action.compareTo("com.android.music.metachanged") == 0
-            || action.compareTo("com.android.music.playstatechanged") == 0
-            || action.compareTo("com.android.music.playbackcomplete") == 0
-            || action.compareTo("com.android.music.queuechanged") == 0) 
-            {
+        	if (action.compareTo("com.android.music.playbackcomplete") == 0)
+        		Artist = Album = Track = Music = null;
+        	else
+        	{
             	Artist = intent.getStringExtra("artist");
             	Album = intent.getStringExtra("album");
             	Track = intent.getStringExtra("track");
             	
             	Music = Artist + ":" + Album + ":" + Track;
+        	}
 
-            	music_semaphore.release();			// release semaphore
-            	artist_semaphore.release();			// release semaphore
-            	album_semaphore.release();			// release semaphore
-            	track_semaphore.release();			// release semaphore
-            }
+        	music_semaphore.release();			// release semaphore
+        	artist_semaphore.release();			// release semaphore
+        	album_semaphore.release();			// release semaphore
+        	track_semaphore.release();			// release semaphore
         }
     };
 }

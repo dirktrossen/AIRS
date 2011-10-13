@@ -164,7 +164,10 @@ public class MoodButtonHandler implements Handler
 	public void destroyHandler()
 	{
 		if (registered == true)
+		{
+			mood = null;
 			nors.unregisterReceiver(SystemReceiver);
+		}
 	}
 		
 	private final BroadcastReceiver SystemReceiver = new BroadcastReceiver() 

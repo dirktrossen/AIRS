@@ -205,8 +205,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			// wait for semaphore
 			wait(info_semaphore); 
 
-			String vw = new String("VW" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
-			return vw.getBytes();
+			String vi = new String("VW" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
+			return vi.getBytes();
 		}
 		return null;
 	}
@@ -489,10 +489,13 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
                         // Extract an Attribute
                         String attrValue = atts.getValue("data");
                         // cut out the humidity value by jumping over 'Humidity : ' and leave last character '%'
-                        String humidity_s = attrValue.substring(10, attrValue.length()-1);
-                        humidity = Integer.parseInt(humidity_s);
-                        // signal possible Acquire() thread
-        				hum_semaphore.release(); 
+                        if (attrValue.length() > 10)
+                        {
+                        	String humidity_s = attrValue.substring(10, attrValue.length()-1);
+                        	humidity = Integer.parseInt(humidity_s);
+	                        // signal possible Acquire() thread
+	        				hum_semaphore.release(); 
+                        }
                 }
                 if (localName.equals("condition") && current_cond==true) 
                 {
@@ -504,9 +507,13 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
                 if (localName.equals("wind_condition") && current_cond==true) 
                 {
                         // Extract Attribute and jump over 'Wind: '
-                        wind = atts.getValue("data").substring(6);
-                        // signal possible Acquire() thread
-        				wind_semaphore.release(); 
+                		String attrValue = atts.getValue("data");
+                		if (attrValue.length()>6)
+                		{
+	                        wind = attrValue.substring(6);
+	                        // signal possible Acquire() thread
+	        				wind_semaphore.release(); 
+                		}
                 }
         }
         

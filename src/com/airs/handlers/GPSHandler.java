@@ -334,11 +334,9 @@ public class GPSHandler implements com.airs.handlers.Handler
         		{
         			// time elapsed since last reading
         			elapsed = (float)(newTime-oldTime)/1000;
-        			// speed in m/s
-        			speed = (long)(oldLocation.distanceTo(location)/elapsed);
-        			// convert to km/h
-        			speed = (speed * 3600)/1000; 
-        			
+        			// speed in km/h
+        			speed = (long)(((oldLocation.distanceTo(location)/elapsed)*3600)/1000);
+
         			// let's assume we're not flying
         			if (speed>1000)
         				validLocation = false;

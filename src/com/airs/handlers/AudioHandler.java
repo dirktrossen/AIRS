@@ -202,7 +202,7 @@ public class AudioHandler implements Handler
 		
 		// here some midlet property check as to whether or not audio capture is supported
 		SensorRepository.insertSensor(new String("AF"), new String("Hz"), new String("Estimated Freq."), new String("int"), 0, 0, 15000, polltime, this);
-		SensorRepository.insertSensor(new String("AA"), new String("db"), new String("Avg Amplitude"), new String("int"), -2, -2100, 0, polltime, this);
+		SensorRepository.insertSensor(new String("AA"), new String("dBm"), new String("Avg Amplitude"), new String("int"), -2, -2100, 0, polltime, this);
 	}
 	
 	public AudioHandler(Context nors)
@@ -243,6 +243,9 @@ public class AudioHandler implements Handler
 			sleep(100);
 		// now we have the player!
 		havePlayer = true;
+		
+		// remove last reading
+		AA_reading = null;
 		
 		// now record
 		try
@@ -332,6 +335,9 @@ public class AudioHandler implements Handler
 			sleep(100);
 		
 		havePlayer = true;
+		
+		// remove last reading
+		AF_reading = null;
 		
 		// now record
 		try

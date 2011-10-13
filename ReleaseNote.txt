@@ -1,3 +1,10 @@
+V1.8.2:
+- bugfixes
+- added BM sensor for battery temperature
+
+V1.8.1:
+- bugfixes
+
 V1.8:
 - added MP, MA, ML, MT sensors for currently playing song information
 

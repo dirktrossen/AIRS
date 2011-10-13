@@ -44,12 +44,18 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- added MP, MA, ML, MT sensors for currently playing song information\n
+- bugfixes\n
+- added BM sensor for battery temperature\n
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.8.2:\n
+- bugfixes\n
+- added BM sensor for battery temperature\n\n
+V1.8.1:\n
+- bugfixes\n\n
 V1.8:\n
 - added MP, MA, ML, MT sensors for currently playing song information\n\n
 V1.7.2:\n
