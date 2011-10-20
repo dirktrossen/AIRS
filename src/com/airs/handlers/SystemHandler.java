@@ -24,6 +24,7 @@ import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -120,7 +121,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	{
 		byte[] readings = null;
 		int reading_value = 0;
-		boolean read, task_first;
+		boolean read = false, task_first;
 		int i;
 		
 		read = false;
@@ -334,7 +335,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 		{
 			try
 			{
-				reading_value = (int) Runtime.getRuntime().freeMemory();;
+				MemoryInfo mi = new MemoryInfo();
+				am.getMemoryInfo(mi);
+				reading_value = (int)(mi.availMem / 1024L);
+				
+//				reading_value = (int) Runtime.getRuntime().freeMemory();;
 				// any difference in value?
 				if (reading_value != oldRAM)
 				{
@@ -402,6 +407,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			}
 			catch(Exception err)
 			{
+				return null;
 			}
 		}
 
@@ -439,12 +445,20 @@ public class SystemHandler implements com.airs.handlers.Handler
 		if(sensor.compareTo("BV") == 0)
 			return "The current battery voltage is " + String.valueOf(old_voltage) + " mV";
 
+		// battery temperature?
+		if(sensor.compareTo("BM") == 0)
+			return "The current battery temperature is " + String.valueOf(old_temperature) + " C";
+
 		// battery discharging?
 		if(sensor.compareTo("Bc") == 0)
 			if (oldbattery_charging ==1)
 				return "The battery is currently charging";
 			else
 				return "The battery is currently not charging";
+
+		// current RAM?
+		if(sensor.compareTo("Rm") == 0)
+			return "The currently available RAM is " + String.valueOf(oldRAM) + " kByte";
 
 		// headset plugged/unplugged?
 		if(sensor.compareTo("HS") == 0)
@@ -470,7 +484,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, 0, this);	    
 		SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, 0, this);	    
 		SensorRepository.insertSensor(new String("BM"), new String("C"), new String("Battery Temperature"), new String("int"), -1, 0, 100, 0, this);	    
-		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("VM Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
+		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
 		SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, 0, this);	    
 		SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, 0, this);	    
     	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, 0, this);	    

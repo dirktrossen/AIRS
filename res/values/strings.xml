@@ -45,12 +45,15 @@
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
 - bugfixes\n
-- added BM sensor for battery temperature\n
+- changed Rm sensor to Android available system RAM\n
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.8.3:\n
+- bugfixes\n
+- changed Rm sensor to Android available system RAM\n\n
 V1.8.2:\n
 - bugfixes\n
 - added BM sensor for battery temperature\n\n

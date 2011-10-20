@@ -38,7 +38,7 @@ public class MoodButtonHandler implements Handler
 	private Context nors;
 	private Semaphore event_semaphore 	= new Semaphore(1);
 	private Vibrator vibrator;
-	private String mood= null;
+	private String mood= null, old_mood = null;
 	private boolean registered = false;
 
 	/**
@@ -77,7 +77,7 @@ public class MoodButtonHandler implements Handler
 	***********************************************************************/
 	public byte[] Acquire(String sensor, String query)
 	{
-		long[] pattern = {0l, 450l, 250l, 450l, 250l, 450l};
+		long[] pattern = {0l, 450l, 250l, 450l};
 		StringBuffer readings;
 		
 		// mood button?
@@ -105,6 +105,13 @@ public class MoodButtonHandler implements Handler
 					
 				// vibrate with pattern
 				vibrator.vibrate(pattern, -1);
+				
+				// store mood
+				old_mood = null;
+				old_mood = new String(mood);
+				
+				// garbage collect mood string
+				mood = null;
 		        
 				return readings.toString().getBytes();
 			}
@@ -125,8 +132,8 @@ public class MoodButtonHandler implements Handler
 	***********************************************************************/
 	public synchronized String Share(String sensor)
 	{		
-		if (mood != null)
-			return "I'm currently " + mood + "!";
+		if (old_mood != null)
+			return "I'm currently " + old_mood + "!";
 		else
 			return null;
 	}

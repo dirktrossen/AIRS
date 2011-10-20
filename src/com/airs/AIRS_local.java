@@ -84,7 +84,7 @@ public class AIRS_local extends Service
 	private long milliStart;
 	private int numberSensors = 0;
     private ListView sensors;
-    public boolean discovered = false, running = false, started = false, start = false, paused = false;
+    public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false;
     private ArrayAdapter<String> mSensorsArrayAdapter;
     public ArrayAdapter<String> mValuesArrayAdapter;
     // This is the object that receives interactions from clients
@@ -389,44 +389,10 @@ public class AIRS_local extends Service
 	@Override
 	public void onCreate() 
 	{
-		boolean p_running;
-		SharedPreferences   settings = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-
 		SerialPortLogger.debugForced("AIRS_local::created service!");
-		
-		try
-		{
-			p_running	= settings.getBoolean("AIRS_local::running", false);
-			// should the service been running and was it therefore re-started?
-			if (p_running == true)
-			{
-				SerialPortLogger.debugForced("AIRS_local::service was running before, trying to restart recording!");
 
-				// set debug state
-		   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
-
-				// create handlers
-				HandlerManager.createHandlers(this.getApplicationContext());	
-				started = true;
-
-				SerialPortLogger.debugForced("AIRS_local::re-created handlers");
-
-				// re-discover the sensors
-				ReDiscover();
-				
-				SerialPortLogger.debugForced("AIRS_local::re-discovered sensors");
-
-				// start the measurements as being restarted, i.e., it takes the latest discovery and selection that is stored persistently
-				running = startMeasurements(true);
-
-				SerialPortLogger.debugForced("AIRS_local::re-started measurements");
-			}
-
-		}
-		catch(Exception e)
-		{
-			SerialPortLogger.debugForced("AIRS_local::onCreate():ERROR " +  "Exception: " + e.toString());
-		}
+		// let's see if we need to restart
+		Restart();
 	}
 
 	private void start_AIRS_local()
@@ -546,7 +512,12 @@ public class AIRS_local extends Service
 		
 		// return if intent is null -> service was restarted
 		if (intent == null)
+		{
+			// let's see if we need to restart
+			Restart();
+			
 			return Service.START_STICKY;
+		}
 		
 		// sensing running?
 		if (running == true)
@@ -848,7 +819,7 @@ public class AIRS_local extends Service
 			discovered = true;
 	 }	
 
-	 public void ReDiscover()
+	 private void ReDiscover()
 	 {
 			int i;
 			String sensor_setting;
@@ -900,6 +871,55 @@ public class AIRS_local extends Service
 			// signal that it is discovered
 			discovered = true;
 	 }	
+	 
+	 public void Restart()
+	 {
+		boolean p_running;
+		SharedPreferences   settings = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+
+		// return if it's already running
+		if (running == true)
+			return;
+		
+		try
+		{
+			p_running	= settings.getBoolean("AIRS_local::running", false);
+			// should the service been running and was it therefore re-started?
+			if (p_running == true)
+			{
+				SerialPortLogger.debugForced("AIRS_local::service was running before, trying to restart recording!");
+
+				// set debug state
+		   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
+
+				// create handlers
+				HandlerManager.createHandlers(this.getApplicationContext());	
+				started = true;
+
+				SerialPortLogger.debugForced("AIRS_local::re-created handlers");
+
+				// re-discover the sensors
+				ReDiscover();
+				
+				SerialPortLogger.debugForced("AIRS_local::re-discovered sensors");
+
+				// start the measurements as being restarted, i.e., it takes the latest discovery and selection that is stored persistently
+				running = startMeasurements(true);
+
+				SerialPortLogger.debugForced("AIRS_local::re-started measurements");
+				
+				// restart service in order to make it service
+		        startService(new Intent(this, AIRS_local.class));
+		        
+				SerialPortLogger.debugForced("AIRS_local::re-started service to make it sticky");
+			}
+
+		}
+		catch(Exception e)
+		{
+			SerialPortLogger.debugForced("AIRS_local::Restart():ERROR " +  "Exception: " + e.toString());
+		}		 
+	 }
 
 	 // Vibrate watchdog
 	 private class VibrateThread implements Runnable

@@ -1,3 +1,7 @@
+V1.8.3:
+- bugfixes
+- changed Rm sensor to Android available system RAM
+
 V1.8.2:
 - bugfixes
 - added BM sensor for battery temperature
