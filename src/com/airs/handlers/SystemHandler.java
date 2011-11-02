@@ -673,10 +673,21 @@ public class SystemHandler implements com.airs.handlers.Handler
         		String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
         		if (TelephonyManager.EXTRA_STATE_RINGING.equals(state))
         		{
-        			caller = new String(intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)); 
-        			
-        			// append caller display name, if available
-        			caller = caller.concat(":" + getContactByNumber(caller));        			
+        			try
+        			{
+	        			caller = new String(intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)); 
+	        			
+	        			// append caller display name, if available
+	        			if (caller != null)
+	        				caller = caller.concat(":" + getContactByNumber(caller));        
+	        			else
+	        				caller = caller.concat(":" + "---");        
+        			}
+        			catch(Exception e)
+        			{
+        				caller = new String("unknown:---");
+        			}
+        				
     				caller_semaphore.release();			// release semaphore
         		}
         		return;
@@ -685,10 +696,21 @@ public class SystemHandler implements com.airs.handlers.Handler
             // when outgoing call
             if (action.compareTo("android.intent.action.NEW_OUTGOING_CALL") == 0) 
             {
-        		callee = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-        		
-    			// append caller display name, if available
-    			callee = callee.concat(":" + getContactByNumber(callee));        			
+            	try
+            	{
+	        		callee = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+	        		
+	    			// append caller display name, if available
+        			if (callee != null)
+        				callee = callee.concat(":" + getContactByNumber(callee));        
+        			else
+        				callee = callee.concat(":" + "---");    
+            	}
+    			catch(Exception e)
+    			{
+    				callee = new String("unknown:---");
+    			}
+    			
 				callee_semaphore.release();			// release semaphore
 				return;
             }

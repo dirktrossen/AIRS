@@ -1,3 +1,6 @@
+V1.8.4:
+- caught FC when incoming caller is 'unknown'
+
 V1.8.3:
 - bugfixes
 - changed Rm sensor to Android available system RAM
