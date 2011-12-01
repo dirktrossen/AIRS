@@ -1,3 +1,6 @@
+V1.8.5: 
+- caught FC when system configurations change
+
 V1.8.4:
 - caught FC when incoming caller is 'unknown'
 

@@ -228,7 +228,11 @@ public class AudioHandler implements Handler
 	
 	public void destroyHandler()
 	{
-		
+		if (p != null)
+		{
+			p.release();
+			p = null;
+		}
 	}
 	
 	// do level determination of sample

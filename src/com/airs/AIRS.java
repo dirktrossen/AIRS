@@ -214,6 +214,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
+    	super.onConfigurationChanged(newConfig);
     }
  
     private void setupMain() 
