@@ -127,15 +127,21 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        switch (item.getItemId()) 
 	        {
 	        case R.id.main_about:
-	        		Toast.makeText(getApplicationContext(), R.string.ValuesAbout, Toast.LENGTH_LONG).show();
+	        	Toast.makeText(getApplicationContext(), R.string.ValuesAbout, Toast.LENGTH_LONG).show();
 	            return true;
 	        case R.id.local_pause:
-		        mTitle2.setText("Local Sensing...Paused");
-		        AIRS_locally.pause_threads();
+	        	if (AIRS_locally != null)
+	        	{
+			        mTitle2.setText("Local Sensing...Paused");
+			        AIRS_locally.pause_threads();
+	        	}
 	        	break;
 	        case R.id.local_resume:
-		        mTitle2.setText("Local Sensing");
-		        AIRS_locally.resume_threads();
+	        	if (AIRS_locally != null)
+	        	{
+	        		mTitle2.setText("Local Sensing");
+	        		AIRS_locally.resume_threads();
+	        	}
 	        	break;
 	        case R.id.local_exit:
 	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);

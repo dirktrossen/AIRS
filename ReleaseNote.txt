@@ -1,3 +1,7 @@
+V1.8.6:
+- caught another FC
+- added Java file to Github distribution that reads local measurements into MySQL database
+
 V1.8.5: 
 - caught FC when system configurations change
 

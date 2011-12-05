@@ -44,12 +44,16 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- caught FC when system configurations change
+- caught another FC\n
+- added Java file to Github distribution that reads local measurements into MySQL database
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.8.6:\n
+- caught another FC\n
+- added Java file to Github distribution that reads local measurements into MySQL database\n\n
 V1.8.5:\n
 - caught FC when system configurations change\n\n
 V1.8.4:\n

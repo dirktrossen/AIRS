@@ -1,0 +1,4 @@
+AIRS_STORAGE=C:/Users/dana/MySoftware/myror/Data/PhoneData/
+DB_USER=airs_user
+DB_PASS=testairsdb
+DB_PATH=jdbc:mysql://localhost:3306/airs
