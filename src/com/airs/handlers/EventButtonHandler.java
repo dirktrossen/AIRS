@@ -169,7 +169,11 @@ public class EventButtonHandler implements Handler
 	
 	public void destroyHandler()
 	{
-		nors.unregisterReceiver(SystemReceiver);
+		if (registered == true)
+		{
+			Event = null;
+			nors.unregisterReceiver(SystemReceiver);
+		}
 	}
 		
 	private final BroadcastReceiver SystemReceiver = new BroadcastReceiver() 
