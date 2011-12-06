@@ -30,18 +30,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.airs.*;
 
-public class MoodButton_selector extends Activity implements OnItemClickListener
+public class MoodButton_selector extends Activity implements OnItemClickListener, OnClickListener
 {
 	 private TextView mTitle;
 	 private TextView mTitle2;
@@ -51,6 +54,7 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	 private SharedPreferences settings;
 	 private String mood = null;
 	 private boolean selected = false;
+	 private boolean own_defined = false;
 	 
 	 // list of mood icons
 	 private ListView mood_icons;
@@ -70,6 +74,7 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 			try
 			{
 				mood	= settings.getString("MoodHandler::Mood", "Happy");
+				own_defined = settings.getBoolean("MoodHandler::Mood_own", false);
 			}
 			catch(Exception e)
 			{
@@ -86,9 +91,20 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        mTitle.setText(R.string.app_name);
 	        mTitle2.setText("Last Selected: " + mood);
 		    
+	        // initialize own defined event click listener
+    		Button bt = (Button) findViewById(R.id.mooddefined);
+    		bt.setOnClickListener(this);
+
+       		// was the stored string own defined?
+			if (own_defined == true)
+			{
+				EditText et = (EditText) findViewById(R.id.moodown);
+				et.setText(mood);
+				own_defined = false;
+			}
+
 	        // initialize list of mood icons
-	        setContentView(R.layout.handlers);
-	        mood_icons 	= (ListView)findViewById(R.id.handlerList);
+	        mood_icons 	= (ListView)findViewById(R.id.moodiconList);
 	        
 	        // Set up the ListView for mood icons selection
 	        mMoodArrayList 	  = new ArrayList<HandlerEntry>();
@@ -135,6 +151,12 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 					// put mood value into store
 		            editor.putString("MoodHandler::Mood", mood);
 		            
+		            // put flag on own defined mood
+		            if (own_defined == false)
+			            editor.putBoolean("MoodHandler::Mood_own", false);
+		            else
+			            editor.putBoolean("MoodHandler::Mood_own", true);
+
 		            // finally commit to storing values!!
 		            editor.commit();
 				}
@@ -194,6 +216,21 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	    	selected = true;
 	    	finish();
 	    }
+	    
+	    public void onClick(View v) 
+		{
+	    	EditText et;
+	    	// dispatch depending on button pressed
+	    	if (v.getId() == R.id.mooddefined)
+	    	{
+	    		et = (EditText) findViewById(R.id.moodown);
+		    	// read input string from edit field
+	    		mood = et.getText().toString();
+	    		selected = true;
+	    		own_defined = true;
+	    		finish();
+	    	}
+		}
 	    
 	    private void addMoodIcon(String name, int resId)
 	    {

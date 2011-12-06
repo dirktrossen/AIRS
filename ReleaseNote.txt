@@ -1,3 +1,7 @@
+V1.8.7:
+- can add semantic of event to EB sensor through selector window
+- able to add own mood description for MO sensor
+ 
 V1.8.6:
 - caught another FC
 - added Java file to Github distribution that reads local measurements into MySQL database

@@ -36,10 +36,10 @@ import android.os.Vibrator;
 public class EventButtonHandler implements Handler
 {
 	private Context nors;
-	private int Event = 0;
+	private String Event, old_Event;
 	private Semaphore event_semaphore 	= new Semaphore(1);
-	private byte[] readings = new byte[6];
 	private Vibrator vibrator;
+	private boolean registered = false;
 
 	/**
 	 * Sleep function 
@@ -78,27 +78,44 @@ public class EventButtonHandler implements Handler
 	public byte[] Acquire(String sensor, String query)
 	{
 		long[] pattern = {0l, 450l, 250l, 450l, 250l, 450l};
-		
+		StringBuffer readings;
+
 		// event button?
 		if(sensor.compareTo("EB") == 0)
 		{
+			// not yet registered -> then do so!!
+			if (registered == false)
+			{
+				// check intents and set booleans for discovery
+				IntentFilter intentFilter = new IntentFilter("com.airs.eventbutton");
+		        nors.registerReceiver(SystemReceiver, intentFilter);
+		        intentFilter = new IntentFilter("com.airs.eventselected");
+		        nors.registerReceiver(SystemReceiver, intentFilter);
+		        registered = true;
+			}
+
 			wait(event_semaphore); // block until semaphore available -> fired
 
-			if (Event == 1)
+			if (Event != null)
 			{
-				readings[0] = (byte)sensor.charAt(0);
-				readings[1] = (byte)sensor.charAt(1);
-				readings[2] = (byte)((Event>>24) & 0xff);
-				readings[3] = (byte)((Event>>16) & 0xff);
-				readings[4] = (byte)((Event>>8) & 0xff);
-				readings[5] = (byte)(Event & 0xff);
-				Event = 0;
-
+				// prepare readings
+				readings = new StringBuffer(sensor);
+				readings.append(Event);
+					
 				// vibrate with pattern
 				vibrator.vibrate(pattern, -1);
+				
+				// store mood
+				old_Event = null;
+				old_Event = new String(Event);
+				
+				// garbage collect mood string
+				Event = null;
 		        
-				return readings;
+				return readings.toString().getBytes();
 			}
+			else 
+				return null;
 		}
 		
 		return null;
@@ -114,7 +131,10 @@ public class EventButtonHandler implements Handler
 	***********************************************************************/
 	public synchronized String Share(String sensor)
 	{		
-		return null;
+		if (old_Event != null)
+			return "My last event was " + old_Event + "!";
+		else
+			return null;
 	}
 
 	/***********************************************************************
@@ -127,7 +147,7 @@ public class EventButtonHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("EB"), new String("boolean"), new String("Event button widget"), new String("int"), 0, 0, 1, 0, this);	    
+		SensorRepository.insertSensor(new String("EB"), new String("Event"), new String("Event button widget"), new String("str"), 0, 0, 1, 0, this);	    
 	}
 	
 	public EventButtonHandler(Context nors)
@@ -139,11 +159,7 @@ public class EventButtonHandler implements Handler
 			wait(event_semaphore); 
 
 			// get system service for Vibrator
-			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);
-			
-			// check intents and set booleans for discovery
-			IntentFilter intentFilter = new IntentFilter("com.airs.eventbutton");
-	        nors.registerReceiver(SystemReceiver, intentFilter);
+			vibrator = (Vibrator)nors.getSystemService(Context.VIBRATOR_SERVICE);			
 		}
 		catch(Exception e)
 		{
@@ -163,11 +179,28 @@ public class EventButtonHandler implements Handler
         {
             String action = intent.getAction();
 
-            // If event button pressed, signal to Acquire()
+            // if mood button widget has been pressed -> start Activity for selecting mood icon
             if (action.equals("com.airs.eventbutton")) 
             {
-            	Event = 1;
-				event_semaphore.release();		// release semaphore
+    			try
+    			{
+    	            Intent startintent = new Intent(nors, EventButton_selector.class);
+    	            startintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    	            nors.startActivity(startintent);          
+    			}
+    			catch(Exception e)
+    			{
+    			}
+    			return;
+            }
+
+            // If event button pressed, signal to Acquire()
+            if (action.equals("com.airs.eventselected")) 
+            {
+            	// get mood from intent
+            	Event = intent.getStringExtra("Event");
+
+            	event_semaphore.release();		// release semaphore
 				return;
             }
         }

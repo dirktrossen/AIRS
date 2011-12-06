@@ -41,16 +41,21 @@
 <string name="SyncAbout">Synchronize the local recordings, allowing for you to share, e.g., via Bluetooth, the ones not yet shared before.\n\nThe sync time will be stored so that the current files will not show up for the next sync operation!</string>
 <string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the measurement only).</string>
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
-<string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!</string>
+<string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own mood entry in the text field at the bottom.</string>
+<string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- caught another FC\n
-- added Java file to Github distribution that reads local measurements into MySQL database
+- Can add semantic of event to EB sensor through selector window\n
+- Able to add own mood description for MO sensor\n
+- Added Java file to Github distribution that reads local measurements into MySQL database
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.8.7:\n
+- can add semantic of event to EB sensor through selector window\n
+- able to add own mood description for MO sensor\n\n
 V1.8.6:\n
 - caught another FC\n
 - added Java file to Github distribution that reads local measurements into MySQL database\n\n

@@ -230,6 +230,7 @@ public class AudioHandler implements Handler
 	{
 		if (p != null)
 		{
+			p.stop();
 			p.release();
 			p = null;
 		}
