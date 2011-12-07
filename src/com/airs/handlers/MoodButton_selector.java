@@ -89,7 +89,7 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
 	        mTitle.setText(R.string.app_name);
-	        mTitle2.setText("Last Selected: " + mood);
+	        mTitle2.setText("Last: " + mood);
 		    
 	        // initialize own defined event click listener
     		Button bt = (Button) findViewById(R.id.mooddefined);

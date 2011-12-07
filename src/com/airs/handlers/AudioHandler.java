@@ -223,6 +223,7 @@ public class AudioHandler implements Handler
 				output = new short[sample_rate];
 				// release player again until needed
 				p.release();
+				p = null;
 			}
 	}
 	
@@ -230,7 +231,8 @@ public class AudioHandler implements Handler
 	{
 		if (p != null)
 		{
-			p.stop();
+			if (p.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING)
+				p.stop();
 			p.release();
 			p = null;
 		}

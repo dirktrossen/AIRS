@@ -47,12 +47,17 @@
 <string name="WhatsNew">
 - Can add semantic of event to EB sensor through selector window\n
 - Able to add own mood description for MO sensor\n
+- updated event button icons\n
+- addressed AudioHandler bug
 - Added Java file to Github distribution that reads local measurements into MySQL database
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.8.7.1:\n
+- updated event button icons\n
+- addressed AudioHandler bug\n\n
 V1.8.7:\n
 - can add semantic of event to EB sensor through selector window\n
 - able to add own mood description for MO sensor\n\n

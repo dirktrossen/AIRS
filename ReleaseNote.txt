@@ -1,3 +1,7 @@
+V1.8.7.1:
+- updated event button icons
+- addressed AudioHandler bug
+
 V1.8.7:
 - can add semantic of event to EB sensor through selector window
 - able to add own mood description for MO sensor

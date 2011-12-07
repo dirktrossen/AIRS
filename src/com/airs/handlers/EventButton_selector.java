@@ -89,7 +89,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
 	        mTitle.setText(R.string.app_name);
-	        mTitle2.setText("Last Selected: " + event);
+	        mTitle2.setText("Last: " + event);
 		    
 	        // initialize own defined event
     		Button bt = (Button) findViewById(R.id.mooddefined);
@@ -115,6 +115,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        addEventIcon("Nothing", R.drawable.mood_not_sure);
 	        addEventIcon("Smoking", R.drawable.event_smoking);
 	        addEventIcon("Having a coffee", R.drawable.event_coffee);
+	        addEventIcon("Having a tea", R.drawable.event_tea);
 	        addEventIcon("Having a beer", R.drawable.event_beer);
 	    }
 
