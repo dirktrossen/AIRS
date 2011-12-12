@@ -112,11 +112,16 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        mood_icons.setOnItemClickListener(this);
 		    
 	        // add mood icons to list
-	        addEventIcon("Nothing", R.drawable.mood_not_sure);
 	        addEventIcon("Smoking", R.drawable.event_smoking);
 	        addEventIcon("Having a coffee", R.drawable.event_coffee);
 	        addEventIcon("Having a tea", R.drawable.event_tea);
 	        addEventIcon("Having a beer", R.drawable.event_beer);
+	        addEventIcon("Having a small bite", R.drawable.event_bite);
+	        addEventIcon("Having a meal", R.drawable.event_dinner);
+	        addEventIcon("Shopping", R.drawable.event_shopping);
+	        addEventIcon("Reading", R.drawable.event_reading);
+	        addEventIcon("Working", R.drawable.event_working);
+	        addEventIcon("Listening to music", R.drawable.event_music);
 	    }
 
 	    @Override

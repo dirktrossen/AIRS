@@ -1,3 +1,6 @@
+V1.8.7.2:
+- added more event button icons
+
 V1.8.7.1:
 - updated event button icons
 - addressed AudioHandler bug

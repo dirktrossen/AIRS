@@ -21,6 +21,7 @@
 \n\nContact: airs@dirk-trossen.de
 \n\nManual: http://dalore.net/DOT/software/airs-online-manual
 \n\nAIRS source code is licensed under LGPL 2.0 license and hosted on Github. For more information on license terms, review <b>license.txt</b>!
+\n\nSpecial acknowledgment goes to Dana Pavel. Using AIRS for her research work (http://dalore.net/Dana/research-areas) has provided many opportunities to introduce new features (such as event and mood button) as well as improve AIRS in terms of stability and features!
 \n\nNOTE that the authors assume no responsibility for any potential misuse of this software for spying purposes. The operation is exposed through notification bar icons in order to make users aware of ongoing recordings!
 </string>
 <string name="general_menu">General Menu</string>
@@ -45,16 +46,15 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- Can add semantic of event to EB sensor through selector window\n
-- Able to add own mood description for MO sensor\n
-- updated event button icons\n
-- addressed AudioHandler bug
+- added more event button icons\n
 - Added Java file to Github distribution that reads local measurements into MySQL database
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.8.7.2:\n
+- added more event button icons\n\n
 V1.8.7.1:\n
 - updated event button icons\n
 - addressed AudioHandler bug\n\n
