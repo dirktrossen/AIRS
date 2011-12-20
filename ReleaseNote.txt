@@ -1,3 +1,7 @@
+V1.9: 
+- added individual phone sensor checks
+- added barometer sensor for Nexus
+
 V1.8.7.2:
 - added more event button icons
 

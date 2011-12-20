@@ -46,13 +46,16 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- added more event button icons\n
-- Added Java file to Github distribution that reads local measurements into MySQL database
+- added individual phone sensor checks\n
+- added barometer sensor for Nexus
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9:\n 
+- added individual phone sensor checks\n
+- added barometer sensor for Nexus\n\n
 V1.8.7.2:\n
 - added more event button icons\n\n
 V1.8.7.1:\n

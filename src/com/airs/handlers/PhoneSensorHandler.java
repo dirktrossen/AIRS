@@ -34,17 +34,19 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	public static final int INIT_LIGHT = 1;
 	public static final int INIT_PROXIMITY = 2;
 	public static final int INIT_ORIENTATION = 3;
+	public static final int INIT_PRESSURE = 4;
 
 	private Context nors;
 	private boolean sensor_enable = false;
-	private boolean startedOrientation = false, startedLight = false, startedProximity = false;
+	private boolean startedOrientation = false, startedLight = false, startedProximity = false, startedPressure = false;
 	private SensorManager sensorManager;
-	private android.hardware.Sensor Orientation, Proximity, Light;
+	private android.hardware.Sensor Orientation, Proximity, Light, Pressure;
 	// polltime for sensor
 	private int polltime = 10000, polltime2 = 10000;
 	// sensor values
-	private float azimuth, roll, pitch, proximity, light;
-	private float azimuth_old, roll_old, pitch_old, proximity_old, light_old;
+	private float azimuth, roll, pitch, proximity, light, pressure;
+	private float azimuth_old, roll_old, pitch_old, proximity_old, light_old, pressure_old;
+	private Semaphore pressure_semaphore 		= new Semaphore(1);
 	private Semaphore light_semaphore 		= new Semaphore(1);
 	private Semaphore proximity_semaphore 	= new Semaphore(1);
 	private Semaphore azimuth_semaphore 	= new Semaphore(1);
@@ -191,6 +193,25 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						light_old = light;
 					}
 				}				
+			if (read == false)
+				if (sensor.equals("PU") == true)
+				{					
+					// has Pressure been started?
+					if (startedPressure == false)
+					{
+						// send message to handler thread to start pressure
+				        Message msg = mHandler.obtainMessage(INIT_PRESSURE);
+				        mHandler.sendMessage(msg);	
+					}
+
+					wait(pressure_semaphore); 
+					if (pressure != pressure_old)
+					{
+						read = true;
+						value = (int)(pressure*10);
+						pressure_old = pressure;
+					}
+				}				
 		}
 		
 		// anything to report?
@@ -234,6 +255,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		if (sensor.equals("LI") == true)
 			return "The current light is " + String.valueOf(light) + " lux!";
 		
+		if (sensor.equals("PU") == true)
+			return "The current pressure is " + String.valueOf(pressure) + " hPa!";
+
 		return null;		
 	}
 	
@@ -249,11 +273,18 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	{
 		if (sensor_enable == true)
 		{
-		   SensorRepository.insertSensor(new String("Az"), new String("degrees"), new String("Azimuth"), new String("int"), -1, 0, 3600, polltime, this);
-		   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), new String("Pitch"), new String("int"), -1, -1800, 1800, polltime, this);
-		   SensorRepository.insertSensor(new String("Ro"), new String("degrees"), new String("Roll"), new String("int"), -1, -900, 900, polltime, this);	
-		   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, polltime2, this);	
-		   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, polltime2, this);	
+		   if (Orientation != null)
+		   {
+			   SensorRepository.insertSensor(new String("Az"), new String("degrees"), new String("Azimuth"), new String("int"), -1, 0, 3600, polltime, this);
+			   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), new String("Pitch"), new String("int"), -1, -1800, 1800, polltime, this);
+			   SensorRepository.insertSensor(new String("Ro"), new String("degrees"), new String("Roll"), new String("int"), -1, -900, 900, polltime, this);	
+		   }
+		   if (Proximity != null)
+			   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, polltime2, this);	
+		   if (Light != null)
+			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, polltime2, this);	
+		   if (Pressure != null)
+			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Pressure"), new String("int"), -1, 0, 50000, polltime2, this);	
 		}
 	}
 	
@@ -272,8 +303,10 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			Orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 			Proximity 	= sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 			Light		= sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+			Pressure	= sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 			sensor_enable = true;
 			// arm semaphores
+			wait(pressure_semaphore); 
 			wait(light_semaphore); 
 			wait(proximity_semaphore); 
 			wait(azimuth_semaphore); 
@@ -288,7 +321,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
-		if (startedLight == true || startedProximity == true || startedOrientation == true)
+		if (startedLight == true || startedProximity == true || startedOrientation == true || startedPressure == true)
 			sensorManager.unregisterListener(sensorlistener);	
 	}
 
@@ -302,6 +335,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
        {        	
            switch (msg.what) 
            {
+           case INIT_PRESSURE:
+        	   startedPressure = sensorManager.registerListener(sensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL);
+	           break;  
            case INIT_LIGHT:
         	   startedLight = sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
 	           break;  
@@ -345,6 +381,12 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 				 light=event.values[0];
 				 // now release the semaphores
 				 light_semaphore.release(); 
+    		}
+    		if (event.sensor.getType() == Sensor.TYPE_PRESSURE)
+    		{
+				 pressure=event.values[0];
+				 // now release the semaphores
+				 pressure_semaphore.release(); 
     		}
        	}
 
