@@ -1,3 +1,6 @@
+V1.9.1:
+- caught bug in sync local recordings
+
 V1.9: 
 - added individual phone sensor checks
 - added barometer sensor for Nexus

@@ -26,11 +26,11 @@
         android:title="Orientation Interval [s]"
         android:key="PhoneSensorsHandler::OrientationPoll"/>
     <EditTextPreference
-        android:summary="Poll interval for proximity sensor in seconds"
+        android:summary="Poll interval for proximity, light and barometer sensor in seconds"
 		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
-        android:title="Proximity Interval [s]"
+        android:title="Interval [s]"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
     <EditTextPreference
         android:summary="Poll interval for system information like RAM, tasks, etc"

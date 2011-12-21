@@ -291,42 +291,43 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     		// get files in directory
     		files = path.listFiles();
     		
-    		// look through all files
-    		for (i=0; i<files.length;i++)
-    		{
-    			filename = files[i].getName();
-    			
-    			// consider all text files that are still writeable
-    			if ((filename.endsWith(".txt") == true))
-    			{
-    				try
-    				{
-    					// file name is timestamp
-    					timestamp_s = filename.substring(0, filename.lastIndexOf(".txt"));
-    					timestamp = (long)(Long.parseLong(timestamp_s));
-    					
-    					// if timestamp of filename more recent than synctime
-    					if (timestamp > synctime)
-    					{
-	    					Date date = new Date(timestamp);
-	    					length = files[i].length();
+    		if (files != null)
+	    		// look through all files
+	    		for (i=0; i<files.length;i++)
+	    		{
+	    			filename = files[i].getName();
+	    			
+	    			// consider all text files that are still writeable
+	    			if ((filename.endsWith(".txt") == true))
+	    			{
+	    				try
+	    				{
+	    					// file name is timestamp
+	    					timestamp_s = filename.substring(0, filename.lastIndexOf(".txt"));
+	    					timestamp = (long)(Long.parseLong(timestamp_s));
 	    					
-	    					// add timestamp with size to list adapter
-	    					if (length >1000)
-	    						mSyncArrayAdapter.add(date.toLocaleString() + " (" + String.valueOf(length/1000) + " kB)");
-	    					else
-	    						mSyncArrayAdapter.add(date.toLocaleString() + " (" + String.valueOf(length) + " B)");
-	    					
-	    					// count files to be shown
-	        				sync_files++;
-    					}
-
-    				}
-    				catch(Exception e)
-    				{
-    				}
-    			}
-    		}
+	    					// if timestamp of filename more recent than synctime
+	    					if (timestamp > synctime)
+	    					{
+		    					Date date = new Date(timestamp);
+		    					length = files[i].length();
+		    					
+		    					// add timestamp with size to list adapter
+		    					if (length >1000)
+		    						mSyncArrayAdapter.add(date.toLocaleString() + " (" + String.valueOf(length/1000) + " kB)");
+		    					else
+		    						mSyncArrayAdapter.add(date.toLocaleString() + " (" + String.valueOf(length) + " B)");
+		    					
+		    					// count files to be shown
+		        				sync_files++;
+	    					}
+	
+	    				}
+	    				catch(Exception e)
+	    				{
+	    				}
+	    			}
+	    		}
     	}
     	
     	if (sync_files == 0)
@@ -612,41 +613,48 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         intent.setType("text/plain");
     	
-		// look through all files
-		for (i=0; i<files.length;i++)
-		{
-			filename = files[i].getName();
-			
-			// consider all text files
-			if ((filename.endsWith(".txt") == true))
+        // anything there?
+        if (files != null)
+			// look through all files
+			for (i=0; i<files.length;i++)
 			{
-				try
-				{
-					// file name is timestamp
-					timestamp_s = filename.substring(0, filename.lastIndexOf(".txt"));
-					timestamp = (long)(Long.parseLong(timestamp_s));
-					
-					// if timestamp of filename more recent than synctime
-					if (timestamp > synctime)
+				filename = files[i].getName();
+				
+				// any file there?
+				if (filename != null)
+					// consider all text files
+					if ((filename.endsWith(".txt") == true))
 					{
-						// is item checked in list?
-						if (syncFiles.isItemChecked(j) == true)
+						try
 						{
-							// build and add URI   
-							uris.add(Uri.fromFile(files[i]));							
-							
-							// checked at least one
-							checked_one = true;
+							// file name is timestamp
+							timestamp_s = filename.substring(0, filename.lastIndexOf(".txt"));
+							if (timestamp_s != null)
+							{
+								timestamp = (long)(Long.parseLong(timestamp_s));
+								
+								// if timestamp of filename more recent than synctime
+								if (timestamp > synctime)
+								{
+									// is item checked in list?
+									if (syncFiles.isItemChecked(j) == true)
+									{
+										// build and add URI   
+										uris.add(Uri.fromFile(files[i]));							
+										
+										// checked at least one
+										checked_one = true;
+									}
+									// count all txt files to sync in directory
+									j++;
+								}
+							}
 						}
-						// count all txt files to sync in directory
-						j++;
+						catch(Exception e)
+						{
+						}	
 					}
-				}
-				catch(Exception e)
-				{
-				}	
 			}
-		}
 		
         // now build and start chooser intent
 		if (checked_one == true)
