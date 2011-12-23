@@ -261,7 +261,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     	File path;
     	String filename;
     	String timestamp_s;
-    	long synctime;
     	long timestamp;
     	long length;
     	int i;
@@ -606,7 +605,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     	String filename, timestamp_s;
     	long timestamp;
         ArrayList<Uri> uris = new ArrayList<Uri>();
-    	Intent intent;
+    	Intent intent = new Intent();
     	boolean checked_one = false;
     	
     	// prepare intent
@@ -709,17 +708,13 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     {
 		if (requestCode == SYNC_FINISHED)
 		{
-			// if anything has been done, store timestamp for later syncs
-			if (resultCode != 0)
-			{
-				// write current timestamp for later syncs
-	        	Editor editor = settings.edit();
-				// put version code into store
-	            editor.putLong("SyncTimestamp", System.currentTimeMillis());
-	            
-	            // finally commit to storing values!!
-	            editor.commit();
-			}
+    		// write current timestamp for later syncs
+        	Editor editor = settings.edit();
+			// put version code into store
+            editor.putLong("SyncTimestamp", System.currentTimeMillis());
+            
+            // finally commit to storing values!!
+            editor.commit();
 		}
     	return;
     }

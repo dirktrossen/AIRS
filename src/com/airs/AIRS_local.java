@@ -672,6 +672,9 @@ public class AIRS_local extends Service
 			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is running since...", contentIntent);
 		 else
 			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is restarted since...", contentIntent);
+		 // set the time again for ICS
+		 notification.when = System.currentTimeMillis();
+		 // don't allow clearing the notification
 		 notification.flags = Notification.FLAG_NO_CLEAR;
 		 startForeground(R.string.app_name, notification);
 		 

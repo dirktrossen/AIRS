@@ -1,3 +1,6 @@
+V1.9.2: 
+- sync local recordings now working again properly
+
 V1.9.1:
 - caught bug in sync local recordings
 

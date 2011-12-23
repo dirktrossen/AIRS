@@ -46,12 +46,14 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- caught bug in sync local recordings
+- sync local recordings now working again properly
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.2:\n 
+- sync local recordings now working again properly\n\n
 V1.9.1:\n
 - caught bug in sync local recordings\n\n
 V1.9:\n 
