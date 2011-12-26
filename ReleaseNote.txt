@@ -1,3 +1,8 @@
+V1.9.3:
+- changed event button selector to only hold own defined strings (up to 5 right now)
+- added condition to kill AIRS recording depending on battery level
+- bug fixes
+
 V1.9.2: 
 - sync local recordings now working again properly
 

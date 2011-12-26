@@ -61,7 +61,12 @@
     	android:defaultValue="false" 
     	android:selectable="true" 
     	android:summaryOn="Wakeup phone during sensing only when there is other user activity" 
-    	android:summaryOff="Keep wake lock to prevent sleeping"/>    
+    	android:summaryOff="Keep wake lock to prevent sleeping"/>  
+    <EditTextPreference
+        android:summary="Kill AIRS based on battery level (0 = disable)"
+        android:defaultValue="0"
+        android:title="Battery Kill Condition"
+        android:key="BatteryKill" android:name="Battery Kill"/>    
    </PreferenceCategory>    
    <PreferenceCategory android:title="Debug Settings"> 	
     <EditTextPreference

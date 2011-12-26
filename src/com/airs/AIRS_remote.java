@@ -20,10 +20,14 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.os.PowerManager.WakeLock;
@@ -43,11 +47,14 @@ import com.airs.platform.HandlerManager;
  */
 public class AIRS_remote extends Service
 {
+	public static final int BATTERY_KILL 		= 3;
+
 	private Discovery	 	 instDiscovery = null;
 	private Acquisition 	 instAcquisition = null;
 	private EventComponent	 instEC = null;
 	private String Vibrate;
 	private int Vibrate_i;
+    private int BatteryKill_i;
 	private String IPAddress;
 	private String IPPort;
 	public boolean running = false, started = false, failed = false;
@@ -134,12 +141,6 @@ public class AIRS_remote extends Service
 			if (wl.isHeld() == true)
 				wl.release();
 
-		// clear notifications
-		if (running == true)
-		{
-			 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			 mNotificationManager.cancelAll();
-		}
 		SerialPortLogger.debug("RSA_remote::...onDestroy() finished");
 	 }
 	
@@ -190,6 +191,8 @@ public class AIRS_remote extends Service
 		Vibrate_i 	= Integer.parseInt(Vibrate)*1000;
 		IPAddress 	= HandlerManager.readRMS("IPStore", "127.0.0.1");
 		IPPort	 	= HandlerManager.readRMS("IPPort", "9000");
+		// find out whether or not to kill based on battery condition
+		BatteryKill_i = HandlerManager.readRMS_i("BatteryKill", 0);
 
 		// create notification
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -235,6 +238,14 @@ public class AIRS_remote extends Service
 			 wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AIRS Remote Lock");
 			 wl.acquire();
 
+			 // need battery monitor?
+			 if (BatteryKill_i > 0)
+			 {
+				 // register intent for watching battery
+				 IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+				 registerReceiver(mReceiver, filter);			 
+			 }
+
 			 return true;
 		}
 		else
@@ -244,6 +255,43 @@ public class AIRS_remote extends Service
 		}
 	}
 	
+	
+	 // The Handler that gets information back from the other threads, updating the values for the UI
+	 public final Handler mHandler = new Handler() 
+    {
+       @Override
+       public void handleMessage(Message msg) 
+       {
+           switch (msg.what) 
+           {
+           case BATTERY_KILL:
+           	// stop foreground service
+           	stopForeground(true);
+           	
+           	// now create new notification
+           	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+  		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
+  		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS.class);
+  		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
+  			notification.setLatestEventInfo(getApplicationContext(), "AIRS Remote Sensing", "...has been killed at " + Integer.toString(BatteryKill_i) + "% battery...", contentIntent);
+  			
+  			// give full fanfare
+  			notification.flags |= Notification.DEFAULT_SOUND | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
+  			notification.ledARGB = 0xffff0000;
+  			notification.ledOffMS = 1000;
+  			notification.ledOnMS = 1000;
+  			
+  			mNotificationManager.notify(17, notification);
+  			
+  			// stop service now!
+           	stopSelf();
+           	break;
+           default:  
+           	break;
+           }
+       }
+    };
+
 	 // Vibrate watchdog
 	 private class VibrateThread implements Runnable
 	 {
@@ -277,4 +325,30 @@ public class AIRS_remote extends Service
 			 }
 		 }
 	 }
+	 
+     public final BroadcastReceiver mReceiver = new BroadcastReceiver() 
+     {
+         @Override
+         public void onReceive(Context context, Intent intent) 
+         {
+        	 int Battery = 100;
+        	 
+        	 // if battery changed...
+             if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) 
+             {
+ 	            int rawlevel = intent.getIntExtra("level", -1);
+ 	            int scale = intent.getIntExtra("scale", -1);
+ 	            if (rawlevel >= 0 && scale > 0) 
+ 	                Battery = (rawlevel * 100) / scale;
+ 	            
+ 	            // need to trigger battery kill action?
+ 	            if (Battery < BatteryKill_i)
+ 	            {
+			        Message msg = mHandler.obtainMessage(BATTERY_KILL);
+			        mHandler.sendMessage(msg);
+ 	            }
+             }
+
+         }
+     };     
 }

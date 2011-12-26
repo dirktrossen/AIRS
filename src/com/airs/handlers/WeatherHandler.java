@@ -52,6 +52,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	public static final int KILL_GPS = 2;
 
 	private Context nors;
+	private boolean weather_enabled;
+	
 	private int temperature_c, temperature_f = 0;
 	private int humidity = 0;
 	private String condition;
@@ -259,12 +261,15 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("VT"), new String("C"), new String("Temperature (C)"), new String("int"), 0, -50, 100, 0, this);	    
-		SensorRepository.insertSensor(new String("VF"), new String("F"), new String("Temperature (F)"), new String("int"), 0, -50, 100, 0, this);	    
-		SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, 0, this);	    
-		SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, 0, this);	    
-		SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, 0, this);	    
-		SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, 0, this);	    
+		if (weather_enabled == true)
+		{
+			SensorRepository.insertSensor(new String("VT"), new String("C"), new String("Temperature (C)"), new String("int"), 0, -50, 100, 0, this);	    
+			SensorRepository.insertSensor(new String("VF"), new String("F"), new String("Temperature (F)"), new String("int"), 0, -50, 100, 0, this);	    
+			SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, 0, this);	    
+			SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, 0, this);	    
+			SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, 0, this);	    
+			SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, 0, this);	    
+		}
 	}
 	
 	// run discovery in separate thread
@@ -390,9 +395,14 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			wait(cond_semaphore); 
 			wait(wind_semaphore); 
 			wait(info_semaphore); 
+
+			// everything ok to be used
+			weather_enabled = true;
 		}
 		catch(Exception e)
 		{
+			// something went wrong
+			weather_enabled = false;
 		}
 	}
 	

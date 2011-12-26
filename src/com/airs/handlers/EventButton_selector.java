@@ -46,15 +46,17 @@ import com.airs.*;
 
 public class EventButton_selector extends Activity implements OnItemClickListener, OnClickListener
 {
+	 public static final int OWN_EVENTS = 5;
+
 	 private TextView mTitle;
 	 private TextView mTitle2;
 	 private Editor editor;
 
 	 // preferences
 	 private SharedPreferences settings;
-	 private String event = null;
+	 private String event[] = new String[OWN_EVENTS];
 	 private boolean selected = false;
-	 private boolean own_defined = false;
+	 private int selected_entry = 0;
 	 
 	 // list of mood icons
 	 private ListView mood_icons;
@@ -63,6 +65,8 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
+		    int i;
+		    
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
 	        
@@ -73,8 +77,8 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        // read last selected mood value
 			try
 			{
-				event	= settings.getString("EventButtonHandler::Event", "Nothing");
-				own_defined = settings.getBoolean("EventButtonHandler::Event_own", false);
+				for (i=0;i<OWN_EVENTS;i++)
+					event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
 			}
 			catch(Exception e)
 			{
@@ -89,18 +93,20 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
 	        mTitle.setText(R.string.app_name);
-	        mTitle2.setText("Last: " + event);
+	        if (event[0].compareTo("") != 0)
+	        	mTitle2.setText("Last: " + event[0]);
+	        else
+	        	mTitle2.setText("Last: " + "-");
 		    
 	        // initialize own defined event
     		Button bt = (Button) findViewById(R.id.mooddefined);
     		bt.setOnClickListener(this);
     		
-    		// was the stored string own defined?
-			if (own_defined == true)
+    		// was there at least one stored string?
+			if (event[0].compareTo("") != 0)
 			{
 				EditText et = (EditText) findViewById(R.id.moodown);
-				et.setText(event);
-				own_defined = false;
+				et.setText(event[0]);
 			}
 
 	        // initialize list of mood icons
@@ -112,16 +118,9 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        mood_icons.setOnItemClickListener(this);
 		    
 	        // add mood icons to list
-	        addEventIcon("Smoking", R.drawable.event_smoking);
-	        addEventIcon("Having a coffee", R.drawable.event_coffee);
-	        addEventIcon("Having a tea", R.drawable.event_tea);
-	        addEventIcon("Having a beer", R.drawable.event_beer);
-	        addEventIcon("Having a small bite", R.drawable.event_bite);
-	        addEventIcon("Having a meal", R.drawable.event_dinner);
-	        addEventIcon("Shopping", R.drawable.event_shopping);
-	        addEventIcon("Reading", R.drawable.event_reading);
-	        addEventIcon("Working", R.drawable.event_working);
-	        addEventIcon("Listening to music", R.drawable.event_music);
+	        for (i=0;i<OWN_EVENTS;i++)
+	        	if (event[i].compareTo("") != 0)
+	        		addEventIcon(event[i], R.drawable.event_marker);
 	    }
 
 	    @Override
@@ -139,19 +138,17 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    @Override
 	    public void onDestroy() 
 	    {
+	    	int i;
+	    	
 	    	if (selected == true)
 	    	{
 				try
 				{
-					// put mood value into store
-		            editor.putString("EventButtonHandler::Event", event);
+					// put mood value into store if it has some content
+					for (i=0;i<OWN_EVENTS;i++)
+						if (event[i].compareTo("") != 0)
+							editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
 		            
-		            // put flag about own-defined event
-		            if (own_defined == false)
-			            editor.putBoolean("EventButtonHandler::Event_own", false);
-		            else
-			            editor.putBoolean("EventButtonHandler::Event_own", true);
-
 		            // finally commit to storing values!!
 		            editor.commit();
 				}
@@ -161,7 +158,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	
 				// send broadcast intent to signal end of selection to mood button handler
 				Intent intent = new Intent("com.airs.eventselected");
-				intent.putExtra("Event", event);
+				intent.putExtra("Event", event[selected_entry]);
 				sendBroadcast(intent);
 				
 				// clear flag
@@ -202,15 +199,24 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 
 	    public void onClick(View v) 
 		{
+	    	int i;
+	    	
 	    	EditText et;
 	    	// dispatch depending on button pressed
 	    	if (v.getId() == R.id.mooddefined)
 	    	{
 	    		et = (EditText) findViewById(R.id.moodown);
-		    	// read input string from edit field
-	    		event = et.getText().toString();
-	    		own_defined = true;
+	    		
+	    		// move older input strings to the end of the array!
+	    		for (i=OWN_EVENTS-1;i>0;i--)
+	    			event[i] = event[i-1];
+	    		
+			    // read input string from edit field
+	    		event[0] = et.getText().toString();
+
+	    		// indicated that we selected the first entry
 	    		selected = true;
+	    		selected_entry = 0;
 	    		finish();
 	    	}
 		}
@@ -219,11 +225,12 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
 	    {
 	    	// get list view entry
-	    	HandlerEntry entry = (HandlerEntry)av.getItemAtPosition((int)arg3);
+	    	// HandlerEntry entry = (HandlerEntry)av.getItemAtPosition((int)arg3);
 	    	
 	    	// read entries name for the selected mood
-	    	event = new String(entry.name);
+    		// indicated that we selected the first entry
 	    	selected = true;
+    		selected_entry = (int)arg3;
 	    	finish();
 	    }
 	    

@@ -135,7 +135,7 @@ public class AIRS_remotevalues extends Activity
 	        case R.id.remote_exit:
 	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    		builder.setMessage("Are you sure you want to exit?")
-	    		       .setTitle("NORS Remote Sensing")
+	    		       .setTitle("AIRS Remote Sensing")
 	    		       .setCancelable(false)
 	    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
 	    		       {

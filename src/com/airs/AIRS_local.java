@@ -60,8 +60,9 @@ import com.airs.platform.SensorRepository;
 public class AIRS_local extends Service
 {
 	// states for handler 
-	public static final int REFRESH_VALUES = 1;
-	public static final int SHOW_NOTIFICATION = 2;
+	public static final int REFRESH_VALUES 		= 1;
+	public static final int SHOW_NOTIFICATION 	= 2;
+	public static final int BATTERY_KILL 		= 3;
     public static final String LINE = "LINE";
     public static final String TEXT = "TEXT";
 
@@ -74,6 +75,7 @@ public class AIRS_local extends Service
     private boolean localStoreSafe_b;
     private boolean localDisplay_b;
     private int Vibrate_i;
+    private int BatteryKill_i;
     private boolean Wakeup_b;
 	private String url = "AIRS_values";
 	public  File fconn;				// public for sharing file when exiting
@@ -400,6 +402,9 @@ public class AIRS_local extends Service
 		// find out whether or not to vibrate
 		Vibrate_i = HandlerManager.readRMS_i("Vibrate", 0) * 1000;
 
+		// find out whether or not to kill based on battery condition
+		BatteryKill_i = HandlerManager.readRMS_i("BatteryKill", 0);
+
 		// find out whether or not to wakeup the sensing on user activity
 		Wakeup_b = HandlerManager.readRMS_b("Wakeup", false);
 
@@ -492,8 +497,8 @@ public class AIRS_local extends Service
 	         unregisterReceiver(mReceiver);
 
 		 // clear notifications
-		 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		 mNotificationManager.cancelAll();
+//		 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//		 mNotificationManager.cancelAll();
 		 
 		 // and kill persistent flag
          HandlerManager.writeRMS_b("AIRS_local::running", false);
@@ -662,7 +667,6 @@ public class AIRS_local extends Service
 		 }
 
 		 // create notification
-//		 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		 Notification notification = new Notification(R.drawable.icon, "Started AIRS", System.currentTimeMillis());
 
 		 // create pending intent for starting the activity
@@ -678,8 +682,6 @@ public class AIRS_local extends Service
 		 notification.flags = Notification.FLAG_NO_CLEAR;
 		 startForeground(R.string.app_name, notification);
 		 
-//		 mNotificationManager.notify(0, notification);
-
 		 // Find and set up the ListView for values
 		 mValuesArrayAdapter = new ArrayAdapter<String>(this, R.layout.sensor_list);
 
@@ -754,6 +756,14 @@ public class AIRS_local extends Service
 			 
 			 wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AIRS Local Lock");
 			 wl.acquire();
+		 }
+		 
+		 // need battery monitor?
+		 if (BatteryKill_i > 0)
+		 {
+			 // register intent for watching battery
+			 IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+			 registerReceiver(mReceiver, filter);			 
 		 }
 
 		 // store persistently that AIRS is running
@@ -980,7 +990,30 @@ public class AIRS_local extends Service
 	            mValuesArrayAdapter.notifyDataSetChanged();
 	            break;  
             case SHOW_NOTIFICATION:
-               	Toast.makeText(getApplicationContext(), msg.getData().getString(TEXT), Toast.LENGTH_LONG).show();          
+               	Toast.makeText(getApplicationContext(), msg.getData().getString(TEXT), Toast.LENGTH_LONG).show();   
+               	break;
+            case BATTERY_KILL:
+            	// stop foreground service
+            	stopForeground(true);
+            	
+            	// now create new notification
+            	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+       		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
+       		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS.class);
+       		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
+       			notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...has been killed at " + Integer.toString(BatteryKill_i) + "% battery...", contentIntent);
+       			
+       			// give full fanfare
+       			notification.flags |= Notification.DEFAULT_SOUND | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
+       			notification.ledARGB = 0xffff0000;
+       			notification.ledOffMS = 1000;
+       			notification.ledOnMS = 1000;
+       			
+       			mNotificationManager.notify(17, notification);
+       			
+       			// stop service now!
+            	stopSelf();
+            	break;
             default:  
             	break;
             }
@@ -992,12 +1025,31 @@ public class AIRS_local extends Service
          @Override
          public void onReceive(Context context, Intent intent) 
          {
+        	 int Battery = 100;
+        	 
         	 // screen off -> pause sensing
         	 if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
         		 pause_threads();
         	 // screen on -> resume sensing
         	 if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
-        		 resume_threads();        		 
+        		 resume_threads();     
+             
+        	 // if battery changed...
+             if (intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) 
+             {
+ 	            int rawlevel = intent.getIntExtra("level", -1);
+ 	            int scale = intent.getIntExtra("scale", -1);
+ 	            if (rawlevel >= 0 && scale > 0) 
+ 	                Battery = (rawlevel * 100) / scale;
+ 	            
+ 	            // need to trigger battery kill action?
+ 	            if (Battery < BatteryKill_i)
+ 	            {
+			        Message msg = mHandler.obtainMessage(BATTERY_KILL);
+			        mHandler.sendMessage(msg);
+ 	            }
+             }
+
          }
      };     
 }
