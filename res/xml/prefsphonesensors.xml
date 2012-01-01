@@ -30,7 +30,7 @@
 		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
-        android:title="Interval [s]"
+        android:title="Other Sensors Interval [s]"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
     <EditTextPreference
         android:summary="Poll interval for system information like RAM, tasks, etc"

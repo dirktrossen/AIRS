@@ -46,7 +46,7 @@ import com.airs.*;
 
 public class EventButton_selector extends Activity implements OnItemClickListener, OnClickListener
 {
-	 public static final int OWN_EVENTS = 5;
+	 private final static int MAX_STRINGS 	= 50;
 
 	 private TextView mTitle;
 	 private TextView mTitle2;
@@ -54,9 +54,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 
 	 // preferences
 	 private SharedPreferences settings;
-	 private String event[] = new String[OWN_EVENTS];
+	 private String[] event = null;
 	 private boolean selected = false;
 	 private int selected_entry = 0;
+	 private int own_events = 5;
 	 
 	 // list of mood icons
 	 private ListView mood_icons;
@@ -74,16 +75,28 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        settings = PreferenceManager.getDefaultSharedPreferences(this);
 	        editor = settings.edit();
 	        
-	        // read last selected mood value
+	        // read last selected mood value and maximum descriptions
 			try
-			{
-				for (i=0;i<OWN_EVENTS;i++)
-					event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
+			{				
+				// read maximum number of descriptions
+				own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
+				if (own_events<1)
+					own_events = 5;
+				if (own_events>MAX_STRINGS)
+					own_events = MAX_STRINGS;
 			}
 			catch(Exception e)
 			{
+				own_events = 5;
 			}
 
+			// create appropriate number of strings
+			event = new String[own_events];
+			
+			// read possibly stored descriptions
+			for (i=0;i<own_events;i++)
+				event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
+			
 			// set window title
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 			setContentView(R.layout.mood_selection);
@@ -118,7 +131,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        mood_icons.setOnItemClickListener(this);
 		    
 	        // add mood icons to list
-	        for (i=0;i<OWN_EVENTS;i++)
+	        for (i=0;i<own_events;i++)
 	        	if (event[i].compareTo("") != 0)
 	        		addEventIcon(event[i], R.drawable.event_marker);
 	    }
@@ -145,7 +158,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 				try
 				{
 					// put mood value into store if it has some content
-					for (i=0;i<OWN_EVENTS;i++)
+					for (i=0;i<own_events;i++)
 						if (event[i].compareTo("") != 0)
 							editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
 		            
@@ -208,7 +221,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    		et = (EditText) findViewById(R.id.moodown);
 	    		
 	    		// move older input strings to the end of the array!
-	    		for (i=OWN_EVENTS-1;i>0;i--)
+	    		for (i=own_events-1;i>0;i--)
 	    			event[i] = event[i-1];
 	    		
 			    // read input string from edit field

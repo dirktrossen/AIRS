@@ -63,17 +63,17 @@
     	android:summaryOn="Wakeup phone during sensing only when there is other user activity" 
     	android:summaryOff="Keep wake lock to prevent sleeping"/>  
     <EditTextPreference
-        android:summary="Kill AIRS based on battery level (0 = disable)"
+        android:summary="Kill AIRS based on battery level to conserve some spare battery (0 = disable)"
         android:defaultValue="0"
-        android:title="Battery Kill Condition"
+        android:title="Battery Kill Condition [%]"
         android:key="BatteryKill" android:name="Battery Kill"/>    
-   </PreferenceCategory>    
+    </PreferenceCategory>    
    <PreferenceCategory android:title="Debug Settings"> 	
     <EditTextPreference
 		android:dialogIcon="@drawable/time"
-        android:summary="Interval for vibrate watchdog"
+        android:summary="Interval for vibration reminder (0 = disable)"
         android:defaultValue="0"
-        android:title="Watchdog Interval [s]"
+        android:title="Reminder Interval [s]"
         android:key="Vibrate" android:name="Vibrate"/>
     <CheckBoxPreference 
     	android:enabled="true" 

@@ -173,8 +173,6 @@ public class AIRS_remotevalues extends Activity
 	  	        // interact with the service.  Because we have bound to a explicit
 	  	        // service that we know is running in our own process, we can
 	  	        // cast its IBinder to a concrete class and directly access it.
-	     		Toast.makeText(getApplicationContext(), "RemoteSensing Activity::Binding to service successful!", Toast.LENGTH_SHORT).show();
-
 	     		AIRS_remote = ((AIRS_remote.LocalBinder)service).getService();
 	     		// if start has failed, stop service
 	     		if (AIRS_remote.failed == true)
@@ -192,7 +190,6 @@ public class AIRS_remotevalues extends Activity
 	  	        // unexpectedly disconnected -- that is, its process crashed.
 	  	        // Because it is running in our same process, we should never
 	  	        // see this happen.
-	     		Toast.makeText(getApplicationContext(), "Measurement Activity::Service disconnected!", Toast.LENGTH_SHORT).show();
 	     		AIRS_remote = null;
 	  	    }
 	  	};

@@ -26,6 +26,7 @@
     	android:summaryOn="Use heart monitor, attempting to connect at start of discovery" 
     	android:summaryOff="Do not use heartmonitor"/>
     <ListPreference
+        android:dependency="HeartMonitorHandler::BTON"
 		android:dialogIcon="@drawable/bt2"
         android:key="HeartMonitorHandler::BTStore"
         android:title="Device Selection"

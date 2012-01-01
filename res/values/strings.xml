@@ -40,10 +40,10 @@
 \'Debug\' switches the debug output on/off. \n</string>
 <string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record and press <b>Start</b> to record.</string>
 <string name="SyncAbout">Synchronize the local recordings, allowing for you to share, e.g., via Bluetooth, the ones not yet shared before.\n\nThe sync time will be stored so that the current files will not show up for the next sync operation!</string>
-<string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the measurement only).</string>
+<string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the recordings only).</string>
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own mood entry in the text field at the bottom.</string>
-<string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom.</string>
+<string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
 - changed event button selector to only hold own defined strings (up to 5 right now)\n

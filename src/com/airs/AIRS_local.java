@@ -492,16 +492,15 @@ public class AIRS_local extends Service
 	   		 if (wl.isHeld() == true)
 	   			 wl.release();
 	   	 
-	   	 // if registered for screen activity -> unregister
-	   	 if (Wakeup_b == true)
+	   	 // if registered for screen activity or battery level -> unregister
+	   	 if (Wakeup_b == true || BatteryKill_i > 0)
 	         unregisterReceiver(mReceiver);
-
-		 // clear notifications
-//		 NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		 mNotificationManager.cancelAll();
-		 
+	   	 
 		 // and kill persistent flag
          HandlerManager.writeRMS_b("AIRS_local::running", false);
+         
+         // kill internal flag
+         running = false;
 	}
 	
 	@Override
@@ -933,7 +932,7 @@ public class AIRS_local extends Service
 			SerialPortLogger.debugForced("AIRS_local::Restart():ERROR " +  "Exception: " + e.toString());
 		}		 
 	 }
-
+	 
 	 // Vibrate watchdog
 	 private class VibrateThread implements Runnable
 	 {

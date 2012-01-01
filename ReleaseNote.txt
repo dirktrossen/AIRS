@@ -1,3 +1,9 @@
+V1.9.4:
+- small preference changes
+- if AIRS local service is running when AIRS main program is started, requester appears to be able to shut down last started recording
+- removed some toast messages on successful operations!
+- added event button configuration to set maximum number of stored descriptions
+
 V1.9.3:
 - changed event button selector to only hold own defined strings (up to 5 right now)
 - added condition to kill AIRS recording depending on battery level

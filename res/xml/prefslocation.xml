@@ -28,6 +28,7 @@
     	android:summaryOn="Enable GPS to show up in sensor list" 
     	android:summaryOff="Do not use GPS"/>
     <CheckBoxPreference 
+        android:dependency="LocationHandler::GPSON"
         android:defaultValue="false"
     	android:enabled="true" 
     	android:title="Use Network Location" 
@@ -36,6 +37,7 @@
     	android:summaryOn="Use Wifi and network information for location" 
     	android:summaryOff="Use only GPS"/>
    <EditTextPreference
+        android:dependency="LocationHandler::GPSON"
  		android:dialogIcon="@drawable/time"
         android:summary="Poll interval for GPS location in seconds"
         android:defaultValue="30"
@@ -43,6 +45,7 @@
         android:title="GPS Interval [s]"
         android:key="LocationHandler::LocationPoll"/>
     <ListPreference
+        android:dependency="LocationHandler::GPSON"
     	android:dialogIcon="@drawable/location"
         android:key="LocationHandler::LocationUpdate"
         android:title="GPS Accuracy [m]"
@@ -62,6 +65,7 @@
     	android:summaryOn="Programmatically enable WiFi, if switched off" 
     	android:summaryOff="Do not enable WiFi, if switched off"/>
     <CheckBoxPreference 
+        android:dependency="LocationHandler::WIFION"
     	android:enabled="true" 
     	android:title="Prevent WiFi Sleep" 
     	android:key="LocationHandler::WIFION" 
@@ -69,6 +73,7 @@
     	android:summaryOn="Prevent WiFi from sleeping (keeps wake-lock!)" 
     	android:summaryOff="Let WiFi sleep according to system settings"/>
    <EditTextPreference
+        android:dependency="LocationHandler::WIFION"
         android:summary="Poll interval for WiFi scanning in seconds"
  		android:dialogIcon="@drawable/time"
         android:defaultValue="30"

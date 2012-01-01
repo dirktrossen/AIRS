@@ -136,6 +136,39 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 		// initialize HandlerUI Manager
 		HandlerUIManager.createHandlerUIs(this);
 
+		// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
+		if (settings.getBoolean("AIRS_local::running", false) == true)
+		{
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage("AIRS has been running.\nDo you want to interrupt current running and start over? You will need to start AIRS again.")
+    			   .setTitle("AIRS Local Sensing")
+    		       .setCancelable(false)
+    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		        	    // clear persistent flag
+    			           	Editor editor = settings.edit();
+    			           	editor.putBoolean("AIRS_local::running", false);
+    		                // finally commit to storing values!!
+    		                editor.commit();
+    		                // stop service
+ 		    			    stopService(new Intent(airs, AIRS_local.class));
+ 		    			    finish();
+    		           }
+    		       })
+    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		                dialog.cancel();
+    		           }
+    		       });
+    		AlertDialog alert = builder.create();
+    		alert.show();
+		}
+		
+		// set window features
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
