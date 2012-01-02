@@ -86,7 +86,7 @@ public class AIRS_local extends Service
 	private long milliStart;
 	private int numberSensors = 0;
     private ListView sensors;
-    public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false;
+    public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false, registered = false;
     private ArrayAdapter<String> mSensorsArrayAdapter;
     public ArrayAdapter<String> mValuesArrayAdapter;
     // This is the object that receives interactions from clients
@@ -485,18 +485,18 @@ public class AIRS_local extends Service
 	   		 }
 	   		 
 	   		 HandlerManager.destroyHandlers();	
+
+		   	 // create wake lock if held
+		   	 if (wl != null)
+		   		 if (wl.isHeld() == true)
+		   			 wl.release();
+		   	 
+		   	 // if registered for screen activity or battery level -> unregister
+		   	 if (registered == true)
+		         unregisterReceiver(mReceiver);	   	 
 	   	 }
 
-	   	 // create wake lock if held
-	   	 if (wl != null)
-	   		 if (wl.isHeld() == true)
-	   			 wl.release();
-	   	 
-	   	 // if registered for screen activity or battery level -> unregister
-	   	 if (Wakeup_b == true || BatteryKill_i > 0)
-	         unregisterReceiver(mReceiver);
-	   	 
-		 // and kill persistent flag
+	   	 // and kill persistent flag
          HandlerManager.writeRMS_b("AIRS_local::running", false);
          
          // kill internal flag
@@ -747,6 +747,7 @@ public class AIRS_local extends Service
 			 registerReceiver(mReceiver, filter);
 			 filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 			 registerReceiver(mReceiver, filter);
+			 registered = true;
 		 }
 		 else	// otherwise get wake lock for keeping running all the time!
 		 {
@@ -763,6 +764,7 @@ public class AIRS_local extends Service
 			 // register intent for watching battery
 			 IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 			 registerReceiver(mReceiver, filter);			 
+			 registered = true;
 		 }
 
 		 // store persistently that AIRS is running

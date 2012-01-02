@@ -225,6 +225,8 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     @Override
     public void onDestroy() 
     {
+       super.onDestroy();
+       
        if (AIRS_locally!=null)
        {
 		   if (AIRS_locally.running == false)
@@ -240,8 +242,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 		   // unbind from service
 		   unbindService(mConnection2);
        }
-
-       super.onDestroy();
     }
     
     @Override

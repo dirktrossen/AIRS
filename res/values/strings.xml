@@ -46,14 +46,19 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- changed event button selector to only hold own defined strings (up to 5 right now)\n
-- added condition to kill AIRS recording depending on battery level\n
-- bug fixes
+- caught FC when shutting down after discovery but without starting local sensing
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.4.1:\n
+- caught FC when shutting down after discovery but without starting local sensing\n\n
+V1.9.4:\n
+- small preference changes\n
+- if AIRS local service is running when AIRS main program is started, requester appears to be able to shut down last started recording\n
+- removed some toast messages on successful operations!\n
+- added event button configuration to set maximum number of stored descriptions\n\n
 V1.9.3:\n
 - changed event button selector to only hold own defined strings (up to 5 right now)\n
 - added condition to kill AIRS recording depending on battery level\n
