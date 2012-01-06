@@ -46,12 +46,14 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- caught FC when shutting down after discovery but without starting local sensing
+- added notification light as possible reminder that AIRS is running (with choice of light and/or vibrate)
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.5:\n
+- added notification light as possible reminder that AIRS is running (with choice of light and/or vibrate)\n\n
 V1.9.4.1:\n
 - caught FC when shutting down after discovery but without starting local sensing\n\n
 V1.9.4:\n

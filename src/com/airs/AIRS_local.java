@@ -43,7 +43,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 
 import com.airs.helper.SerialPortLogger;
@@ -74,7 +73,10 @@ public class AIRS_local extends Service
     private boolean localStore_b;
     private boolean localStoreSafe_b;
     private boolean localDisplay_b;
-    private int Vibrate_i;
+    private int Reminder_i;
+    private boolean Vibrate, Lights;
+    private String LightCode;
+    private NotificationManager mNotificationManager;
     private int BatteryKill_i;
     private boolean Wakeup_b;
 	private String url = "AIRS_values";
@@ -399,8 +401,11 @@ public class AIRS_local extends Service
 
 	private void start_AIRS_local()
 	{
-		// find out whether or not to vibrate
-		Vibrate_i = HandlerManager.readRMS_i("Vibrate", 0) * 1000;
+		// find out whether or not to remind of running
+		Reminder_i = HandlerManager.readRMS_i("Reminder", 0) * 1000;
+		Vibrate    = HandlerManager.readRMS_b("Vibrator", true);
+		Lights     = HandlerManager.readRMS_b("Lights", true);
+		LightCode  = HandlerManager.readRMS("LightCode", "00ff00");
 
 		// find out whether or not to kill based on battery condition
 		BatteryKill_i = HandlerManager.readRMS_i("BatteryKill", 0);
@@ -477,7 +482,10 @@ public class AIRS_local extends Service
 
 		   		 // if Vibrator is running, stop it!
 		   		 if (Vibrator!=null)
+		   		 {
+		   			Vibrator.stop = true;
 		   			Vibrator.thread.interrupt(); 
+		   		 }
 	   		 }
 	   		 catch(Exception e)
 	   		 {
@@ -498,7 +506,7 @@ public class AIRS_local extends Service
 
 	   	 // and kill persistent flag
          HandlerManager.writeRMS_b("AIRS_local::running", false);
-         
+                  
          // kill internal flag
          running = false;
 	}
@@ -737,7 +745,7 @@ public class AIRS_local extends Service
 	        current = current.next;
 	     }	 
 		 
-		 if (Vibrate_i>0)
+		 if (Reminder_i>0)
 			 Vibrator = new VibrateThread();
 		 
 		 // if wakeup by user activity -> register receiver for screen on/off
@@ -939,7 +947,23 @@ public class AIRS_local extends Service
 	 private class VibrateThread implements Runnable
 	 {
 		 public Thread thread;
+		 public boolean stop = false;
 		 
+			/**
+			 * Sleep function 
+			 * @param millis
+			 */
+			protected void sleep(long millis) 
+			{
+				try 
+				{
+					Thread.sleep(millis);
+				} 
+				catch (InterruptedException ignore) 
+				{
+				}
+			}
+
 		 VibrateThread()
 		 {
 			// save thread for later to stop 
@@ -948,23 +972,35 @@ public class AIRS_local extends Service
 		 
 		 public void run()
 		 {
-			 // get system service
-			 Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
- 
-			 while (true)
+			 long vibration[] = {0,200,0};
+			 				
+			 // get notification manager
+			 mNotificationManager = (NotificationManager)airs.getSystemService(Context.NOTIFICATION_SERVICE); 
+
+			 while (stop == false)
 			 {		
 				 // sleep for the agreed time
-				 try
-				 {
-					 Thread.sleep(Vibrate_i);
-				 }
-				 catch(InterruptedException e)
-				 {
-					 return;
-				 }
+			     sleep(Reminder_i);
+
+			     // prepare notification to user
+			     Notification notif = new Notification();
+			     notif.when              = System.currentTimeMillis(); 
+			     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
+			     if (Vibrate == true)
+			    	 notif.vibrate			 = vibration;
 				 
-				 // vibrate for 750ms
-				 vibrator.vibrate(750);
+				 if (Lights == true)
+				 {
+	                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+	                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+				 }
+	              
+				 // now shoot off alert
+				 mNotificationManager.notify(0, notif);   
+				 sleep(750);
+				 
+				 // and cancel
+	             mNotificationManager.cancel(0);
 			 }
 		 }
 	 }

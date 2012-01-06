@@ -68,13 +68,36 @@
         android:title="Battery Kill Condition [%]"
         android:key="BatteryKill" android:name="Battery Kill"/>    
     </PreferenceCategory>    
-   <PreferenceCategory android:title="Debug Settings"> 	
+   <PreferenceCategory android:title="Reminder Settings"> 	
     <EditTextPreference
 		android:dialogIcon="@drawable/time"
-        android:summary="Interval for vibration reminder (0 = disable)"
+        android:summary="Interval for reminder that AIRS is running (0 = disable)"
         android:defaultValue="0"
         android:title="Reminder Interval [s]"
-        android:key="Vibrate" android:name="Vibrate"/>
+        android:key="Reminder" android:name="Reminder"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Vibrate" 
+    	android:key="Vibrator" 
+    	android:defaultValue="true" 
+    	android:selectable="true" 
+    	android:summaryOn="Vibrate as a reminder" 
+    	android:summaryOff="Don't vibrate"/>  
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Lights" 
+    	android:key="Lights" 
+    	android:defaultValue="true" 
+    	android:selectable="true" 
+    	android:summaryOn="Use notification lights as a reminder" 
+    	android:summaryOff="Don't use notification lights as a reminder"/>  
+    <EditTextPreference
+        android:summary="Color code of light notification (in hex)"
+        android:defaultValue="00ff00"
+        android:title="Color Code"
+        android:key="LightCode" android:name="LightCode"/>
+    </PreferenceCategory>    
+    <PreferenceCategory android:title="Debug Settings"> 	
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="Debug" 

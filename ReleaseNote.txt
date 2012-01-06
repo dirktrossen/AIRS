@@ -1,3 +1,6 @@
+V1.9.5:
+- added notification light as possible reminder that AIRS is running (with choice of light and/or vibrate)
+
 V1.9.4.1:
 - caught FC when shutting down after discovery but without starting local sensing
 
