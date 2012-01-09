@@ -1,3 +1,6 @@
+V1.9.5.1:
+- caught FC in restarting procedure
+
 V1.9.5:
 - added notification light as possible reminder that AIRS is running (with choice of light and/or vibrate)
 

@@ -50,6 +50,7 @@
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="Safe Writing" 
+    	android:dependency="LocalStore"
     	android:key="SafeWriting" 
     	android:selectable="true" 
     	android:summaryOn="Save sensor values directly after being sensed - it's safer but requires more write operations" 
@@ -89,10 +90,10 @@
     	android:key="Lights" 
     	android:defaultValue="true" 
     	android:selectable="true" 
-    	android:summaryOn="Use notification lights as a reminder" 
-    	android:summaryOff="Don't use notification lights as a reminder"/>  
+    	android:summaryOn="Use notification LED as a reminder" 
+    	android:summaryOff="Don't use notification LED as a reminder"/>  
     <EditTextPreference
-        android:summary="Color code of light notification (in hex)"
+        android:summary="Color code of LED notification (in hex)"
         android:defaultValue="00ff00"
         android:title="Color Code"
         android:key="LightCode" android:name="LightCode"/>

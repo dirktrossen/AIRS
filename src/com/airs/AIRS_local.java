@@ -68,7 +68,7 @@ public class AIRS_local extends Service
     public  boolean show_values=false;
     private HandlerThread[] threads = null;
     private int no_threads = 0;
-    public  AIRS airs = null;
+    public  Context airs = null;
 	private int	no_values = 0;
     private boolean localStore_b;
     private boolean localStoreSafe_b;
@@ -847,6 +847,8 @@ public class AIRS_local extends Service
 			String sensor_setting;
 			Sensor current;
 			
+			airs = this.getApplicationContext();
+
 			// start other stuff
 			start_AIRS_local();
      
