@@ -29,4 +29,7 @@
     <item android:id="@+id/main_configure_handlers"
           android:icon="@drawable/handlers"
           android:title="@string/main_Configure_handlers" />
+    <item android:id="@+id/main_shortcut"
+          android:icon="@drawable/shortcut"
+          android:title="Shortcut" />
 </menu>

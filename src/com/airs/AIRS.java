@@ -449,6 +449,22 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         	// call handler settings list menu
        		setupHandlerUIs();
         	return true;
+        case R.id.main_shortcut:
+        case R.id.local_shortcut:
+        	// intent for starting AIRS
+        	Intent shortcutIntent = new Intent(this, AIRS.class);
+        	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        	
+        	// intent for creating the shortcut
+        	Intent intent = new Intent();
+        	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "AIRS shortcut");
+        	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon));
+
+        	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        	sendBroadcast(intent);
+        	break;
         case R.id.local_start:
         	// debugging on during measurements?
        		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
@@ -484,28 +500,6 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         case R.id.sync_start:
         	sync_recordings();
         	return true;
-        case R.id.local_exit:
-    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setMessage("Are you sure you want to exit?")
-    		       .setCancelable(false)
-    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
-    		       {
-    		           public void onClick(DialogInterface dialog, int id) 
-    		           {
-    		        	   finish();
-    		           }
-    		       })
-    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
-    		       {
-    		           public void onClick(DialogInterface dialog, int id) 
-    		           {
-    		                dialog.cancel();
-    		           }
-    		       });
-    		AlertDialog alert = builder.create();
-    		alert.show();
-
-	        return true;
         case R.id.local_sensorinfo:
         	AIRS_locally.sensor_info();
         	return true;        	

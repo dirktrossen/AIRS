@@ -23,16 +23,16 @@
     <item android:id="@+id/local_start"
           android:icon="@android:drawable/ic_menu_mylocation"
           android:title="Start" />
-    <item android:id="@+id/local_sensorinfo"
-          android:icon="@android:drawable/ic_menu_search"
-          android:title="Info" />
     <item android:id="@+id/local_selectall"
           android:icon="@android:drawable/ic_menu_agenda"
           android:title="Select All" />
     <item android:id="@+id/local_unselectall"
           android:icon="@android:drawable/ic_menu_delete"
           android:title="Unselect All" />
-    <item android:id="@+id/local_exit"
-          android:icon="@android:drawable/ic_menu_close_clear_cancel"
-          android:title="Exit" />
+    <item android:id="@+id/local_shortcut"
+          android:icon="@android:drawable/ic_menu_add"
+          android:title="Shortcut" />
+    <item android:id="@+id/local_sensorinfo"
+          android:icon="@android:drawable/ic_menu_search"
+          android:title="Info" />
 </menu>

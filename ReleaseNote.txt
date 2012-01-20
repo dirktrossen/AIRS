@@ -1,3 +1,7 @@
+V1.9.6:
+- added ability to create shortcut on homescreen for faster start
+- sensor list is now alphabetically sorted for better reading
+
 V1.9.5.1:
 - caught FC in restarting procedure
 

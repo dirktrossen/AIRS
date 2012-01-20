@@ -699,22 +699,20 @@ public class AIRS_local extends Service
  		 // do I need local display of values?
  		 if (localDisplay_b == true)
  		 {		 			 
-
-			 // now set initial text in list view	 
-			 current = SensorRepository.root_sensor;
-			 i = 0 ;
-			 while(current != null)
-			 {
-		    	if (sensors.isItemChecked(i) == true)
-		    	{
-			    	if (current.type.equals("float") || current.type.equals("int") || current.type.equals("txt") || current.type.equals("str") )
-				        mValuesArrayAdapter.add(current.Symbol + " : - [" + current.Unit + "]");
-			    	else
-				        mValuesArrayAdapter.add(current.Symbol + " : - ");			    		
-		    	}
-		    	i++;
-		        current = current.next;
-		     }
+ 			 for (i=0;i<sensors.getCount();i++)
+ 			 {
+ 				if (sensors.isItemChecked(i) == true)
+ 				{
+ 	 				current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+	 				if (current != null)
+	 				{
+				    	if (current.type.equals("float") || current.type.equals("int") || current.type.equals("txt") || current.type.equals("str") )
+					        mValuesArrayAdapter.add(current.Symbol + " : - [" + current.Unit + "]");
+				    	else
+					        mValuesArrayAdapter.add(current.Symbol + " : - ");			    		
+	 				}
+ 				}
+ 			 } 			 
  		 }
  		 else	// if no individual values, show at least number of values acquired and memory available   
  			 mValuesArrayAdapter.add("# of values : - ");
@@ -723,28 +721,27 @@ public class AIRS_local extends Service
  		 milliStart = System.currentTimeMillis();
  		 
 		 // now create measurement threads
-		 current = SensorRepository.root_sensor;
-		 i= j= 0;
-		 while(current != null)
+		 for (i=0, j=0;i<sensors.getCount();i++)
 		 {
-	    	if (sensors.isItemChecked(i) == true)
-	    	{
-	    		// create reading thread
-	    		if (localDisplay_b == true)
-	    			threads[j] = new HandlerThread(current, j);
-	    		else
-	    			threads[j] = new HandlerThread(current, 0);
-    			j++;
-    			// save setting in RMS
-                HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "On");
-	    	}
-	    	else
-               HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "Off");
-
-	        i++;
-	        current = current.next;
-	     }	 
-		 
+			current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+			if (current != null)
+			{
+				if (sensors.isItemChecked(i) == true)
+				{
+ 		    		// create reading thread
+ 		    		if (localDisplay_b == true)
+ 		    			threads[j] = new HandlerThread(current, j);
+ 		    		else
+ 		    			threads[j] = new HandlerThread(current, 0);
+ 	    			j++;
+ 	    			// save setting in RMS
+ 	                HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "On");
+ 				}
+		    	else
+	               HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "Off");
+			}
+		 } 			  		 
+ 		 		 
 		 if (Reminder_i>0)
 			 Vibrator = new VibrateThread();
 		 
@@ -799,6 +796,7 @@ public class AIRS_local extends Service
 	        sensors.setItemsCanFocus(false); 
 		    sensors.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	        mSensorsArrayAdapter = new ArrayAdapter<String>(airs, android.R.layout.simple_list_item_multiple_choice);
+	        
 	        // Find and set up the ListView for paired devices
 	        sensors.setAdapter(mSensorsArrayAdapter);
 
@@ -821,20 +819,40 @@ public class AIRS_local extends Service
 	    		// add new sensor choice field
 		        mSensorsArrayAdapter.add(current.Symbol + " (" + current.Description + ")");
 
-		    	// try to read RMS
-		    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
-		    	// set selected index to setting in RMS
-		    	if (sensor_setting.compareTo("On") == 0)
-		    		sensors.setItemChecked(i, true);
-		    	else
-		    		sensors.setItemChecked(i, false);
 		    	// count sensors
 		    	i++;
 		        current = current.next;
 		    }
+		    
+		    // sort list alphabetically
+	        mSensorsArrayAdapter.sort(new Comparator<String>() {
+	        	public int compare(String object1, String object2) {
+	        		return object1.compareTo(object2);
+	        	};
+	        });
+	        // notify ListView of data set change!
+	        mSensorsArrayAdapter.notifyDataSetChanged();
+	        
 		    // save number of sensors for later!
 		    numberSensors = i;
 
+		    // set checked state based on saved settings
+		    for (i=0;i<numberSensors;i++)
+		    {
+ 				current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+ 				
+ 				if (current != null)
+ 				{
+			    	// try to read RMS
+			    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
+			    	// set selected index to setting in RMS
+			    	if (sensor_setting.compareTo("On") == 0)
+			    		sensors.setItemChecked(i, true);
+			    	else
+			    		sensors.setItemChecked(i, false);
+ 				}
+		    }
+		    
 		    // signal current menu
 			airs.currentMenu = AIRS.MENU_LOCAL;
 			// signal that it is discovered
@@ -878,19 +896,39 @@ public class AIRS_local extends Service
 	    		// add new sensor choice field
 		        mSensorsArrayAdapter.add(current.Symbol + " (" + current.Description + ")");
 
-		    	// try to read RMS
-		    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
-		    	// set selected index to setting in RMS
-		    	if (sensor_setting.compareTo("On") == 0)
-		    		sensors.setItemChecked(i, true);
-		    	else
-		    		sensors.setItemChecked(i, false);
 		    	// count sensors
 		    	i++;
 		        current = current.next;
 		    }
+		    
+		    // sort list alphabetically
+	        mSensorsArrayAdapter.sort(new Comparator<String>() {
+	        	public int compare(String object1, String object2) {
+	        		return object1.compareTo(object2);
+	        	};
+	        });
+	        // notify ListView of data set change!
+	        mSensorsArrayAdapter.notifyDataSetChanged();
+	        
 		    // save number of sensors for later!
 		    numberSensors = i;
+
+		    // set checked state based on saved settings
+		    for (i=0;i<numberSensors;i++)
+		    {
+ 				current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+ 				
+ 				if (current != null)
+ 				{
+			    	// try to read RMS
+			    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
+			    	// set selected index to setting in RMS
+			    	if (sensor_setting.compareTo("On") == 0)
+			    		sensors.setItemChecked(i, true);
+			    	else
+			    		sensors.setItemChecked(i, false);
+ 				}
+		    }
 
 			// signal that it is discovered
 			discovered = true;
