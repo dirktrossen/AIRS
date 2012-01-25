@@ -46,13 +46,14 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- added ability to create shortcut on homescreen for faster start\n
-- sensor list is now alphabetically sorted for better reading
+- shortcut now directly starts AIRS local with last preferences
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.6.1:\n
+- shortcut now directly starts AIRS local with last preferences\n\n
 V1.9.6:\n
 - added ability to create shortcut on homescreen for faster start\n
 - sensor list is now alphabetically sorted for better reading\n\n

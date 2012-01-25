@@ -1,3 +1,6 @@
+V1.9.6.1:
+- shortcut now directly starts AIRS local with last preferences
+
 V1.9.6:
 - added ability to create shortcut on homescreen for faster start
 - sensor list is now alphabetically sorted for better reading

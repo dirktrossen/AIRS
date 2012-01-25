@@ -396,7 +396,7 @@ public class AIRS_local extends Service
 		SerialPortLogger.debugForced("AIRS_local::created service!");
 
 		// let's see if we need to restart
-		Restart();
+		Restart(true);
 	}
 
 	private void start_AIRS_local()
@@ -526,7 +526,7 @@ public class AIRS_local extends Service
 		if (intent == null)
 		{
 			// let's see if we need to restart
-			Restart();
+			Restart(true);
 			
 			return Service.START_STICKY;
 		}
@@ -934,7 +934,7 @@ public class AIRS_local extends Service
 			discovered = true;
 	 }	
 	 
-	 public void Restart()
+	 public void Restart(boolean check)
 	 {
 		boolean p_running;
 		SharedPreferences   settings = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -947,7 +947,7 @@ public class AIRS_local extends Service
 		{
 			p_running	= settings.getBoolean("AIRS_local::running", false);
 			// should the service been running and was it therefore re-started?
-			if (p_running == true)
+			if (p_running == check)
 			{
 				SerialPortLogger.debugForced("AIRS_local::service was running before, trying to restart recording!");
 
@@ -966,7 +966,7 @@ public class AIRS_local extends Service
 				SerialPortLogger.debugForced("AIRS_local::re-discovered sensors");
 
 				// start the measurements as being restarted, i.e., it takes the latest discovery and selection that is stored persistently
-				running = startMeasurements(true);
+				running = startMeasurements(check);
 
 				SerialPortLogger.debugForced("AIRS_local::re-started measurements");
 				

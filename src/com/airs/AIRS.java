@@ -102,6 +102,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
     private int sync_files;
     private long synctime;
 	File[] files;
+	public String prefs_file;
 
 	protected void sleep(long millis) 
 	{
@@ -123,8 +124,15 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         
         // save current instance for inner classes
         this.airs = this;
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) 
+        {
+            String prefs_file = extras.getString("Preference");
+           	Toast.makeText(getApplicationContext(), "Received intent extra =" + prefs_file, Toast.LENGTH_LONG).show();          
+        }
         
-        // read preferences
+        // get default preferences
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 		
         // save activity in debug class
@@ -452,18 +460,22 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
         case R.id.main_shortcut:
         case R.id.local_shortcut:
         	// intent for starting AIRS
-        	Intent shortcutIntent = new Intent(this, AIRS.class);
+        	Intent shortcutIntent = new Intent(Intent.ACTION_MAIN); 
+        	shortcutIntent.setClassName(this, AIRS_shortcut.class.getName()); 
+        	
+//        	Intent shortcutIntent = new Intent(this, AIRS_shortcut.class);
         	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        	shortcutIntent.putExtra("Preference", prefs_file);
         	
         	// intent for creating the shortcut
         	Intent intent = new Intent();
         	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "AIRS shortcut");
+        	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Quick AIRS");
         	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon));
 
         	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        	sendBroadcast(intent);
+        	sendBroadcast(intent);	        
         	break;
         case R.id.local_start:
         	// debugging on during measurements?
