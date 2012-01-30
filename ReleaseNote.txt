@@ -1,3 +1,6 @@
+V1.9.6.2:
+- measurement activities and widget selectors now work both in landscape and portrait orientation
+
 V1.9.6.1:
 - shortcut now directly starts AIRS local with last preferences
 

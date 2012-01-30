@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="1.9.6.1" android:versionCode="53">
+      android:versionName="1.9.6.2" android:versionCode="54">
     <application android:icon="@drawable/icon" android:label="@string/app_name" >
         <activity android:name="AIRS"
                   android:label="@string/app_name"
@@ -15,11 +15,11 @@
         </activity>
      <service android:enabled="true" android:name="AIRS_local" android:exported="false" android:label="AIRS Local Sensing"/>
      <service android:enabled="true" android:name="AIRS_remote" android:exported="false" android:label="AIRS Remote Sensing"/>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Local Sensing"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Remote Sensing"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_shortcut" android:exported="true" android:screenOrientation="portrait" android:label="Quick AIRS"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Mood Selector"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Event Selector"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="AIRS Local Sensing"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="AIRS Remote Sensing"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_shortcut" android:exported="true" android:label="Quick AIRS"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="AIRS Mood Selector"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="AIRS Event Selector"></activity>
      <activity android:name="Prefs" android:exported="false" android:screenOrientation="portrait" android:label="AIRS Preferences"></activity>
      <receiver android:name="com.airs.handlers.EventButton_widget" android:label="AIRS Event Button">
          <meta-data android:name="android.appwidget.provider"
