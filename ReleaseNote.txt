@@ -1,3 +1,6 @@
+V1.9.6.3:
+- fixed bug in event button selection, not showing the last selected event
+
 V1.9.6.2:
 - measurement activities and widget selectors now work both in landscape and portrait orientation
 

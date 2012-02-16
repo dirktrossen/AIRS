@@ -67,6 +67,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 		    int i;
+		    String last_selected;
 		    
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
@@ -106,10 +107,9 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
 	        mTitle.setText(R.string.app_name);
-	        if (event[0].compareTo("") != 0)
-	        	mTitle2.setText("Last: " + event[0]);
-	        else
-	        	mTitle2.setText("Last: " + "-");
+	        // show last selected event string
+	        last_selected = settings.getString("EventButtonHandler::EventSelected", "-");
+        	mTitle2.setText("Last: " + last_selected);
 		    
 	        // initialize own defined event
     		Button bt = (Button) findViewById(R.id.mooddefined);
@@ -162,6 +162,8 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 						if (event[i].compareTo("") != 0)
 							editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
 		            
+					// also store selected one
+					editor.putString("EventButtonHandler::EventSelected", event[selected_entry]);
 		            // finally commit to storing values!!
 		            editor.commit();
 				}
@@ -172,6 +174,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 				// send broadcast intent to signal end of selection to mood button handler
 				Intent intent = new Intent("com.airs.eventselected");
 				intent.putExtra("Event", event[selected_entry]);
+				
 				sendBroadcast(intent);
 				
 				// clear flag
