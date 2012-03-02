@@ -17,7 +17,7 @@
  -->
 <resources>
 <string name="app_name">AIRS</string>
-<string name="Copyright">(C) 2004-2006 Nokia Corp.\n(C) 2008-2011 Dirk Trossen
+<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2011 Dirk Trossen
 \n\nContact: airs@dirk-trossen.de
 \n\nManual: http://dalore.net/DOT/software/airs-online-manual
 \n\nAIRS source code is licensed under LGPL 2.0 license and hosted on Github. For more information on license terms, review <b>license.txt</b>!
@@ -25,7 +25,6 @@
 \n\nNOTE that the authors assume no responsibility for any potential misuse of this software for spying purposes. The operation is exposed through notification bar icons in order to make users aware of ongoing recordings!
 </string>
 <string name="general_menu">General Menu</string>
-<string name="settings_menu">General Settings Menu</string>
 <string name="handlers_menu">Handlers Menu</string>
 <string name="main_About">About</string>
 <string name="main_Sync">Sync</string>
@@ -46,12 +45,20 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- fixed bug in event button selection, not showing the last selected event
+- checked AIRS with lint tool to optimize\n
+- addressed bug in remote sensing\n
+- added delay in BT sensing to give BT time to fire up\n
+- use persistent storage to remember music player info to avoid false sensing
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.6.4:\n 
+- checked AIRS with lint tool to optimize\n
+- addressed bug in remote sensing\n
+- added delay in BT sensing to give BT time to fire up\n
+- use persistent storage to remember music player info to avoid false sensing\n\n
 V1.9.6.3:\n
 - fixed bug in event button selection, not showing the last selected event\n\n
 V1.9.6.2:\n
@@ -113,7 +120,7 @@ V1.7.2:\n
 V1.7.1:\n 
 - addressed bug in GPS handler\n\n
 V1.7:\n
-- long click in measurement window can now share measurements, e.g., on G+, FB, ...\n\n
+- long click in measurement window can now share measurements, e.g., on G+ or FB\n\n
 V1.6.3:\n
 - added clickable links to About dialog\n
 - improved on restarting service if killed by system (it should now restart with new local recording file being created)\n

@@ -1,3 +1,9 @@
+V1.9.6.4: 
+- checked AIRS with lint tool to optimize
+- addressed bug in remote sensing
+- added delay in BT sensing to give BT time to fire up
+- use persistent storage to remember music player info to avoid false sensing
+ 
 V1.9.6.3:
 - fixed bug in event button selection, not showing the last selected event
 

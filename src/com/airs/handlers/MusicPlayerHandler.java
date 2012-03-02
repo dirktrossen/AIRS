@@ -19,6 +19,7 @@ package com.airs.handlers;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
 import android.content.BroadcastReceiver;
@@ -40,6 +41,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 
 	private Context airs;
 	private String Music, Artist, Album, Track;
+	private String Music_old;
 	private boolean startedMusicPlayer = false;
 	private Semaphore music_semaphore 		= new Semaphore(1);
 	private Semaphore artist_semaphore 		= new Semaphore(1);
@@ -225,6 +227,10 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 			album_semaphore.acquire(); 
 			artist_semaphore.acquire(); 
 			track_semaphore.acquire(); 
+			
+			// get persistently stored info of last readings
+			Music_old  = HandlerManager.readRMS("MusicPlayerHandler::Music", "");
+
 		}
 		catch(Exception e)
 		{
@@ -279,17 +285,34 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
         		Artist = Album = Track = Music = null;
         	else
         	{
-            	Artist = intent.getStringExtra("artist");
+        		// get player information
+            	Artist = intent.getStringExtra("artist");            	
             	Album = intent.getStringExtra("album");
             	Track = intent.getStringExtra("track");
             	
+            	// combine to overall information
             	Music = Artist + ":" + Album + ":" + Track;
+            	
+            	// test if overall music information has changed
+            	if (Music_old.equals(Music) == false)
+            	{
+            		// store changed information
+            		HandlerManager.writeRMS("MusicPlayerHandler::Music", Music);
+            		// and remember
+            		Music_old = new String(Music);
+            	}
+            	else
+            		Artist = Album = Track = Music = null;   // if info is the same as before, don't use it!!
         	}
-
-        	music_semaphore.release();			// release semaphore
-        	artist_semaphore.release();			// release semaphore
-        	album_semaphore.release();			// release semaphore
-        	track_semaphore.release();			// release semaphore
+        	
+        	// only signal if there's a changed music info
+        	if (Music != null)
+        	{
+	        	music_semaphore.release();			// release semaphore
+	        	artist_semaphore.release();			// release semaphore
+	        	album_semaphore.release();			// release semaphore
+	        	track_semaphore.release();			// release semaphore
+        	}
         }
     };
 }

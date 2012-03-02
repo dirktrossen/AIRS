@@ -48,6 +48,8 @@ import com.airs.platform.HandlerManager;
 public class AIRS_remote extends Service
 {
 	public static final int BATTERY_KILL 		= 3;
+	public static final int SHOW_NOTIFICATION 	= 2;
+    public static final String TEXT = "TEXT";
 
 	private Discovery	 	 instDiscovery = null;
 	private Acquisition 	 instAcquisition = null;
@@ -286,6 +288,9 @@ public class AIRS_remote extends Service
   			// stop service now!
            	stopSelf();
            	break;
+           case SHOW_NOTIFICATION:
+            Toast.makeText(getApplicationContext(), msg.getData().getString(TEXT), Toast.LENGTH_LONG).show();   
+            break;
            default:  
            	break;
            }

@@ -16,12 +16,6 @@
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
 <resources>
-    <string-array name="taskrunning_values">
-        <item>AIRS</item>
-    </string-array>
-    <string-array name="taskrunning_entries">
-        <item>com.airs</item>
-    </string-array>
     <string-array name="heartmonitor_values">
         <item>AliveTech A101EC</item>
     </string-array>

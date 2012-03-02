@@ -17,7 +17,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.platform;
 
-import android.widget.Toast;
+import android.os.Bundle;
+import android.os.Message;
 
 import com.airs.AIRS_remote;
 import com.airs.helper.SerialPortLogger;
@@ -116,7 +117,14 @@ public class EventComponent implements Runnable
 			{
 		        current_TCPClient.disconnect();
 		        if (connected == true)
-		        	Toast.makeText(airs, "It seems that the TCP connection broke. It is recommended to restart the gateway since the server might be temporarily down!", Toast.LENGTH_LONG).show();
+		        {
+			        Message msg = airs.mHandler.obtainMessage(AIRS_remote.SHOW_NOTIFICATION);
+			        Bundle bundle = new Bundle();
+			        bundle.putString(AIRS_remote.TEXT, "It seems that the TCP connection broke. It is recommended to restart the gateway since the server might be temporarily down!");
+					msg.setData(bundle);
+			        airs.mHandler.sendMessage(msg);
+
+		        }
 		        SerialPortLogger.debugForced("CONNECTION FAILURE: Restart gateway!");
 		        return;
 			}

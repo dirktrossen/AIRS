@@ -23,7 +23,7 @@
    <ListView
        android:id="@+id/moodiconList"
        android:layout_width="fill_parent"
-       android:layout_height="wrap_content"
+       android:layout_height="0dip"
        android:layout_weight="0.65"
        android:stackFromBottom="false" />
 
@@ -35,8 +35,9 @@
 
        <EditText
            android:id="@+id/moodown"
-           android:layout_width="fill_parent"
+           android:layout_width="0dip"
            android:layout_height="wrap_content"
+           android:inputType="text"
            android:layout_weight="7.46" />
        <Button
            android:id="@+id/mooddefined"
