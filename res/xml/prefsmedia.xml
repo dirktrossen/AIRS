@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2012, Dirk Trossen, airs@dirk-trossen.de
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Media Watcher Settings">
+    <CheckBoxPreference 
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="Camera" 
+    	android:key="MediaWatcherHandler::Camera" 
+    	android:selectable="true" 
+    	android:summaryOn="Watch camera folder" 
+    	android:summaryOff="Do not watch camera folder"/>
+    <EditTextPreference
+        android:summary="Provide the path for camera pictures"
+        android:defaultValue="/sdcard/DCIM/Camera"
+        android:title="Camera path"
+        android:key="MediaWatcherHandler::CameraDirectory" android:enabled="true" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Camera"/>
+    <CheckBoxPreference 
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="Pictures" 
+    	android:key="MediaWatcherHandler::Pictures" 
+    	android:selectable="true" 
+    	android:summaryOn="Watch pictures folder" 
+    	android:summaryOff="Do not watch pictures folder"/>
+    <EditTextPreference
+        android:summary="Provide the path for general pictures"
+        android:defaultValue="/sdcard/Pictures"
+        android:title="Pictures path"
+        android:key="MediaWatcherHandler::PicturesDirectory" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Pictures"/>
+    <CheckBoxPreference 
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="Videos" 
+    	android:key="MediaWatcherHandler::Videos" 
+    	android:selectable="true" 
+    	android:summaryOn="Watch videos folder" 
+    	android:summaryOff="Do not watch videos folder"/>
+    <EditTextPreference
+        android:summary="Provide the path for videos"
+        android:defaultValue="/sdcard/Videos"
+        android:title="Videos path"
+        android:key="MediaWatcherHandler::VideosDirectory" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Videos"/>
+    <CheckBoxPreference 
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="Music" 
+    	android:key="MediaWatcherHandler::Music" 
+    	android:selectable="true" 
+    	android:summaryOn="Watch music folder" 
+    	android:summaryOff="Do not watch music folder"/>
+    <EditTextPreference
+        android:summary="Provide the path for music"
+        android:defaultValue="/sdcard/Music"
+        android:title="Music path"
+        android:key="MediaWatcherHandler::MusicDirectory" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Music"/>
+</PreferenceScreen>

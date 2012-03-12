@@ -70,6 +70,7 @@ public class HandlerUIManager
 	   handlers[index++] = new HeartMonitorHandlerUI();
 	   handlers[index++] = new BeaconHandlerUI();
 	   handlers[index++] = new EventButtonHandlerUI();
+	   handlers[index++] = new MediaWatcherHandlerUI();
 	   handlers[index++] = new RandomHandlerUI();
 	   
 	   return true;

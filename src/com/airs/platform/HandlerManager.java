@@ -74,6 +74,7 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = new SystemHandler(nors);
 	   handlers[inst_handlers++]  = new PhoneSensorHandler(nors);
 	   handlers[inst_handlers++]  = new WeatherHandler(nors);
+	   handlers[inst_handlers++]  = new MediaWatcherHandler(nors);
 	   
 	   return true;
 	}

@@ -45,15 +45,14 @@
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="WhatsNew">
-- checked AIRS with lint tool to optimize\n
-- addressed bug in remote sensing\n
-- added delay in BT sensing to give BT time to fire up\n
-- use persistent storage to remember music player info to avoid false sensing
+- added watched media folder support
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.7:\n
+- added watched media folder support\n\n
 V1.9.6.4:\n 
 - checked AIRS with lint tool to optimize\n
 - addressed bug in remote sensing\n
