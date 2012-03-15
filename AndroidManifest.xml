@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="1.9.7" android:versionCode="58">
+      android:versionName="1.9.7.1" android:versionCode="59">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8"></uses-sdk>
     

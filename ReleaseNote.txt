@@ -1,3 +1,6 @@
+V1.9.7.1:
+- corrected 'null' playlist entry in MP sensor
+
 V1.9.7:
 - added watched media folder support
 

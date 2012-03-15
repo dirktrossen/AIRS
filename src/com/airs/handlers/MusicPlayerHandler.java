@@ -84,17 +84,17 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	***********************************************************************/
 	public byte[] Acquire(String sensor, String query)
 	{	
+		// has music player intent been started?
+		if (startedMusicPlayer == false)
+		{
+			// send message to handler thread to start Outgoing Call
+	        Message msg = mHandler.obtainMessage(INIT_MUSIC);
+	        mHandler.sendMessage(msg);	
+		}
+
 		// All playing information
 		if(sensor.compareTo("MP") == 0)
 		{
-			// has music player intent been started?
-			if (startedMusicPlayer == false)
-			{
-				// send message to handler thread to start Outgoing Call
-		        Message msg = mHandler.obtainMessage(INIT_MUSIC);
-		        mHandler.sendMessage(msg);	
-			}
-
 			wait(music_semaphore); // block until semaphore available
 
 			if (Music == null)
@@ -109,14 +109,6 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 		// Artist playing information
 		if(sensor.compareTo("MA") == 0)
 		{
-			// has music player intent been started?
-			if (startedMusicPlayer == false)
-			{
-				// send message to handler thread to start Outgoing Call
-		        Message msg = mHandler.obtainMessage(INIT_MUSIC);
-		        mHandler.sendMessage(msg);	
-			}
-
 			wait(artist_semaphore); // block until semaphore available
 
 			if (Artist == null)
@@ -131,14 +123,6 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 		// Album playing information
 		if(sensor.compareTo("ML") == 0)
 		{
-			// has music player intent been started?
-			if (startedMusicPlayer == false)
-			{
-				// send message to handler thread to start Outgoing Call
-		        Message msg = mHandler.obtainMessage(INIT_MUSIC);
-		        mHandler.sendMessage(msg);	
-			}
-
 			wait(album_semaphore); // block until semaphore available
 
 			if (Album == null)
@@ -153,14 +137,6 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 		// All playing information
 		if(sensor.compareTo("MT") == 0)
 		{
-			// has music player intent been started?
-			if (startedMusicPlayer == false)
-			{
-				// send message to handler thread to start Outgoing Call
-		        Message msg = mHandler.obtainMessage(INIT_MUSIC);
-		        mHandler.sendMessage(msg);	
-			}
-
 			wait(track_semaphore); // block until semaphore available
 
 			if (Track == null)
@@ -290,19 +266,24 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
             	Album = intent.getStringExtra("album");
             	Track = intent.getStringExtra("track");
             	
-            	// combine to overall information
-            	Music = Artist + ":" + Album + ":" + Track;
-            	
-            	// test if overall music information has changed
-            	if (Music_old.equals(Music) == false)
+            	// combine to overall information, if there is anything to combine!
+            	if (Artist != null && Album != null && Track != null)
             	{
-            		// store changed information
-            		HandlerManager.writeRMS("MusicPlayerHandler::Music", Music);
-            		// and remember
-            		Music_old = new String(Music);
+            		Music = Artist + ":" + Album + ":" + Track;
+            	
+	            	// test if overall music information has changed
+	            	if (Music_old.equals(Music) == false)
+	            	{
+	            		// store changed information
+	            		HandlerManager.writeRMS("MusicPlayerHandler::Music", Music);
+	            		// and remember
+	            		Music_old = new String(Music);
+	            	}
+	            	else
+	            		Artist = Album = Track = Music = null;   // if info is the same as before, don't use it!!
             	}
             	else
-            		Artist = Album = Track = Music = null;   // if info is the same as before, don't use it!!
+            		Artist = Album = Track = Music = null;
         	}
         	
         	// only signal if there's a changed music info
