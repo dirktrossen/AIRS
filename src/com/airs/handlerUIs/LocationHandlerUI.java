@@ -42,8 +42,8 @@ public class LocationHandlerUI implements HandlerUI
 	    String AboutText = new String(
 	    		"Senses location-related information.\n\n"+
 	    		"The sensor values are location values, utilizing cell identification info, Wifi beacon information as well as GPS.\n" + 
-	    		"cellID is a simple integer, GPS will give long/lat, and WLAN the MAC address, SSID as well as signal strength of nearby access points. \n" +
-	    		"Here you can select the poll intervalls for Wifi and GPS.\n");
+	    		"cellID is a simple integer, GPS will give long/lat, and WLAN the MAC address, SSID as well as signal strength of nearby access points. \n\n" +
+	    		"The settings allow for selecting the poll intervalls for Wifi and GPS. Also, you can force to refresh AGPS information frequently, forcing a download of GPS ephemeral information from the network (only supported on some phones).\n");
 
 		return AboutText;
 	}

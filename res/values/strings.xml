@@ -44,13 +44,22 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own mood entry in the text field at the bottom.</string>
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
+<string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- corrected \'null\' playlist entry in MP sensor
+- improved BT beacon handler\n
+- corrected shutdown of remote sensing\n
+- added warning when starting remote sensing
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.7.3:\n
+- improved BT beacon handler\n
+- corrected shutdown of remote sensing\n
+- added warning when starting remote sensing\n\n
+V1.9.7.2:\n
+- added option for force AGPS refresh on phones that support this\n\n
 V1.9.7.1:\n
 - corrected \'null\' playlist entry in MP sensor\n\n
 V1.9.7:\n

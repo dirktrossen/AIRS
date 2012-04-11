@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="1.9.7.1" android:versionCode="59">
+      android:versionName="1.9.7.3" android:versionCode="61">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true"></supports-screens>
-	<uses-sdk android:minSdkVersion="8"></uses-sdk>
+	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>

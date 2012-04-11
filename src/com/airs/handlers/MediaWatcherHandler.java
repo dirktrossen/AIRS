@@ -19,6 +19,7 @@ package com.airs.handlers;
 import java.util.concurrent.Semaphore;
 
 import android.content.Context;
+import android.os.Environment;
 import android.os.FileObserver;
 
 import com.airs.platform.HandlerManager;
@@ -157,15 +158,15 @@ public class MediaWatcherHandler implements Handler
 	
 	public MediaWatcherHandler(Context airs)
 	{
-		camera  = HandlerManager.readRMS_b("MediaWatcherHandler::Camera", false);
-		music   = HandlerManager.readRMS_b("MediaWatcherHandler::Music", false);
+		camera   = HandlerManager.readRMS_b("MediaWatcherHandler::Camera", false);
+		music    = HandlerManager.readRMS_b("MediaWatcherHandler::Music", false);
 		pictures = HandlerManager.readRMS_b("MediaWatcherHandler::Pictures", false);
-		videos  = HandlerManager.readRMS_b("MediaWatcherHandler::Videos", false);
+		videos   = HandlerManager.readRMS_b("MediaWatcherHandler::Videos", false);
 
-		camera_directory = HandlerManager.readRMS("MediaWatcherHandler::CameraDirectory", "/sdcard/DCIM/Camera");
-		music_directory = HandlerManager.readRMS("MediaWatcherHandler::MusicDirectory", "/sdcard/Music");
-		pictures_directory = HandlerManager.readRMS("MediaWatcherHandler::PicturesDirectory", "/sdcard/Pictures");
-		videos_directory = HandlerManager.readRMS("MediaWatcherHandler::VideosDirectory", "/sdcard/Videos");
+		camera_directory = HandlerManager.readRMS("MediaWatcherHandler::CameraDirectory", Environment.getExternalStorageDirectory()+"/DCIM/Camera");
+		music_directory = HandlerManager.readRMS("MediaWatcherHandler::MusicDirectory", Environment.getExternalStorageDirectory()+"/Music");
+		pictures_directory = HandlerManager.readRMS("MediaWatcherHandler::PicturesDirectory", Environment.getExternalStorageDirectory()+"/Pictures");
+		videos_directory = HandlerManager.readRMS("MediaWatcherHandler::VideosDirectory", Environment.getExternalStorageDirectory()+"/Videos");
 		
 		// arm the semaphores now
 		wait(watcher_semaphore); 

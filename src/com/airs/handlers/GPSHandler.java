@@ -36,7 +36,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 {
 	public static final int INIT_GPS = 1;
 
-	Context nors;
+	Context airs;
 	// are these there?
 	private boolean enableGPS = false, startedGPS = false, useWifi = false;
 	// polltime
@@ -46,6 +46,7 @@ public class GPSHandler implements com.airs.handlers.Handler
     private double oldLongitude = -1, oldLatitude = -1, oldAltitude = -1;
     private Location oldLocation = null;
     private long oldTime;
+    private long agpsTime, agpsForce;
 	// for GPS
 	private LocationManager manager;
 	private LocationListener mReceiver;
@@ -168,7 +169,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 	public GPSHandler(Context activity)
 	{
 		// store for later
-		nors = activity;
+		airs = activity;
 		
 		// get preferences
 		polltime	= HandlerManager.readRMS_i("LocationHandler::LocationPoll", 30) * 1000;
@@ -176,6 +177,8 @@ public class GPSHandler implements com.airs.handlers.Handler
 		// read whether or not we need to enable GPS
 		enableGPS = HandlerManager.readRMS_b("LocationHandler::GPSON", false);
 		useWifi = HandlerManager.readRMS_b("LocationHandler::UseWifi", false);
+		agpsForce = HandlerManager.readRMS_i("LocationHandler::AGPSForce", 3) * 3600*1000;
+		agpsTime = System.currentTimeMillis();
 		
 		if (enableGPS == false)
 			return;
@@ -183,7 +186,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 		try
 		{
 			mReceiver = new LocationReceiver();
-			manager = (LocationManager)nors.getSystemService(Context.LOCATION_SERVICE);
+			manager = (LocationManager)airs.getSystemService(Context.LOCATION_SERVICE);
 			enableGPS = true;
 			// arm semaphores
 			wait(longitude_semaphore); 
@@ -214,6 +217,17 @@ public class GPSHandler implements com.airs.handlers.Handler
 		boolean read = false;
 		StringBuffer GPSreadings = null;
 		byte[] reading = null;
+		
+		// do we need to force AGPS?
+		if (agpsForce > 0)
+			if (agpsTime + agpsForce > System.currentTimeMillis())
+			{
+				// store current time for next force
+				agpsTime = System.currentTimeMillis();
+		        Bundle bundle = new Bundle();
+		        manager.sendExtraCommand("gps", "force_xtra_injection", bundle);
+		        manager.sendExtraCommand("gps", "force_time_injection", bundle);
+			}
 		
 		try
 		{			

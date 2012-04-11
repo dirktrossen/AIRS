@@ -18,7 +18,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import android.bluetooth.BluetoothAdapter;
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,7 +28,7 @@ import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
-public class BeaconHandler extends Activity implements Handler, Runnable 
+public class BeaconHandler implements Handler, Runnable 
 {
 	// BT stuff
 	private Context		nors;

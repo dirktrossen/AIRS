@@ -1,5 +1,13 @@
+V1.9.7.3:
+- improved BT beacon handler
+- corrected shutdown of remote sensing
+- added warning when starting remote sensing
+
+V1.9.7.2:
+- added option for force AGPS refresh on phones that support this
+
 V1.9.7.1:
-- corrected 'null' playlist entry in MP sensor
+- corrected 'null' playlist entry in MP sensor 
 
 V1.9.7:
 - added watched media folder support

@@ -49,6 +49,7 @@ public class AIRS_remote extends Service
 {
 	public static final int BATTERY_KILL 		= 3;
 	public static final int SHOW_NOTIFICATION 	= 2;
+	public static final int KILL_SERVICE 		= 1;
     public static final String TEXT = "TEXT";
 
 	private Discovery	 	 instDiscovery = null;
@@ -169,7 +170,8 @@ public class AIRS_remote extends Service
 		if (running == false)
 		{
      		Toast.makeText(getApplicationContext(), "Starting remote sensing failed!\nStart AIRS and try again.", Toast.LENGTH_LONG).show();		
-			stopSelf();
+	        Message msg = mHandler.obtainMessage(KILL_SERVICE);
+	        mHandler.sendMessage(msg);
 		}
 		else
      		Toast.makeText(getApplicationContext(), "Starting remote sensing successful!\nStart monitoring by clicking on notification bar message.", Toast.LENGTH_LONG).show();		
@@ -264,6 +266,8 @@ public class AIRS_remote extends Service
        @Override
        public void handleMessage(Message msg) 
        {
+    	   NotificationManager mNotificationManager;
+    	   
            switch (msg.what) 
            {
            case BATTERY_KILL:
@@ -271,7 +275,7 @@ public class AIRS_remote extends Service
            	stopForeground(true);
            	
            	// now create new notification
-           	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+           	mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
   		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
   		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS.class);
   		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -291,6 +295,15 @@ public class AIRS_remote extends Service
            case SHOW_NOTIFICATION:
             Toast.makeText(getApplicationContext(), msg.getData().getString(TEXT), Toast.LENGTH_LONG).show();   
             break;
+           case KILL_SERVICE:
+        	// stop foreground service
+            stopForeground(true);
+      		// stop service now!
+            stopSelf();
+            // remove icon
+           	mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancelAll();
+            break;   
            default:  
            	break;
            }

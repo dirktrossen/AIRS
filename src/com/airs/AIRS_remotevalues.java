@@ -101,7 +101,6 @@ public class AIRS_remotevalues extends Activity
 	   		if (AIRS_remote != null)
 	 		   unbindService(mConnection);
 
-
 	   		// remove handler messages from queue
    		 	mHandler.removeMessages(REFRESH_VALUES);
 
@@ -141,10 +140,10 @@ public class AIRS_remotevalues extends Activity
 	    		       {
 	    		           public void onClick(DialogInterface dialog, int id) 
 	    		           {
-	    		      		 SerialPortLogger.debugForced("AIRS_remotevalues::Exiting");
+	    		       		   SerialPortLogger.debugForced("AIRS_remotevalues::Exiting");
 	    		    		   if (AIRS_remote != null)
-	    		    			   stopService(new Intent(act, AIRS_remote.class));
-	    		    		 SerialPortLogger.debugForced("AIRS_remotevalues::...stopped service");
+	    		    			 stopService(new Intent(act, AIRS_remote.class));
+	    					   SerialPortLogger.debugForced("AIRS_remotevalues::...stopped service");
 
 	    		        	   finish();
 	    		           }

@@ -598,6 +598,7 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
             		AlertDialog.Builder builder = new AlertDialog.Builder(this);
             		builder.setMessage("Are you sure you want to exit?")
             		       .setCancelable(false)
+            		       .setIcon(R.drawable.icon)
             		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
             		       {
             		           public void onClick(DialogInterface dialog, int id) 
@@ -716,13 +717,32 @@ public class AIRS extends Activity implements OnClickListener, OnItemClickListen
 		{
 			if (AIRS_remotely != null)
 			{
-				// forcefully print out midlet version given in manifest!
-				SerialPortLogger.debug("- AIRS Gateway");
+        		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        		builder.setMessage("Are you sure you want to start remote sensing?\n\nAIRS will attempt to connect to the remote application server, blocking the ability to exit the AIRS service until the connection request times out.")
+        		       .setCancelable(false)
+        		       .setIcon(R.drawable.icon)
+        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+        		       {
+        		           public void onClick(DialogInterface dialog, int id) 
+        		           {
+        						// forcefully print out midlet version given in manifest!
+        						SerialPortLogger.debug("- AIRS Gateway");
 
-	        	progressdialog = ProgressDialog.show(AIRS.this, "Start remote sensing", "Please wait...", true);
+        			        	progressdialog = ProgressDialog.show(AIRS.this, "Start remote sensing", "Please wait...", true);
 
-		        Message msg = mHandler.obtainMessage(START_REMOTELY);
-		        mHandler.sendMessage(msg);
+        				        Message msg = mHandler.obtainMessage(START_REMOTELY);
+        				        mHandler.sendMessage(msg);
+        		           }
+        		       })
+        		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+        		       {
+        		           public void onClick(DialogInterface dialog, int id) 
+        		           {
+        		        	   return;
+        		           }
+        		       });
+        		AlertDialog alert = builder.create();
+        		alert.show();
 			}
 		}
 		else

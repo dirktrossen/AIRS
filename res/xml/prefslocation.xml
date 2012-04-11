@@ -55,7 +55,15 @@
         android:entries="@array/gpshandler_values"
         android:entryValues="@array/gpshandler_entries"
         android:dialogTitle="Choose Update Accuracy" />
-   </PreferenceCategory>    
+   <EditTextPreference
+        android:dependency="LocationHandler::GPSON"
+ 		android:dialogIcon="@drawable/time"
+        android:summary="Interval to force AGPS refresh in hours (0 = disable)"
+        android:defaultValue="3"
+        android:numeric="integer"
+        android:title="AGPS Refresh Interval [h]"
+        android:key="LocationHandler::AGPSForce"/>
+    </PreferenceCategory>    
    <PreferenceCategory android:title="Wifi Settings">
     <CheckBoxPreference 
     	android:enabled="true" 
