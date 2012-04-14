@@ -35,6 +35,7 @@ import com.airs.platform.SensorRepository;
 public class GPSHandler implements com.airs.handlers.Handler
 {
 	public static final int INIT_GPS = 1;
+	public static final int RESET_AGPS = 2;
 
 	Context airs;
 	// are these there?
@@ -218,17 +219,6 @@ public class GPSHandler implements com.airs.handlers.Handler
 		StringBuffer GPSreadings = null;
 		byte[] reading = null;
 		
-		// do we need to force AGPS?
-		if (agpsForce > 0)
-			if (agpsTime + agpsForce > System.currentTimeMillis())
-			{
-				// store current time for next force
-				agpsTime = System.currentTimeMillis();
-		        Bundle bundle = new Bundle();
-		        manager.sendExtraCommand("gps", "force_xtra_injection", bundle);
-		        manager.sendExtraCommand("gps", "force_time_injection", bundle);
-			}
-		
 		try
 		{			
 			// now read the sensor values
@@ -325,6 +315,17 @@ public class GPSHandler implements com.airs.handlers.Handler
         		   startedGPS = true;
         	   }
 	           break;  
+           case RESET_AGPS:
+        	   try
+        	   {
+        	    Bundle bundle = new Bundle();
+		        manager.sendExtraCommand("gps", "force_xtra_injection", bundle);
+		        manager.sendExtraCommand("gps", "force_time_injection", bundle);
+        	   }
+        	   catch(Exception e)
+        	   {
+        	   }
+        	   break;
            default:  
            	break;
            }
@@ -355,7 +356,7 @@ public class GPSHandler implements com.airs.handlers.Handler
         			if (speed>1000)
         				validLocation = false;
         		}
-        		
+        		       		
         		// do we have a valid location?
         		if (validLocation == true)
         		{
@@ -379,6 +380,17 @@ public class GPSHandler implements com.airs.handlers.Handler
 					oldLocation = location;
 					oldTime = newTime;
         		}
+        		
+        		// do we need to force AGPS?
+        		if (agpsForce > 0)
+        			if (agpsTime + agpsForce < newTime)
+        			{
+        				// store current time for next force
+        				agpsTime = newTime;
+        				// send handler message for reset AGPS
+        		        Message msg = mHandler.obtainMessage(RESET_AGPS);
+        		        mHandler.sendMessage(msg);	
+       			}
         	}
         }
         

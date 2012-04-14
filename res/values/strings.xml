@@ -46,14 +46,14 @@
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- improved BT beacon handler\n
-- corrected shutdown of remote sensing\n
-- added warning when starting remote sensing
+- removed bug that rendered GPS useless since V1.9.7.2 update
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V1.9.7.4:\n
+- removed bug that rendered GPS useless since V1.9.7.2 update\n\n
 V1.9.7.3:\n
 - improved BT beacon handler\n
 - corrected shutdown of remote sensing\n

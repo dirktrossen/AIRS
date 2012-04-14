@@ -1,3 +1,6 @@
+V1.9.7.4:
+- removed bug that rendered GPS useless since V1.9.7.2 update
+
 V1.9.7.3:
 - improved BT beacon handler
 - corrected shutdown of remote sensing
