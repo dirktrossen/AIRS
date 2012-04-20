@@ -178,6 +178,17 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -187,10 +198,10 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	***********************************************************************/
 	public void Discover()
 	{
-    	SensorRepository.insertSensor(new String("MP"), new String("Music"), new String("Currently playing"), new String("txt"), 0, 0, 1, 0, this);	    	    	
-    	SensorRepository.insertSensor(new String("MA"), new String("Artist"), new String("Current Artist"), new String("txt"), 0, 0, 1, 0, this);	    	    	
-    	SensorRepository.insertSensor(new String("ML"), new String("Album"), new String("Current Album"), new String("txt"), 0, 0, 1, 0, this);	    	    	
-    	SensorRepository.insertSensor(new String("MT"), new String("Track"), new String("Current Track"), new String("txt"), 0, 0, 1, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("MP"), new String("Music"), new String("Currently playing"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("MA"), new String("Artist"), new String("Current Artist"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("ML"), new String("Album"), new String("Current Album"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("MT"), new String("Track"), new String("Current Track"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
 	}
 	
 	public MusicPlayerHandler(Context airs)

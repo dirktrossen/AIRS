@@ -117,6 +117,17 @@ public class WifiHandler extends PhoneStateListener implements Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+	}
+
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -129,11 +140,11 @@ public class WifiHandler extends PhoneStateListener implements Handler
 		// need to test for wifi at some point!!
 	    if (enable == true)
 	    {		
-			SensorRepository.insertSensor(new String("WF"), new String("txt"), new String("WLAN info"), new String("txt"), 0, 0, 1, polltime, this);
-			SensorRepository.insertSensor(new String("WI"), new String("SSID"), new String("WLAN SSID"), new String("txt"), 0, 0, 1, polltime, this);	
-			SensorRepository.insertSensor(new String("WM"), new String("MAC"), new String("WLAN MAC address"), new String("txt"), 0, 0, 1, polltime, this);
-			SensorRepository.insertSensor(new String("WS"), new String("dBm"), new String("Signal strength"), new String("txt"), 0, 0, 1, polltime, this);
-			SensorRepository.insertSensor(new String("WC"), new String("boolean"), new String("WLAN connected"), new String("int"), 0, 0, 1, polltime, this);
+			SensorRepository.insertSensor(new String("WF"), new String("txt"), new String("WLAN info"), new String("txt"), 0, 0, 1, false, polltime, this);
+			SensorRepository.insertSensor(new String("WI"), new String("SSID"), new String("WLAN SSID"), new String("txt"), 0, 0, 1, false, polltime, this);	
+			SensorRepository.insertSensor(new String("WM"), new String("MAC"), new String("WLAN MAC address"), new String("txt"), 0, 0, 1, false, polltime, this);
+			SensorRepository.insertSensor(new String("WS"), new String("dBm"), new String("Signal strength"), new String("txt"), 0, 0, 1, false, polltime, this);
+			SensorRepository.insertSensor(new String("WC"), new String("boolean"), new String("WLAN connected"), new String("int"), 0, 0, 1, false, polltime, this);
 		}	    
 	}
 	

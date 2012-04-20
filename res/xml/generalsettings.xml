@@ -47,6 +47,11 @@
     	android:defaultValue="true" 
     	android:summaryOn="Store sensor values in\n/mnt/sdcard/AIRS_values\nwith current millisecs as filename" 
     	android:summaryOff="Do not store sensor values"/>
+    <EditTextPreference
+        android:summary="# of historical sensor values (0=disable)"
+        android:defaultValue="20"
+        android:title="Sensor History"
+        android:key="SensorHistory" android:name="Sensor History"/>
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="Safe Writing" 

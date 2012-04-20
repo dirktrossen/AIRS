@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:id="@+id/timeline_maxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical|right"
+        android:minWidth="75dip"
+        android:state_enabled="false"
+        android:text="-" />
+
+     <com.airs.TimelineView
+        android:id="@+id/surfaceMeasure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dip"
+        android:background="@drawable/timeline_border"
+        android:layout_alignBottom="@+id/timeline_miny"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/timeline_maxy" />
+    
+    <TextView
+        android:id="@+id/timeline_minx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical|left"
+        android:layout_alignLeft="@+id/surfaceMeasure"
+        android:minWidth="75dip"
+        android:state_enabled="false"
+        android:text="-" />
+
+    <TextView
+        android:id="@+id/timeline_maxy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|right"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="-" />
+
+    <TextView
+        android:id="@+id/timeline_miny"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical|right"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/timeline_minx"
+        android:layout_alignParentLeft="true"
+        android:text="-" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/timeline_minx"
+        android:text="Button" />
+
+</RelativeLayout>

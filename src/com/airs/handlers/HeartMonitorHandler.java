@@ -306,6 +306,17 @@ public class HeartMonitorHandler implements Handler, Runnable
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+	}
+
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -317,14 +328,14 @@ public class HeartMonitorHandler implements Handler, Runnable
 	{
 		if (connected == true)
 		{
-			SensorRepository.insertSensor(new String("HB"), new String(""), new String("event button"), new String("int"), 0, 0, 1, 1000, this);
-			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("battery level"), new String("int"), 0, 0, 100, 10000, this);
-			SensorRepository.insertSensor(new String("HE"), new String("[]"), new String("ECG"), new String("arr"), 0, 0, 255, 1000, this);
-			SensorRepository.insertSensor(new String("HP"), new String("beat"), new String("Pulse"), new String("int"), 0, 0, 200, 2500, this);
-			SensorRepository.insertSensor(new String("HX"), new String("g"), new String("Accelerometer X"), new String("int"), -2, -500, 500, 1000, this);
-			SensorRepository.insertSensor(new String("HY"), new String("g"), new String("Accelerometer Y"), new String("int"), -2, -500, 500, 1000, this);
-			SensorRepository.insertSensor(new String("HZ"), new String("g"), new String("Accelerometer Z"), new String("int"), -2, -500, 500, 1000, this);
-			SensorRepository.insertSensor(new String("HA"), new String("g"), new String("Accel.  (X,Y,Z)"), new String("str"), 0, -500, 500, 1000, this);
+			SensorRepository.insertSensor(new String("HB"), new String(""), new String("event button"), new String("int"), 0, 0, 1, false, 1000, this);
+			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("battery level"), new String("int"), 0, 0, 100, true, 10000, this);
+			SensorRepository.insertSensor(new String("HE"), new String("[]"), new String("ECG"), new String("arr"), 0, 0, 255, false, 1000, this);
+			SensorRepository.insertSensor(new String("HP"), new String("beat"), new String("Pulse"), new String("int"), 0, 0, 200, true, 2500, this);
+			SensorRepository.insertSensor(new String("HX"), new String("g"), new String("Accelerometer X"), new String("int"), -2, -500, 500, false, 1000, this);
+			SensorRepository.insertSensor(new String("HY"), new String("g"), new String("Accelerometer Y"), new String("int"), -2, -500, 500, false, 1000, this);
+			SensorRepository.insertSensor(new String("HZ"), new String("g"), new String("Accelerometer Z"), new String("int"), -2, -500, 500, false, 1000, this);
+			SensorRepository.insertSensor(new String("HA"), new String("g"), new String("Accel.  (X,Y,Z)"), new String("str"), 0, -500, 500, false, 1000, this);
 		}
 	}
 

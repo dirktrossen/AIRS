@@ -135,6 +135,12 @@ public class AIRS_local extends Service
 				(thread = new Thread(this)).start();
 			}
 
+			// return true if sensor has historical data
+			public boolean hasHistory()
+			{
+				return current.hasHistory;
+			}
+			
 			public String share()
 			{
 				return current.handler.Share(current.Symbol);
@@ -583,8 +589,13 @@ public class AIRS_local extends Service
 	 // show info for sensor entry
 	 public void show_info(int j)
 	 {
-		String info = threads[j].info();
-  		Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+		if (threads[j].hasHistory() == true)
+			threads[j].current.handler.History(threads[j].current.Symbol);
+		else
+		{
+			String info = threads[j].info();
+	  		Toast.makeText(getApplicationContext(), info, Toast.LENGTH_LONG).show();
+		}
 	 }
 
 	// ask threads to pause

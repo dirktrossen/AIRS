@@ -19,12 +19,14 @@ package com.airs.handlers;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
+import com.airs.platform.History;
 
 import android.content.Context;
 import android.media.*;
 
 public class AudioHandler implements Handler
 {
+	Context airs;
 	// beacon data
 	private byte [] AA_reading;
 	private byte [] AF_reading;
@@ -32,6 +34,10 @@ public class AudioHandler implements Handler
 	private int polltime = 5000;
 	private final int CENTRE_POINT = 32768;
 	
+	// historical data
+	private History history_AA = new History(History.TYPE_INT);
+	private History history_AF = new History(History.TYPE_INT);
+
 	// audio data
 	private long    frequency = -1;
 	private long    level = -1;
@@ -164,8 +170,7 @@ public class AudioHandler implements Handler
 	 Input       : sensor input is ignored here!
 	 Output      :
 	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
+	 Description : return humand readable sharing string
 	***********************************************************************/
 	public synchronized String Share(String sensor)
 	{
@@ -186,6 +191,27 @@ public class AudioHandler implements Handler
 			return null;
 		}
 	}
+	
+	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		switch(sensor.charAt(1))
+		{
+			case 'A' :
+				history_AA.timelineView(airs, "Ambient Noise [dBm]", -2);
+				break;
+			default:
+				history_AF.timelineView(airs, "Frequency [Hz]", 0);
+				break;
+		}
+	}
+	
 	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
@@ -201,12 +227,15 @@ public class AudioHandler implements Handler
 			return;
 		
 		// here some midlet property check as to whether or not audio capture is supported
-		SensorRepository.insertSensor(new String("AF"), new String("Hz"), new String("Estimated Freq."), new String("int"), 0, 0, 15000, polltime, this);
-		SensorRepository.insertSensor(new String("AA"), new String("dBm"), new String("Avg Amplitude"), new String("int"), -2, -2100, 0, polltime, this);
+		SensorRepository.insertSensor(new String("AF"), new String("Hz"), new String("Estimated Freq."), new String("int"), 0, 0, 15000, true, polltime, this);
+		SensorRepository.insertSensor(new String("AA"), new String("dBm"), new String("Avg Amplitude"), new String("int"), -2, -2100, 0, true, polltime, this);
 	}
 	
 	public AudioHandler(Context nors)
 	{
+		// store for later
+		airs = nors;
+		
 		// now read polltime for audio sampling
 		polltime = HandlerManager.readRMS_i("AudioHandler::samplingpoll", 5) * 1000;
 
@@ -315,6 +344,9 @@ public class AudioHandler implements Handler
 						AA_reading[5] = (byte)(level_new & 0xff);
 						// now remember old frequency
 						level = level_new;
+						
+						// push new level into history
+						history_AA.push((int)level_new);
 					}
 					else
 						AA_reading = null;		
@@ -416,6 +448,8 @@ public class AudioHandler implements Handler
 						AF_reading[5] = (byte)(frequency_new & 0xff);
 						// now remember old frequency
 						frequency = frequency_new;
+						// push new level into history
+						history_AF.push((int)frequency_new);
 					}
 					else
 						AF_reading = null;		

@@ -22,6 +22,7 @@ import java.util.Random;
 import android.content.Context;
 
 import com.airs.platform.HandlerManager;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 /**
@@ -32,10 +33,12 @@ import com.airs.platform.SensorRepository;
  */
 public class RandomHandler implements Handler
 {
+	private Context airs;
 	private Random random = null;
 	// create field that holds acquisition data
 	private byte[] readings = new byte[6];
 	private int polltime=5000;
+	private History history = new History(History.TYPE_INT);
 	
 	/***********************************************************************
 	 Function    : Acquire()
@@ -62,6 +65,10 @@ public class RandomHandler implements Handler
 		readings[3] = (byte)0;
 		readings[4] = (byte)((random_value>>8) & 0xff);
 		readings[5] = (byte)(random_value & 0xff);
+		
+		// store history
+		history.push(((int)(readings[4] & 0xFF) << 8) | ((int)readings[5] & 0xFF));
+		
 		return readings;		
 	}
 	
@@ -79,6 +86,18 @@ public class RandomHandler implements Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		history.timelineView(airs, "Random [-]", 0);
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -88,11 +107,12 @@ public class RandomHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-	    SensorRepository.insertSensor(new String("Rd"), new String("ticks"), new String("Random Number"), new String("int"), 0, 0, 65535, polltime, this);	    
+	    SensorRepository.insertSensor(new String("Rd"), new String("ticks"), new String("Random Number"), new String("int"), 0, 0, 65535, true, polltime, this);	    
 	}
 	
-	public RandomHandler(Context nors)
+	public RandomHandler(Context airs)
 	{
+		this.airs = airs;
 		// read polltime
 		polltime = HandlerManager.readRMS_i("RandomHandler::SamplingRate", 5) * 1000;
 	}

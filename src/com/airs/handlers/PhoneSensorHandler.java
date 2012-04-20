@@ -27,6 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.airs.platform.HandlerManager;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 public class PhoneSensorHandler implements com.airs.handlers.Handler
@@ -53,6 +54,14 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	private Semaphore roll_semaphore 		= new Semaphore(1);
 	private Semaphore pitch_semaphore 		= new Semaphore(1);
 
+	// historical data
+	private History history_Az = new History(History.TYPE_INT);
+	private History history_Pi = new History(History.TYPE_INT);
+	private History history_Ro = new History(History.TYPE_INT);
+	private History history_LI = new History(History.TYPE_INT);
+	private History history_PU = new History(History.TYPE_INT);
+
+	
 	/**
 	 * Sleep function 
 	 * @param millis
@@ -113,6 +122,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					read = true;
 					value = (int)(azimuth*10);
 					azimuth_old = azimuth;
+					history_Az.push(value);
 				}
 			}
 			
@@ -133,6 +143,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(pitch*10);
 						pitch_old = pitch;
+						history_Pi.push(value);
 					}
 				}
 
@@ -153,6 +164,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(roll*10);
 						roll_old = roll;
+						history_Ro.push(value);
 					}
 				}				
 			if (read == false)
@@ -191,6 +203,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(light*10);
 						light_old = light;
+						history_LI.push(value);
 					}
 				}				
 			if (read == false)
@@ -210,6 +223,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(pressure*10);
 						pressure_old = pressure;
+						history_PU.push(value);
 					}
 				}				
 		}
@@ -262,6 +276,33 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		// see which sensors are requested
+		if (sensor.equals("Az") == true)
+			history_Az.timelineView(nors, "Azimuth [degrees]", -1);
+		
+		if (sensor.equals("Pi") == true)
+			history_Pi.timelineView(nors, "Pitch [degrees]", -1);
+
+		if (sensor.equals("Ro") == true)
+			history_Ro.timelineView(nors, "Roll [degrees]", -1);
+
+		if (sensor.equals("LI") == true)
+			history_LI.timelineView(nors, "Light [Lux]", -1);
+		
+		if (sensor.equals("PU") == true)
+			history_PU.timelineView(nors, "Pressure [hPa]", -1);
+	}
+
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -275,16 +316,16 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		{
 		   if (Orientation != null)
 		   {
-			   SensorRepository.insertSensor(new String("Az"), new String("degrees"), new String("Azimuth"), new String("int"), -1, 0, 3600, polltime, this);
-			   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), new String("Pitch"), new String("int"), -1, -1800, 1800, polltime, this);
-			   SensorRepository.insertSensor(new String("Ro"), new String("degrees"), new String("Roll"), new String("int"), -1, -900, 900, polltime, this);	
+			   SensorRepository.insertSensor(new String("Az"), new String("degrees"), new String("Azimuth"), new String("int"), -1, 0, 3600, true, polltime, this);
+			   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), new String("Pitch"), new String("int"), -1, -1800, 1800, true, polltime, this);
+			   SensorRepository.insertSensor(new String("Ro"), new String("degrees"), new String("Roll"), new String("int"), -1, -900, 900, true, polltime, this);	
 		   }
 		   if (Proximity != null)
-			   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, polltime2, this);	
+			   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, false, polltime2, this);	
 		   if (Light != null)
-			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, polltime2, this);	
+			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, true, polltime2, this);	
 		   if (Pressure != null)
-			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Pressure"), new String("int"), -1, 0, 50000, polltime2, this);	
+			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Pressure"), new String("int"), -1, 0, 50000, true, polltime2, this);	
 		}
 	}
 	

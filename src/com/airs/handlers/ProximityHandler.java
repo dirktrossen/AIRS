@@ -125,6 +125,17 @@ public class ProximityHandler implements Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -159,7 +170,7 @@ public class ProximityHandler implements Handler
 					mBtAdapter.enable();
 	        }
 	
-		    SensorRepository.insertSensor(new String("PS"), new String("file"), new String("Proximity Sampling"), new String("txt"), 0, 0, 1, polltime, this);	    
+		    SensorRepository.insertSensor(new String("PS"), new String("file"), new String("Proximity Sampling"), new String("txt"), 0, 0, 1, false, polltime, this);	    
 		}
 		catch(Exception e)
 		{

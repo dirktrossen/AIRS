@@ -29,6 +29,7 @@ import android.telephony.gsm.GsmCellLocation;
 import android.telephony.PhoneStateListener;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 public class CellHandler extends PhoneStateListener implements com.airs.handlers.Handler
@@ -66,6 +67,10 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	private Semaphore lac_semaphore	 		= new Semaphore(1);
 	private Semaphore mcc_semaphore	 		= new Semaphore(1);
 	
+	// historical data
+	private History history_CB = new History(History.TYPE_INT);
+	private History history_CS = new History(History.TYPE_INT);
+
 	protected void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
@@ -157,6 +162,26 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		switch(sensor.charAt(1))
+		{
+		case 'S':
+			history_CS.timelineView(nors, "Signal strength [dBm]", 0);
+			break;
+		case 'B':
+			history_CB.timelineView(nors, "Signal strength [bar]", 0);
+			break;
+		}		
+	}
+
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -168,13 +193,13 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	{
 	    if (enableProperties == true)
 	    {
-		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), new String("Roaming"), new String("int"), 0, 0, 1, 60000, this);	    
-		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), new String("Data connected"), new String("int"), 0, 0, 1, 0, this);	    
-		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), new String("Signal strength"), new String("int"), 0, -120, 0, 0, this);	    
-		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Signal strength"), new String("int"), 0, 0, 7, 0, this);	    
-		    SensorRepository.insertSensor(new String("CI"), new String("ID"), new String("Cell identifier"), new String("int"), 0, 0, 65535, 0, this);	    
-		    SensorRepository.insertSensor(new String("CL"), new String("ID"), new String("Location Area Code"), new String("int"), 0, 0, 65535, 0, this);	    
-		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), new String("Mobile Country Code"), new String("int"), 0, 0, 65535, 0, this);
+		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), new String("Roaming"), new String("int"), 0, 0, 1, false, 60000, this);	    
+		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), new String("Data connected"), new String("int"), 0, 0, 1, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), new String("Signal strength"), new String("int"), 0, -120, 0, true, 0, this);	    
+		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Signal strength"), new String("int"), 0, 0, 7, true, 0, this);	    
+		    SensorRepository.insertSensor(new String("CI"), new String("ID"), new String("Cell identifier"), new String("int"), 0, 0, 65535, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CL"), new String("ID"), new String("Location Area Code"), new String("int"), 0, 0, 65535, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), new String("Mobile Country Code"), new String("int"), 0, 0, 65535, false, 0, this);
 		}		
 	}
 	
@@ -317,6 +342,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 						reading[4] = (byte)((oldcellStrength>>8) & 0xff);
 						reading[5] = (byte)(oldcellStrength & 0xff);
 						
+						history_CS.push(oldcellStrength);
 						// clear flag
 						signal_read = false;
 					}
@@ -344,6 +370,9 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 						reading[4] = (byte)((oldcellStrength_bar>>8) & 0xff);
 						reading[5] = (byte)(oldcellStrength_bar & 0xff);
 						
+						// push history
+						history_CB.push(oldcellStrength_bar);
+
 						// clear flag
 						bar_read = false;
 					}

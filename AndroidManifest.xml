@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="1.9.7.4" android:versionCode="62">
+      android:versionName="2.0" android:versionCode="63">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     
@@ -26,6 +26,7 @@
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"></uses-permission>
  
 	<application android:icon="@drawable/icon" android:label="@string/app_name" >
+	    <uses-library android:name="com.google.android.maps" />    
         <activity android:name="AIRS"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait"
@@ -38,6 +39,8 @@
         </activity>
      <service android:enabled="true" android:name="AIRS_local" android:exported="false" android:label="AIRS Local Sensing"/>
      <service android:enabled="true" android:name="AIRS_remote" android:exported="false" android:label="AIRS Remote Sensing"/>
+     <activity android:name="MapViewerActivity" android:exported="false" android:label="AIRS Mapview"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="TimelineActivity" android:exported="false" android:label="AIRS Timeline"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="AIRS Local Sensing"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="AIRS Remote Sensing"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_shortcut" android:exported="true" android:label="Quick AIRS"></activity>

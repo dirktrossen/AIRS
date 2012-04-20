@@ -142,6 +142,17 @@ public class MediaWatcherHandler implements Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+	}
+
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -153,7 +164,7 @@ public class MediaWatcherHandler implements Handler
 	{
 		// is at least one watch type selected?
 		if (camera == true || music == true || pictures == true)
-			SensorRepository.insertSensor(new String("MW"), new String("file"), new String("Watched media folder"), new String("txt"), 0, 0, 1, 0, this);	    
+			SensorRepository.insertSensor(new String("MW"), new String("file"), new String("Watched media folder"), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	public MediaWatcherHandler(Context airs)

@@ -28,4 +28,5 @@ public interface Handler
     public void   Discover();
     public void   destroyHandler();
     public String Share(String sensor);
+    public void History(String sensor);
 }

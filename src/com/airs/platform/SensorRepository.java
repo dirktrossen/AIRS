@@ -37,10 +37,10 @@ public class SensorRepository
     }
     
     // inserts new sensor in list
-    static synchronized public void insertSensor(String Symbol, String Unit, String Description, String type, int scaler, int min, int max, int poll, Handler handler)
+    static synchronized public void insertSensor(String Symbol, String Unit, String Description, String type, int scaler, int min, int max, boolean hasHistory, int poll, Handler handler)
     {
         // make copy of sensor object
-        new_one = new Sensor(Symbol, Unit, Description, type, scaler, min, max, poll, handler);
+        new_one = new Sensor(Symbol, Unit, Description, type, scaler, min, max, hasHistory, poll, handler);
         // first sensor?
         if (root_sensor == null)
             root_sensor = new_one;

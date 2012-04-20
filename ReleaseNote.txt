@@ -1,3 +1,8 @@
+V2.0:
+- support historical views for local measurements
+- added timeline historical views for local measurements
+- added historical map view for GI measurement
+
 V1.9.7.4:
 - removed bug that rendered GPS useless since V1.9.7.2 update
 

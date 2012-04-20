@@ -139,6 +139,17 @@ public class MoodButtonHandler implements Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -148,7 +159,7 @@ public class MoodButtonHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("MO"), new String("Mood"), new String("Mood button widget"), new String("str"), 0, 0, 6, 0, this);	    
+		SensorRepository.insertSensor(new String("MO"), new String("Mood"), new String("Mood button widget"), new String("str"), 0, 0, 6, false, 0, this);	    
 	}
 	
 	public MoodButtonHandler(Context nors)

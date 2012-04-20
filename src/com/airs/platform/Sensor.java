@@ -36,6 +36,7 @@ public class Sensor
     public int		scaler;				// scaler of the sensor
     public int		min;				// min and max value of sensor reading
     public int 		max;
+    public boolean  hasHistory;			// does this sensor support history?
     public int		polltime;			// polling timer
     byte[]  sensor_data = null;
     byte[]  reading = null;
@@ -58,7 +59,7 @@ public class Sensor
     }
     
     // initialize Sensor based on discovered sensor description 
-    Sensor(String s, String u, String d, String t, int sc, int mi, int ma, int poll, Handler h)
+    Sensor(String s, String u, String d, String t, int sc, int mi, int ma, boolean history, int poll, Handler h)
     {
         handler = h;
         Symbol = new String(s);
@@ -69,6 +70,7 @@ public class Sensor
         next = null;
         min = mi;
         max = ma;
+        hasHistory = history;
         polltime = poll;
         // our last read value is now minus polltime -> when accessing get_value() the first time, it will acquire initial value right away
         last_read = System.currentTimeMillis() - polltime;

@@ -28,6 +28,7 @@ import android.os.Message;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 // this handler has been separated from the standard location handler 
@@ -57,6 +58,11 @@ public class GPSHandler implements com.airs.handlers.Handler
 	private Semaphore speed_semaphore 		= new Semaphore(1);
 	private Semaphore bearing_semaphore 	= new Semaphore(1);
 	private Semaphore full_semaphore 		= new Semaphore(1);
+
+	// historical data
+	private History history_GS = new History(History.TYPE_INT);
+	private History history_GA = new History(History.TYPE_INT);
+	private History history_GI = new History(History.TYPE_COORD);
 
 	protected void debug(String msg) 
 	{
@@ -147,6 +153,33 @@ public class GPSHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		// now read the sensor values
+		switch(sensor.charAt(1))
+		{
+		case 'A':
+		    history_GA.timelineView(airs, "GPS altitude [m]", -1);
+		    break;
+		case 'S':
+		    history_GS.timelineView(airs, "GPS speed [m/s]", -1);
+		    break;
+		case 'I':
+			history_GI.mapView(airs, "GPS traces");
+			break;
+		default:
+			return;
+		}
+	}
+
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -158,12 +191,12 @@ public class GPSHandler implements com.airs.handlers.Handler
 	{
 		if (enableGPS == true)
 		{
-			   SensorRepository.insertSensor(new String("GO"), new String("degrees"), new String("GPS longitude"), new String("int"), -5, -18000000, 18000000, 0, this);
-			   SensorRepository.insertSensor(new String("GL"), new String("degrees"), new String("GPS latitude"), new String("int"), -5, -18000000, 18000000, 0, this);
-			   SensorRepository.insertSensor(new String("GA"), new String("m"), new String("GPS altitude"), new String("int"), -1, -200, 150000, 0, this);
-			   SensorRepository.insertSensor(new String("GI"), new String("txt"), new String("GPS info"), new String("str"), 0, 0, 1, 0, this);
-			   SensorRepository.insertSensor(new String("GC"), new String("degrees"), new String("GPS course"), new String("int"), -1, 0, 3600, 0, this);
-			   SensorRepository.insertSensor(new String("GS"), new String("m/s"), new String("GPS speed"), new String("int"), -1, 0, 10000, 0, this);
+			   SensorRepository.insertSensor(new String("GO"), new String("degrees"), new String("GPS longitude"), new String("int"), -5, -18000000, 18000000, false, 0, this);
+			   SensorRepository.insertSensor(new String("GL"), new String("degrees"), new String("GPS latitude"), new String("int"), -5, -18000000, 18000000, false, 0, this);
+			   SensorRepository.insertSensor(new String("GA"), new String("m"), new String("GPS altitude"), new String("int"), -1, -200, 150000, true, 0, this);
+			   SensorRepository.insertSensor(new String("GI"), new String("txt"), new String("GPS info"), new String("str"), 0, 0, 1, true, 0, this);
+			   SensorRepository.insertSensor(new String("GC"), new String("degrees"), new String("GPS course"), new String("int"), -1, 0, 3600, false, 0, this);
+			   SensorRepository.insertSensor(new String("GS"), new String("m/s"), new String("GPS speed"), new String("int"), -1, 0, 10000, true, 0, this);
 		}		
 	}
 	
@@ -238,11 +271,13 @@ public class GPSHandler implements com.airs.handlers.Handler
 				wait(altitude_semaphore); 
 				value = (int)(Altitude * 10);
 				read = true;
+				history_GA.push(value);
 				break;
 			case 'S':
 				wait(speed_semaphore); 
 				value = (int)(Speed * 10);
 				read = true;
+				history_GS.push(value);
 				break;
 			case 'C':
 				wait(bearing_semaphore); 
@@ -260,6 +295,8 @@ public class GPSHandler implements com.airs.handlers.Handler
 					oldLongitude 	= Longitude;
 					oldLatitude 	= Latitude;
 					oldAltitude 	= Altitude;
+					
+					history_GI.push((int)(Latitude*1e6), (int)(Longitude*1e6));
 				}
 				break;
 			default:

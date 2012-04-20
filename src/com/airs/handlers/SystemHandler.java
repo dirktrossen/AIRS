@@ -21,6 +21,7 @@ import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 import android.app.ActivityManager;
@@ -82,6 +83,13 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore caller_semaphore 		= new Semaphore(1);
 	private Semaphore callee_semaphore 		= new Semaphore(1);
 	private Semaphore received_semaphore 	= new Semaphore(1);
+
+	// historical data
+	private History history_Ba = new History(History.TYPE_INT);
+	private History history_BV = new History(History.TYPE_INT);
+	private History history_BM = new History(History.TYPE_INT);
+	private History history_Rm = new History(History.TYPE_INT);
+
 
 	/**
 	 * Sleep function 
@@ -145,6 +153,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 				read = true;
 				reading_value = Battery; 
 				oldBattery = Battery;
+
+				// push new level into history
+				history_Ba.push(Battery);
 			}
 		}
 
@@ -167,6 +178,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 				read = true;
 				reading_value = voltage; 
 				old_voltage = voltage;
+
+				// push new level into history
+				history_BV.push(voltage);
 			}
 		}
 
@@ -189,6 +203,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 				read = true;
 				reading_value = temperature; 
 				old_temperature = temperature;
+				
+				// push new level into history
+				history_BM.push(temperature);
 			}
 		}
 
@@ -345,6 +362,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 				{
 					read = true;
 					oldRAM = reading_value;
+					
+					// push new level into history
+					history_Rm.push(oldRAM);
 				}
 			}
 			catch(Exception err)
@@ -471,6 +491,32 @@ public class SystemHandler implements com.airs.handlers.Handler
 	}
 	
 	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		// battery level?
+		if(sensor.compareTo("Ba") == 0)
+			history_Ba.timelineView(airs, "Battery level [%]", 0);
+		
+		// battery voltage?
+		if(sensor.compareTo("BV") == 0)
+			history_BV.timelineView(airs, "Battery Voltage [mV]", 0);
+
+		// battery temperature?
+		if(sensor.compareTo("BM") == 0)
+			history_BM.timelineView(airs, "Battery Temperature [C]", -1);
+
+		// current RAM?
+		if(sensor.compareTo("Rm") == 0)
+			history_Rm.timelineView(airs, "RAM [kByte]", 0);
+	}
+	
+	/***********************************************************************
 	 Function    : Discover()
 	 Input       : 
 	 Output      : string with discovery information
@@ -480,17 +526,17 @@ public class SystemHandler implements com.airs.handlers.Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, 0, this);	    
-		SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, 0, this);	    
-		SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, 0, this);	    
-		SensorRepository.insertSensor(new String("BM"), new String("C"), new String("Battery Temperature"), new String("int"), -1, 0, 100, 0, this);	    
-		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("Memory available"), new String("int"), 0, 0, 512000000, polltime, this);	    
-		SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, 0, this);	    
-		SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, 0, this);	    
-    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, 0, this);	    
-    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, 0, this);	    
-    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, 0, this);	    
-    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, polltime, this);	    	    	
+		SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, true, 0, this);	    
+		SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, true, 0, this);	    
+		SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("BM"), new String("C"), new String("Battery Temperature"), new String("int"), -1, 0, 100, true, 0, this);	    
+		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("Memory available"), new String("int"), 0, 0, 512000000, true, polltime, this);	    
+		SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
 	}
 	
 	public SystemHandler(Context airs)

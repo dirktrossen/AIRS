@@ -29,6 +29,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.airs.platform.HandlerManager;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 import android.content.Context;
@@ -85,6 +86,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private Semaphore cond_semaphore	 	= new Semaphore(1);
 	private Semaphore wind_semaphore	 	= new Semaphore(1);
 	private Semaphore info_semaphore	 	= new Semaphore(1);
+	// historical data
+	private History history_VT = new History(History.TYPE_INT);
+	private History history_VF = new History(History.TYPE_INT);
+	private History history_VH = new History(History.TYPE_INT);
 
 	/**
 	 * Sleep function 
@@ -144,6 +149,9 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			readings[4] = (byte)((temperature_c>>8) & 0xff);
 			readings[5] = (byte)(temperature_c & 0xff);
 
+			// push historical data
+			history_VT.push(temperature_c);
+			
 			return readings;
 		}
 
@@ -161,6 +169,9 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			readings[4] = (byte)((temperature_f>>8) & 0xff);
 			readings[5] = (byte)(temperature_f & 0xff);
 
+			// push historical data
+			history_VF.push(temperature_f);
+
 			return readings;
 		}
 		
@@ -177,6 +188,9 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			readings[3] = (byte)((humidity>>16) & 0xff);
 			readings[4] = (byte)((humidity>>8) & 0xff);
 			readings[5] = (byte)(humidity & 0xff);
+
+			// push historical data
+			history_VH.push(humidity);
 
 			return readings;
 		}
@@ -250,6 +264,27 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		return null;		
 	}
 
+	/***********************************************************************
+	 Function    : History()
+	 Input       : sensor input for specific history views
+	 Output      :
+	 Return      :
+	 Description : calls historical views
+	***********************************************************************/
+	public synchronized void History(String sensor)
+	{
+		// temperature in Celcius
+		if(sensor.compareTo("VT") == 0)
+			history_VT.timelineView(nors, "Temperature [C]", 0);
+
+		// temperature in Farenheit
+		if(sensor.compareTo("VF") == 0)
+			history_VF.timelineView(nors, "Temperature [F]", 0);
+		
+		// Humidity
+		if(sensor.compareTo("VH") == 0)
+			history_VH.timelineView(nors, "Humidity [&]", 0);
+	}
 	
 	/***********************************************************************
 	 Function    : Discover()
@@ -263,12 +298,12 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	{
 		if (weather_enabled == true)
 		{
-			SensorRepository.insertSensor(new String("VT"), new String("C"), new String("Temperature (C)"), new String("int"), 0, -50, 100, 0, this);	    
-			SensorRepository.insertSensor(new String("VF"), new String("F"), new String("Temperature (F)"), new String("int"), 0, -50, 100, 0, this);	    
-			SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, 0, this);	    
-			SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, 0, this);	    
-			SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, 0, this);	    
-			SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, 0, this);	    
+			SensorRepository.insertSensor(new String("VT"), new String("C"), new String("Temperature (C)"), new String("int"), 0, -50, 100, true, 0, this);	    
+			SensorRepository.insertSensor(new String("VF"), new String("F"), new String("Temperature (F)"), new String("int"), 0, -50, 100, true, 0, this);	    
+			SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, true, 0, this);	    
+			SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, false, 0, this);	    
 		}
 	}
 	
