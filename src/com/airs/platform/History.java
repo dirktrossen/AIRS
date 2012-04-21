@@ -190,6 +190,9 @@ public class History
     // start timeline activity
     public void timelineView(Context airs, String title, int scaler)
     {
+    	if (rolled_over == false && history_current == 0)
+    		return;
+    	
     	Intent intent = new Intent(airs.getApplicationContext(), TimelineActivity.class);
     	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -222,6 +225,9 @@ public class History
     // start mapview activity
     public void mapView(Context airs, String title)
     {
+    	if (rolled_over == false && history_current == 0)
+    		return;
+
     	Intent intent = new Intent(airs.getApplicationContext(), MapViewerActivity.class);
     	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

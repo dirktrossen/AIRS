@@ -23,7 +23,7 @@
         android:background="@drawable/timeline_border"
         android:layout_alignBottom="@+id/timeline_miny"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/timeline_maxy" />
+        android:layout_toRightOf="@+id/timeline_maxy"/>
     
     <TextView
         android:id="@+id/timeline_minx"
@@ -53,14 +53,5 @@
         android:layout_above="@+id/timeline_minx"
         android:layout_alignParentLeft="true"
         android:text="-" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/timeline_minx"
-        android:text="Button" />
 
 </RelativeLayout>

@@ -1,5 +1,7 @@
 package com.airs;
 
+import java.util.Calendar;
+
 import com.airs.platform.History;
 
 import android.app.Activity;
@@ -8,6 +10,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -59,7 +62,8 @@ public class TimelineActivity extends Activity
     {
     		String title;
     		Intent intent = getIntent();
-    		
+    		Time timeStamp = new Time();
+
             // Set up the window layout
             super.onCreate(savedInstanceState);
 
@@ -102,8 +106,22 @@ public class TimelineActivity extends Activity
 	        // get data entries and determine min/max as well as set edit fields
 	        getDataAndMax();
 	        
-	        if (number_values == 0)
-	        	finish();
+	        switch (number_values)
+	        {
+	        	case 0:	// if there's no value, then return
+		        	finish();
+		        	break;
+	        	case 1:	// if there's only one value then show Toast message only
+	        		timeStamp.set(time[0]);
+	        		minX.setText(timeStamp.format("%H:%M:%S"));
+					
+	        		if (scaler == 0)
+	        			Toast.makeText(getApplicationContext(), "First sensing at " + timeStamp.format("%H:%M:%S") + " with value : " + Integer.toString(history_i[0]), Toast.LENGTH_LONG).show();
+	        		else
+	        			Toast.makeText(getApplicationContext(), "First sensing at " + timeStamp.format("%H:%M:%S") + " with value : " + Integer.toString(history_i[0]) + "* 10^" + Integer.toString(scaler), Toast.LENGTH_LONG).show();
+	        		finish();
+	        		break;    
+	        }
     }
 
     @Override
@@ -184,7 +202,8 @@ public class TimelineActivity extends Activity
     {
 		int i;
 		Time timeStamp = new Time();
-		float fscaler;
+		float fscaler, minx, maxx;
+		String minS, maxS;
 
 		number_values = bundle.getInt("com.airs.Length");	// get number of values
     	time = bundle.getLongArray("com.airs.Time");		// get time values
@@ -217,8 +236,32 @@ public class TimelineActivity extends Activity
         				maxTime = time[i];
         		}       		
         		// set axis descriptions
-        		minY.setText(Integer.toString((int)((float)min*fscaler)));
-        		maxY.setText(Integer.toString((int)((float)max*fscaler)));
+        		minx = (float)min * fscaler;
+        		maxx = (float)max * fscaler;
+        		
+        		// if values before left of decimal are the same -> need to show float decimals
+        		if (Math.floor(minx) == Math.floor(maxx))
+        		{      
+        			minS = Float.toString((float)min*fscaler);
+        			maxS = Float.toString((float)max*fscaler);
+        			
+        			// show same length decimals!
+        			if (minS.length() > maxS.length())
+        			{	
+		        		minY.setText(minS.substring(0, maxS.length()));
+		        		maxY.setText(maxS);
+        			}
+        			else
+        			{
+		        		minY.setText(minS);
+		        		maxY.setText(maxS.substring(0, minS.length()));        				
+        			}
+        		}
+        		else	// otherwise only show integers
+        		{
+            		minY.setText(Integer.toString((int)((float)min*fscaler)));
+            		maxY.setText(Integer.toString((int)((float)max*fscaler)));        			
+        		}
         		timeStamp.set(minTime);
         		minX.setText(timeStamp.format("%H:%M:%S"));
         		timeStamp.set(maxTime);

@@ -48,13 +48,16 @@
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
 - support historical views for local measurements\n
-- added timeline historical views for local measurements\n
-- added historical map view for GI measurement
+- added timeline historical views for local measurements with improved axis for timeline\n
+- added historical map view for GI measurement (now showing the time of measurement for each marker)\n
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.0.1:\n
+- improved mapview (now showing the time of measurement for each marker)\n
+- improved axis for timeline\n\n
 V2.0:\n
 - support historical views for local measurements\n
 - added timeline historical views for local measurements\n

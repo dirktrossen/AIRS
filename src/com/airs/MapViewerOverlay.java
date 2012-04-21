@@ -18,7 +18,9 @@ package com.airs;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.widget.Toast;
 
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.OverlayItem;
@@ -26,11 +28,13 @@ import com.google.android.maps.OverlayItem;
 public class MapViewerOverlay extends ItemizedOverlay 
 {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-
-	public MapViewerOverlay(Drawable arg0) 
+	private Context airs;
+	
+	public MapViewerOverlay(Drawable arg0, Context airs) 
 	{
 		super(boundCenterBottom(arg0));
 		// TODO Auto-generated constructor stub
+		this.airs = airs;
 	}
 
 
@@ -38,6 +42,16 @@ public class MapViewerOverlay extends ItemizedOverlay
 	{
 	    mOverlays.add(overlay);
 	    populate();
+	}
+	
+	@Override
+	protected  boolean	onTap(int index) 
+	{
+		OverlayItem item = mOverlays.get(index);
+		
+		Toast.makeText(airs, "Measured at " + item.getTitle(), Toast.LENGTH_LONG).show();
+
+		return false;
 	}
 	
 	@Override
