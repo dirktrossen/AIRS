@@ -37,6 +37,13 @@ public class MapViewerOverlay extends ItemizedOverlay
 		this.airs = airs;
 	}
 
+	public void addOverlay(OverlayItem overlay, Drawable marker)
+	{
+		// set marker for this item
+		overlay.setMarker(boundCenterBottom(marker));
+	    mOverlays.add(overlay);
+	    populate();
+	}
 
 	public void addOverlay(OverlayItem overlay) 
 	{

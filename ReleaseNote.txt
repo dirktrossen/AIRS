@@ -1,3 +1,7 @@
+V2.0.2:
+- show different marker for and focus on last position
+- save zoom level for map view
+
 V2.0.1:
 - improved mapview (now showing the time of measurement for each marker)
 - improved axis for timeline

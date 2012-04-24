@@ -17,7 +17,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import java.util.List;
-
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -26,8 +25,11 @@ import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.view.Window;
 import android.widget.TextView;
@@ -42,10 +44,13 @@ public class MapViewerActivity extends MapActivity
     private int history_y[];			// different history arrays
 	private long time[];
 	private int  number_values;
+	private int zoomLevel;
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private MapViewerOverlay itemizedOverlay;
 	private MapController mapController;
+    private SharedPreferences settings;
+    private Editor editor;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -60,6 +65,13 @@ public class MapViewerActivity extends MapActivity
         // Set up the window layout
         super.onCreate(savedInstanceState);
 
+        // get preferences
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+       	editor = settings.edit();
+
+       	// get previous zoom level
+       	zoomLevel = settings.getInt("ZoomLevel", 15);
+        
         // get activity parameters
         bundle = intent.getExtras();
 
@@ -88,6 +100,8 @@ public class MapViewerActivity extends MapActivity
     	
     	// get controller for map
     	mapController = mapView.getController();
+    	// set zoom level
+    	mapController.setZoom(zoomLevel);
     	
     	// create overlays
     	mapOverlays = mapView.getOverlays();
@@ -110,7 +124,15 @@ public class MapViewerActivity extends MapActivity
     		// create geo point
     		point = new GeoPoint(history_x[i], history_y[i]);
         	overlayitem = new OverlayItem(point, timeStamp.format("%H:%M:%S on %d.%m.%Y"), "");
-        	itemizedOverlay.addOverlay(overlayitem);
+        	
+        	// is this the last element?
+        	if (i==number_values-1)
+        	{
+            	mapController.animateTo(point);				// then centre map at it and use different marker pin!
+        		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
+        	}
+        	else // add overlay item to list with default marker        	        	
+        		itemizedOverlay.addOverlay(overlayitem);
         	
 	        // dereference for garbage collector
 	       	point = null;
@@ -118,16 +140,19 @@ public class MapViewerActivity extends MapActivity
     	}
     	
     	// now add overlay to picture
-    	mapOverlays.add(itemizedOverlay);
-    	
-    	// now set span of zoom and centre of map to last measurements
-    	mapController.setZoom(15);
-		point = new GeoPoint(history_x[number_values-1], history_y[number_values-1]);
-    	mapController.animateTo(point);
-    	
-    	point= null;
+    	mapOverlays.add(itemizedOverlay);    	
     }
-
+    
+    @Override
+    public void onDestroy() 
+    {
+       super.onDestroy();
+       
+       // store current zoom level for later
+       editor.putInt("ZoomLevel", mapView.getZoomLevel());
+       editor.commit();
+    }
+    
 	@Override
 	protected boolean isRouteDisplayed() 
 	{

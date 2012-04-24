@@ -34,8 +34,8 @@ public class History
     private int history_int[];			// different history arrays
     private int history_x[];			// different history arrays
     private int history_y[];			// different history arrays
-    private int copy_x[];
-    private int copy_y[];
+    private int copy_x[] = null;
+    private int copy_y[] = null;
     private long history_time[];
     private boolean rolled_over = false;
     
@@ -107,7 +107,7 @@ public class History
     	// start with the entry one after the current one, if we have rolled over at least once
     	if (rolled_over == true)
     	{
-	    	current = history_current + 1;
+	    	current = history_current;
 	    	if (current >= history_length)
 	    		current = 0;
     	}
@@ -136,7 +136,7 @@ public class History
     	// start with the entry one after the current one, if we have rolled over at least once
     	if (rolled_over == true)
     	{
-	    	current = history_current + 1;
+	    	current = history_current;
 	    	if (current >= history_length)
 	    		current = 0;
     	}
@@ -161,13 +161,16 @@ public class History
     {
     	int i = 0, current;
     	
-    	copy_x = new int[history_length];
-    	copy_y = new int[history_length];
+    	if (copy_x == null)
+    	{
+	    	copy_x = new int[history_length];
+	    	copy_y = new int[history_length];
+    	}
 
     	// start with the entry one after the current one, if we have rolled over at least once
     	if (rolled_over == true)
     	{
-	    	current = history_current + 1;
+	    	current = history_current;
 	    	if (current >= history_length)
 	    		current = 0;
     	}

@@ -258,12 +258,18 @@ public class AudioHandler implements Handler
 	
 	public void destroyHandler()
 	{
-		if (p != null)
+		try
 		{
-			if (p.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING)
-				p.stop();
-			p.release();
-			p = null;
+			if (p != null)
+			{
+				if (p.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING)
+					p.stop();
+				p.release();
+				p = null;
+			}
+		}
+		catch(Exception e)
+		{
 		}
 	}
 	

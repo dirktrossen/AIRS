@@ -47,14 +47,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- support historical views for local measurements\n
-- added timeline historical views for local measurements with improved axis for timeline\n
-- added historical map view for GI measurement (now showing the time of measurement for each marker)\n
+- in mapview, focus is now on last position and it has a different marker for it\n
+- stores zoom level for map view
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.0.2:\n
+- show different marker for and focus on last position\n
+- save zoom level for map view\n\n
 V2.0.1:\n
 - improved mapview (now showing the time of measurement for each marker)\n
 - improved axis for timeline\n\n
