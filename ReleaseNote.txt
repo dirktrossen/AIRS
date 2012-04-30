@@ -1,3 +1,8 @@
+V2.0.3:
+- changed AA sensor to measure sound pressure level in dB now
+- added sound pressure adjustment setting in preferences
+- improved AA sensing through native log10 method
+
 V2.0.2:
 - show different marker for and focus on last position
 - save zoom level for map view

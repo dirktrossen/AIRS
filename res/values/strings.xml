@@ -47,13 +47,18 @@
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- in mapview, focus is now on last position and it has a different marker for it\n
-- stores zoom level for map view
+- changed AA sensor to measure sound pressure level in dB now\n
+- added sound pressure adjustment setting in preferences\n
+- improved AA sensing through native log10 method
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.0.3:\n
+- changed AA sensor to measure sound pressure level in dB now\n
+- added sound pressure adjustment setting in preferences\n
+- improved AA sensing through native log10 method\n\n
 V2.0.2:\n
 - show different marker for and focus on last position\n
 - save zoom level for map view\n\n

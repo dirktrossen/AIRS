@@ -42,6 +42,7 @@ public class AudioHandler implements Handler
 	private long    frequency = -1;
 	private long    level = -1;
 	private int		sample_rate = 8000;
+	private int		AA_adjust = 3;
 	
 	// availability of player
 	private boolean available = false;
@@ -50,14 +51,6 @@ public class AudioHandler implements Handler
 	// Player for audio capture
 	private AudioRecord p;
 	private short[] output = null;
-	
-	// constants for log10 calculation
-
-	// Log10 constant 
-	private double LOG10 = 2.302585092994045684;
-	// ln(0.5) constant
-	private double LOGdiv2 = -0.6931471805599453094;
-
 
 	protected void debug(String msg) 
 	{
@@ -79,60 +72,6 @@ public class AudioHandler implements Handler
 		}
 	}
 
-	// log helper functions  
-	private double _log(double x)
-	  {
-		  double f=0.0, y1, y2, y, k;
-		  int appendix=0, i;
-	    
-		  if(!(x>0.))
-			  return Double.NaN;
-
-		  while(x>0.0 && x<=1.0)
-		  {
-			  x*=2.0;
-			  appendix++;
-		  }
-		  x/=2.0;
-		  appendix--;
-
-		  y1=x-1.;
-		  y2=x+1.;
-		  y=y1/y2;
-		  k=y;
-		  y2=k*y;
-
-		  for(i=1; i<50; i+=2)
-		  {
-		      f+=k/i;
-		      k*=y2;
-		  }
-
-		  f*=2.0;
-		  for(i=0; i<appendix; i++)
-			  f+=LOGdiv2;
-		  
-		  return f;
-	  }
-   
-	private double log10(double x)
-	   {
-	     if(!(x>0.))
-	       return Double.NaN;
-	     //
-	     if(x==1.0)
-	       return 0.0;
-	     // Argument of _log must be (0; 1]
-	     if (x>1.)
-	     {
-	       x=1/x;
-	       return -_log(x)/LOG10;
-	     };
-	     //
-	     return _log(x)/LOG10;
-	   }
-
-	
 	/***********************************************************************
 	 Function    : Acquire()
 	 Input       : sensor input is ignored here!
@@ -180,7 +119,7 @@ public class AudioHandler implements Handler
 			switch(sensor.charAt(1))
 			{
 				case 'A' :
-					return "My current ambient sound level is at "+String.valueOf((double)level / 100) + " dBm";
+					return "My current ambient sound level is at "+String.valueOf((double)level / 100) + " dB";
 				default:
 					return null;
 			}
@@ -204,7 +143,7 @@ public class AudioHandler implements Handler
 		switch(sensor.charAt(1))
 		{
 			case 'A' :
-				history_AA.timelineView(airs, "Ambient Noise [dBm]", -2);
+				history_AA.timelineView(airs, "Sound Pressure Level [dB]", -2);
 				break;
 			default:
 				history_AF.timelineView(airs, "Frequency [Hz]", 0);
@@ -228,7 +167,7 @@ public class AudioHandler implements Handler
 		
 		// here some midlet property check as to whether or not audio capture is supported
 		SensorRepository.insertSensor(new String("AF"), new String("Hz"), new String("Estimated Freq."), new String("int"), 0, 0, 15000, true, polltime, this);
-		SensorRepository.insertSensor(new String("AA"), new String("dBm"), new String("Avg Amplitude"), new String("int"), -2, -2100, 0, true, polltime, this);
+		SensorRepository.insertSensor(new String("AA"), new String("dB"), new String("Sound Pressure Level"), new String("int"), -2, 0, 1200, true, polltime, this);
 	}
 	
 	public AudioHandler(Context nors)
@@ -241,6 +180,9 @@ public class AudioHandler implements Handler
 
 		// now read frequency for sampling
 		sample_rate = HandlerManager.readRMS_i("AudioHandler::SamplingRate", 8000);
+
+		// now read adjustment for AA reading
+		AA_adjust = HandlerManager.readRMS_i("AudioHandler::AA_adjust", 3);
 
 		// start player and see if it's there!
 		p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, sample_rate * 4);
@@ -328,13 +270,15 @@ public class AudioHandler implements Handler
 			    	for (i=0;i<output.length;i++)
 			    	{
 			    		// given that the PCM encoding delivers unsigned SHORTS, we need to convert the amplitude around the 32768 centre point!
-			    		ampl = (long)(CENTRE_POINT-Math.abs(output[i]));
+//			    		ampl = (long)(CENTRE_POINT-Math.abs(output[i]));		    		
+			    		ampl = (long)Math.abs(output[i]);
+			    		
 			    		// now ampl*ampl for field force
 		    			level_new += ampl * ampl;
 			    	}
 			    	
-			    	// compute decible through 10*log10 (A1^2/A0^2)
-			    	level_d = 10 * log10(((double)level_new / (double)output.length)/(double)(CENTRE_POINT * CENTRE_POINT));
+			    	// compute decibel through 10*log10 (A1^2/A0^2)
+			    	level_d = 10 * Math.log10((double)level_new / (double)output.length) + (double)AA_adjust;
 			    	level_new = (long)(level_d*100);		    	
 			    		 
 					// did anything change in the position?

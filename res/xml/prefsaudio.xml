@@ -35,4 +35,11 @@
         android:numeric="integer"
         android:title="Audio Interval [s]"
         android:key="AudioHandler::samplingpoll"/>        
+    <EditTextPreference
+		android:dialogIcon="@drawable/audio"
+        android:summary="Adjustment in dB for Sounds Pressure Level"
+        android:defaultValue="3"
+        android:numeric="integer"
+        android:title="Sound Pressure Adjustment [dB]"
+        android:key="AudioHandler::AA_adjust"/>        
 </PreferenceScreen>
