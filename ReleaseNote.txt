@@ -1,3 +1,6 @@
+V2.0.4:
+- deprecated AA sensor in favour of new AS sensor (sound pressure level)
+
 V2.0.3:
 - changed AA sensor to measure sound pressure level in dB now
 - added sound pressure adjustment setting in preferences

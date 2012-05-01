@@ -47,14 +47,15 @@
 <string name="HandlersList">Select the specific handler to configure available settings!</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- changed AA sensor to measure sound pressure level in dB now\n
-- added sound pressure adjustment setting in preferences\n
-- improved AA sensing through native log10 method
+- deprecated AA sensor in favour of new AS sensor (sound pressure level)\n
+- added sound pressure adjustment setting in preferences
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.0.4:\n
+- deprecated AA sensor in favour of new AS sensor (sound pressure level)\n\n
 V2.0.3:\n
 - changed AA sensor to measure sound pressure level in dB now\n
 - added sound pressure adjustment setting in preferences\n
