@@ -28,14 +28,14 @@ public class AudioHandler implements Handler
 {
 	Context airs;
 	// beacon data
-	private byte [] AA_reading;
+	private byte [] AS_reading;
 	private byte [] AF_reading;
 	// configuration data
 	private int polltime = 5000;
 	private final int CENTRE_POINT = 32768;
 	
 	// historical data
-	private History history_AA = new History(History.TYPE_INT);
+	private History history_AS = new History(History.TYPE_INT);
 	private History history_AF = new History(History.TYPE_INT);
 
 	// audio data
@@ -87,9 +87,9 @@ public class AudioHandler implements Handler
 		{
 			switch(sensor.charAt(1))
 			{
-				case 'A' :
+				case 'S' :
 					Amplitude(sensor);
-					return AA_reading;
+					return AS_reading;
 				case 'F' :
 					Frequency(sensor);
 					return AF_reading;
@@ -118,7 +118,7 @@ public class AudioHandler implements Handler
 		{
 			switch(sensor.charAt(1))
 			{
-				case 'A' :
+				case 'S' :
 					return "My current ambient sound level is at "+String.valueOf((double)level / 100) + " dB";
 				default:
 					return null;
@@ -142,8 +142,8 @@ public class AudioHandler implements Handler
 	{
 		switch(sensor.charAt(1))
 		{
-			case 'A' :
-				history_AA.timelineView(airs, "Sound Pressure Level [dB]", -2);
+			case 'S' :
+				history_AS.timelineView(airs, "Sound Pressure Level [dB]", -2);
 				break;
 			default:
 				history_AF.timelineView(airs, "Frequency [Hz]", 0);
@@ -229,7 +229,7 @@ public class AudioHandler implements Handler
 		havePlayer = true;
 		
 		// remove last reading
-		AA_reading = null;
+		AS_reading = null;
 		
 		// now record
 		try
@@ -254,7 +254,7 @@ public class AudioHandler implements Handler
 				    	if (recorded == AudioRecord.ERROR_INVALID_OPERATION)
 				    	{
 				    		debug("AudioHandler:invalid operation!");
-				    		AA_reading = null;
+				    		AS_reading = null;
 				    		havePlayer = false;
 				    		return;
 				    	}
@@ -285,27 +285,27 @@ public class AudioHandler implements Handler
 					if (level_new != level)
 					{
 						// take positioning info and place in reading field
-						AA_reading = new byte[4 + 2];
-						AA_reading[0] = (byte)sensor.charAt(0);
-						AA_reading[1] = (byte)sensor.charAt(1);
-						AA_reading[2] = (byte)((level_new>>24) & 0xff);
-						AA_reading[3] = (byte)((level_new>>16) & 0xff);
-						AA_reading[4] = (byte)((level_new>>8) & 0xff);
-						AA_reading[5] = (byte)(level_new & 0xff);
+						AS_reading = new byte[4 + 2];
+						AS_reading[0] = (byte)sensor.charAt(0);
+						AS_reading[1] = (byte)sensor.charAt(1);
+						AS_reading[2] = (byte)((level_new>>24) & 0xff);
+						AS_reading[3] = (byte)((level_new>>16) & 0xff);
+						AS_reading[4] = (byte)((level_new>>8) & 0xff);
+						AS_reading[5] = (byte)(level_new & 0xff);
 						// now remember old frequency
 						level = level_new;
 						
 						// push new level into history
-						history_AA.push((int)level_new);
+						history_AS.push((int)level_new);
 					}
 					else
-						AA_reading = null;		
+						AS_reading = null;		
 				}
 		}
 		catch(Exception e)
 		{
     		debug("AudioHandler:Exception when requesting AudioRecord!");
-			AA_reading = null;
+			AS_reading = null;
 		}	
 		
 		// don't need player anymore
