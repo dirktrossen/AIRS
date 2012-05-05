@@ -1,3 +1,6 @@
+V2.0.5:
+- added right permission for controlling A-GPS data download (option in General Settings)
+
 V2.0.4:
 - deprecated AA sensor in favour of new AS sensor (sound pressure level)
 
