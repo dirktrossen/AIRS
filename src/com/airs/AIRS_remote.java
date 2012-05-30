@@ -277,7 +277,7 @@ public class AIRS_remote extends Service
            	// now create new notification
            	mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
   		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
-  		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS.class);
+  		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
   		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
   			notification.setLatestEventInfo(getApplicationContext(), "AIRS Remote Sensing", "...has been killed at " + Integer.toString(BatteryKill_i) + "% battery...", contentIntent);
   			

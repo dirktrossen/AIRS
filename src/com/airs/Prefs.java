@@ -47,8 +47,8 @@ public class Prefs extends PreferenceActivity
         addPreferencesFromResource(rid);
         
         // call current handlerUI's configuration function to adjust preferences
-        if (AIRS.current_handler != null)
-        	AIRS.current_handler.configurePreference(this);
+        if (AIRS_settings_tab.current_handler != null)
+        	AIRS_settings_tab.current_handler.configurePreference(this);
     }
 
     @Override

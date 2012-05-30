@@ -1,7 +1,5 @@
 package com.airs;
 
-import java.util.Calendar;
-
 import com.airs.platform.History;
 
 import android.app.Activity;
@@ -10,7 +8,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.format.DateFormat;
 import android.text.format.Time;
 import android.view.Display;
 import android.view.KeyEvent;

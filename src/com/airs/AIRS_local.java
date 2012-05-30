@@ -446,6 +446,9 @@ public class AIRS_local extends Service
 	    		// store timestamp
 	    		String time = new String(cal.getTime().toString() + "\n");
 	    		os.write(time.getBytes(), 0, time.length());
+	    		
+	    		// store current recording file persistently
+	            HandlerManager.writeRMS("AIRS_local::recording_file", String.valueOf(currentmilli));
 
 		    } 
 		    catch(Exception e)
@@ -789,7 +792,7 @@ public class AIRS_local extends Service
 		 return true;
 	 }
 	 
-	 public void Discover(AIRS airs)
+	 public void Discover(AIRS_local_tab airs)
 	 {
 			int i;
 			String sensor_setting;
@@ -801,7 +804,6 @@ public class AIRS_local extends Service
 			start_AIRS_local();
 
 			airs.setContentView(R.layout.sensors);
-			airs.mTitle2.setText("Choose sensors for local sensing");
      
 	        sensors 	= (ListView)airs.findViewById(R.id.sensorList);
 	        sensors.setItemsCanFocus(false); 
@@ -864,8 +866,6 @@ public class AIRS_local extends Service
  				}
 		    }
 		    
-		    // signal current menu
-			airs.currentMenu = AIRS.MENU_LOCAL;
 			// signal that it is discovered
 			discovered = true;
 	 }	
@@ -1087,7 +1087,7 @@ public class AIRS_local extends Service
             	// now create new notification
             	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
        		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
-       		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS.class);
+       		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
        		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
        			notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...has been killed at " + Integer.toString(BatteryKill_i) + "% battery...", contentIntent);
        			

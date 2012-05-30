@@ -1,3 +1,16 @@
+V2.1:
+- changed UI to tabbed layout
+- enable direct start of local recording, in addition to selecting sensors before starting
+- now support portrait/landscape orientation
+- merged general and handler settings into single menu
+- added viewing of online manual in separate tab
+- enable start of AIRS UI even if service is running (e.g., for sync'ing)
+- allow sync'ing while running (excludes current recording from sync'ing)
+- added buttons to map view for animating into current or last recorded location
+
+V2.0.6:
+- now show current location in map view
+
 V2.0.5:
 - added right permission for controlling A-GPS data download (option in General Settings)
 

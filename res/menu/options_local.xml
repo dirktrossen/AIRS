@@ -29,9 +29,6 @@
     <item android:id="@+id/local_unselectall"
           android:icon="@android:drawable/ic_menu_delete"
           android:title="Unselect All" />
-    <item android:id="@+id/local_shortcut"
-          android:icon="@android:drawable/ic_menu_add"
-          android:title="Shortcut" />
     <item android:id="@+id/local_sensorinfo"
           android:icon="@android:drawable/ic_menu_search"
           android:title="Info" />

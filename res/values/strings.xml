@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+  Copyright (C) 2011-2012, Dirk Trossen, airs@dirk-trossen.de
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,7 @@
  -->
 <resources>
 <string name="app_name">AIRS</string>
-<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2011 Dirk Trossen
+<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen
 \n\nContact: airs@dirk-trossen.de
 \n\nManual: http://dalore.net/DOT/software/airs-online-manual
 \n\nAIRS source code is licensed under LGPL 2.0 license and hosted on Github. For more information on license terms, review <b>license.txt</b>!
@@ -37,6 +37,7 @@
 \'Wakeup\' only senses in local mode when there is any other (user) activity, i.e., it does not hold a wake-lock.\n\n
 \'Watchdog Interval\' defines the vibration interval for the local sensing watchdog (0 switches the vibrate off)\n\n
 \'Debug\' switches the debug output on/off. \n</string>
+<string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage.</string>
 <string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record and press <b>Start</b> to record.</string>
 <string name="SyncAbout">Synchronize the local recordings, allowing for you to share, e.g., via Bluetooth, the ones not yet shared before.\n\nThe sync time will be stored so that the current files will not show up for the next sync operation!</string>
 <string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the recordings only).</string>
@@ -44,15 +45,33 @@
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own mood entry in the text field at the bottom.</string>
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
 <string name="TimelineAbout">Shows a historical timeline of the sensor you just clicked on. You can change the number of historical values in the <b>General Settings</b>\nExit the timeline by using the <b>BACK</b> key!</string>
-<string name="HandlersList">Select the specific handler to configure available settings!</string>
+<string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- added right permission for controlling A-GPS data download (option in General Settings)
+- changed UI to tabbed layout\n
+- enable direct start of local recording, in addition to selecting sensors before starting\n
+- now support portrait/landscape orientation\n
+- merged general and handler settings into single menu\n
+- added viewing of online manual in separate tab\n
+- enable start of AIRS UI even if service is running (e.g., for sync\'ing)\n
+- allow sync\'ing while running (excludes current recording from sync\'ing)\n
+- added buttons to map view for animating into current or last recorded location
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.1:\n
+- changed UI to tabbed layout\n
+- enable direct start of local recording, in addition to selecting sensors before starting\n
+- now support portrait/landscape orientation\n
+- merged general and handler settings into single menu\n
+- added viewing of online manual in separate tab\n
+- enable start of AIRS UI even if service is running (e.g., for sync\'ing)\n
+- allow sync\'ing while running (excludes current recording from sync\'ing)\n
+- added buttons to map view for animating into current or last recorded location\n\n
+V2.0.6:\n
+- now show current location in map view\n\n
 V2.0.5:\n
 - added right permission for controlling A-GPS data download (option in General Settings)\n\n
 V2.0.4:\n

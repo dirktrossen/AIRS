@@ -8,7 +8,32 @@
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:clickable="true"
         android:apiKey="0gXuVKplCEBaK43r_baLWx2pI-5sDuxSs5ETsuw"
-    />
+        android:clickable="true" />
+
+    <ImageButton
+        android:id="@+id/mapview_my_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:contentDescription="My current location"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="onClick"
+        android:src="@android:drawable/ic_menu_compass" />
+
+    <ImageButton
+        android:id="@+id/mapview_last_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="21dp"
+        android:layout_toLeftOf="@+id/mapview_my_location"
+        android:clickable="true"
+        android:contentDescription="Last recorded location"
+        android:hapticFeedbackEnabled="true"
+        android:onClick="onClick"
+        android:src="@android:drawable/ic_menu_myplaces" />
+
 </RelativeLayout>

@@ -42,14 +42,14 @@ public class HandlerUIManager
     public final static int max_handlers = 11; 
     // preferences
     static private SharedPreferences settings;
-    static private AIRS airs;
+    static private Context airs;
     
 	protected static void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
 	
-	static boolean createHandlerUIs(AIRS activity)
+	static boolean createHandlerUIs(Context activity)
 	{
 		int index = 0;
 		

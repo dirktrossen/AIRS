@@ -21,6 +21,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
@@ -31,10 +32,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MapViewerActivity extends MapActivity
+public class MapViewerActivity extends MapActivity implements OnClickListener
 {
     private TextView		mTitle;
     public  TextView 		mTitle2;
@@ -48,9 +53,12 @@ public class MapViewerActivity extends MapActivity
 	private List<Overlay> mapOverlays;
 	private Drawable drawable;
 	private MapViewerOverlay itemizedOverlay;
+	private MyLocationOverlay ownLocation;
 	private MapController mapController;
     private SharedPreferences settings;
     private Editor editor;
+    private GeoPoint last_recorded_location;
+
 	
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -88,6 +96,13 @@ public class MapViewerActivity extends MapActivity
         mTitle2 = (TextView) findViewById(R.id.title_right_text);
         mTitle.setText(R.string.app_name);
        
+        // set listener for buttons
+        ImageButton button 		= (ImageButton)findViewById(R.id.mapview_my_location);
+        button.setOnClickListener(this);
+        button 		= (ImageButton)findViewById(R.id.mapview_last_location);
+        button.setOnClickListener(this);
+
+        // get and set title
         title = bundle.getString("com.airs.Title");
         if (title != null)
         	mTitle2.setText(title);
@@ -128,6 +143,7 @@ public class MapViewerActivity extends MapActivity
         	// is this the last element?
         	if (i==number_values-1)
         	{
+        		last_recorded_location = point;				// save point for later in case button is pressed
             	mapController.animateTo(point);				// then centre map at it and use different marker pin!
         		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
         	}
@@ -140,7 +156,13 @@ public class MapViewerActivity extends MapActivity
     	}
     	
     	// now add overlay to picture
-    	mapOverlays.add(itemizedOverlay);    	
+    	mapOverlays.add(itemizedOverlay);    
+    	
+    	// now add own location overlay
+    	ownLocation = new MyLocationOverlay(getApplicationContext(), mapView);
+    	ownLocation.enableCompass();
+    	ownLocation.enableMyLocation();
+    	mapOverlays.add(ownLocation);
     }
     
     @Override
@@ -148,7 +170,10 @@ public class MapViewerActivity extends MapActivity
     {
        super.onDestroy();
        
-       // store current zoom level for later
+   	   // unregister location updates
+       ownLocation.disableMyLocation();
+
+   	// store current zoom level for later
        editor.putInt("ZoomLevel", mapView.getZoomLevel());
        editor.commit();
     }
@@ -159,4 +184,17 @@ public class MapViewerActivity extends MapActivity
 	    return false;
 	}
 	
+    public void onClick(View v) 
+    {
+    	// dispatch depending on button pressed
+    	switch(v.getId())
+    	{
+    	case R.id.mapview_my_location:
+    		mapController.animateTo(ownLocation.getMyLocation());
+            break;
+    	case R.id.mapview_last_location:
+        	mapController.animateTo(last_recorded_location);				// then centre map at it and use different marker pin!
+    		break;
+    	}	
+    }
 }
