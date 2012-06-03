@@ -20,7 +20,10 @@
     <item android:id="@+id/main_about"
           android:icon="@android:drawable/ic_menu_info_details"
           android:title="@string/main_About" />
-    <item android:id="@+id/main_shortcut"
-          android:icon="@android:drawable/ic_menu_set_as"
-          android:title="Quick Start Shortcut" />
+    <item android:id="@+id/map_mapview"
+          android:icon="@android:drawable/ic_menu_mapmode"
+          android:title="Map View" />
+    <item android:id="@+id/map_satview"
+          android:icon="@android:drawable/ic_menu_mapmode"
+          android:title="Satellite View" />
 </menu>

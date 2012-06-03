@@ -37,6 +37,7 @@
 \'Wakeup\' only senses in local mode when there is any other (user) activity, i.e., it does not hold a wake-lock.\n\n
 \'Watchdog Interval\' defines the vibration interval for the local sensing watchdog (0 switches the vibrate off)\n\n
 \'Debug\' switches the debug output on/off. \n</string>
+<string name="MapAbout">Shows a path of recent GPS recording. You can click on a marker for more information. You can center the map either on your current location or the last stored one (using the buttons on the top right). You can also switch between map or satellite view with the appropriate options menu item.</string>
 <string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage.</string>
 <string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record and press <b>Start</b> to record.</string>
 <string name="SyncAbout">Synchronize the local recordings, allowing for you to share, e.g., via Bluetooth, the ones not yet shared before.\n\nThe sync time will be stored so that the current files will not show up for the next sync operation!</string>
@@ -48,19 +49,14 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- changed UI to tabbed layout\n
-- enable direct start of local recording, in addition to selecting sensors before starting\n
-- now support portrait/landscape orientation\n
-- merged general and handler settings into single menu\n
-- added viewing of online manual in separate tab\n
-- enable start of AIRS UI even if service is running (e.g., for sync\'ing)\n
-- allow sync\'ing while running (excludes current recording from sync\'ing)\n
-- added buttons to map view for animating into current or last recorded location
+- added menu with satellite/map view switch to GPS traces
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.1.1:\n
+- added menu with satellite/map view switch to GPS traces\n\n
 V2.1:\n
 - changed UI to tabbed layout\n
 - enable direct start of local recording, in addition to selecting sensors before starting\n

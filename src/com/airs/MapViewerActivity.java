@@ -17,6 +17,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import java.util.List;
+
+import com.airs.helper.SerialPortLogger;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -25,6 +27,8 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,6 +36,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.text.method.LinkMovementMethod;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -186,15 +194,62 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 	
     public void onClick(View v) 
     {
+    	GeoPoint ownPoint;
     	// dispatch depending on button pressed
     	switch(v.getId())
     	{
     	case R.id.mapview_my_location:
-    		mapController.animateTo(ownLocation.getMyLocation());
+    		ownPoint = ownLocation.getMyLocation();
+    		if (ownPoint != null)
+    			mapController.animateTo(ownPoint);
             break;
     	case R.id.mapview_last_location:
         	mapController.animateTo(last_recorded_location);				// then centre map at it and use different marker pin!
     		break;
     	}	
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) 
+    {
+    	MenuInflater inflater;
+        menu.clear();    		
+        inflater = getMenuInflater();
+       	inflater.inflate(R.menu.options_map, menu);
+      
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {    	
+        switch (item.getItemId()) 
+        {
+        case R.id.main_about:
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setTitle("AIRS Map View")
+    			   .setMessage(getString(R.string.MapAbout))
+    			   .setIcon(R.drawable.about)
+    		       .setNeutralButton("OK", new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		                dialog.cancel();
+    		           }
+    		       });
+    		AlertDialog alert = builder.create();
+    		alert.show();
+    		
+    		// Make the textview clickable. Must be called after show()
+    	    ((TextView)alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+       		return true;
+        case R.id.map_mapview:
+        	mapView.setSatellite(false);
+       		return true;
+        case R.id.map_satview:
+        	mapView.setSatellite(true);
+       		return true;
+        }
+        return false;
     }
 }
