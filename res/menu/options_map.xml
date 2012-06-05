@@ -26,4 +26,7 @@
     <item android:id="@+id/map_satview"
           android:icon="@android:drawable/ic_menu_mapmode"
           android:title="Satellite View" />
+    <item android:id="@+id/map_path"
+          android:icon="@android:drawable/ic_menu_recent_history"
+          android:title="Toggle Path" />
 </menu>

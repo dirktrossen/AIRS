@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.1.1" android:versionCode="75">
+      android:versionName="2.1.2" android:versionCode="76">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     
@@ -26,7 +26,7 @@
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
  
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<application android:icon="@drawable/icon" android:label="@string/app_name" android:sharedUserId="com.airs">
 	    <uses-library android:name="com.google.android.maps" />    
         <activity android:name="AIRS_tabs" 
                   android:label="@string/app_name"

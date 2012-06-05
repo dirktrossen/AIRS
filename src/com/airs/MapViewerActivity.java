@@ -18,7 +18,6 @@ package com.airs;
 
 import java.util.List;
 
-import com.airs.helper.SerialPortLogger;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -45,7 +44,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MapViewerActivity extends MapActivity implements OnClickListener
 {
@@ -66,17 +64,13 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     private SharedPreferences settings;
     private Editor editor;
     private GeoPoint last_recorded_location;
-
+    private boolean showTrack = true;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
    		String title;
 		Intent intent = getIntent();
-		int i;
-		GeoPoint point;
-		OverlayItem overlayitem;
-		Time timeStamp = new Time();
 
         // Set up the window layout
         super.onCreate(savedInstanceState);
@@ -138,39 +132,13 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     	// get timestamps
     	time = bundle.getLongArray("com.airs.Time");		// get time values
 
-    	// now draw markers
-    	for (i=0;i<number_values;i++)
-       	{
-    		// get timestamp for time measured
-    		timeStamp.set(time[i]);
-
-    		// create geo point
-    		point = new GeoPoint(history_x[i], history_y[i]);
-        	overlayitem = new OverlayItem(point, timeStamp.format("%H:%M:%S on %d.%m.%Y"), "");
-        	
-        	// is this the last element?
-        	if (i==number_values-1)
-        	{
-        		last_recorded_location = point;				// save point for later in case button is pressed
-            	mapController.animateTo(point);				// then centre map at it and use different marker pin!
-        		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
-        	}
-        	else // add overlay item to list with default marker        	        	
-        		itemizedOverlay.addOverlay(overlayitem);
-        	
-	        // dereference for garbage collector
-	       	point = null;
-	       	overlayitem = null;
-    	}
-    	
-    	// now add overlay to picture
-    	mapOverlays.add(itemizedOverlay);    
-    	
-    	// now add own location overlay
+    	// initiate own location overlay
     	ownLocation = new MyLocationOverlay(getApplicationContext(), mapView);
     	ownLocation.enableCompass();
     	ownLocation.enableMyLocation();
-    	mapOverlays.add(ownLocation);
+
+    	// now draw markers
+    	addOverlay();    	
     }
     
     @Override
@@ -249,7 +217,67 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
         case R.id.map_satview:
         	mapView.setSatellite(true);
        		return true;
+    	case R.id.map_path:
+    		if (showTrack == true)
+    			showTrack = false;
+    		else
+    			showTrack = true;
+    		// remove overlay
+    		mapOverlays.clear();
+    		// add overlay back
+    		addOverlay();
+    		
+    		mapView.postInvalidate();
+    		break;
         }
         return false;
+    }
+    
+    private void addOverlay()
+    {
+    	int i;
+		GeoPoint point, last;
+		OverlayItem overlayitem;
+		Time timeStamp = new Time();
+    	
+		last = new GeoPoint(history_x[0], history_y[0]);
+		
+    	// now draw markers
+    	for (i=0;i<number_values;i++)
+       	{
+    		// get timestamp for time measured
+    		timeStamp.set(time[i]);
+
+    		// create geo point
+    		point = new GeoPoint(history_x[i], history_y[i]);
+        	overlayitem = new OverlayItem(point, timeStamp.format("%H:%M:%S on %d.%m.%Y"), "");
+        	
+        	// is this the last element?
+        	if (i==number_values-1)
+        	{
+        		last_recorded_location = point;				// save point for later in case button is pressed
+            	mapController.animateTo(point);				// then centre map at it and use different marker pin!
+        		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
+        	}
+        	else // add overlay item to list with default marker        	        	
+        		itemizedOverlay.addOverlay(overlayitem);
+        	
+        	// shall I add the track?
+        	if (showTrack == true)
+        	{
+        		mapOverlays.add(new MapViewerOverlayTrack(last, point));
+        		last = point;
+        	}
+        	
+	        // dereference for garbage collector
+	       	point = null;
+	       	overlayitem = null;
+    	}
+    	
+    	// now add overlay to picture
+    	mapOverlays.add(itemizedOverlay);   
+    	
+    	// add own location
+    	mapOverlays.add(ownLocation);
     }
 }

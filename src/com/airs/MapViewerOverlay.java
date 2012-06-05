@@ -19,10 +19,12 @@ package com.airs;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
 import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 public class MapViewerOverlay extends ItemizedOverlay 
@@ -73,4 +75,13 @@ public class MapViewerOverlay extends ItemizedOverlay
 		// TODO Auto-generated method stub
 		return mOverlays.size();
 	}
+
+	@Override	
+    public void draw(Canvas canvas, MapView mapView, boolean shadow)
+    {
+        if(!shadow)
+        {
+            super.draw(canvas, mapView, false);
+        }
+    }
 }
