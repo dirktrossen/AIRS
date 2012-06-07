@@ -29,6 +29,14 @@
         android:defaultValue="9000"
         android:title="Server port"
         android:key="IPPort" android:name="Port name"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Show Remote Tab" 
+    	android:key="showRemote" 
+    	android:defaultValue="true" 
+    	android:selectable="true" 
+    	android:summaryOn="Show remote tab in user interface" 
+    	android:summaryOff="Do not show remote tab in user interface"/>
    </PreferenceCategory>    
    <PreferenceCategory android:title="AIRS Local Settings">
     <CheckBoxPreference 

@@ -20,8 +20,10 @@ import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,11 +38,23 @@ import android.widget.TabHost.OnTabChangeListener;
 public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 {
 	private int currentTab = 0;
+	private int no_tabs = 0;
+	private int no_settings_tab, no_sync_tab, no_manual_tab, no_local_tab;
+	
+    // preferences
+    private SharedPreferences settings;
+	private boolean showRemote;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
 	    super.onCreate(savedInstanceState);
-	    setContentView(R.layout.tabs);
+	    
+        // get default preferences
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+        showRemote = settings.getBoolean("showRemote", true);
+
+        // set layout
+        setContentView(R.layout.tabs);
 
 	    Resources res = getResources(); // Resource object to get Drawables
 	    TabHost tabHost = getTabHost();  // The activity TabHost
@@ -55,13 +69,20 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	                      res.getDrawable(R.drawable.file))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
+	    // store tab number
+	    no_local_tab = no_tabs;
+	    no_tabs++;
 
-	    // second tab: remote sensing
-	    intent = new Intent().setClass(this, AIRS_remote_tab.class);
-	    spec = tabHost.newTabSpec("remote").setIndicator("Remote",
-	                      res.getDrawable(R.drawable.server))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
+	    // second tab: remote sensing, if it needs to be shown
+	    if (showRemote == true)
+	    {
+		    intent = new Intent().setClass(this, AIRS_remote_tab.class);
+		    spec = tabHost.newTabSpec("remote").setIndicator("Remote",
+		                      res.getDrawable(R.drawable.server))
+		                  .setContent(intent);
+		    tabHost.addTab(spec);
+		    no_tabs++;
+	    }
 	    
 	    // third tab: settings
 	    intent = new Intent().setClass(this, AIRS_settings_tab.class);
@@ -69,6 +90,9 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	                      res.getDrawable(R.drawable.general2))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
+	    // store tab number
+	    no_settings_tab = no_tabs;
+	    no_tabs++;
 
 	    // fourth tab: sync
 	    intent = new Intent().setClass(this, AIRS_sync_tab.class);
@@ -76,6 +100,9 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	                      res.getDrawable(R.drawable.sync))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
+	    // store tab number
+	    no_sync_tab = no_tabs;
+	    no_tabs++;
 
 	    // fifth tab: web view
 	    intent = new Intent().setClass(this, AIRS_web_tab.class);
@@ -83,6 +110,9 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	                      res.getDrawable(R.drawable.manual))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
+	    // store tab number
+	    no_manual_tab = no_tabs;
+	    no_tabs++;
 	    
 	    // current tab
 	    tabHost.setCurrentTab(currentTab);
@@ -138,31 +168,22 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
         {
         case R.id.main_about:
         	// call about dialogue
-        	switch (getTabHost().getCurrentTab())
-        	{
-        	case 2:
+        	if (getTabHost().getCurrentTab() == no_settings_tab)
         		HandlerUIManager.AboutDialog("Settings", getString(R.string.HandlersList));
-        		break;
-        	case 4:
+        	if (getTabHost().getCurrentTab() == no_manual_tab)
         		HandlerUIManager.AboutDialog("Online Manual", getString(R.string.ManualAbout));
-        		break;
-        	default:
-        		break;
-        	}
-            return true;      	
+            return true; 
+        default:
+        	return false;
         }
-        return false;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
-    	switch(getTabHost().getCurrentTab())
-    	{
-    	case 3:
-    	case 0:
+    	if (getTabHost().getCurrentTab() == no_local_tab || getTabHost().getCurrentTab() == no_sync_tab)
     		return false;
-    	default:
+    	{
         	MenuInflater inflater;
             menu.clear();    		
             inflater = getMenuInflater();

@@ -49,12 +49,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- added path to map view
+- make showing of remote tab optional\n
+- optional telephony feature allows for installing on wifi-only devices now
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.1.3:\n
+- make showing of remote tab optional\n
+- optional telephony feature allows for installing on wifi-only devices now\n\n
 V2.1.2:\n
 - added path to map view\n\n
 V2.1.1:\n
