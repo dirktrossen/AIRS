@@ -84,13 +84,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore callee_semaphore 		= new Semaphore(1);
 	private Semaphore received_semaphore 	= new Semaphore(1);
 
-	// historical data
-	private History history_Ba = new History(History.TYPE_INT);
-	private History history_BV = new History(History.TYPE_INT);
-	private History history_BM = new History(History.TYPE_INT);
-	private History history_Rm = new History(History.TYPE_INT);
-
-
 	/**
 	 * Sleep function 
 	 * @param millis
@@ -153,9 +146,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 				read = true;
 				reading_value = Battery; 
 				oldBattery = Battery;
-
-				// push new level into history
-				history_Ba.push(Battery);
 			}
 		}
 
@@ -178,9 +168,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 				read = true;
 				reading_value = voltage; 
 				old_voltage = voltage;
-
-				// push new level into history
-				history_BV.push(voltage);
 			}
 		}
 
@@ -203,9 +190,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 				read = true;
 				reading_value = temperature; 
 				old_temperature = temperature;
-				
-				// push new level into history
-				history_BM.push(temperature);
 			}
 		}
 
@@ -362,9 +346,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 				{
 					read = true;
 					oldRAM = reading_value;
-					
-					// push new level into history
-					history_Rm.push(oldRAM);
 				}
 			}
 			catch(Exception err)
@@ -501,19 +482,19 @@ public class SystemHandler implements com.airs.handlers.Handler
 	{
 		// battery level?
 		if(sensor.compareTo("Ba") == 0)
-			history_Ba.timelineView(airs, "Battery level [%]", 0);
+			History.timelineView(airs, "Battery level [%]", "Ba");
 		
 		// battery voltage?
 		if(sensor.compareTo("BV") == 0)
-			history_BV.timelineView(airs, "Battery Voltage [mV]", 0);
+			History.timelineView(airs, "Battery Voltage [mV]", "BV");
 
 		// battery temperature?
 		if(sensor.compareTo("BM") == 0)
-			history_BM.timelineView(airs, "Battery Temperature [C]", -1);
+			History.timelineView(airs, "Battery Temperature [C]", "BM");
 
 		// current RAM?
 		if(sensor.compareTo("Rm") == 0)
-			history_Rm.timelineView(airs, "RAM [kByte]", 0);
+			History.timelineView(airs, "RAM [kByte]", "Rm");
 	}
 	
 	/***********************************************************************

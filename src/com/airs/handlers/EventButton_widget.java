@@ -21,13 +21,20 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.audiofx.BassBoost.Settings;
+import android.preference.PreferenceManager;
+import android.widget.ImageButton;
 import android.widget.RemoteViews;
+import android.widget.TextView;
+
 import com.airs.*;
 
 public class EventButton_widget extends AppWidgetProvider
 {
 	Context context;
-	
+    private SharedPreferences settings;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) 
     {

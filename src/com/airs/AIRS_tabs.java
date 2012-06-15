@@ -39,7 +39,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 {
 	private int currentTab = 0;
 	private int no_tabs = 0;
-	private int no_settings_tab, no_sync_tab, no_manual_tab, no_local_tab;
+	private int no_settings_tab, no_manual_tab, no_local_tab;
 	
     // preferences
     private SharedPreferences settings;
@@ -94,17 +94,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	    no_settings_tab = no_tabs;
 	    no_tabs++;
 
-	    // fourth tab: sync
-	    intent = new Intent().setClass(this, AIRS_sync_tab.class);
-	    spec = tabHost.newTabSpec("sync").setIndicator("Sync",
-	                      res.getDrawable(R.drawable.sync))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-	    // store tab number
-	    no_sync_tab = no_tabs;
-	    no_tabs++;
-
-	    // fifth tab: web view
+	    // fourth tab: web view
 	    intent = new Intent().setClass(this, AIRS_web_tab.class);
 	    spec = tabHost.newTabSpec("manual").setIndicator("Online Manual",
 	                      res.getDrawable(R.drawable.manual))
@@ -181,7 +171,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
-    	if (getTabHost().getCurrentTab() == no_local_tab || getTabHost().getCurrentTab() == no_sync_tab)
+    	if (getTabHost().getCurrentTab() == no_local_tab)
     		return false;
     	{
         	MenuInflater inflater;

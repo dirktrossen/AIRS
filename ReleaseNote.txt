@@ -1,3 +1,13 @@
+V2.2.1:
+- removed sharing option when exiting AIRS local recording
+
+V2.2:
+- changed to SQLlite for storing local recordings (more secure since it does not expose recording files)
+- synchronization now as menu item in local recording tab
+- synchronization creates local recording files on the spot (can be kept in /AIRS_temp) with size as set in general settings
+- widget icons changed, now with translucent border
+- VI sensor now shown on mapview
+
 V2.1.3:
 - make showing of remote tab optional
 - optional telephony feature allows for installing on wifi-only devices now

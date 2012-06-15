@@ -116,16 +116,22 @@ public class MediaWatcherHandler implements Handler
 		// lock sensor
 		reading_sensor = true;
 		
-		readings = new StringBuffer(sensor);
-		readings.append(watched_type + ":" + watched_file);
+		if (watched_type != null && watched_file != null)
+		{
+			readings = new StringBuffer(sensor);
+			readings.append(watched_type + ":" + watched_file);
+			// lock sensor
+			reading_sensor = false;
+
+			return readings.toString().getBytes();		
+		}
+		else
+		{
+			reading_sensor = false;
+
+			return null;					
+		}
 		
-		// garbage collect
-		watched_file = watched_type = null;
-
-		// lock sensor
-		reading_sensor = false;
-
-		return readings.toString().getBytes();		
 	}
 	
 	/***********************************************************************
@@ -163,7 +169,7 @@ public class MediaWatcherHandler implements Handler
 	public void Discover()
 	{
 		// is at least one watch type selected?
-		if (camera == true || music == true || pictures == true)
+		if (camera == true || music == true || pictures == true || videos == true)
 			SensorRepository.insertSensor(new String("MW"), new String("file"), new String("Watched media folder"), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
@@ -192,6 +198,8 @@ public class MediaWatcherHandler implements Handler
 			music_observer = null;
 		if (pictures_observer != null)
 			pictures_observer = null;
+		if (videos_observer != null)
+			videos_observer = null;
 	}
 	
 	// own Observer class

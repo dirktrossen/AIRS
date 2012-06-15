@@ -31,7 +31,7 @@ public class TimelineView extends View
     private Path path = new Path();
     private int width = -1, height = -1;
     private float scalingY, scalingX;
-    private int  max;
+    private float  max;
     private long minTime;
     private boolean sizes = false;
    	/**
@@ -87,7 +87,7 @@ public class TimelineView extends View
     		canvas.drawPath(path, paint);
     }
     
-    public void pushPath(long time, int voltage)
+    public void pushPath(long time, float voltage)
     {    
     	float x = (float)(time - minTime) * scalingX;
     	    	
@@ -97,7 +97,7 @@ public class TimelineView extends View
     		path.lineTo((float)x, (float)(max-voltage)*scalingY);
     }
     
-    public void setMinMax(int min, int max, long minX, long maxX)
+    public void setMinMax(float min, float max, long minX, long maxX)
     {
     	this.max = max;
     	minTime = minX;

@@ -103,7 +103,24 @@ public class HandlerManager
 		return value;
 	}
 
-	// read string from RMS for persistency
+	// read long from RMS for persistency
+	static public long readRMS_l(String store, long defaultint)
+	{
+		long value = 0;
+		
+		try
+		{
+			String read = settings.getString(store, Long.toString(defaultint));
+			value	= Long.parseLong(read);
+		}
+		catch(Exception e)
+		{
+			SerialPortLogger.debug("ERROR " +  "Exception: " + e.toString());
+		}
+		return value;
+	}
+
+	// read integer from RMS for persistency
 	static public int readRMS_i(String store, int defaultint)
 	{
 		int value = 0;
@@ -120,7 +137,7 @@ public class HandlerManager
 		return value;
 	}
 
-	// read string from RMS for persistency
+	// read boolean from RMS for persistency
 	static public boolean readRMS_b(String store, boolean defaultint)
 	{
 		boolean value = false;
@@ -160,6 +177,22 @@ public class HandlerManager
 		{
 			// put string into store
             editor.putBoolean(store, value);
+            
+            // finally commit to storing values!!
+            editor.commit();
+		}
+		catch(Exception e)
+		{
+			SerialPortLogger.debug("ERROR " +  "Exception: " + e.toString());
+		}
+	}
+	// write boolean to RMS
+	static public void writeRMS_l(String store, long value)
+	{
+		try
+		{
+			// put string into store
+            editor.putLong(store, value);
             
             // finally commit to storing values!!
             editor.commit();

@@ -53,14 +53,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	private Semaphore azimuth_semaphore 	= new Semaphore(1);
 	private Semaphore roll_semaphore 		= new Semaphore(1);
 	private Semaphore pitch_semaphore 		= new Semaphore(1);
-
-	// historical data
-	private History history_Az = new History(History.TYPE_INT);
-	private History history_Pi = new History(History.TYPE_INT);
-	private History history_Ro = new History(History.TYPE_INT);
-	private History history_LI = new History(History.TYPE_INT);
-	private History history_PU = new History(History.TYPE_INT);
-
 	
 	/**
 	 * Sleep function 
@@ -122,7 +114,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					read = true;
 					value = (int)(azimuth*10);
 					azimuth_old = azimuth;
-					history_Az.push(value);
 				}
 			}
 			
@@ -143,7 +134,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(pitch*10);
 						pitch_old = pitch;
-						history_Pi.push(value);
 					}
 				}
 
@@ -164,7 +154,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(roll*10);
 						roll_old = roll;
-						history_Ro.push(value);
 					}
 				}				
 			if (read == false)
@@ -203,7 +192,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(light*10);
 						light_old = light;
-						history_LI.push(value);
 					}
 				}				
 			if (read == false)
@@ -223,7 +211,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(pressure*10);
 						pressure_old = pressure;
-						history_PU.push(value);
 					}
 				}				
 		}
@@ -286,19 +273,19 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	{
 		// see which sensors are requested
 		if (sensor.equals("Az") == true)
-			history_Az.timelineView(nors, "Azimuth [degrees]", -1);
+			History.timelineView(nors, "Azimuth [degrees]", sensor);
 		
 		if (sensor.equals("Pi") == true)
-			history_Pi.timelineView(nors, "Pitch [degrees]", -1);
+			History.timelineView(nors, "Pitch [degrees]", "Pi");
 
 		if (sensor.equals("Ro") == true)
-			history_Ro.timelineView(nors, "Roll [degrees]", -1);
+			History.timelineView(nors, "Roll [degrees]", "Ro");
 
 		if (sensor.equals("LI") == true)
-			history_LI.timelineView(nors, "Light [Lux]", -1);
+			History.timelineView(nors, "Light [Lux]", "LI");
 		
 		if (sensor.equals("PU") == true)
-			history_PU.timelineView(nors, "Pressure [hPa]", -1);
+			History.timelineView(nors, "Pressure [hPa]", "PU");
 	}
 
 	

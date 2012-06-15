@@ -34,10 +34,6 @@ public class AudioHandler implements Handler
 	private int polltime = 5000;
 	private final int CENTRE_POINT = 32768;
 	
-	// historical data
-	private History history_AS = new History(History.TYPE_INT);
-	private History history_AF = new History(History.TYPE_INT);
-
 	// audio data
 	private long    frequency = -1;
 	private long    level = -1;
@@ -143,10 +139,10 @@ public class AudioHandler implements Handler
 		switch(sensor.charAt(1))
 		{
 			case 'S' :
-				history_AS.timelineView(airs, "Sound Pressure Level [dB]", -2);
+				History.timelineView(airs, "Sound Pressure Level [dB]", "AS");
 				break;
 			default:
-				history_AF.timelineView(airs, "Frequency [Hz]", 0);
+				History.timelineView(airs, "Frequency [Hz]", "AF");
 				break;
 		}
 	}
@@ -294,9 +290,6 @@ public class AudioHandler implements Handler
 						AS_reading[5] = (byte)(level_new & 0xff);
 						// now remember old frequency
 						level = level_new;
-						
-						// push new level into history
-						history_AS.push((int)level_new);
 					}
 					else
 						AS_reading = null;		
@@ -398,8 +391,6 @@ public class AudioHandler implements Handler
 						AF_reading[5] = (byte)(frequency_new & 0xff);
 						// now remember old frequency
 						frequency = frequency_new;
-						// push new level into history
-						history_AF.push((int)frequency_new);
 					}
 					else
 						AF_reading = null;		

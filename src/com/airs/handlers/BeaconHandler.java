@@ -48,9 +48,6 @@ public class BeaconHandler implements Handler, Runnable
 	private Thread 		 runnable = null;
 	private boolean		 running = true;
 	
-	// historical data
-	private History history_BN = new History(History.TYPE_INT);
-
 //	private char EOL = 13;
 
 	// config data
@@ -114,7 +111,6 @@ public class BeaconHandler implements Handler, Runnable
 					no_readings[4] = (byte)((no_devices>>8) & 0xff);
 					no_readings[5] = (byte)(no_devices & 0xff);
 					
-					history_BN.push(no_devices);
 					return no_readings;		
 				}
 				else
@@ -154,7 +150,7 @@ public class BeaconHandler implements Handler, Runnable
 	public synchronized void History(String sensor)
 	{
 		if (sensor.charAt(1) == 'N')
-			history_BN.timelineView(nors, "BT devices [#]", 0);
+			History.timelineView(nors, "BT devices [#]", "BN");
 	}
 
 	// run discovery in separate thread

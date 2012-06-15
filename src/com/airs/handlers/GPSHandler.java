@@ -59,11 +59,6 @@ public class GPSHandler implements com.airs.handlers.Handler
 	private Semaphore bearing_semaphore 	= new Semaphore(1);
 	private Semaphore full_semaphore 		= new Semaphore(1);
 
-	// historical data
-	private History history_GS = new History(History.TYPE_INT);
-	private History history_GA = new History(History.TYPE_INT);
-	private History history_GI = new History(History.TYPE_COORD);
-
 	protected void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
@@ -165,13 +160,13 @@ public class GPSHandler implements com.airs.handlers.Handler
 		switch(sensor.charAt(1))
 		{
 		case 'A':
-		    history_GA.timelineView(airs, "GPS altitude [m]", -1);
+		    History.timelineView(airs, "GPS altitude [m]", sensor);
 		    break;
 		case 'S':
-		    history_GS.timelineView(airs, "GPS speed [m/s]", -1);
+		    History.timelineView(airs, "GPS speed [m/s]", sensor);
 		    break;
 		case 'I':
-			history_GI.mapView(airs, "GPS traces");
+			History.mapView(airs, "GPS traces", sensor);
 			break;
 		default:
 			return;
@@ -271,13 +266,11 @@ public class GPSHandler implements com.airs.handlers.Handler
 				wait(altitude_semaphore); 
 				value = (int)(Altitude * 10);
 				read = true;
-				history_GA.push(value);
 				break;
 			case 'S':
 				wait(speed_semaphore); 
 				value = (int)(Speed * 10);
 				read = true;
-				history_GS.push(value);
 				break;
 			case 'C':
 				wait(bearing_semaphore); 
@@ -294,9 +287,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 					
 					oldLongitude 	= Longitude;
 					oldLatitude 	= Latitude;
-					oldAltitude 	= Altitude;
-					
-					history_GI.push((int)(Latitude*1e6), (int)(Longitude*1e6));
+					oldAltitude 	= Altitude;					
 				}
 				break;
 			default:

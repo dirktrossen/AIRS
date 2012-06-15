@@ -67,10 +67,6 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	private Semaphore lac_semaphore	 		= new Semaphore(1);
 	private Semaphore mcc_semaphore	 		= new Semaphore(1);
 	
-	// historical data
-	private History history_CB = new History(History.TYPE_INT);
-	private History history_CS = new History(History.TYPE_INT);
-
 	protected void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
@@ -173,10 +169,10 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		switch(sensor.charAt(1))
 		{
 		case 'S':
-			history_CS.timelineView(nors, "Signal strength [dBm]", 0);
+			History.timelineView(nors, "Signal strength [dBm]", "CS");
 			break;
 		case 'B':
-			history_CB.timelineView(nors, "Signal strength [bar]", 0);
+			History.timelineView(nors, "Signal strength [bar]", "CB");
 			break;
 		}		
 	}
@@ -342,7 +338,6 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 						reading[4] = (byte)((oldcellStrength>>8) & 0xff);
 						reading[5] = (byte)(oldcellStrength & 0xff);
 						
-						history_CS.push(oldcellStrength);
 						// clear flag
 						signal_read = false;
 					}
@@ -370,9 +365,6 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 						reading[4] = (byte)((oldcellStrength_bar>>8) & 0xff);
 						reading[5] = (byte)(oldcellStrength_bar & 0xff);
 						
-						// push history
-						history_CB.push(oldcellStrength_bar);
-
 						// clear flag
 						bar_read = false;
 					}

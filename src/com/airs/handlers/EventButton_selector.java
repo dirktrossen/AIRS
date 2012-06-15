@@ -114,6 +114,8 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        // initialize own defined event
     		Button bt = (Button) findViewById(R.id.mooddefined);
     		bt.setOnClickListener(this);
+    		bt = (Button) findViewById(R.id.mooddelete);
+    		bt.setOnClickListener(this);
     		
     		// was there at least one stored string?
 			if (event[0].compareTo("") != 0)
@@ -219,8 +221,9 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    	
 	    	EditText et;
 	    	// dispatch depending on button pressed
-	    	if (v.getId() == R.id.mooddefined)
+	    	switch (v.getId())
 	    	{
+	    	case R.id.mooddefined:
 	    		et = (EditText) findViewById(R.id.moodown);
 	    		
 	    		// move older input strings to the end of the array!
@@ -234,6 +237,11 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    		selected = true;
 	    		selected_entry = 0;
 	    		finish();
+	    		break;
+	    	case R.id.mooddelete:
+	    		et = (EditText) findViewById(R.id.moodown);
+	    		et.setText("");
+	    		break;
 	    	}
 		}
 

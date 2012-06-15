@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.1.3" android:versionCode="77">
-    <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true"></supports-screens>
+      android:versionName="2.2.1" android:versionCode="80" android:sharedUserId="com.airs">
+    <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature android:name="android.hardware.telephony.gsm" android:required="false" />
+    <uses-feature android:name="android.hardware.sensor.proximity" android:required="false" />
     
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
@@ -27,7 +29,7 @@
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
  
-	<application android:icon="@drawable/icon" android:label="@string/app_name" android:sharedUserId="com.airs">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
 	    <uses-library android:name="com.google.android.maps" />    
         <activity android:name="AIRS_tabs" 
                   android:label="@string/app_name"
@@ -42,7 +44,7 @@
      <activity android:name="AIRS_local_tab" android:exported="false" android:label="AIRS Local"></activity>
      <activity android:name="AIRS_remote_tab" android:exported="false" android:label="AIRS Remote"></activity>
      <activity android:name="Prefs" android:exported="false" android:label="AIRS Preferences"></activity>
-     <activity android:name="AIRS_sync_tab" android:exported="true" android:label="AIRS Sync"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_sync" android:exported="true" android:label="AIRS Sync"></activity>
      <activity android:name="AIRS_settings_tab" android:exported="false" android:label="AIRS Settings"></activity>    
      <activity android:name="AIRS_web_tab" android:exported="false" android:label="Web"></activity>
      

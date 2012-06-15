@@ -189,6 +189,8 @@ public class AIRS_local_tab extends Activity implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
+    	Intent intent;
+    	
         switch (item.getItemId()) 
         {
         case R.id.main_about:
@@ -215,13 +217,17 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         	
         	// intent for creating the shortcut
-        	Intent intent = new Intent();
+        	intent = new Intent();
         	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Quick AIRS");
         	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon));
 
         	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         	sendBroadcast(intent);	        
+        	break;
+        case R.id.main_sync:
+        	intent = new Intent(this,AIRS_sync.class);
+        	startActivity(intent);
         	break;
         case R.id.local_start:
         	// debugging on during measurements?

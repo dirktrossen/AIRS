@@ -17,6 +17,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -31,6 +32,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,8 +54,7 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     public  TextView 		mTitle2;
 	private MapView mapView;
     private Bundle bundle;
-    private int history_x[];			// different history arrays
-    private int history_y[];			// different history arrays
+    private String history[];			// different history arrays
 	private long time[];
 	private int  number_values;
 	private int zoomLevel;
@@ -65,7 +67,12 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     private Editor editor;
     private GeoPoint last_recorded_location;
     private boolean showTrack = true;
-	
+    private String Symbol;
+    private AIRS_database database_helper;
+    private SQLiteDatabase airs_storage;
+    private int history_length;
+    private long startedTime;
+
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -79,16 +86,27 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
         settings = PreferenceManager.getDefaultSharedPreferences(this);
        	editor = settings.edit();
 
+        // now open database
+        database_helper = new AIRS_database(this.getApplicationContext());
+        airs_storage = database_helper.getReadableDatabase();
+
        	// get previous zoom level
        	zoomLevel = settings.getInt("ZoomLevel", 15);
-        
+        history_length = Integer.parseInt(settings.getString("SensorHistory", "20"));
+
+        // start time of measurement
+		startedTime = settings.getLong("AIRS_local::time_started", 0);
+
+        // history fields for faster access
+		history = new String[history_length];
+		time = new long[history_length];
+
         // get activity parameters
         bundle = intent.getExtras();
 
-        number_values = bundle.getInt("com.airs.Length");	// get number of values
-        if (number_values == 0)
-        	finish();
-        
+        Symbol = bundle.getString("com.airs.Symbol");	// get symbol
+
+        // window title as feature
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.mapview);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
@@ -125,20 +143,16 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     	drawable = this.getResources().getDrawable(R.drawable.pin);
     	itemizedOverlay = new MapViewerOverlay(drawable, getApplicationContext());
     	
-    	// get points
-    	history_x = bundle.getIntArray("com.airs.CoordX");		// get sensor values
-    	history_y = bundle.getIntArray("com.airs.CoordY");		// get sensor values
-    	
-    	// get timestamps
-    	time = bundle.getLongArray("com.airs.Time");		// get time values
-
     	// initiate own location overlay
     	ownLocation = new MyLocationOverlay(getApplicationContext(), mapView);
     	ownLocation.enableCompass();
     	ownLocation.enableMyLocation();
 
     	// now draw markers
-    	addOverlay();    	
+		if (Symbol.compareTo("GI") == 0)
+			addOverlay_GPS();    	
+		if (Symbol.compareTo("VI") == 0)
+			addOverlay_Weather();    	
     }
     
     @Override
@@ -225,7 +239,7 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     		// remove overlay
     		mapOverlays.clear();
     		// add overlay back
-    		addOverlay();
+    		addOverlay_GPS();
     		
     		mapView.postInvalidate();
     		break;
@@ -233,51 +247,225 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
         return false;
     }
     
-    private void addOverlay()
+    private void addOverlay_GPS()
     {
-    	int i;
-		GeoPoint point, last;
+    	int i, j=0;
+		GeoPoint point, last = new GeoPoint(0, 0);
 		OverlayItem overlayitem;
 		Time timeStamp = new Time();
-    	
-		last = new GeoPoint(history_x[0], history_y[0]);
-		
-    	// now draw markers
-    	for (i=0;i<number_values;i++)
-       	{
-    		// get timestamp for time measured
-    		timeStamp.set(time[i]);
+		String [] columns = {"Timestamp", "Value"};
+		int t_column, v_column;
+		Cursor values;
+		String value;
+		double longitude, latitude;
+		double altitude;
 
-    		// create geo point
-    		point = new GeoPoint(history_x[i], history_y[i]);
-        	overlayitem = new OverlayItem(point, timeStamp.format("%H:%M:%S on %d.%m.%Y"), "");
-        	
-        	// is this the last element?
-        	if (i==number_values-1)
-        	{
-        		last_recorded_location = point;				// save point for later in case button is pressed
-            	mapController.animateTo(point);				// then centre map at it and use different marker pin!
-        		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
-        	}
-        	else // add overlay item to list with default marker        	        	
-        		itemizedOverlay.addOverlay(overlayitem);
-        	
-        	// shall I add the track?
-        	if (showTrack == true)
-        	{
-        		mapOverlays.add(new MapViewerOverlayTrack(last, point));
-        		last = point;
-        	}
-        	
-	        // dereference for garbage collector
-	       	point = null;
-	       	overlayitem = null;
-    	}
+		String selection = "Symbol='"+ Symbol +"'";
+		
+		// issue query to the database
+		values = airs_storage.query(database_helper.DATABASE_TABLE_NAME, columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
+		    	
+		if (values == null)
+			finish();
+		
+		// get column index for timestamp and value
+		t_column = values.getColumnIndex("Timestamp");
+		v_column = values.getColumnIndex("Value");
+		
+		if (t_column == -1 || v_column == -1)
+			finish();
+		
+		number_values = values.getCount();
+				
+		// are there any values?
+    	if (number_values != 0)
+    	{
+    		// move to first row to start
+    		values.moveToFirst();
+    		// read DB values into arrays
+    		for (i=number_values-1;i>=0;i--)
+    		{
+    			// get timestamp
+    			time[i] = values.getLong(t_column);
+    			// get value
+    			history[i] = values.getString(v_column);
+    			if (history[i] == null)
+    				finish();
+    			
+    			// now move to next row
+    			values.moveToNext();
+    		}
+
+		
+	    	// now draw markers
+	    	for (i=0;i<number_values;i++)
+	       	{
+    			if (time[i]>startedTime)
+    			{
+		    		// get timestamp for time measured
+		    		timeStamp.set(time[i]);
+		
+		    		// create geo point
+	    			String [] tokens = history[i].split(":");
+	    			
+	    			// read tokens in values
+	    			longitude = Double.parseDouble(tokens[0].trim());
+	    			latitude = Double.parseDouble(tokens[1].trim());
+	    			altitude = Double.parseDouble(tokens[2].trim());
+		    		point = new GeoPoint((int)(latitude * 1e6), (int)(longitude *1e6));
+		        	overlayitem = new OverlayItem(point, timeStamp.format("%H:%M:%S on %d.%m.%Y"), "Altitude: " + String.valueOf((int)altitude) + " m");
+		    		
+		    		if (j == 0)
+		    			last = point;
+		    		
+		    		// count the actually shown points
+		    		j++;
+		        	
+		        	// is this the last element?
+		        	if (i==number_values-1)
+		        	{
+		        		last_recorded_location = point;				// save point for later in case button is pressed
+		            	mapController.animateTo(point);				// then centre map at it and use different marker pin!
+		        		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
+		        	}
+		        	else // add overlay item to list with default marker        	        	
+		        		itemizedOverlay.addOverlay(overlayitem);
+		        	
+		        	// shall I add the track?
+		        	if (showTrack == true)
+		        	{
+		        		mapOverlays.add(new MapViewerOverlayTrack(last, point));
+		        		last = point;
+		        	}
+		        	
+			        // dereference for garbage collector
+			       	point = null;
+			       	overlayitem = null;
+    			}
+	    	} 
+	    	
+	    	// now add overlay to picture
+	    	mapOverlays.add(itemizedOverlay);   
+	    	
+	    	// add own location
+	    	mapOverlays.add(ownLocation);
+    	} 
     	
-    	// now add overlay to picture
-    	mapOverlays.add(itemizedOverlay);   
-    	
-    	// add own location
-    	mapOverlays.add(ownLocation);
+    	// finish if there's no value to be shown
+    	if (j==0)
+    		finish();
+    }
+    
+    private void addOverlay_Weather()
+    {
+    	int i, j=0;
+		GeoPoint point, last = new GeoPoint(0, 0);
+		OverlayItem overlayitem;
+		Time timeStamp = new Time();
+		String [] columns = {"Timestamp", "Value"};
+		int t_column, v_column;
+		Cursor values;
+		String value;
+		double longitude, latitude;
+		double temp_c, temp_f, humidity;
+		String condition, wind;
+
+		String selection = "Symbol='"+ Symbol +"'";
+		
+		// issue query to the database
+		values = airs_storage.query(database_helper.DATABASE_TABLE_NAME, columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
+		    	
+		if (values == null)
+			finish();
+		
+		// get column index for timestamp and value
+		t_column = values.getColumnIndex("Timestamp");
+		v_column = values.getColumnIndex("Value");
+		
+		if (t_column == -1 || v_column == -1)
+			finish();
+		
+		number_values = values.getCount();
+				
+		// are there any values?
+    	if (number_values != 0)
+    	{
+    		// move to first row to start
+    		values.moveToFirst();
+    		// read DB values into arrays
+    		for (i=number_values-1;i>=0;i--)
+    		{
+    			// get timestamp
+    			time[i] = values.getLong(t_column);
+    			// get value
+    			history[i] = values.getString(v_column);
+    			if (history[i] == null)
+    				finish();
+    			
+    			// now move to next row
+    			values.moveToNext();
+    		}
+
+		
+	    	// now draw markers
+	    	for (i=0;i<number_values;i++)
+	       	{
+    			if (time[i]>startedTime)
+    			{
+		    		// get timestamp for time measured
+		    		timeStamp.set(time[i]);
+		
+		    		// create geo point
+	    			String [] tokens = history[i].split(":");
+	    			
+	    			// read tokens in values
+	    			latitude = Double.parseDouble(tokens[0].trim());
+	    			longitude = Double.parseDouble(tokens[1].trim());
+	    			temp_c = Double.parseDouble(tokens[2].trim());
+	    			temp_f = Double.parseDouble(tokens[3].trim());
+	    			humidity = Double.parseDouble(tokens[4].trim());
+	    			condition = tokens[5];
+	    			wind = tokens[6];
+		    		point = new GeoPoint((int)(latitude * 1e6), (int)(longitude *1e6));
+		        	overlayitem = new OverlayItem(point, timeStamp.format("%H:%M:%S on %d.%m.%Y"), "Conditions:\nTemperature: " + String.valueOf(temp_c) + " C (" + String.valueOf(temp_f) + " F)\nHumidity: " + String.valueOf(humidity) + "%\nConditions: " + condition + "\nWind: " + wind);
+		    		
+		    		if (j == 0)
+		    			last = point;
+
+		    		// count the actually shown points
+		    		j++;
+
+		        	// is this the last element?
+		        	if (i==number_values-1)
+		        	{
+		        		last_recorded_location = point;				// save point for later in case button is pressed
+		            	mapController.animateTo(point);				// then centre map at it and use different marker pin!
+		        		itemizedOverlay.addOverlay(overlayitem, this.getResources().getDrawable(R.drawable.current_pin));
+		        	}
+		        	else // add overlay item to list with default marker        	        	
+		        		itemizedOverlay.addOverlay(overlayitem);
+		        			        	
+		        	// shall I add the track?
+		        	if (showTrack == true)
+		        	{
+		        		mapOverlays.add(new MapViewerOverlayTrack(last, point));
+		        		last = point;
+		        	}
+		        	
+			        // dereference for garbage collector
+			       	point = null;
+			       	overlayitem = null;
+		    	} 		    	
+	       	}
+
+	    	// now add overlay to picture
+	    	mapOverlays.add(itemizedOverlay);   
+	    	
+	    	// add own location
+	    	mapOverlays.add(ownLocation);		    	
+    	} 
+    	// finish if there's no value to be shown
+    	if (j==0)
+    		finish();
     }
 }

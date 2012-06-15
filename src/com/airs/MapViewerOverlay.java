@@ -18,7 +18,9 @@ package com.airs;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
@@ -58,9 +60,9 @@ public class MapViewerOverlay extends ItemizedOverlay
 	{
 		OverlayItem item = mOverlays.get(index);
 		
-		Toast.makeText(airs, "Measured at " + item.getTitle(), Toast.LENGTH_LONG).show();
+       	Toast.makeText(airs, "Measured at : " + item.getTitle() + "\n" + item.getSnippet(), Toast.LENGTH_LONG).show();   
 
-		return false;
+		return true;
 	}
 	
 	@Override

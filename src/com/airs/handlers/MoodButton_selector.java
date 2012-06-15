@@ -94,7 +94,9 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        // initialize own defined event click listener
     		Button bt = (Button) findViewById(R.id.mooddefined);
     		bt.setOnClickListener(this);
-
+    		bt = (Button) findViewById(R.id.mooddelete);
+    		bt.setOnClickListener(this);
+    		
        		// was the stored string own defined?
 			if (own_defined == true)
 			{
@@ -221,14 +223,20 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 		{
 	    	EditText et;
 	    	// dispatch depending on button pressed
-	    	if (v.getId() == R.id.mooddefined)
+	    	switch(v.getId())
 	    	{
+	    	case R.id.mooddefined:
 	    		et = (EditText) findViewById(R.id.moodown);
 		    	// read input string from edit field
 	    		mood = et.getText().toString();
 	    		selected = true;
 	    		own_defined = true;
 	    		finish();
+	    		break;
+	    	case R.id.mooddelete:
+	    		et = (EditText) findViewById(R.id.moodown);
+	    		et.setText("");
+	    		break;
 	    	}
 		}
 	    

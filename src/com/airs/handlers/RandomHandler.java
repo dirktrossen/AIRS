@@ -38,7 +38,6 @@ public class RandomHandler implements Handler
 	// create field that holds acquisition data
 	private byte[] readings = new byte[6];
 	private int polltime=5000;
-	private History history = new History(History.TYPE_INT);
 	
 	/***********************************************************************
 	 Function    : Acquire()
@@ -66,9 +65,6 @@ public class RandomHandler implements Handler
 		readings[4] = (byte)((random_value>>8) & 0xff);
 		readings[5] = (byte)(random_value & 0xff);
 		
-		// store history
-		history.push(((int)(readings[4] & 0xFF) << 8) | ((int)readings[5] & 0xFF));
-		
 		return readings;		
 	}
 	
@@ -94,7 +90,7 @@ public class RandomHandler implements Handler
 	***********************************************************************/
 	public synchronized void History(String sensor)
 	{
-		history.timelineView(airs, "Random [-]", 0);
+		History.timelineView(airs, "Random [-]", "Rd");
 	}
 	
 	/***********************************************************************

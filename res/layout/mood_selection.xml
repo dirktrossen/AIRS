@@ -33,6 +33,12 @@
        android:layout_height="wrap_content"
        android:orientation="horizontal" >
 
+       <Button
+           android:id="@+id/mooddelete"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+	       android:clickable="true"
+           android:text="X" />
        <EditText
            android:id="@+id/moodown"
            android:layout_width="0dip"

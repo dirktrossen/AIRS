@@ -53,21 +53,26 @@
     	android:key="LocalStore" 
     	android:selectable="true" 
     	android:defaultValue="true" 
-    	android:summaryOn="Store sensor values in\n/mnt/sdcard/AIRS_values\nwith current millisecs as filename" 
+    	android:summaryOn="Store sensor values in internal SQLlite database" 
     	android:summaryOff="Do not store sensor values"/>
+    <EditTextPreference
+        android:summary="Max size of temporary recording files in KB"
+        android:defaultValue="512"
+        android:title="Recording Files Size"
+        android:key="RecordingSize" android:name="Recording Size"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
+    	android:title="Remove files" 
+    	android:key="SyncRemoveFiles" 
+    	android:defaultValue="false" 
+    	android:selectable="true" 
+    	android:summaryOn="Remove temporary recording files created during the synchronization" 
+    	android:summaryOff="Keep temporary recording files created during the synchronization (less secure)"/>  
     <EditTextPreference
         android:summary="# of historical sensor values (0=disable)"
         android:defaultValue="20"
         android:title="Sensor History"
         android:key="SensorHistory" android:name="Sensor History"/>
-    <CheckBoxPreference 
-    	android:enabled="true" 
-    	android:title="Safe Writing" 
-    	android:dependency="LocalStore"
-    	android:key="SafeWriting" 
-    	android:selectable="true" 
-    	android:summaryOn="Save sensor values directly after being sensed - it's safer but requires more write operations" 
-    	android:summaryOff="Save sensor values in buffered mode - might result in loss when service crashes but requires less write operations"/>
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="Wakeup" 

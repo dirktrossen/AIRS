@@ -19,14 +19,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-		<ImageButton 
-		  android:id="@+id/event_button_local"
-		  android:layout_width="fill_parent"
-		  android:layout_height="fill_parent"
-	 	  android:background="#00000000"
-	      android:layout_margin="10dip"
-	      android:clickable="true"
-	      android:contentDescription="Widget"
-	      android:hapticFeedbackEnabled="false"
-	 	  android:src="@drawable/widget_local"/>
+
+		<ImageButton
+		    android:id="@+id/event_button_local"
+		    android:layout_width="58dp"
+		    android:layout_height="58dp"
+		    android:layout_margin="10dip"
+		    android:background="@drawable/widget_bg"
+		    android:clickable="true"
+		    android:contentDescription="Widget"
+		    android:hapticFeedbackEnabled="false"
+		    android:src="@drawable/widget_local" />
+
 </LinearLayout>

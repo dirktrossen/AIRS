@@ -20,7 +20,10 @@
     <item android:id="@+id/main_about"
           android:icon="@android:drawable/ic_menu_info_details"
           android:title="@string/main_About" />
+    <item android:id="@+id/main_sync"
+          android:icon="@android:drawable/ic_menu_recent_history"
+          android:title="Sync" />
     <item android:id="@+id/main_shortcut"
           android:icon="@android:drawable/ic_menu_set_as"
-          android:title="Quick Start Shortcut" />
+          android:title="Quick Start" />
 </menu>

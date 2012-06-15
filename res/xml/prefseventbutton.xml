@@ -23,5 +23,5 @@
         android:defaultValue="5"
         android:numeric="integer"
         android:title="Event Descriptions [1..50]"
-        android:key="EventButtonHandler::MaxEventDescriptions"/>
+        android:key="EventButtonHandler::MaxEventDescriptions"/>    
 </PreferenceScreen>

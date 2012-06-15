@@ -31,6 +31,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -38,7 +39,6 @@ import android.widget.Toast;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
@@ -71,7 +71,6 @@ public class AIRS_local extends Service
     public  Context airs = null;
 	private int	no_values = 0;
     private boolean localStore_b;
-    private boolean localStoreSafe_b;
     private boolean localDisplay_b;
     private int Reminder_i;
     private boolean Vibrate, Lights;
@@ -83,9 +82,6 @@ public class AIRS_local extends Service
 	public  File fconn;				// public for sharing file when exiting
 	private File mconn, path;
 	private BufferedOutputStream os, os2;
-	private long		currentmilli;
-	private Calendar cal = Calendar.getInstance();
-	private long milliStart;
 	private int numberSensors = 0;
     private ListView sensors;
     public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false, registered = false;
@@ -95,6 +91,9 @@ public class AIRS_local extends Service
     private final IBinder mBinder = new LocalBinder();
     private VibrateThread Vibrator;
     private WakeLock wl;
+    // database variables
+    AIRS_database database_helper;
+    SQLiteDatabase airs_storage;
     
 	// private thread for reading the sensor handlers
 	 private class HandlerThread implements Runnable
@@ -256,9 +255,9 @@ public class AIRS_local extends Service
 			    				if (localStore_b == true)
 			    				{
 			    					if (current.scaler !=0)
-			    						fileOut = new String("#" + String.valueOf(System.currentTimeMillis()-milliStart) + ";" + current.Symbol + ";" + String.valueOf((double)integer*scaler) + "\n");
+			    						fileOut = new String("'"+ String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf((double)integer*scaler) + "'");
 			    					else
-			    						fileOut = new String("#" + String.valueOf(System.currentTimeMillis()-milliStart) + ";" + current.Symbol + ";" + String.valueOf(integer) + "\n");
+			    						fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf(integer) + "'");
 			    				}
 			    			}
 			    			
@@ -278,7 +277,7 @@ public class AIRS_local extends Service
 	
 			    				// need to store locally?
 			    				if (localStore_b == true)
-		    				    	fileOut = new String("#" + String.valueOf(System.currentTimeMillis()-milliStart) + ";" + current.Symbol + ";" + new String(sensor_data, 2, sensor_data.length - 2) + "\n");
+		    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + new String(sensor_data, 2, sensor_data.length - 2) + "'");
 			    			}
 	
 		   					// here we handle img and arr sensor values
@@ -309,7 +308,7 @@ public class AIRS_local extends Service
 			    			    		os2.write(sensor_data, 2, sensor_data.length-2);
 			    			    		os2.close();
 			    			    		// store filename in recording file
-			    				    	fileOut = new String("#" + String.valueOf(System.currentTimeMillis()-milliStart) + ";" + current.Symbol + ";" + fileIMG + "\n");
+			    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + fileIMG + "'");
 	
 			    				    } 
 			    				    catch(Exception e)
@@ -324,15 +323,8 @@ public class AIRS_local extends Service
 			    			{
 		    				    try
 		    				    {
-		    				    	synchronized(os)
-		    				    	{
-		    				    		byte[] writebyte = fileOut.getBytes();
-		    				    		os.write(writebyte, 0, writebyte.length);
-			    				    	// flush right away if wanted!
-			    				    	if (localStoreSafe_b == true)
-			    				    		os.flush();				// flush buffer
-		    				    	}
-		    				    	fileOut = null;			// remove from heap
+		    				    	String insert = "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")";
+		    				    	airs_storage.execSQL(insert);
 		    				    }
 		    					catch(Exception e) 
 		    					{    					
@@ -422,9 +414,6 @@ public class AIRS_local extends Service
 		// find out whether or not to store locally
 		localStore_b = HandlerManager.readRMS_b("LocalStore", true);
 
-		// find out whether or not to save safely
-		localStoreSafe_b = HandlerManager.readRMS_b("SafeWriting", false);
-
 		// find out whether or not to display locally
 		localDisplay_b = HandlerManager.readRMS_b("localDisplay", true);
 		
@@ -432,24 +421,10 @@ public class AIRS_local extends Service
 		if (localStore_b == true)
 		{
 		    try 
-		    {
-		    	// store this for later
-		    	currentmilli = System.currentTimeMillis();
-		    	// open file in public directory
-		    	path = new File(Environment.getExternalStorageDirectory(), url);
-		    	// make sure that path exists
-		    	path.mkdirs();
-		    	// open file and create, if necessary
-	    		fconn = new File(path, String.valueOf(currentmilli) + ".txt");
-		    	os = new BufferedOutputStream(new FileOutputStream(fconn, true));
-		    	
-	    		// store timestamp
-	    		String time = new String(cal.getTime().toString() + "\n");
-	    		os.write(time.getBytes(), 0, time.length());
-	    		
-	    		// store current recording file persistently
-	            HandlerManager.writeRMS("AIRS_local::recording_file", String.valueOf(currentmilli));
-
+		    {	            
+	            // get database
+	            database_helper = new AIRS_database(this.getApplicationContext());
+	            airs_storage = database_helper.getWritableDatabase();
 		    } 
 		    catch(Exception e)
 		    {
@@ -703,6 +678,9 @@ public class AIRS_local extends Service
 		 notification.flags = Notification.FLAG_NO_CLEAR;
 		 startForeground(R.string.app_name, notification);
 		 
+         // store start timestamp
+         HandlerManager.writeRMS_l("AIRS_local::time_started", System.currentTimeMillis());
+		 
 		 // Find and set up the ListView for values
 		 mValuesArrayAdapter = new ArrayAdapter<String>(this, R.layout.sensor_list);
 
@@ -730,10 +708,7 @@ public class AIRS_local extends Service
  		 }
  		 else	// if no individual values, show at least number of values acquired and memory available   
  			 mValuesArrayAdapter.add("# of values : - ");
- 		 
- 		 // get start of run
- 		 milliStart = System.currentTimeMillis();
- 		 
+ 		  		 
 		 // now create measurement threads
 		 for (i=0, j=0;i<sensors.getCount();i++)
 		 {

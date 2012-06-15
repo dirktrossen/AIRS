@@ -86,10 +86,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private Semaphore cond_semaphore	 	= new Semaphore(1);
 	private Semaphore wind_semaphore	 	= new Semaphore(1);
 	private Semaphore info_semaphore	 	= new Semaphore(1);
-	// historical data
-	private History history_VT = new History(History.TYPE_INT);
-	private History history_VF = new History(History.TYPE_INT);
-	private History history_VH = new History(History.TYPE_INT);
 
 	/**
 	 * Sleep function 
@@ -149,9 +145,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			readings[4] = (byte)((temperature_c>>8) & 0xff);
 			readings[5] = (byte)(temperature_c & 0xff);
 
-			// push historical data
-			history_VT.push(temperature_c);
-			
 			return readings;
 		}
 
@@ -169,9 +162,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			readings[4] = (byte)((temperature_f>>8) & 0xff);
 			readings[5] = (byte)(temperature_f & 0xff);
 
-			// push historical data
-			history_VF.push(temperature_f);
-
 			return readings;
 		}
 		
@@ -188,9 +178,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			readings[3] = (byte)((humidity>>16) & 0xff);
 			readings[4] = (byte)((humidity>>8) & 0xff);
 			readings[5] = (byte)(humidity & 0xff);
-
-			// push historical data
-			history_VH.push(humidity);
 
 			return readings;
 		}
@@ -221,7 +208,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			// wait for semaphore
 			wait(info_semaphore); 
 
-			String vi = new String("VW" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
+			String vi = new String("VI" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
 			return vi.getBytes();
 		}
 		return null;
@@ -275,15 +262,20 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	{
 		// temperature in Celcius
 		if(sensor.compareTo("VT") == 0)
-			history_VT.timelineView(nors, "Temperature [C]", 0);
+			History.timelineView(nors, "Temperature [C]", "VT");
 
 		// temperature in Farenheit
 		if(sensor.compareTo("VF") == 0)
-			history_VF.timelineView(nors, "Temperature [F]", 0);
+			History.timelineView(nors, "Temperature [F]", "VF");
 		
 		// Humidity
 		if(sensor.compareTo("VH") == 0)
-			history_VH.timelineView(nors, "Humidity [&]", 0);
+			History.timelineView(nors, "Humidity [&]", "VH");
+		
+		// Weather info
+		if(sensor.compareTo("VI") == 0)
+			History.mapView(nors, "Weather on the map", "VI");
+
 	}
 	
 	/***********************************************************************
@@ -303,7 +295,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			SensorRepository.insertSensor(new String("VH"), new String("%"), new String("Humidity"), new String("int"), 0, 0, 100, true, 0, this);	    
 			SensorRepository.insertSensor(new String("VC"), new String("txt"), new String("Weather Conditions"), new String("str"), 0, 0, 1, false, 0, this);	    
 			SensorRepository.insertSensor(new String("VW"), new String("txt"), new String("Wind"), new String("str"), 0, 0, 1, false, 0, this);	    
-			SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("VI"), new String("txt"), new String("Combined Weather info"), new String("str"), 0, 0, 1, true, 0, this);	    
 		}
 	}
 	

@@ -17,8 +17,8 @@
  -->
  <selector xmlns:android="http://schemas.android.com/apk/res/android">
      <item android:state_pressed="true"
-           android:drawable="@drawable/event_local2" /> <!-- pressed -->
+           android:drawable="@drawable/event_local" /> <!-- pressed -->
      <item android:state_focused="true"
-           android:drawable="@drawable/event_local2" /> <!-- focused -->
+           android:drawable="@drawable/event_local" /> <!-- focused -->
      <item android:drawable="@drawable/event_local" /> <!-- default -->
  </selector>

@@ -157,27 +157,6 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    		        	   finish();
 	    		           }
 	    		       })
-	    		       .setNeutralButton("Yes & Share", new DialogInterface.OnClickListener() 
-	    		       {
-	    		           public void onClick(DialogInterface dialog, int id) 
-	    		           {
-	    		    		   if (AIRS_locally != null)
-	    		    		   {
-	    		    			   // pause threads to prevent updates to file
-	    		    			   AIRS_locally.pause_threads();
-	    		    			   // build URI
-	    		    		       Uri U = Uri.fromFile(AIRS_locally.fconn);
-	    		    		       // now build and start chooser intent
-	    		                   Intent intent = new Intent(Intent.ACTION_SEND);
-	    		                   intent.setType("text/plain");
-	    		                   intent.putExtra(Intent.EXTRA_STREAM, U);
-	    		                   act.startActivity(Intent.createChooser(intent,"Send AIRS Measurements To:"));
-	    		    			   // then stop service to clear up all resources and close the file
-	    		    			   stopService(new Intent(act, AIRS_local.class));
-	    		               }
-	    		        	   finish();
-	    		           }
-	    		       })
 	    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
 	    		       {
 	    		           public void onClick(DialogInterface dialog, int id) 
