@@ -182,16 +182,9 @@ public class AIRS_sync extends Activity implements OnClickListener
     		       });
     		AlertDialog alert = builder.create();
     		alert.show();
-    	}    	
-    }
-    
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-    {
-		int i;
-		File current;
-
-    	if (requestCode == SYNC_FINISHED)
+    	}
+    	
+    	if (v.getId() == R.id.sync_finish)
     	{
     		// write current timestamp for later syncs
         	Editor editor = settings.edit();
@@ -215,7 +208,7 @@ public class AIRS_sync extends Activity implements OnClickListener
             // now finish activity
             finish();    		
     	}
-    }
+    }   
 	
 	// The Handler that gets information back from the other threads, updating the values for the UI
 	public final Handler mHandler = new Handler() 
@@ -223,16 +216,27 @@ public class AIRS_sync extends Activity implements OnClickListener
        @Override
        public void handleMessage(Message msg) 
        {
-	       Intent intent = new Intent();
-       	
+	       Intent intent = new Intent(), chosen;
+	       int i;
+
            switch (msg.what) 
            {
            case START_ACTIVITY:        	   
 		     	// prepare intent for choosing sharing
-		        intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+		        intent = new Intent(Intent.ACTION_SEND);
 		        intent.setType("text/plain");
-			    intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-				startActivityForResult(Intent.createChooser(intent,"Send Local Recordings To:"), SYNC_FINISHED);
+		        chosen = Intent.createChooser(intent,"Send Local Recordings To:");
+		        
+		        // anything chosen?
+		        if (chosen!=null)
+		        {
+		        	// now send files with chosen method
+			        for (i=0;i<uris.size();i++)
+			        {
+					    intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+						startActivity(chosen);
+			        }		        
+		        }	        
            	break;
            case FINISH_NO_VALUES_ACTIVITY:
    	  			Toast.makeText(getApplicationContext(), "There are no values to synchronize!", Toast.LENGTH_LONG).show();

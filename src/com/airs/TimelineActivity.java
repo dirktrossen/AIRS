@@ -165,6 +165,9 @@ public class TimelineActivity extends Activity
     public void onDestroy() 
     {
         super.onDestroy();
+        
+        // close DB
+        airs_storage.close();
     }
     
     @Override

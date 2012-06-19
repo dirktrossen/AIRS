@@ -28,6 +28,7 @@
         android:summary="Port of your AIRS application server"
         android:defaultValue="9000"
         android:title="Server port"
+        android:numeric="integer"
         android:key="IPPort" android:name="Port name"/>
     <CheckBoxPreference 
     	android:enabled="true" 
@@ -58,6 +59,7 @@
     <EditTextPreference
         android:summary="Max size of temporary recording files in KB"
         android:defaultValue="512"
+        android:numeric="integer"
         android:title="Recording Files Size"
         android:key="RecordingSize" android:name="Recording Size"/>
     <CheckBoxPreference 
@@ -70,6 +72,7 @@
     	android:summaryOff="Keep temporary recording files created during the synchronization (less secure)"/>  
     <EditTextPreference
         android:summary="# of historical sensor values (0=disable)"
+        android:numeric="integer"
         android:defaultValue="20"
         android:title="Sensor History"
         android:key="SensorHistory" android:name="Sensor History"/>
@@ -84,6 +87,7 @@
     <EditTextPreference
         android:summary="Kill AIRS based on battery level to conserve some spare battery (0 = disable)"
         android:defaultValue="0"
+        android:numeric="integer"
         android:title="Battery Kill Condition [%]"
         android:key="BatteryKill" android:name="Battery Kill"/>    
     </PreferenceCategory>    
@@ -92,6 +96,7 @@
 		android:dialogIcon="@drawable/time"
         android:summary="Interval for reminder that AIRS is running (0 = disable)"
         android:defaultValue="0"
+        android:numeric="integer"
         android:title="Reminder Interval [s]"
         android:key="Reminder" android:name="Reminder"/>
     <CheckBoxPreference 

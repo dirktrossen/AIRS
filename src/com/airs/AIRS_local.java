@@ -79,9 +79,8 @@ public class AIRS_local extends Service
     private int BatteryKill_i;
     private boolean Wakeup_b;
 	private String url = "AIRS_values";
-	public  File fconn;				// public for sharing file when exiting
 	private File mconn, path;
-	private BufferedOutputStream os, os2;
+	private BufferedOutputStream os2;
 	private int numberSensors = 0;
     private ListView sensors;
     public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false, registered = false;
@@ -446,7 +445,7 @@ public class AIRS_local extends Service
 	   	 {
 	   		 try
 	   		 {
-			    os.close();
+			    airs_storage.close();
 	   		 }
 	   		 catch(Exception e)
 	   		 {	    			 
@@ -675,7 +674,7 @@ public class AIRS_local extends Service
 		 // set the time again for ICS
 		 notification.when = System.currentTimeMillis();
 		 // don't allow clearing the notification
-		 notification.flags = Notification.FLAG_NO_CLEAR;
+		 notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 		 startForeground(R.string.app_name, notification);
 		 
          // store start timestamp

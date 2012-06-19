@@ -48,17 +48,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- changed to SQLlite for storing local recordings (more secure since it does not expose recording files)\n
-- synchronization now as menu item in local recording tab\n
-- synchronization creates local recording files on the spot (can be kept in /AIRS_temp) with size as set in general settings\n
-- widget icons changed, now with translucent border\n
-- VI sensor now shown on mapview\n
-- removed sharing option when exiting AIRS local recording
+- minor bug fixes and improvements\n
+- sync now works properly with Bluetooth and Google Drive
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.2:\n
+- minor bug fixes and improvements\n
+- sync now works properly with Bluetooth and Google Drive\n\n
 V2.2.1:\n
 - removed sharing option when exiting AIRS local recording\n\n
 V2.2:\n

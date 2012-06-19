@@ -25,12 +25,26 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/sync_cancel"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:onClick="onClick"
-        android:text="Cancel" />
-   
+        android:orientation="horizontal" >
+
+	    <Button
+	        android:id="@+id/sync_finish"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:onClick="onClick"
+	        android:text="Finish" />
+        <Button
+	        android:id="@+id/sync_cancel"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center_horizontal"
+	        android:onClick="onClick"
+	        android:text="Cancel" />
+    </LinearLayout>
+	    
 </LinearLayout>
