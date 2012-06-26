@@ -48,13 +48,18 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- minor bug fixes and improvements\n
-- sync now works properly with Bluetooth and Google Drive
+- point to dalore.me.uk for the online manual\n
+- added CA sensor for calendar events (requires new permission!)
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.4:\n
+- point to dalore.me.uk for the online manual\n
+- added CA sensor for calendar events (requires new permission!)\n\n
+V2.2.3:\n
+- minor bug fix\n\n
 V2.2.2:\n
 - minor bug fixes and improvements\n
 - sync now works properly with Bluetooth and Google Drive\n\n

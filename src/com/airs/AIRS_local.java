@@ -762,6 +762,24 @@ public class AIRS_local extends Service
 
 		 // store persistently that AIRS is running
          HandlerManager.writeRMS_b("AIRS_local::running", true);
+         
+         // mark date now as having values
+         Calendar cal = Calendar.getInstance();
+         int year = cal.get(Calendar.YEAR);
+         int month = cal.get(Calendar.MONTH) + 1;
+         int day = cal.get(Calendar.DAY_OF_MONTH);
+         try
+         {
+	         String insert = "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')";	
+	         airs_storage.execSQL(insert);
+         }
+         catch(Exception e)
+         {
+        	 String DATABASE_TABLE_CREATE2 = "CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);";
+             airs_storage.execSQL(DATABASE_TABLE_CREATE2);
+	         String insert = "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')";	
+	         airs_storage.execSQL(insert);
+         }
 
 		 return true;
 	 }

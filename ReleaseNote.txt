@@ -1,3 +1,10 @@
+V2.2.4:
+- point to dalore.me.uk for the online manual
+- added CA sensor for calendar events (requires new permission!)
+
+V2.2.3:
+- minor bug fix
+
 V2.2.2:
 - minor bug fixes and improvements
 - sync now works properly with Bluetooth and Google Drive

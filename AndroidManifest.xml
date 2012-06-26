@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.2.2" android:versionCode="81" android:sharedUserId="com.airs">
+      android:versionName="2.2.4" android:versionCode="84" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -9,6 +9,7 @@
     <uses-feature android:name="android.hardware.sensor.proximity" android:required="false" />
     
 	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+    <uses-permission android:name="android.permission.READ_CALENDAR"></uses-permission>
 	<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
 	<uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
 	<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"></uses-permission>

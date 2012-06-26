@@ -233,7 +233,7 @@ public class AIRS_sync extends Activity implements OnClickListener
 		        	// now send files with chosen method
 			        for (i=0;i<uris.size();i++)
 			        {
-					    intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+					    intent.putExtra(Intent.EXTRA_STREAM, uris.get(i));
 						startActivity(chosen);
 			        }		        
 		        }	        

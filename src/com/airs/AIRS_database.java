@@ -27,6 +27,8 @@ public class AIRS_database extends SQLiteOpenHelper
     public static final String DATABASE_TABLE_NAME = "airs_values";
     private static final String DATABASE_TABLE_CREATE =
                 "CREATE TABLE " + DATABASE_TABLE_NAME + " ( Timestamp BIGINT, Symbol CHAR(2), Value TEXT);";
+    private static final String DATABASE_TABLE_CREATE2 =
+        "CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);";
 
     AIRS_database(Context context) 
     {
@@ -36,6 +38,7 @@ public class AIRS_database extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_TABLE_CREATE);
+        db.execSQL(DATABASE_TABLE_CREATE2);
     }
 
     @Override

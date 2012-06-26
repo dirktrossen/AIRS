@@ -16,6 +16,12 @@
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
 <resources>
+    <string-array name="calendar_values">
+        <item>Dummy</item>
+    </string-array>
+    <string-array name="calendar_entries">
+        <item>0</item>
+    </string-array>
     <string-array name="heartmonitor_values">
         <item>AliveTech A101EC</item>
     </string-array>
