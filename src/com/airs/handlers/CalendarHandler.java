@@ -16,14 +16,15 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
-import java.util.Set;
-
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Instances;
@@ -34,7 +35,7 @@ public class CalendarHandler implements Handler
 	// configuration data
 	private int polltime = 60000;
 	private long currentRead = 0;
-	private Set<String> calendars;
+	private String[] calendars;
 	private boolean no_calendars = false;
 	
 	// calendar data
@@ -117,12 +118,15 @@ public class CalendarHandler implements Handler
 	
 	public CalendarHandler(Context nors)
 	{
+		String storedCalendars;
 		// store for later
 		airs = nors;
-		
-		// 
+
+		// retrieve clendars
 		SharedPreferences  settings = PreferenceManager.getDefaultSharedPreferences(nors);
-		calendars = settings.getStringSet("CalendarHandler::Calendars", null);
+		storedCalendars = settings.getString("CalendarHandler::Calendar_names", null);
+		// retrieve individual calendars now
+		calendars = storedCalendars.split("::");
 		
 		if (calendars == null)
 			no_calendars = false;
@@ -145,13 +149,22 @@ public class CalendarHandler implements Handler
 		long begin, end;
 		String[] fields = {Instances.TITLE, Instances.BEGIN, Instances.END, Instances.EVENT_LOCATION, Instances.CALENDAR_ID};
 		long now = System.currentTimeMillis();
-		int i, j, calendar_no = calendars.size();
+		int i, j, calendar_no = calendars.length;
+		Cursor eventCursor;
 
 		currentRead = now - polltime;
 
 		// query anything between now-polltime and now
-	    Cursor eventCursor =  CalendarContract.Instances.query(airs.getContentResolver(), fields, currentRead, now + 24*60*60*1000);
-
+		if (Build.VERSION.SDK_INT>=11)
+			eventCursor =  CalendarContract.Instances.query(airs.getContentResolver(), fields, currentRead, now + 24*60*60*1000);
+		else
+		{
+			Uri.Builder builder = Uri.parse("content://com.android.calendar/instances/when").buildUpon();
+	        ContentUris.appendId(builder, currentRead);
+	        ContentUris.appendId(builder, now + 24*60*60*1000);
+	        eventCursor = airs.getContentResolver().query(builder.build(),
+	                new String[] { "title", "begin", "end", "eventLocation", "calendar_id"}, null, null, null); 
+		}
 		// walk through all returns
 	    eventCursor.moveToFirst();
 		for (i=0;i<eventCursor.getCount();i++) 
@@ -162,10 +175,11 @@ public class CalendarHandler implements Handler
 		    location = eventCursor.getString(3);
 		    ID 	  = eventCursor.getString(4); 
 		    
+
 		    calendar = false;
 		    // see if the entry is from the calendars I want
 		    for (j=0;j<calendar_no;j++)
-		    	if (calendars.contains(ID) == true)
+		    	if (calendars[j].compareTo(ID) == 0)
 		    	{
 		    		calendar = true;
 		    		break;

@@ -49,12 +49,16 @@
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
 - point to dalore.me.uk for the online manual\n
-- added CA sensor for calendar events (requires new permission!)
+- added CA sensor for calendar events (requires new permission!), including for GB
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.4.2:\n
+- added CA calendar sensor now for GB, too!\n\n
+V2.2.4.1:\n
+- check for V11 SDK when calling Calendar preferences to avoid crash on GB\n\n
 V2.2.4:\n
 - point to dalore.me.uk for the online manual\n
 - added CA sensor for calendar events (requires new permission!)\n\n

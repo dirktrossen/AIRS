@@ -16,18 +16,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
-import java.util.Set;
-
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.database.Cursor;
-import android.preference.ListPreference;
-import android.preference.MultiSelectListPreference;
+import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceActivity;
 import android.provider.CalendarContract;
-import android.provider.CalendarContract.Instances;
 
 import com.airs.*;
+import com.airs.helper.ListPreferenceMultiSelect;
 
 public class CalendarHandlerUI implements HandlerUI
 {
@@ -64,45 +60,59 @@ public class CalendarHandlerUI implements HandlerUI
 	{	
 		int i;
 		String[] fields = {CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, CalendarContract.Calendars._ID};
+    	Cursor eventCursor;
 
 		// try to find the preference we want to configure
-		MultiSelectListPreference list = (MultiSelectListPreference)prefs.findPreference("CalendarHandler::Calendars");
+		ListPreferenceMultiSelect list = (ListPreferenceMultiSelect)prefs.findPreference("CalendarHandler::Calendar_names");
 		if (list==null)
 			return;
 
-	    Cursor eventCursor =  prefs.getContentResolver().query(CalendarContract.Calendars.CONTENT_URI, fields, null, null, null);
-
-	    if (eventCursor == null)
-	    {
+		try
+		{
+			// use different way of accessing calendar for Honeycomb
+			if (Build.VERSION.SDK_INT>=11)
+				eventCursor =  prefs.getContentResolver().query(CalendarContract.Calendars.CONTENT_URI, fields, null, null, null);
+			else
+				eventCursor =  prefs.getContentResolver().query(Uri.parse("content://com.android.calendar/calendars"), (new String[] { "displayName", "_id"}), null, null, null);
+			
+	
+		    if (eventCursor == null)
+		    {
+				list.setEntries(null);
+				list.setEntryValues(null);
+		    	return;
+		    }
+		    
+		    if (eventCursor.getCount() == 0)
+		    {
+				list.setEntries(null);
+				list.setEntryValues(null);
+		    	return;
+		    }
+		    
+		    eventCursor.moveToFirst();
+		    
+	    	CharSequence[] calendars = new CharSequence[eventCursor.getCount()];
+	    	CharSequence[] ids = new CharSequence[eventCursor.getCount()];
+	
+	    	// collect all calendars
+		    for(i=0;i<eventCursor.getCount();i++)
+		    {
+		    	calendars[i] = eventCursor.getString(0);
+		    	ids[i] = eventCursor.getString(1);
+		    	
+		    	eventCursor.moveToNext();
+		    }
+	
+		    // set calendar names as entries in list
+			list.setEntries(calendars);
+			// set calendar IDs as entries in preference
+			list.setEntryValues(ids);
+		}
+		catch(Exception e)
+		{
 			list.setEntries(null);
-			list.setEntryValues(null);
-	    	return;
-	    }
-	    
-	    if (eventCursor.getCount() == 0)
-	    {
-			list.setEntries(null);
-			list.setEntryValues(null);
-	    	return;
-	    }
-	    
-	    eventCursor.moveToFirst();
-	    
-    	CharSequence[] calendars = new CharSequence[eventCursor.getCount()];
-    	CharSequence[] ids = new CharSequence[eventCursor.getCount()];
-
-    	// collect all calendars
-	    for(i=0;i<eventCursor.getCount();i++)
-	    {
-	    	calendars[i] = eventCursor.getString(0);
-	    	ids[i] = eventCursor.getString(1);
-	    	
-	    	eventCursor.moveToNext();
-	    }
-
-	    // set calendar names as entries in list
-		list.setEntries(calendars);
-		// set calendar IDs as entries in preference
-		list.setEntryValues(ids);
+			list.setEntryValues(null);			
+		}
 	}
 }

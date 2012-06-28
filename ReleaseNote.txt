@@ -1,3 +1,9 @@
+V2.2.4.2:
+- added CA calendar sensor now for GB, too!
+
+V2.2.4.1:
+- check for V11 SDK when calling Calendar preferences to avoid crash on GB
+
 V2.2.4:
 - point to dalore.me.uk for the online manual
 - added CA sensor for calendar events (requires new permission!)

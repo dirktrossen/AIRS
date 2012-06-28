@@ -18,9 +18,9 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:title="Calendar Settings">
-    <MultiSelectListPreference
+    <com.airs.helper.ListPreferenceMultiSelect
 		android:dialogIcon="@drawable/calendar"
-        android:key="CalendarHandler::Calendars"
+        android:key="CalendarHandler::Calendar_names"
         android:title="Calendar Selection"
         android:entries="@array/calendar_values"
         android:entryValues="@array/calendar_entries"
