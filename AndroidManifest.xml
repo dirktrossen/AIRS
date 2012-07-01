@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.2.4.2" android:versionCode="86" android:sharedUserId="com.airs">
+      android:versionName="2.2.4.3" android:versionCode="87" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -34,7 +34,7 @@
 	    <uses-library android:name="com.google.android.maps" />    
         <activity android:name="AIRS_tabs" 
                   android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar">
+                  android:theme="@android:style/Theme.NoTitleBar" android:configChanges="orientation|keyboardHidden">
 	          <intent-filter>
 	              <action android:name="android.intent.action.MAIN" />
 	              <category android:name="android.intent.category.LAUNCHER" />
@@ -42,17 +42,17 @@
         </activity>
      <service android:enabled="true" android:name="AIRS_local" android:exported="false" android:label="AIRS Local Sensing"/>
      <service android:enabled="true" android:name="AIRS_remote" android:exported="false" android:label="AIRS Remote Sensing"/>
-     <activity android:name="AIRS_local_tab" android:exported="false" android:label="AIRS Local"></activity>
-     <activity android:name="AIRS_remote_tab" android:exported="false" android:label="AIRS Remote"></activity>
+     <activity android:name="AIRS_local_tab" android:exported="false" android:label="AIRS Local" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:name="AIRS_remote_tab" android:exported="false" android:label="AIRS Remote" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:name="Prefs" android:exported="false" android:label="AIRS Preferences"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_sync" android:exported="true" android:label="AIRS Sync"></activity>
-     <activity android:name="AIRS_settings_tab" android:exported="false" android:label="AIRS Settings"></activity>    
-     <activity android:name="AIRS_web_tab" android:exported="false" android:label="Web"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_sync" android:exported="true" android:label="AIRS Sync" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:name="AIRS_settings_tab" android:exported="false" android:label="AIRS Settings" android:configChanges="orientation|keyboardHidden"></activity>    
+     <activity android:name="AIRS_web_tab" android:exported="false" android:label="Web" android:configChanges="orientation|keyboardHidden"></activity>
      
-     <activity android:name="MapViewerActivity" android:exported="false" android:label="AIRS Mapview"></activity>
+     <activity android:name="MapViewerActivity" android:exported="false" android:label="AIRS Mapview" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="TimelineActivity" android:exported="false" android:label="AIRS Timeline"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="AIRS Local Sensing"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="AIRS Remote Sensing"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="AIRS Local Sensing" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="AIRS Remote Sensing" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_shortcut" android:exported="true" android:label="Quick AIRS"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="AIRS Mood Selector"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="AIRS Event Selector"></activity>

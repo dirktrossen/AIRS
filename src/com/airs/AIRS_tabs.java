@@ -21,6 +21,7 @@ import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -168,6 +169,13 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) 
+    {
+      //ignore orientation change
+      super.onConfigurationChanged(newConfig);
+    }
+    
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {

@@ -23,6 +23,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -123,6 +124,13 @@ public class AIRS_remotevalues extends Activity
 	    	return true;
 	    }
 
+	    @Override
+	    public void onConfigurationChanged(Configuration newConfig) 
+	    {
+	      //ignore orientation change
+	      super.onConfigurationChanged(newConfig);
+	    }
+	    
 	    @Override
 	    public boolean onOptionsItemSelected(MenuItem item) 
 	    {

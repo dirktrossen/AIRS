@@ -30,6 +30,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -174,6 +175,13 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 	    return false;
 	}
 	
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) 
+    {
+      //ignore orientation change
+      super.onConfigurationChanged(newConfig);
+    }
+    
     public void onClick(View v) 
     {
     	GeoPoint ownPoint;

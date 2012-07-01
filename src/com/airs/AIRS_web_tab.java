@@ -17,6 +17,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,6 +36,13 @@ public class AIRS_web_tab extends Activity
 
         setContentView(mWebView);
 
+    }
+    
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) 
+    {
+      //ignore orientation change
+      super.onConfigurationChanged(newConfig);
     }
     
     private class HelloWebViewClient extends WebViewClient {

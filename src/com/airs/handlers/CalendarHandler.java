@@ -19,6 +19,7 @@ package com.airs.handlers;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Instances;
 
+@SuppressLint("NewApi")
 public class CalendarHandler implements Handler
 {
 	Context airs;
@@ -125,13 +127,15 @@ public class CalendarHandler implements Handler
 		// retrieve clendars
 		SharedPreferences  settings = PreferenceManager.getDefaultSharedPreferences(nors);
 		storedCalendars = settings.getString("CalendarHandler::Calendar_names", null);
-		// retrieve individual calendars now
-		calendars = storedCalendars.split("::");
 		
-		if (calendars == null)
+		if (storedCalendars == null)	
 			no_calendars = false;
 		else
+		{
+			// retrieve individual calendars now
+			calendars = storedCalendars.split("::");
 			no_calendars = true; 
+		}
 
 		// now read polltime for audio sampling
 		polltime = HandlerManager.readRMS_i("CalendarHandler::samplingpoll", 60) * 1000;

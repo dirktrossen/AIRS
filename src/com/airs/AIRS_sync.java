@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.*;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -154,7 +155,14 @@ public class AIRS_sync extends Activity implements OnClickListener
     {
        super.onDestroy();       
     }
-        
+     
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) 
+    {
+      //ignore orientation change
+      super.onConfigurationChanged(newConfig);
+    }
+    
     public void onClick(View v) 
     {
 		int i;

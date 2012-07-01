@@ -169,11 +169,6 @@ public class TimelineActivity extends Activity
         // close DB
         airs_storage.close();
     }
-    
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) 
-    {
-    }
      
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 

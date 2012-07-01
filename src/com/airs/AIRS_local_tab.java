@@ -171,7 +171,6 @@ public class AIRS_local_tab extends Activity implements OnClickListener
     	super.onConfigurationChanged(newConfig);
     }
  
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
