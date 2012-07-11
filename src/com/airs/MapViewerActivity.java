@@ -46,6 +46,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MapViewerActivity extends MapActivity implements OnClickListener
 {
@@ -88,8 +89,16 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
        	editor = settings.edit();
 
         // now open database
-        database_helper = new AIRS_database(this.getApplicationContext());
-        airs_storage = database_helper.getReadableDatabase();
+		try
+		{
+            database_helper = new AIRS_database(this.getApplicationContext());
+            airs_storage = database_helper.getReadableDatabase();
+		}
+		catch(Exception e)
+		{
+	  		Toast.makeText(getApplicationContext(), "Cannot open AIRS database - try later!", Toast.LENGTH_LONG).show();
+	  		finish();
+		}
 
        	// get previous zoom level
        	zoomLevel = settings.getInt("ZoomLevel", 15);

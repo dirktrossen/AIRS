@@ -1,3 +1,6 @@
+V2.2.4.4:
+- improved thread safety of DB handling
+
 V2.2.4.3:
 - improved handling of orientation change
 - bugfix for calendar and general startup

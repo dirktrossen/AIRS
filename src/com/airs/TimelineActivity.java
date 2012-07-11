@@ -84,8 +84,16 @@ public class TimelineActivity extends Activity
     		startedTime = settings.getLong("AIRS_local::time_started", 0);
     		
             // now open database
-            database_helper = new AIRS_database(this.getApplicationContext());
-            airs_storage = database_helper.getReadableDatabase();
+    		try
+    		{
+	            database_helper = new AIRS_database(this.getApplicationContext());
+	            airs_storage = database_helper.getReadableDatabase();
+    		}
+    		catch(Exception e)
+    		{
+    	  		Toast.makeText(getApplicationContext(), "Cannot open AIRS database - try later!", Toast.LENGTH_LONG).show();
+    	  		finish();
+    		}
 
             // set window title
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);

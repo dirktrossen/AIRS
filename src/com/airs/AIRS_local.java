@@ -322,8 +322,7 @@ public class AIRS_local extends Service
 			    			{
 		    				    try
 		    				    {
-		    				    	String insert = "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")";
-		    				    	airs_storage.execSQL(insert);
+		    				    	execStorage("INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
 		    				    }
 		    					catch(Exception e) 
 		    					{    					
@@ -396,6 +395,20 @@ public class AIRS_local extends Service
 		Restart(true);
 	}
 
+	public synchronized void execStorage(String query)
+	{
+	    try
+	    {
+	    	airs_storage.beginTransaction();
+	    	airs_storage.execSQL(query);
+	    	airs_storage.setTransactionSuccessful();
+	    	airs_storage.endTransaction();
+	    }
+		catch(Exception e) 
+		{    					
+		}			
+	}
+	
 	private void start_AIRS_local()
 	{
 		// find out whether or not to remind of running
@@ -424,6 +437,7 @@ public class AIRS_local extends Service
 	            // get database
 	            database_helper = new AIRS_database(this.getApplicationContext());
 	            airs_storage = database_helper.getWritableDatabase();
+	            airs_storage.setLocale(Locale.ENGLISH);
 		    } 
 		    catch(Exception e)
 		    {
@@ -770,15 +784,12 @@ public class AIRS_local extends Service
          int day = cal.get(Calendar.DAY_OF_MONTH);
          try
          {
-	         String insert = "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')";	
-	         airs_storage.execSQL(insert);
+	         execStorage("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
          }
          catch(Exception e)
          {
-        	 String DATABASE_TABLE_CREATE2 = "CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);";
-             airs_storage.execSQL(DATABASE_TABLE_CREATE2);
-	         String insert = "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')";	
-	         airs_storage.execSQL(insert);
+        	 execStorage("CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);");
+	         execStorage("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
          }
 
 		 return true;
