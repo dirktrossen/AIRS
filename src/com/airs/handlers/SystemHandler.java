@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2011 - 2012, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -57,6 +58,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 	public static final int INIT_PHONESTATE 	= 4;
 	public static final int INIT_OUTGOINGCALL 	= 5;
 	public static final int INIT_SMSRECEIVED 	= 6;
+	public static final int INIT_SMSSENT	 	= 7;
+
+	static final Uri SMS_STATUS_URI = Uri.parse("content://sms/");
 
 	private Context airs;
 	private int oldBattery = -1;
@@ -71,11 +75,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int battery_charging = 0;
 	private int oldbattery_charging = -1;
 	private int headset = 0, oldheadset = -1;
-	private String caller = null, callee = null, smsReceived = null;
+	private String caller = null, callee = null, smsReceived = null, smsSent = null;
 	private int polltime = 5000;
 	private ActivityManager am;
 	private boolean startedBattery = false, startedScreen = false, startedHeadset = false;
-	private boolean startedPhoneState = false, startedOutgoingCall = false, startedSMSReceived = false;
+	private boolean startedPhoneState = false, startedOutgoingCall = false, startedSMSReceived = false, startedSMSSent = false;
 	private Semaphore battery_semaphore 	= new Semaphore(1);
 	private Semaphore screen_semaphore 		= new Semaphore(1);
 	private Semaphore charger_semaphore 	= new Semaphore(1);
@@ -83,6 +87,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore caller_semaphore 		= new Semaphore(1);
 	private Semaphore callee_semaphore 		= new Semaphore(1);
 	private Semaphore received_semaphore 	= new Semaphore(1);
+	private Semaphore sent_semaphore 		= new Semaphore(1);
 
 	/**
 	 * Sleep function 
@@ -283,6 +288,30 @@ public class SystemHandler implements com.airs.handlers.Handler
 			}
 		}
 
+		// sent SMS?
+		if(sensor.compareTo("SS") == 0)
+		{
+			// has SMS received been started?
+			if (startedSMSSent == false)
+			{
+				// send message to handler thread to start SMS sent
+		        Message msg = mHandler.obtainMessage(INIT_SMSSENT);
+		        mHandler.sendMessage(msg);	
+			}
+
+			wait(sent_semaphore);  // block until semaphore available
+
+			// any difference in value?
+			if (smsSent != null)
+			{
+				// create Stringbuffer with sms number being sent
+			    StringBuffer buffer = new StringBuffer("SS");
+			    buffer.append(smsSent);
+			    smsSent = null;
+	    		return buffer.toString().getBytes();
+			}
+		}
+		
 		// incoming call?
 		if(sensor.compareTo("IC") == 0)
 		{
@@ -517,6 +546,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, false, 0, this);	    
     	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, false, 0, this);	    
     	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("SS"), new String("SMS"), new String("Sent SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
     	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
 	}
 	
@@ -536,7 +566,8 @@ public class SystemHandler implements com.airs.handlers.Handler
 			caller_semaphore.acquire(); 
 			callee_semaphore.acquire(); 
 			received_semaphore.acquire(); 
-
+			sent_semaphore.acquire(); 
+			
 	        // get ActivityManager for list of tasks
 		    am  = (ActivityManager) airs.getSystemService(Context.ACTIVITY_SERVICE); 			// if something returned, enter sensor value
 
@@ -634,6 +665,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 		        intentFilter.setPriority(1000000);		
 		        airs.registerReceiver(SystemReceiver, intentFilter);
 	   		   	startedSMSReceived = true;
+		        break;
+           case INIT_SMSSENT:
+        	    SmsObserver smsSentObserver = new SmsObserver(new Handler());
+        	    airs.getContentResolver().registerContentObserver(SMS_STATUS_URI, true, smsSentObserver);
+	   		   	startedSMSSent = true;
 		        break;
            default:  
            		break;
@@ -770,4 +806,55 @@ public class SystemHandler implements com.airs.handlers.Handler
             } 
         }
     };
+    
+    private class SmsObserver extends ContentObserver 
+    {	
+        private String smsBodyStr = "", phoneNoStr = "";
+        
+    	public SmsObserver(Handler handler) 
+    	{
+    		super(handler);
+    	}
+
+    	public boolean deliverSelfNotifications() 
+    	{
+    		return true;
+    	}
+
+    	public void onChange(boolean selfChange) 
+    	{
+    		super.onChange(selfChange);
+
+    		try
+    		{
+    			Cursor sms_sent_cursor = airs.getContentResolver().query(SMS_STATUS_URI, null, null, null, null);
+    			if (sms_sent_cursor != null) 
+    			{
+    				if (sms_sent_cursor.moveToFirst()) 
+    				{
+    					String protocol = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("protocol"));
+    					//for send  protocol is null
+    					if(protocol == null)
+    					{
+    						int type = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("type"));
+    						// for actual state type=2
+    						if(type == 2)
+    						{    
+    							smsBodyStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("body")).trim();
+    							phoneNoStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("address")).trim();
+    							
+    			                smsSent = new String(phoneNoStr + ":" + getContactByNumber(phoneNoStr) + ":" + smsBodyStr);
+    			                
+    							sent_semaphore.release();			// release semaphore
+    						}
+    					}
+    				}
+    			}
+    		}
+    		catch(Exception sggh)
+    		{
+    		}
+    	}
+    	
+    }
 }

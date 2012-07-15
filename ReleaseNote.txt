@@ -1,3 +1,12 @@
+V2.2.5.1:
+- bugfix causing AIRS to crash during startup below API 14
+
+V2.2.5:
+- added 'SS' sensor for storing sent SMSs
+
+V2.2.4.5:
+- bugfix in DB handling
+
 V2.2.4.4:
 - improved thread safety of DB handling
 

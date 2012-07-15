@@ -46,7 +46,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MapViewerActivity extends MapActivity implements OnClickListener
 {
@@ -68,7 +67,6 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     private GeoPoint last_recorded_location;
     private boolean showTrack = true;
     private String Symbol;
-    private AIRS_database database_helper;
     private SQLiteDatabase airs_storage;
     private int history_length;
     private long startedTime;
@@ -89,16 +87,7 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
        	editor = settings.edit();
 
         // now open database
-		try
-		{
-            database_helper = new AIRS_database(this.getApplicationContext());
-            airs_storage = database_helper.getReadableDatabase();
-		}
-		catch(Exception e)
-		{
-	  		Toast.makeText(getApplicationContext(), "Cannot open AIRS database - try later!", Toast.LENGTH_LONG).show();
-	  		finish();
-		}
+        airs_storage = AIRS_local.airs_storage;
 
        	// get previous zoom level
        	zoomLevel = settings.getInt("ZoomLevel", 15);
@@ -172,10 +161,7 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 
    	// store current zoom level for later
        editor.putInt("ZoomLevel", mapView.getZoomLevel());
-       editor.commit();
-       
-       // close DB
-       airs_storage.close();
+       editor.commit();       
     }
     
 	@Override
@@ -275,7 +261,6 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 		Time timeStamp = new Time();
 		String [] columns = {"Timestamp", "Value"};
 		int t_column, v_column;
-		String value;
 		double longitude, latitude;
 		double altitude;
 		double temp_c, temp_f, humidity;
@@ -285,8 +270,12 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 		
 		// issue query to the database
 		if (values ==null)
-			values = airs_storage.query(database_helper.DATABASE_TABLE_NAME, columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
-		    	
+		{
+			synchronized(airs_storage)
+			{
+				values = airs_storage.query("airs_values", columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
+			}
+		}   	
 		if (values == null)
 			finish();
 		
@@ -317,6 +306,9 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     			// now move to next row
     			values.moveToNext();
     		}
+    		
+    		values.close();
+    		values = null;
 		
 	    	// now draw markers
 	    	for (i=0;i<number_values;i++)

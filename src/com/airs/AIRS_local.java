@@ -91,8 +91,8 @@ public class AIRS_local extends Service
     private VibrateThread Vibrator;
     private WakeLock wl;
     // database variables
-    AIRS_database database_helper;
-    SQLiteDatabase airs_storage;
+    static public AIRS_database database_helper;
+    static public SQLiteDatabase airs_storage;
     
 	// private thread for reading the sensor handlers
 	 private class HandlerThread implements Runnable
@@ -397,18 +397,21 @@ public class AIRS_local extends Service
 
 	public synchronized void execStorage(String query)
 	{
-	    try
-	    {
+		synchronized(airs_storage)
+		{
 	    	airs_storage.beginTransaction();
-	    	airs_storage.execSQL(query);
-	    	airs_storage.setTransactionSuccessful();
-	    	airs_storage.endTransaction();
-	    }
-		catch(Exception e) 
-		{    					
-		}			
+		    try
+		    {
+		    	airs_storage.execSQL(query);
+		    	airs_storage.setTransactionSuccessful();
+		    }
+		    finally
+		    {
+		    	airs_storage.endTransaction();
+		    }
+		}
 	}
-	
+
 	private void start_AIRS_local()
 	{
 		// find out whether or not to remind of running
@@ -436,8 +439,8 @@ public class AIRS_local extends Service
 		    {	            
 	            // get database
 	            database_helper = new AIRS_database(this.getApplicationContext());
-	            airs_storage = database_helper.getWritableDatabase();
-	            airs_storage.setLocale(Locale.ENGLISH);
+//	            airs_storage = database_helper.getWritableDatabase();
+	            airs_storage = SQLiteDatabase.openDatabase(this.getDatabasePath(database_helper.DATABASE_NAME).toString(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
 		    } 
 		    catch(Exception e)
 		    {

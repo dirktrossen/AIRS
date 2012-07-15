@@ -48,13 +48,20 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- improved handling of orientation change\n
-- bugfix for calendar and general startup
+- bugfix causing AIRS to crash during startup below API 14
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.5.1:\n
+- bugfix causing AIRS to crash during startup below API 14\n\n
+V2.2.5:\n
+- added SS sensor for storing sent SMSs\n\n
+V2.2.4.5:\n
+- bugfix in DB handling\n\n
+V2.2.4.4:\n
+- improved thread safety of DB handling\n\n
 V2.2.4.3:\n
 - improved handling of orientation change\n
 - bugfix for calendar and general startup\n\n

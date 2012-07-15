@@ -152,9 +152,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
-    {
-    	int i;
-    	
+    {    	
         switch (item.getItemId()) 
         {
         case R.id.main_about:

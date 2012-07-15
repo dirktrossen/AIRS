@@ -3,7 +3,6 @@ package com.airs;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -37,10 +36,9 @@ public class TimelineActivity extends Activity
 	private long maxTime = Long.MIN_VALUE;
 	private long startedTime;
 	private float min = Float.MAX_VALUE;
-	private float max = Float.MIN_VALUE;
+	private float max = -Float.MAX_VALUE;
 	private int history_length;
     // database variables
-    AIRS_database database_helper;
     SQLiteDatabase airs_storage;
     private SharedPreferences settings;
 
@@ -84,16 +82,7 @@ public class TimelineActivity extends Activity
     		startedTime = settings.getLong("AIRS_local::time_started", 0);
     		
             // now open database
-    		try
-    		{
-	            database_helper = new AIRS_database(this.getApplicationContext());
-	            airs_storage = database_helper.getReadableDatabase();
-    		}
-    		catch(Exception e)
-    		{
-    	  		Toast.makeText(getApplicationContext(), "Cannot open AIRS database - try later!", Toast.LENGTH_LONG).show();
-    	  		finish();
-    		}
+            airs_storage = AIRS_local.airs_storage;
 
             // set window title
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
@@ -172,10 +161,7 @@ public class TimelineActivity extends Activity
     @Override
     public void onDestroy() 
     {
-        super.onDestroy();
-        
-        // close DB
-        airs_storage.close();
+        super.onDestroy();        
     }
      
     @Override
@@ -234,8 +220,12 @@ public class TimelineActivity extends Activity
 		String selection = "Symbol='"+ symbol +"'";
 		
 		// issue query to the database
-		values = airs_storage.query(database_helper.DATABASE_TABLE_NAME, columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
-		    	
+		synchronized(airs_storage)
+		{
+			values = airs_storage.query("airs_values", columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
+		    
+		}
+		
 		if (values == null)
 			finish();
 		
@@ -310,7 +300,10 @@ public class TimelineActivity extends Activity
     		timeStamp.set(maxTime);
     		maxX.setText(timeStamp.format("%H:%M:%S"));
     		
-    		DisplayView.postInvalidate();       		
+    		DisplayView.postInvalidate();      
+    		
+    		values.close();
+    		values = null;
     	}
     	else
     		finish();
