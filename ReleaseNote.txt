@@ -1,3 +1,7 @@
+V2.2.5.2: 
+- address JB issue of creating tmp picture files 
+- bugfix
+
 V2.2.5.1:
 - bugfix causing AIRS to crash during startup below API 14
 

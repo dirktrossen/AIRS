@@ -220,12 +220,16 @@ public class MediaWatcherHandler implements Handler
 			while (reading_sensor == true)
 				sleep(200);
 			
-			// copy watched file
-			watched_file = new String(path);
-			watched_type = new String(media_type);
-			
-			// release semaphore
-			watcher_semaphore.release(); 
+			// discount tmp files!
+			if (path.endsWith(".tmp") == false)
+			{
+				// copy watched file
+				watched_file = new String(path);
+				watched_type = new String(media_type);
+				
+				// release semaphore
+				watcher_semaphore.release(); 
+			}
 		}
 	}
 

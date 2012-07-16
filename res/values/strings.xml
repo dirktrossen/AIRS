@@ -48,12 +48,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- bugfix causing AIRS to crash during startup below API 14
+- address JB issue of creating tmp picture files\n 
+- bugfix
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.5.2:\n 
+- address JB issue of creating tmp picture files\n 
+- bugfix\n\n
 V2.2.5.1:\n
 - bugfix causing AIRS to crash during startup below API 14\n\n
 V2.2.5:\n

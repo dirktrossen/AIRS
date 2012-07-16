@@ -397,6 +397,9 @@ public class AIRS_local extends Service
 
 	public synchronized void execStorage(String query)
 	{
+		if (airs_storage == null)
+			return;
+		
 		synchronized(airs_storage)
 		{
 	    	airs_storage.beginTransaction();
