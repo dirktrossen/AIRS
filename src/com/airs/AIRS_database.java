@@ -25,9 +25,9 @@ public class AIRS_database extends SQLiteOpenHelper
 	public static final String DATABASE_NAME = "AIRS";
     private static final int DATABASE_VERSION = 2;
     public static final String DATABASE_TABLE_NAME = "airs_values";
-    private static final String DATABASE_TABLE_CREATE =
+    public static final String DATABASE_TABLE_CREATE =
                 "CREATE TABLE " + DATABASE_TABLE_NAME + " ( Timestamp BIGINT, Symbol CHAR(2), Value TEXT);";
-    private static final String DATABASE_TABLE_CREATE2 =
+    public static final String DATABASE_TABLE_CREATE2 =
         "CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);";
 
     AIRS_database(Context context) 

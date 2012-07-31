@@ -48,13 +48,14 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- address JB issue of creating tmp picture files\n 
-- bugfix
+- create DB now, if necessary (hopefully avoiding force close for recording)
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.5.3:\n
+- create DB now, if necessary (hopefully avoiding force close for recording)\n\n
 V2.2.5.2:\n 
 - address JB issue of creating tmp picture files\n 
 - bugfix\n\n

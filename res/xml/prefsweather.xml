@@ -21,7 +21,7 @@
     <EditTextPreference
         android:summary="Poll interval for weather update in minutes"
   		android:dialogIcon="@drawable/time"
-        android:defaultValue="10"
+        android:defaultValue="30"
         android:numeric="integer"
         android:title="Weather Interval [min]"
         android:key="WeatherHandler::WeatherPoll"/>
@@ -29,7 +29,7 @@
     	android:dialogIcon="@drawable/location"
         android:key="WeatherHandler::LocationUpdate"
         android:title="GPS Accuracy [m]"
-        android:defaultValue="1000"
+        android:defaultValue="0"
         android:summary="Update weather when moved more than a certain distance (or always)"
         android:positiveButtonText="Select"
         android:entries="@array/weatherhandler_values"

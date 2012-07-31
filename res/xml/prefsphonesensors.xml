@@ -28,14 +28,14 @@
     <EditTextPreference
         android:summary="Poll interval for proximity, light and barometer sensor in seconds"
 		android:dialogIcon="@drawable/time"
-        android:defaultValue="5"
+        android:defaultValue="10"
         android:numeric="integer"
         android:title="Other Sensors Interval [s]"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
     <EditTextPreference
         android:summary="Poll interval for system information like RAM, tasks, etc"
 		android:dialogIcon="@drawable/time"
-        android:defaultValue="5"
+        android:defaultValue="10"
         android:numeric="integer"
         android:title="System Poll Interval [s]"
         android:key="SystemSensorsHandler::SystemPoll"/>           

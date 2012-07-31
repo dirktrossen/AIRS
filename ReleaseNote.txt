@@ -1,3 +1,6 @@
+V2.2.5.3:
+- create DB now, if necessary (hopefully avoiding force close for recording)
+
 V2.2.5.2: 
 - address JB issue of creating tmp picture files 
 - bugfix

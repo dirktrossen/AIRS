@@ -443,7 +443,8 @@ public class AIRS_local extends Service
 	            // get database
 	            database_helper = new AIRS_database(this.getApplicationContext());
 //	            airs_storage = database_helper.getWritableDatabase();
-	            airs_storage = SQLiteDatabase.openDatabase(this.getDatabasePath(database_helper.DATABASE_NAME).toString(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+	            airs_storage = SQLiteDatabase.openDatabase(this.getDatabasePath(database_helper.DATABASE_NAME).toString(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.CREATE_IF_NECESSARY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+
 		    } 
 		    catch(Exception e)
 		    {
