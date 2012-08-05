@@ -70,7 +70,7 @@ public class CalendarHandlerUI implements HandlerUI
 		try
 		{
 			// use different way of accessing calendar for Honeycomb
-			if (Build.VERSION.SDK_INT>=11)
+			if (Build.VERSION.SDK_INT>=14)
 				eventCursor =  prefs.getContentResolver().query(CalendarContract.Calendars.CONTENT_URI, fields, null, null, null);
 			else
 				eventCursor =  prefs.getContentResolver().query(Uri.parse("content://com.android.calendar/calendars"), (new String[] { "displayName", "_id"}), null, null, null);

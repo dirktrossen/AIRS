@@ -442,14 +442,20 @@ public class AIRS_local extends Service
 		    {	            
 	            // get database
 	            database_helper = new AIRS_database(this.getApplicationContext());
-//	            airs_storage = database_helper.getWritableDatabase();
-	            airs_storage = SQLiteDatabase.openDatabase(this.getDatabasePath(database_helper.DATABASE_NAME).toString(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.CREATE_IF_NECESSARY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
-
+	            airs_storage = database_helper.getWritableDatabase();
+//	            airs_storage = SQLiteDatabase.openDatabase(this.getDatabasePath(database_helper.DATABASE_NAME).toString(), null, SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.CREATE_IF_NECESSARY | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+	            // have tables been created?
+	            if (HandlerManager.readRMS_b("AIRS_local::TablesExists", false) == false)
+	            {
+	            	airs_storage.execSQL(database_helper.DATABASE_TABLE_CREATE);
+	            	airs_storage.execSQL(database_helper.DATABASE_TABLE_CREATE2);
+	                HandlerManager.writeRMS_b("AIRS_local::TablesExists", true);
+	            }
 		    } 
 		    catch(Exception e)
 		    {
 	    		debug("AIRS_local::Exception in opening file connection");
-		    	localStore_b = false;
+//		    	localStore_b = false;
 		    }
 		}
 	}

@@ -159,7 +159,7 @@ public class CalendarHandler implements Handler
 		currentRead = now - polltime;
 
 		// query anything between now-polltime and now
-		if (Build.VERSION.SDK_INT>=11)
+		if (Build.VERSION.SDK_INT>=14)
 			eventCursor =  CalendarContract.Instances.query(airs.getContentResolver(), fields, currentRead, now + 24*60*60*1000);
 		else
 		{
