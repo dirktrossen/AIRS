@@ -48,12 +48,14 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- address bug in calendar selection on Honeycomb
+- backup and restore recording database to/from SD card
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6:\n
+- backup and restore recording database to/from SD card\n\n
 V2.2.5.4: \n
 - address bug in calendar selection on Honeycomb\n\n
 V2.2.5.3:\n

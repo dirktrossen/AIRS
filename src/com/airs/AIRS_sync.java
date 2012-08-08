@@ -249,6 +249,7 @@ public class AIRS_sync extends Activity implements OnClickListener
            case FINISH_NO_VALUES_ACTIVITY:
    	  			Toast.makeText(getApplicationContext(), "There are no values to synchronize!", Toast.LENGTH_LONG).show();
    	  			finish();
+   	  			break;
            case FINISH_ACTIVITY:
         	   finish();
         	   break;

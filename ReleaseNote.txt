@@ -1,3 +1,6 @@
+V2.2.6: 
+- backup and restore recording database to/from SD card
+
 V2.2.5.4: 
 - address bug in calendar selection on Honeycomb 
 

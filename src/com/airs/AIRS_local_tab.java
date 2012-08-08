@@ -228,6 +228,14 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         	intent = new Intent(this,AIRS_sync.class);
         	startActivity(intent);
         	break;
+        case R.id.main_backup:
+        	intent = new Intent(this,AIRS_backup.class);
+        	startActivity(intent);
+        	break;
+        case R.id.main_restore:
+        	intent = new Intent(this,AIRS_restore.class);
+        	startActivity(intent);
+        	break;
         case R.id.local_start:
         	// debugging on during measurements?
        		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));

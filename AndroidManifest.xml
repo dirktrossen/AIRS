@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.2.5.4" android:versionCode="97" android:sharedUserId="com.airs">
+      android:versionName="2.2.6" android:versionCode="98" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -47,6 +47,8 @@
      <activity android:name="AIRS_remote_tab" android:exported="false" android:label="AIRS Remote" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:name="Prefs" android:exported="false" android:label="AIRS Preferences"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_sync" android:exported="true" android:label="AIRS Sync" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_backup" android:exported="true" android:label="AIRS Backup" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_restore" android:exported="true" android:label="AIRS Restore" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:name="AIRS_settings_tab" android:exported="false" android:label="AIRS Settings" android:configChanges="orientation|keyboardHidden"></activity>    
      <activity android:name="AIRS_web_tab" android:exported="false" android:label="Web" android:configChanges="orientation|keyboardHidden"></activity>
      
