@@ -49,12 +49,15 @@
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
 - add link to AIRS blog to menu in Manual tab of main UI\n
+- added back/forward to Manual tab for easier navigation\n
 - now store preferences with each Quick Start shortcut -> allows for recording templates!
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6.2:\n
+- added back/forward to Manual tab for easier navigation\n\n
 V2.2.6.1:\n
 - add link to AIRS blog to menu in Manual tab of main UI\n
 - now store preferences with each Quick Start shortcut -> allows for recording templates!\n\n

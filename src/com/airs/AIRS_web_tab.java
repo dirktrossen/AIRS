@@ -35,6 +35,7 @@ public class AIRS_web_tab extends Activity
         mWebView = new WebView(this);
         mWebView.setWebViewClient(new HelloWebViewClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setUserAgentString("online-manual");
         mWebView.loadUrl("http://dalore.me.uk/DOT/software/airs-online-manual");
 
         setContentView(mWebView);
@@ -70,6 +71,12 @@ public class AIRS_web_tab extends Activity
         case R.id.web_blog:
             mWebView.loadUrl("http://dalore.me.uk/DOT/category/airs/");        	
         	return true;
+        case R.id.web_back:
+            mWebView.goBack();
+            return true;
+        case R.id.web_forward:
+            mWebView.goForward();
+            return true;
         }
         return false;
     }

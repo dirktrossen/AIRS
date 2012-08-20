@@ -1,3 +1,6 @@
+V2.2.6.2:
+- added back/forward to Manual tab for easier navigation
+
 V2.2.6.1:
 - add link to AIRS blog to menu in Manual tab of main UI
 - now store preferences with each Quick Start shortcut -> allows for recording templates!

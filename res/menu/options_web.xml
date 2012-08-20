@@ -23,4 +23,10 @@
     <item android:id="@+id/web_blog"
           android:icon="@android:drawable/ic_menu_edit"
           android:title="AIRS blog" />
+    <item android:id="@+id/web_back"
+          android:icon="@android:drawable/ic_media_previous"
+          android:title="Back" />
+    <item android:id="@+id/web_forward"
+          android:icon="@android:drawable/ic_media_next"
+          android:title="Forward" />
     </menu>
