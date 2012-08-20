@@ -1,3 +1,7 @@
+V2.2.6.1:
+- add link to AIRS blog to menu in Manual tab of main UI
+- now store preferences with each Quick Start shortcut -> allows for recording templates!
+
 V2.2.6: 
 - backup and restore recording database to/from SD card
 

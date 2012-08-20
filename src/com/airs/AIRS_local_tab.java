@@ -16,6 +16,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -31,6 +35,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -207,13 +212,32 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         		HandlerUIManager.AboutDialog("AIRS Local", getString(R.string.LocalAbout));
     		break;
         case R.id.main_shortcut:
+        	File preferenceFile = new File(getFilesDir(), "../shared_prefs/com.airs_preferences.xml");
+    		File shortcutPath = new File(getExternalFilesDir(null).getAbsolutePath());
+            File shortcutFile = new File(shortcutPath, "shortcutPrefs_" + String.valueOf(System.currentTimeMillis()) + ".xml");
+        	
         	// intent for starting AIRS
         	Intent shortcutIntent = new Intent(Intent.ACTION_MAIN); 
         	shortcutIntent.setClassName(this, AIRS_shortcut.class.getName()); 
         	
-//        	Intent shortcutIntent = new Intent(this, AIRS_shortcut.class);
         	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        	// copy preference file if original preferences exist
+        	if (preferenceFile.exists() == true)
+        	{
+	            try
+	            {
+	                FileChannel src = new FileInputStream(preferenceFile).getChannel();
+	                FileChannel dst = new FileOutputStream(shortcutFile).getChannel();
+	                dst.transferFrom(src, 0, src.size());
+	                src.close();
+	                dst.close();
+	            	shortcutIntent.putExtra("preferences", shortcutFile.toString());
+	            }
+	            catch(Exception e)
+	            {
+	            }
+        	}        		
         	
         	// intent for creating the shortcut
         	intent = new Intent();

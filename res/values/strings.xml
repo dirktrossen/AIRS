@@ -38,7 +38,7 @@
 \'Watchdog Interval\' defines the vibration interval for the local sensing watchdog (0 switches the vibrate off)\n\n
 \'Debug\' switches the debug output on/off. \n</string>
 <string name="MapAbout">Shows a path of recent GPS recording. You can click on a marker for more information. You can center the map either on your current location or the last stored one (using the buttons on the top right). You can also switch between map or satellite view with the appropriate options menu item.</string>
-<string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage.</string>
+<string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage. You can also read the <b>AIRS blog</b> by opening the options menu and selecting the appropriate menu item.</string>
 <string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record and press <b>Start</b> to record.</string>
 <string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the recordings only).</string>
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
@@ -48,12 +48,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- backup and restore recording database to/from SD card
+- add link to AIRS blog to menu in Manual tab of main UI\n
+- now store preferences with each Quick Start shortcut -> allows for recording templates!
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6.1:\n
+- add link to AIRS blog to menu in Manual tab of main UI\n
+- now store preferences with each Quick Start shortcut -> allows for recording templates!\n\n
 V2.2.6:\n
 - backup and restore recording database to/from SD card\n\n
 V2.2.5.4: \n

@@ -15,6 +15,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */package com.airs;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -38,11 +43,37 @@ public class AIRS_shortcut extends Activity
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
+		   Intent intent= getIntent();
+		   String preferences;
+		   
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
 	        
 	        // store for later usage
 	        act = this;
+	        
+	        // get intent extras
+	        if ((preferences = intent.getStringExtra("preferences")) != null)
+	        {
+	        	File preferenceFile = new File(getFilesDir(), "../shared_prefs/com.airs_preferences.xml");
+	            File shortcutFile = new File(preferences);
+
+	        	// copy preference file if original preferences exist
+	        	if (shortcutFile.exists() == true)
+	        	{
+		            try
+		            {
+		                FileChannel src = new FileInputStream(shortcutFile).getChannel();
+		                FileChannel dst = new FileOutputStream(preferenceFile).getChannel();
+		                dst.transferFrom(src, 0, src.size());
+		                src.close();
+		                dst.close();		                
+		            }
+		            catch(Exception e)
+		            {
+		            }
+	        	}        		
+	        }
 	        
 	        // get default preferences
 	        settings = PreferenceManager.getDefaultSharedPreferences(this);

@@ -20,6 +20,8 @@ package com.airs;
 import java.util.*;
 import java.io.*;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,11 +34,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -56,6 +60,8 @@ import com.airs.platform.SensorRepository;
  * 
  * Purpose: implements local application. In our case, it is a simple display of sensor data
  */
+@TargetApi(11)
+@SuppressLint({ "NewApi", "NewApi", "NewApi", "NewApi", "NewApi", "NewApi" })
 public class AIRS_local extends Service
 {
 	// states for handler 
@@ -666,7 +672,8 @@ public class AIRS_local extends Service
 	 }
 	 
 	 // main thread to run, acquires values, stores them locally and displays them (if wanted)
-	 public boolean startMeasurements(boolean restarted)
+	 @SuppressLint("NewApi")
+	public boolean startMeasurements(boolean restarted)
 	 {
 		 int i, j;
 		 Sensor current = null;
@@ -702,7 +709,8 @@ public class AIRS_local extends Service
 		 notification.when = System.currentTimeMillis();
 		 // don't allow clearing the notification
 		 notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-		 startForeground(R.string.app_name, notification);
+
+		 startForeground(R.string.app_name, notification);	
 		 
          // store start timestamp
          HandlerManager.writeRMS_l("AIRS_local::time_started", System.currentTimeMillis());

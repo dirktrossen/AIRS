@@ -40,7 +40,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 {
 	private int currentTab = 0;
 	private int no_tabs = 0;
-	private int no_settings_tab, no_manual_tab, no_local_tab;
+	private int no_settings_tab, no_local_tab;
 	
     // preferences
     private SharedPreferences settings;
@@ -101,8 +101,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	                      res.getDrawable(R.drawable.manual))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
-	    // store tab number
-	    no_manual_tab = no_tabs;
 	    no_tabs++;
 	    
 	    // current tab
@@ -159,8 +157,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
         	// call about dialogue
         	if (getTabHost().getCurrentTab() == no_settings_tab)
         		HandlerUIManager.AboutDialog("Settings", getString(R.string.HandlersList));
-        	if (getTabHost().getCurrentTab() == no_manual_tab)
-        		HandlerUIManager.AboutDialog("Online Manual", getString(R.string.ManualAbout));
             return true; 
         default:
         	return false;

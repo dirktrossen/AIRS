@@ -19,6 +19,9 @@ package com.airs;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -45,6 +48,31 @@ public class AIRS_web_tab extends Activity
       super.onConfigurationChanged(newConfig);
     }
     
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) 
+    {
+    	MenuInflater inflater;
+        menu.clear();    		
+        inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_web, menu);
+        
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {    	    	
+        switch (item.getItemId()) 
+        {
+        case R.id.main_about:
+       		HandlerUIManager.AboutDialog("Online Manual", getString(R.string.ManualAbout));
+       		return true;
+        case R.id.web_blog:
+            mWebView.loadUrl("http://dalore.me.uk/DOT/category/airs/");        	
+        	return true;
+        }
+        return false;
+    }
     private class HelloWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
