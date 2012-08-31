@@ -40,6 +40,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 /**
  * @author trossen
@@ -51,7 +52,9 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 {
 	public static final int INIT_GPS = 1;
 	public static final int KILL_GPS = 2;
-
+	public static final int TEXT_OUT = 3;
+	String text_message;
+	
 	private Context nors;
 	private boolean weather_enabled;
 	
@@ -87,6 +90,12 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private Semaphore wind_semaphore	 	= new Semaphore(1);
 	private Semaphore info_semaphore	 	= new Semaphore(1);
 
+	// boolean for which element is parsed
+	private boolean temp_c_element;
+	private boolean temp_f_element;
+	private boolean hum_element;
+	private boolean cond_element;
+	private boolean wind_element;
 	/**
 	 * Sleep function 
 	 * @param millis
@@ -351,13 +360,14 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 					if (movedAway == true)
 					{
 						// request update for that long,lat pair!
-			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
+//			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
+			            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
 			            // 51914540,900690");
 	
 			            /* Parse the xml-data from our URL. */
 			            input = new InputSource(url.openStream());
-			            XMLreader.parse(input);	   
-			            input = null;
+			            XMLreader.parse(input);	 
+			            input = null;			            
 					}
 		            
 		            // get current timestamp to see how long the weather reading took all along
@@ -464,8 +474,20 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
     		   // request location updates
         	   if (manager!=null)
         	   {
-        		   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, (float)0, mReceiver);  
-        		   manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float)0, mReceiver);  
+        		   try
+        		   {        			   
+        			   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, (float)0, mReceiver);  
+        		   }
+        		   catch(Exception e)
+        		   {
+        		   }
+        		   try
+        		   {
+        			   manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float)0, mReceiver);  
+        		   }
+        		   catch(Exception e)
+        		   {
+        		   }
         		   startedLocation = true;
         	   }
 	           break;  
@@ -477,6 +499,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         		   startedLocation = false;
         	   }
 	           break;  
+           case TEXT_OUT:
+        	   Toast.makeText(nors, text_message, Toast.LENGTH_LONG).show();
+        	   break;
+
            default:  
            	break;
            }
@@ -501,68 +527,82 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         @Override
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException 
         {
+        		Message text_msg = mHandler.obtainMessage(TEXT_OUT);
         		// check for entering current conditions part of message
-	            if (localName.equals("current_conditions")) 
+	            if (localName.equals("current_condition")) 
+	            {
 					current_cond = true;
+	            }
 	            
-                if (localName.equals("temp_c") && current_cond==true) 
-                {
-                        // Extract an Attribute
-                        String attrValue = atts.getValue("data");
-                        temperature_c = Integer.parseInt(attrValue);
-                        // signal possible Acquire() thread
-        				temp_c_semaphore.release(); 
-                }
-                if (localName.equals("temp_f") && current_cond==true) 
-                {
-                        // Extract an Attribute
-                        String attrValue = atts.getValue("data");
-                        temperature_f = Integer.parseInt(attrValue);
-                        // signal possible Acquire() thread
-        				temp_f_semaphore.release(); 
-                }
+                if (localName.equals("temp_C") && current_cond==true) 
+                	temp_c_element = true;
+                if (localName.equals("temp_F") && current_cond==true) 
+                	temp_f_element = true;
                 if (localName.equals("humidity") && current_cond==true) 
-                {
-                        // Extract an Attribute
-                        String attrValue = atts.getValue("data");
-                        // cut out the humidity value by jumping over 'Humidity : ' and leave last character '%'
-                        if (attrValue.length() > 10)
-                        {
-                        	String humidity_s = attrValue.substring(10, attrValue.length()-1);
-                        	humidity = Integer.parseInt(humidity_s);
-	                        // signal possible Acquire() thread
-	        				hum_semaphore.release(); 
-                        }
-                }
-                if (localName.equals("condition") && current_cond==true) 
-                {
-                        // Extract an Attribute
-                        condition = atts.getValue("data");
-                        // signal possible Acquire() thread
-        				cond_semaphore.release(); 
-                }
-                if (localName.equals("wind_condition") && current_cond==true) 
-                {
-                        // Extract Attribute and jump over 'Wind: '
-                		String attrValue = atts.getValue("data");
-                		if (attrValue.length()>6)
-                		{
-	                        wind = attrValue.substring(6);
-	                        // signal possible Acquire() thread
-	        				wind_semaphore.release(); 
-                		}
-                }
+                	hum_element = true;
+                if (localName.equals("weatherDesc") && current_cond==true) 
+                	cond_element = true;
+                if (localName.equals("windspeedMiles") && current_cond==true) 
+                	wind_element = true;
         }
         
         public void endElement(String namespaceURI, String localName, String qName) throws SAXException 
         {
-			if (localName.equals("current_conditions"))
+			if (localName.equals("current_condition"))
 			{
 				current_cond = false;
                 // signal possible Acquire() thread since we should have read everything now!
 				info_semaphore.release(); 
 			}
         }
+        
+        @Override 
+        public void characters(char ch[], int start, int length) 
+        { 
+          String chars = new String(ch, start, length); 
+          chars = chars.trim(); 
+
+          if (temp_c_element == true) 
+          {
+              temperature_c = Integer.parseInt(chars);
+              // signal possible Acquire() thread
+              temp_c_semaphore.release(); 
+              // clear element flag
+              temp_c_element = false;
+          }
+          if (temp_f_element == true) 
+          {
+              temperature_f = Integer.parseInt(chars);
+              // signal possible Acquire() thread
+              temp_f_semaphore.release(); 
+              // clear element flag
+              temp_f_element = false;
+          }
+          if (hum_element == true) 
+          {
+        	  humidity = Integer.parseInt(chars);
+              // signal possible Acquire() thread
+              hum_semaphore.release(); 
+              // clear element flag
+              hum_element = false;
+          }
+          if (cond_element == true) 
+          {
+        	  condition = chars;
+              // signal possible Acquire() thread
+              cond_semaphore.release(); 
+              // clear element flag
+              cond_element = false;
+          }
+          if (wind_element == true) 
+          {
+        	  wind = chars + "mph";
+              // signal possible Acquire() thread
+              wind_semaphore.release(); 
+              // clear element flag
+              wind_element = false;
+          }
+        } 
     }
     
     private class LocationReceiver implements LocationListener 
