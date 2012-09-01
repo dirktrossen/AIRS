@@ -1,3 +1,6 @@
+V2.2.6.4:
+- check if AIRS is running when creating a shortcut for your homescreen
+
 V2.2.6.3:
 - changed weather provider to worldweatheronline.com since Google stopped its weather API!
 
