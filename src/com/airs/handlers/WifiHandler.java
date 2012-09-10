@@ -28,14 +28,18 @@ import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Handler;
+import android.os.Message;
 import android.telephony.PhoneStateListener;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
-public class WifiHandler extends PhoneStateListener implements Handler
+public class WifiHandler extends PhoneStateListener implements com.airs.handlers.Handler
 {
+	public static final int INIT_WIFI = 1;
+
 	Context nors;
 	// phone state classes
 	private WifiManager wm;
@@ -43,7 +47,7 @@ public class WifiHandler extends PhoneStateListener implements Handler
 	private WifiLock wifi_lock;
 
 	// are these there?
-	private boolean enable = false, enableWIFI = false, sleepWIFI = false;
+	private boolean enable = false, enableWIFI = false, sleepWIFI = false, initialized = false;
 	// polltime
 	private int			polltime = 5000;
 	// sensor data
@@ -87,6 +91,17 @@ public class WifiHandler extends PhoneStateListener implements Handler
 	***********************************************************************/
 	public synchronized byte[] Acquire(String sensor, String query)
 	{	
+		// has WiFi been started?
+		if (initialized == false)
+		{
+			// send message to handler thread to start GPS
+	        Message msg = mHandler.obtainMessage(INIT_WIFI);
+	        mHandler.sendMessage(msg);	
+	        // wait for starting wifi
+	        while (initialized == false)
+	        	sleep(100);
+		}
+
 		// acquire data and send out
 		reading = null;
 		try
@@ -169,23 +184,10 @@ public class WifiHandler extends PhoneStateListener implements Handler
 				return;
 			
 			wm = (WifiManager)nors.getSystemService(Context.WIFI_SERVICE);
-			if (wm != null)
-			{
-				// create wifi lock
-				wifi_lock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, "NORSWifiLock");
-				 
-				// is Wifi switched off and shall we switch it on?
-				if (wm.isWifiEnabled() == false && enableWIFI == true)
-					wm.setWifiEnabled(true);
-
-				// Register Broadcast Receiver
-				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+			if (wm!=null)
 				enable = true;
-				
-				// start first scan here!
-				wm.startScan();
-				Wifi_scanning = true;
-			}			
+			else
+				enable = false;
 		}
 		catch(Exception e)
 		{
@@ -198,12 +200,15 @@ public class WifiHandler extends PhoneStateListener implements Handler
 		// unregister listeners		
 		if (enable == true)
 		{
-			// unregister receiver
-			nors.unregisterReceiver(WifiReceiver);
-			// release wifi lock
-			if (wifi_lock != null)
-	          if (wifi_lock.isHeld() == true) 
-	              wifi_lock.release();
+			if (initialized == true)
+			{
+				// unregister receiver
+				nors.unregisterReceiver(WifiReceiver);
+				// release wifi lock
+				if (wifi_lock != null)
+		          if (wifi_lock.isHeld() == true) 
+		              wifi_lock.release();
+			}
 		}
 	}
 	
@@ -307,6 +312,44 @@ public class WifiHandler extends PhoneStateListener implements Handler
 			Wifi_scanning = true;
 		}
 	}
+
+	// The Handler that gets information back from the other threads, initializing GPS
+	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the GPS
+	// since requestLocationUpdates() can only be called from the main Looper thread!!
+	public final Handler mHandler = new Handler() 
+    {
+       @Override
+       public void handleMessage(Message msg) 
+       {        	
+           switch (msg.what) 
+           {
+           case INIT_WIFI:
+   			if (wm != null)
+			{
+				// create wifi lock if not sleeping enabled
+   				if (sleepWIFI == false)
+   					wifi_lock = wm.createWifiLock(WifiManager.WIFI_MODE_SCAN_ONLY, "NORSWifiLock");
+				 
+				// is Wifi switched off and shall we switch it on?
+				if (wm.isWifiEnabled() == false && enableWIFI == true)
+					wm.setWifiEnabled(true);
+
+				// Register Broadcast Receiver
+				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+				
+				// start first scan here!
+				wm.startScan();
+				Wifi_scanning = true;
+				
+				// signal to Acquire()
+				initialized = true;
+			}
+   			break;  
+           default:  
+           	break;
+           }
+       }
+    };
 
 	private final BroadcastReceiver WifiReceiver = new BroadcastReceiver() 
 	{

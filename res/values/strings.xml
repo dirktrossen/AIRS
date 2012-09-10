@@ -48,13 +48,14 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- check if AIRS is running when creating a shortcut for your homescreen\n
-- changed weather provider to worldweatheronline.com since Google stopped its weather API!
+- WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6.5:\n
+- WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)\n\n
 V2.2.6.4:\n
 - check if AIRS is running when creating a shortcut for your homescreen\n\n
 V2.2.6.3:\n

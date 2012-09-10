@@ -527,7 +527,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         @Override
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException 
         {
-        		Message text_msg = mHandler.obtainMessage(TEXT_OUT);
         		// check for entering current conditions part of message
 	            if (localName.equals("current_condition")) 
 	            {

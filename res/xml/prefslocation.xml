@@ -73,15 +73,13 @@
     	android:summaryOn="Programmatically enable WiFi, if switched off" 
     	android:summaryOff="Do not enable WiFi, if switched off"/>
     <CheckBoxPreference 
-        android:dependency="LocationHandler::WIFION"
     	android:enabled="true" 
     	android:title="Prevent WiFi Sleep" 
-    	android:key="LocationHandler::WIFION" 
+    	android:key="LocationHandler::WIFISleep" 
     	android:selectable="true" 
     	android:summaryOn="Prevent WiFi from sleeping (keeps wake-lock!)" 
     	android:summaryOff="Let WiFi sleep according to system settings"/>
    <EditTextPreference
-        android:dependency="LocationHandler::WIFION"
         android:summary="Poll interval for WiFi scanning in seconds"
  		android:dialogIcon="@drawable/time"
         android:defaultValue="30"

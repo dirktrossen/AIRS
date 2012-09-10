@@ -1,3 +1,6 @@
+V2.2.6.5:
+- WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)
+
 V2.2.6.4:
 - check if AIRS is running when creating a shortcut for your homescreen
 
