@@ -52,7 +52,7 @@ public class AIRS_sync extends Activity implements OnClickListener
 
 	// states for activity management
 	public static final int SYNC_FINISHED	= 18;
-    public static final int SYNC_BATCH		= 1000;
+    public static final int SYNC_BATCH		= 5000;
         
     // preferences
     private SharedPreferences settings;
@@ -317,7 +317,8 @@ public class AIRS_sync extends Activity implements OnClickListener
 			    				    	
 					while (fconn.length()<max_recording_size && syncing == true)
 					{
-						query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " ORDER BY Timestamp ASC LIMIT " + String.valueOf(SYNC_BATCH));
+//						query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " ORDER BY Timestamp ASC LIMIT " + String.valueOf(SYNC_BATCH));
+						query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " LIMIT " + String.valueOf(SYNC_BATCH));
 						values = airs_storage.rawQuery(query, null);
 						
 						// garbage collect
@@ -391,7 +392,6 @@ public class AIRS_sync extends Activity implements OnClickListener
 				    		writebyte = line_to_write.getBytes();
 
 			    			os.write(writebyte, 0, writebyte.length);
-			    			os.flush();
 			    			
 			    			// garbage collect the output data
 			    			writebyte = null;

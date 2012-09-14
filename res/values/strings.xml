@@ -48,12 +48,14 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)
+- sped up synchronization of local recording (now much faster!)
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6.6:\n
+- sped up synchronization of local recording (now much faster!)\n\n
 V2.2.6.5:\n
 - WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)\n\n
 V2.2.6.4:\n
