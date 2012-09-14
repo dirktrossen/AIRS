@@ -1,5 +1,6 @@
 V2.2.6.6:
 - sped up synchronization of local recording (now much faster!)
+- bug fix in synchronization where applying homescreen shortcuts overwrote sync timestamp in persistent storage!
 
 V2.2.6.5:
 - WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)

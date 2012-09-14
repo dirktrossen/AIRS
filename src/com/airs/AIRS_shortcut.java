@@ -45,13 +45,22 @@ public class AIRS_shortcut extends Activity
 	    {
 		   Intent intent= getIntent();
 		   String preferences;
+		   long synctime;
+		   int version;
 		   
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
 	        
 	        // store for later usage
 	        act = this;
+
+	        // get default preferences
+	        settings = PreferenceManager.getDefaultSharedPreferences(this);
 	        
+	        // get values that should be overwritten!
+	        synctime = settings.getLong("SyncTimestamp", 0);
+	        version = settings.getInt("Version", 0);
+
 	        // get intent extras
 	        if ((preferences = intent.getStringExtra("preferences")) != null)
 	        {
@@ -77,6 +86,12 @@ public class AIRS_shortcut extends Activity
 	        
 	        // get default preferences
 	        settings = PreferenceManager.getDefaultSharedPreferences(this);
+			Editor editor = settings.edit();
+			
+			// write certain back in order for them to not be overwritten!
+			editor.putLong("SyncTimestamp", synctime);
+			editor.putInt("Version", version);
+			editor.commit();
 			
 			// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
 			if (settings.getBoolean("AIRS_local::running", false) == true)

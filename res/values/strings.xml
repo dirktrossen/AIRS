@@ -48,14 +48,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- sped up synchronization of local recording (now much faster!)
+- sped up synchronization of local recording (now much faster!)\n
+- bug fix in synchronization where applying homescreen shortcuts overwrote sync timestamp in persistent storage!
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
 V2.2.6.6:\n
-- sped up synchronization of local recording (now much faster!)\n\n
+- sped up synchronization of local recording (now much faster!)\n
+- bug fix in synchronization where applying homescreen shortcuts overwrote sync timestamp in persistent storage!\n\n
 V2.2.6.5:\n
 - WiFi wakelock now properly implemented (only locked when WiFi sensors enabled)\n\n
 V2.2.6.4:\n
