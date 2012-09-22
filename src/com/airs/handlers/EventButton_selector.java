@@ -19,7 +19,9 @@ package com.airs.handlers;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -35,6 +37,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,7 +47,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.airs.*;
 
-public class EventButton_selector extends Activity implements OnItemClickListener, OnClickListener
+public class EventButton_selector extends Activity implements OnItemClickListener, OnClickListener, OnItemLongClickListener
 {
 	 private final static int MAX_STRINGS 	= 50;
 
@@ -62,6 +65,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	 // list of mood icons
 	 private ListView mood_icons;
 	 private ArrayList<HandlerEntry> mMoodArrayList;
+	 private MyCustomBaseAdapter myCustomAdapter;
 
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
@@ -129,8 +133,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        
 	        // Set up the ListView for mood icons selection
 	        mMoodArrayList 	  = new ArrayList<HandlerEntry>();
-	        mood_icons.setAdapter(new MyCustomBaseAdapter(this, mMoodArrayList));
+	        myCustomAdapter = new MyCustomBaseAdapter(this, mMoodArrayList);
+	        mood_icons.setAdapter(myCustomAdapter);
 	        mood_icons.setOnItemClickListener(this);
+	        mood_icons.setOnItemLongClickListener(this);
 		    
 	        // add mood icons to list
 	        for (i=0;i<own_events;i++)
@@ -163,6 +169,8 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 					for (i=0;i<own_events;i++)
 						if (event[i].compareTo("") != 0)
 							editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
+						else
+							editor.putString("EventButtonHandler::Event"+Integer.toString(i), "");
 		            
 					// also store selected one
 					editor.putString("EventButtonHandler::EventSelected", event[selected_entry]);
@@ -245,6 +253,46 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    	}
 		}
 
+
+	    public boolean onItemLongClick(AdapterView<?> av, View v, int arg2, long arg3)
+	    {
+	    	final int selected = (int)arg3;
+	    	
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage("Do you want to delete this annotation from the list?")
+    			   .setTitle("AIRS Events")
+    		       .setCancelable(false)
+    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		        	    int i, size;
+    		   	        	mMoodArrayList.remove((int)selected);
+    		   	        	myCustomAdapter.notifyDataSetChanged();
+    		   	        	size = mMoodArrayList.size();
+    		   	        	
+    		   	        	// now re-build name array
+    		   		        for (i=0;i<own_events;i++)
+    		   		        	if (i<size)
+    		   		        		event[i] = mMoodArrayList.get(i).name;
+    		   		        	else
+    		   		        		event[i] ="";
+    		   		        
+   		                	dialog.cancel();
+    		           }
+    		       })
+    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		                dialog.cancel();
+    		           }
+    		       });
+    		AlertDialog alert = builder.create();
+    		alert.show();
+    		
+    		return true;
+	    }
 
 	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
 	    {

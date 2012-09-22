@@ -46,7 +46,7 @@ public class AIRS_shortcut extends Activity
 		   Intent intent= getIntent();
 		   String preferences;
 		   long synctime;
-		   int version;
+		   int version, i;
 		   
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
@@ -57,10 +57,21 @@ public class AIRS_shortcut extends Activity
 	        // get default preferences
 	        settings = PreferenceManager.getDefaultSharedPreferences(this);
 	        
-	        // get values that should be overwritten!
+	        // get values that should not be overwritten!
 	        synctime = settings.getLong("SyncTimestamp", 0);
-	        version = settings.getInt("Version", 0);
+	        version = settings.getInt("Version", 0);	
+	        // read all entries related to event annotations
+			int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
+			if (own_events<1)
+				own_events = 5;
+			if (own_events>50)
+				own_events = 50;
 
+			String event_selected_entry = settings.getString("EventButtonHandler::EventSelected", "");
+			String[] event = new String[own_events];			
+			for (i=0;i<own_events;i++)
+				event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
+	        
 	        // get intent extras
 	        if ((preferences = intent.getStringExtra("preferences")) != null)
 	        {
@@ -91,6 +102,11 @@ public class AIRS_shortcut extends Activity
 			// write certain back in order for them to not be overwritten!
 			editor.putLong("SyncTimestamp", synctime);
 			editor.putInt("Version", version);
+			// put back all entries related to event annotations
+			for (i=0;i<own_events;i++)
+				editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
+			editor.putString("EventButtonHandler::EventSelected", event_selected_entry);
+
 			editor.commit();
 			
 			// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)

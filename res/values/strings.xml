@@ -43,18 +43,22 @@
 <string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the recordings only).</string>
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own mood entry in the text field at the bottom.</string>
-<string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. AIRS stores your last defined events persistently.</string>
+<string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. You can delete any entry by long clicking on it and confirming the deletion.\n\nAIRS stores your last defined events persistently.</string>
 <string name="TimelineAbout">Shows a historical timeline of the sensor you just clicked on. You can change the number of historical values in the <b>General Settings</b>\nExit the timeline by using the <b>BACK</b> key!</string>
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- sped up synchronization of local recording (now much faster!)\n
-- bug fix in synchronization where applying homescreen shortcuts overwrote sync timestamp in persistent storage!
+- remove entry in event (annotation) list of the event widget window by long clicking on it\n
+- bugfixes
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6.8:\n
+- bugfixes\n\n
+V2.2.6.7:\n
+- remove entry in event (annotation) list of the event widget window by long clicking on it\n\n
 V2.2.6.6:\n
 - sped up synchronization of local recording (now much faster!)\n
 - bug fix in synchronization where applying homescreen shortcuts overwrote sync timestamp in persistent storage!\n\n

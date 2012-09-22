@@ -1,3 +1,9 @@
+V2.2.6.8: 
+- bugfixes
+
+V2.2.6.7:
+- remove entry in event (annotation) list of the event widget window by long clicking on it
+
 V2.2.6.6:
 - sped up synchronization of local recording (now much faster!)
 - bug fix in synchronization where applying homescreen shortcuts overwrote sync timestamp in persistent storage!
