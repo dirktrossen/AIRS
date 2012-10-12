@@ -17,6 +17,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +40,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,6 +64,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	 private boolean selected = false;
 	 private int selected_entry = 0;
 	 private int own_events = 5;
+	 private ArrayList<String> event_list = new ArrayList<String>();
 	 
 	 // list of mood icons
 	 private ListView mood_icons;
@@ -99,9 +103,24 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 			event = new String[own_events];
 			
 			// read possibly stored descriptions
-			for (i=0;i<own_events;i++)
-				event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
-			
+			// shall we sort them?
+			if (settings.getBoolean("EventButtonHandler::SortAnnotations", false) == true)
+			{
+				for (i=0;i<own_events;i++)
+					event_list.add(settings.getString("EventButtonHandler::Event"+Integer.toString(i), ""));
+			    Collections.sort(event_list, new Comparator<String>() {
+			        @Override
+			        public int compare(String s1, String s2) {
+			            return s1.compareToIgnoreCase(s2);
+			        }
+			    });
+				for (i=0;i<own_events;i++)
+					event[i] = event_list.get(i);
+			}
+			else
+				for (i=0;i<own_events;i++)
+					event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
+
 			// set window title
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 			setContentView(R.layout.mood_selection);

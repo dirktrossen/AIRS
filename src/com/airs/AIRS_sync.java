@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
@@ -68,6 +70,7 @@ public class AIRS_sync extends Activity implements OnClickListener
 	private int read_data_entries = 0;
     private ArrayList<Uri> uris = new ArrayList<Uri>();
     private ArrayList<File> files = new ArrayList<File>();
+    private WakeLock wl;
 
     // database variables
     AIRS_database database_helper;
@@ -134,7 +137,14 @@ public class AIRS_sync extends Activity implements OnClickListener
 
         // get remove temp files 
         remove_files = settings.getBoolean("SyncRemoveFiles", false);
+	
+        // create new wakelock
+        PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
+		 
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AIRS Sync Lock"); 
+        wl.acquire();
 
+        // start sync thread
         new SyncThread();
     }
     
@@ -153,7 +163,13 @@ public class AIRS_sync extends Activity implements OnClickListener
     @Override
     public void onDestroy() 
     {
-       super.onDestroy();       
+       super.onDestroy();     
+       
+
+       // release wake lock if held
+	   if (wl != null)
+	   	 if (wl.isHeld() == true)
+	   		 wl.release();
     }
      
     @Override

@@ -48,13 +48,18 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- remove entry in event (annotation) list of the event widget window by long clicking on it\n
-- bugfixes
+- bugfixes\n
+- allow for sorting event annotations in selection window (enable in event button UI settings)\n
+- hold wake lock during sync so that it will not fall asleep when sync takes longer
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.6.9:\n
+- bugfixes\n
+- allow for sorting event annotations in selection window (enable in event button UI settings)\n
+- hold wake lock during sync so that it will not fall asleep when sync takes longer\n\n
 V2.2.6.8:\n
 - bugfixes\n\n
 V2.2.6.7:\n

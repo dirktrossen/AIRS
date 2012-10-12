@@ -156,16 +156,20 @@ public class BeaconHandler implements Handler, Runnable
 	// run discovery in separate thread
 	public void run() 
 	{
+		long now;
+		
 		while(running==true)
 		{
+			now = System.currentTimeMillis();
+			
 			// try to discover when it's time to do so
-			if (oldtime+polltime<System.currentTimeMillis())
+			if (oldtime+polltime<=now)
 			{
-				oldtime = System.currentTimeMillis();
+				oldtime = now;
 				discover();
 			}
-			
-			sleep(1000);
+			else
+				sleep(polltime - (now - oldtime));
 		}
 	}
 	

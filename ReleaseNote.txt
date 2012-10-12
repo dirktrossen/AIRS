@@ -1,3 +1,8 @@
+V2.2.6.9:
+- bugfixes
+- allow for sorting event annotations in selection window (enable in event button UI settings)
+- hold wake lock during sync so that it won't fall asleep when sync takes longer
+
 V2.2.6.8: 
 - bugfixes
 

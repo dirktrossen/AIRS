@@ -24,4 +24,12 @@
         android:numeric="integer"
         android:title="Event Descriptions [1..50]"
         android:key="EventButtonHandler::MaxEventDescriptions"/>    
+    <CheckBoxPreference 
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="Sort Annotations" 
+    	android:key="EventButtonHandler::SortAnnotations" 
+    	android:selectable="true" 
+    	android:summaryOn="Sort annotation texts in list that shows after selecting the annotation widget" 
+    	android:summaryOff="Do not sort annotation texts in list that shows after selecting the annotation widget"/>
 </PreferenceScreen>
