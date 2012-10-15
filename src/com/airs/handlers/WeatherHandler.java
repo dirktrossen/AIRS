@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2011-2012, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -32,11 +32,15 @@ import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,9 +54,10 @@ import android.widget.Toast;
  */
 public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 {
-	public static final int INIT_GPS = 1;
-	public static final int KILL_GPS = 2;
-	public static final int TEXT_OUT = 3;
+	public static final int INIT_GPS 		= 1;
+	public static final int KILL_GPS 		= 2;
+	public static final int TEXT_OUT 		= 3;
+	public static final int INIT_RECEIVER 	= 4;
 	String text_message;
 	
 	private Context nors;
@@ -77,7 +82,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private LocationListener mReceiver;
     private double Longitude = 0, Latitude = 0; 
     private boolean startedLocation = false;
-    private boolean first_fix = true, movedAway = false;
+    private boolean first_fix = true, movedAway = false, connectivity_listener = false;
     private Location old_location;
     // connectvity stuff
     private ConnectivityManager cm;
@@ -89,6 +94,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private Semaphore cond_semaphore	 	= new Semaphore(1);
 	private Semaphore wind_semaphore	 	= new Semaphore(1);
 	private Semaphore info_semaphore	 	= new Semaphore(1);
+	private Semaphore connectivity_semaphore= new Semaphore(1);
 
 	// boolean for which element is parsed
 	private boolean temp_c_element;
@@ -134,10 +140,16 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	{		
 		byte[] readings = null;
 
+		// no thread started yet?
 		if (runnable == null)
 		{
 			runnable = new Thread(this);
 			runnable.start();	
+
+			// initialise receiver for connectivity change
+			Message msg = mHandler.obtainMessage(INIT_RECEIVER);
+			mHandler.sendMessage(msg);	
+	
 		}
 		
 		// temperature in Celcius
@@ -338,57 +350,53 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			}
 
 			// only do location check etc if there's any connectivity to retrieve the weather!
-			if (cm.getActiveNetworkInfo() != null)
+			wait(connectivity_semaphore); 
+			// get current weather conditions
+			try
 			{
-				// get current weather conditions
-				try
+				// try to get current location
+				if (manager!=null)
 				{
-					// try to get current location
-					if (manager!=null)
-					{
-					   // send message to handler thread to start GPS
-				       Message msg = mHandler.obtainMessage(INIT_GPS);
-				       mHandler.sendMessage(msg);	
-	        		   // wait for update
-	        		   wait(location_semaphore);
-	        		   // now unregister again -> saves power
-				       msg = mHandler.obtainMessage(KILL_GPS);
-				       mHandler.sendMessage(msg);	
-					}
-					
-					// if we moved, try to get weather
-					if (movedAway == true)
-					{
-						// request update for that long,lat pair!
+				   // send message to handler thread to start GPS
+			       Message msg = mHandler.obtainMessage(INIT_GPS);
+			       mHandler.sendMessage(msg);	
+        		   // wait for update
+        		   wait(location_semaphore);
+        		   // now unregister again -> saves power
+			       msg = mHandler.obtainMessage(KILL_GPS);
+			       mHandler.sendMessage(msg);	
+				}
+				
+				// if we moved, try to get weather
+				if (movedAway == true)
+				{
+					// request update for that long,lat pair!
 //			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
-			            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
-			            // 51914540,900690");
-	
-			            /* Parse the xml-data from our URL. */
-			            input = new InputSource(url.openStream());
-			            XMLreader.parse(input);	 
-			            input = null;			            
-					}
-		            
-		            // get current timestamp to see how long the weather reading took all along
-					ended = System.currentTimeMillis();
-					// if there's still something to wait until next weather reading, do so
-					if ((int)(ended - started) < polltime)
-						sleeptime = polltime - (int)(ended - started);
-					else
-						sleeptime = 1;	// otherwise start right away
-					
-					// store start timestamp the next time around
-					startReading = true;
+		            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
+		            // 51914540,900690");
+
+		            /* Parse the xml-data from our URL. */
+		            input = new InputSource(url.openStream());
+		            XMLreader.parse(input);	 
+		            input = null;			            
 				}
-				catch(Exception e)
-				{
-					// try again to read/locate in 15 secs
-					sleeptime = 15000;
-				}
+	            
+	            // get current timestamp to see how long the weather reading took all along
+				ended = System.currentTimeMillis();
+				// if there's still something to wait until next weather reading, do so
+				if ((int)(ended - started) < polltime)
+					sleeptime = polltime - (int)(ended - started);
+				else
+					sleeptime = 1;	// otherwise start right away
+				
+				// store start timestamp the next time around
+				startReading = true;
 			}
-			else	
-				sleeptime = 15000;	// try again to see if there's connectivity!
+			catch(Exception e)
+			{
+				// try again to read/locate in 15 secs
+				sleeptime = 15000;
+			}
 		}
 	}
 
@@ -432,6 +440,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			wait(cond_semaphore); 
 			wait(wind_semaphore); 
 			wait(info_semaphore); 
+			wait(connectivity_semaphore); 
 
 			// everything ok to be used
 			weather_enabled = true;
@@ -458,6 +467,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		
 		if (startedLocation == true)
 			manager.removeUpdates(mReceiver);
+		
+		if (connectivity_listener == true)
+			nors.unregisterReceiver(ConnectivityReceiver);
+
 	}
 		   
 	// The Handler that gets information back from the other threads, initializing GPS
@@ -501,8 +514,12 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	           break;  
            case TEXT_OUT:
         	   Toast.makeText(nors, text_message, Toast.LENGTH_LONG).show();
-        	   break;
-
+        	   break;       	   
+           case INIT_RECEIVER:
+        	   IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+	   		   nors.registerReceiver(ConnectivityReceiver, intentFilter);
+	   		   connectivity_listener = true;
+	   		   break;
            default:  
            	break;
            }
@@ -604,6 +621,29 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         } 
     }
     
+	private final BroadcastReceiver ConnectivityReceiver = new BroadcastReceiver() 
+	{
+        @Override
+        public void onReceive(Context context, Intent intent) 
+        {
+            String action = intent.getAction();
+
+            // When connectivity changed...
+            if (ConnectivityManager.CONNECTIVITY_ACTION.compareTo(action) == 0) 
+            {
+            	// check connectivity
+    			NetworkInfo netInfo = cm.getActiveNetworkInfo();
+    			if (netInfo != null)
+    				if (netInfo.isConnected() == true)
+    					connectivity_semaphore.release();			// release semaphore
+    				else
+    					connectivity_semaphore.drainPermits();		// drain semaphore
+
+				return;
+            }
+        }
+	};
+	
     private class LocationReceiver implements LocationListener 
     {
         public void	 onLocationChanged(Location location)        

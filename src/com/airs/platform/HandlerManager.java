@@ -85,7 +85,15 @@ public class HandlerManager
 	   int i = 0;
 	   
 	   for (i=0;i<inst_handlers;i++)
-		   handlers[i].destroyHandler();
+	   {
+		   try
+		   {
+			   handlers[i].destroyHandler();
+		   }
+		   catch(Exception e)
+		   {
+		   }
+	   }
 	}
 	
 	// read string from RMS for persistency
