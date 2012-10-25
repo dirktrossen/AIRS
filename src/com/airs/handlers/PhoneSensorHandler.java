@@ -26,6 +26,7 @@ import android.hardware.Sensor;
 import android.os.Handler;
 import android.os.Message;
 
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -60,13 +61,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 	
 	private void wait(Semaphore sema)
@@ -238,7 +233,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		// see which sensors are requested
 		if (sensor.equals("Az") == true)
@@ -269,7 +264,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		// see which sensors are requested
 		if (sensor.equals("Az") == true)

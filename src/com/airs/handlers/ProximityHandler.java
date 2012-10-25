@@ -31,6 +31,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
@@ -66,13 +67,7 @@ public class ProximityHandler implements Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 
 	/***********************************************************************

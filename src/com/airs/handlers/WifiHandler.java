@@ -33,6 +33,7 @@ import android.os.Message;
 import android.telephony.PhoneStateListener;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
@@ -72,13 +73,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 	
 	/***********************************************************************
@@ -125,7 +120,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 
 		return null;		
@@ -138,7 +133,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 	}
 

@@ -28,6 +28,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -108,13 +109,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 	
 	private void wait(Semaphore sema)
@@ -243,7 +238,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		// temperature in Celcius
 		if(sensor.compareTo("VT") == 0)
@@ -279,7 +274,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		// temperature in Celcius
 		if(sensor.compareTo("VT") == 0)

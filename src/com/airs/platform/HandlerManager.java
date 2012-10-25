@@ -60,12 +60,13 @@ public class HandlerManager
 	   // here the handlers are inserted in the field
 	   // the rule is that raw sensors are inserted first before aggregated sensors are inserted.
 	   // this is due to the discovery mechanism since aggregated sensor handlers usually check the availablity of the raw sensor in order to become 'visible'	   
+	   handlers[inst_handlers++]  = new WeatherHandler(nors);
+	   handlers[inst_handlers++]  = new GPSHandler(nors);	   
 	   handlers[inst_handlers++]  = new RandomHandler(nors);
 	   handlers[inst_handlers++]  = new ProximityHandler(nors);	   
 	   handlers[inst_handlers++]  = new BeaconHandler(nors);
 	   handlers[inst_handlers++]  = new WifiHandler(nors);
 	   handlers[inst_handlers++]  = new CellHandler(nors);
-	   handlers[inst_handlers++]  = new GPSHandler(nors);	   
 	   handlers[inst_handlers++]  = new EventButtonHandler(nors);
 	   handlers[inst_handlers++]  = new MoodButtonHandler(nors);
 	   handlers[inst_handlers++]  = new AudioHandler(nors);
@@ -73,7 +74,6 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = new MusicPlayerHandler(nors);
 	   handlers[inst_handlers++]  = new SystemHandler(nors);
 	   handlers[inst_handlers++]  = new PhoneSensorHandler(nors);
-	   handlers[inst_handlers++]  = new WeatherHandler(nors);
 	   handlers[inst_handlers++]  = new MediaWatcherHandler(nors);
 	   handlers[inst_handlers++]  = new CalendarHandler(nors);
 	   

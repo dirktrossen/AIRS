@@ -26,10 +26,14 @@ public class AIRS_database extends SQLiteOpenHelper
     private static final int DATABASE_VERSION = 2;
     public static final String DATABASE_TABLE_NAME = "airs_values";
     public static final String DATABASE_TABLE_CREATE =
-                "CREATE TABLE " + DATABASE_TABLE_NAME + " ( Timestamp BIGINT, Symbol CHAR(2), Value TEXT);";
+                "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE_NAME + " ( Timestamp BIGINT, Symbol CHAR(2), Value TEXT);";
     public static final String DATABASE_TABLE_CREATE2 =
-        "CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);";
-
+        "CREATE TABLE IF NOT EXISTS airs_dates (Year INT, Month INT, Day INT, Types INT);";
+    public static final String DATABASE_TABLE_CREATE3 =
+        "CREATE TABLE IF NOT EXISTS airs_sensors_used (Timestamp BIGINT, Symbol CHAR(2));";
+    public static final String DATABASE_TABLE_INDEX3= 
+    	"CREATE INDEX IF NOT EXISTS airs_sensors_used_timestamp ON airs_sensors_used (Timestamp)";
+    
     AIRS_database(Context context) 
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,6 +43,8 @@ public class AIRS_database extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DATABASE_TABLE_CREATE);
         db.execSQL(DATABASE_TABLE_CREATE2);
+        db.execSQL(DATABASE_TABLE_CREATE3);
+        db.execSQL(DATABASE_TABLE_INDEX3);
     }
 
     @Override

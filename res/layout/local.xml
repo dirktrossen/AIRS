@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:scrollbars="vertical"
-            android:text="Record values into a local text file. You can either start the recording straight away or select the individual sensors to record. You can change sensor and general settings in the &apos;Settings&apos; tab."/>
+            android:text="Record values into a local database. You can either start the recording straight away or select the individual sensors to record. You can change sensor and general settings in the &apos;Settings&apos; tab."/>
     </LinearLayout>
 
     <LinearLayout

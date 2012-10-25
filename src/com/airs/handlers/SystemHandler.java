@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -95,13 +96,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 	
 	private void wait(Semaphore sema)
@@ -465,7 +460,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		// battery level?
 		if(sensor.compareTo("Ba") == 0)
@@ -507,7 +502,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		// battery level?
 		if(sensor.compareTo("Ba") == 0)

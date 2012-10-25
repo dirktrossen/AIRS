@@ -48,6 +48,7 @@ import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.Sensor;
 import com.airs.platform.SensorRepository;
@@ -108,7 +109,8 @@ public class AIRS_local extends Service
 		 	int number_values = 0;
 		 	public Thread thread;
 		 	private boolean interrupted = false, pause = false;;
-		 			 	
+		 	private boolean started = true;	
+		 	
 			protected void sleep(long millis) 
 			{
 				try 
@@ -327,6 +329,22 @@ public class AIRS_local extends Service
 		    				    try
 		    				    {
 		    				    	execStorage("INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
+		    				    	
+		    				    	// write sensor value in table for faster retrieval later!
+		    				    	if (started == true)
+		    				    	{
+		    				    		try
+		    				    		{
+		    				    			execStorage("INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+		    				    		}
+		    				    		catch(Exception e)
+		    				    		{
+		    				           	 	execStorage(AIRS_database.DATABASE_TABLE_CREATE3);
+		    				           	 	execStorage(AIRS_database.DATABASE_TABLE_INDEX3);
+		    				    			execStorage("INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+		    				    		}
+		    				    		started = false;
+		    				    	}
 		    				    }
 		    					catch(Exception e) 
 		    					{    					
@@ -355,13 +373,7 @@ public class AIRS_local extends Service
 	 */
 	protected static void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
     
 	protected static void debug(String msg) 
@@ -451,8 +463,8 @@ public class AIRS_local extends Service
 	            // have tables been created?
 	            if (HandlerManager.readRMS_b("AIRS_local::TablesExists", false) == false)
 	            {
-	            	airs_storage.execSQL(database_helper.DATABASE_TABLE_CREATE);
-	            	airs_storage.execSQL(database_helper.DATABASE_TABLE_CREATE2);
+	           	 	execStorage(AIRS_database.DATABASE_TABLE_CREATE);
+	           	 	execStorage(AIRS_database.DATABASE_TABLE_CREATE2);
 	                HandlerManager.writeRMS_b("AIRS_local::TablesExists", true);
 	            }
 		    } 
@@ -488,7 +500,7 @@ public class AIRS_local extends Service
 	   	 {
 	   		 try
 	   		 {
-	   			SerialPortLogger.debug("AIRS_local::terminating HandlerThreads");
+	   			SerialPortLogger.debugForced("AIRS_local::terminating HandlerThreads");
 		   		 // interrupt all threads for terminated
 		   		 for (i = 0; i<no_threads;i++)
 		   			 if (threads[i] != null)
@@ -503,7 +515,7 @@ public class AIRS_local extends Service
 	   		 }
 	   		 catch(Exception e)
 	   		 {
-	   			 debug("AIRS_local::Exception when terminating Handlerthreads!");
+	   			 SerialPortLogger.debugForced("AIRS_local::Exception when terminating Handlerthreads!");
 	   		 }
 	   		 
 	   		 HandlerManager.destroyHandlers();	
@@ -552,6 +564,9 @@ public class AIRS_local extends Service
 		// handlers created?
 		if (start == true && started == false)
 		{
+			// create timer/alarm handling
+			Waker.init(this);
+			
 			// create handlers
 			HandlerManager.createHandlers(this.getApplicationContext());	
 			started = true;
@@ -807,7 +822,7 @@ public class AIRS_local extends Service
          }
          catch(Exception e)
          {
-        	 execStorage("CREATE TABLE airs_dates (Year INT, Month INT, Day INT, Types INT);");
+        	 execStorage("CREATE TABLE IF NOT EXISTS airs_dates (Year INT, Month INT, Day INT, Types INT);");
 	         execStorage("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
          }
 
@@ -987,6 +1002,9 @@ public class AIRS_local extends Service
 				// set debug state
 		   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
 
+		   		// init Waker resources
+		   		Waker.init(this);
+		   		
 				// create handlers
 				HandlerManager.createHandlers(this.getApplicationContext());	
 				started = true;

@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
@@ -49,13 +50,7 @@ public class CalendarHandler implements Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 
 	/***********************************************************************
@@ -87,7 +82,7 @@ public class CalendarHandler implements Handler
 	 Return      :
 	 Description : return humand readable sharing string
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{
 		return null;
 	}
@@ -99,7 +94,7 @@ public class CalendarHandler implements Handler
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		
 	}

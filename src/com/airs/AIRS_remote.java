@@ -34,6 +34,7 @@ import android.os.PowerManager.WakeLock;
 import android.widget.Toast;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.Acquisition;
 import com.airs.platform.Discovery;
 import com.airs.platform.EventComponent;
@@ -73,13 +74,7 @@ public class AIRS_remote extends Service
 	 */
 	protected static void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
     
 	protected static void debug(String msg) 
@@ -184,6 +179,9 @@ public class AIRS_remote extends Service
 	{		
 		Notification notification;
 		PendingIntent contentIntent;
+		
+		// create timer/alarm handling
+		Waker.init(this);
 		
 		debug("create handlers...");
 		HandlerManager.createHandlers(getApplicationContext());

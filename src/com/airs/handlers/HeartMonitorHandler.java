@@ -25,6 +25,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
@@ -105,13 +106,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 
 	/***********************************************************************
@@ -293,7 +288,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		switch(sensor.charAt(1))
 		{
@@ -312,7 +307,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 	}
 

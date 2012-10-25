@@ -17,6 +17,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import java.util.concurrent.Semaphore;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -25,6 +27,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -38,20 +41,19 @@ public class BeaconHandler implements Handler, Runnable
 	private byte[] 		no_readings = new byte[6];
 	// beacon data
 	private StringBuffer reading = null;
-	private boolean      new_current = false;
-	private boolean      new_current_no = false;
 	private boolean 	 bt_enabled 	= true;
 	private boolean 	 bt_ask		 	= true;
-	private boolean 	 bt_finished	= false;
 	private boolean 	 bt_registered  = false;
 	private boolean 	 bt_first		= false;
 	private Thread 		 runnable = null;
 	private boolean		 running = true;
+	private Semaphore BT_semaphore 	= new Semaphore(1);
+	private Semaphore BN_semaphore 	= new Semaphore(1);
+	private Semaphore finished_semaphore 	= new Semaphore(1);
 	
 //	private char EOL = 13;
 
 	// config data
-	String Poll = null;
 	int polltime = 15000;
 	long oldtime = 0;
 
@@ -61,11 +63,16 @@ public class BeaconHandler implements Handler, Runnable
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
+		Waker.sleep(millis);
+	}
+	
+	private void wait(Semaphore sema)
+	{
+		try
 		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
+			sema.acquire();
+		}
+		catch(Exception e)
 		{
 		}
 	}
@@ -80,7 +87,7 @@ public class BeaconHandler implements Handler, Runnable
 	***********************************************************************/
 	public synchronized byte[] Acquire(String sensor, String query)
 	{		
-
+		// Discovery thread started?
 		if (runnable == null)
 		{
 			runnable = new Thread(this);
@@ -90,31 +97,23 @@ public class BeaconHandler implements Handler, Runnable
 		switch(sensor.charAt(1))
 		{
 			case 'T' :
-				// new reading available
-			    if (new_current == true)
-			    {
-			    	// declare invalid and return current one
-			    	new_current = false;
-			    	if (reading != null)
-			    		return reading.toString().getBytes();
-			    }
+				// wait until new reading available
+				wait(BT_semaphore); 
+		    	if (reading != null)
+		    		return reading.toString().getBytes();
 			    else
 			    	return null;
 			case 'N' :
-				if (new_current_no == true)
-				{
-					new_current_no = false;
-					no_readings[0] = (byte)sensor.charAt(0);
-					no_readings[1] = (byte)sensor.charAt(1);
-					no_readings[2] = (byte)((no_devices>>24) & 0xff);
-					no_readings[3] = (byte)((no_devices>>16) & 0xff);
-					no_readings[4] = (byte)((no_devices>>8) & 0xff);
-					no_readings[5] = (byte)(no_devices & 0xff);
-					
-					return no_readings;		
-				}
-				else
-					return null;
+				// wait until new reading available
+				wait(BN_semaphore); 
+				no_readings[0] = (byte)sensor.charAt(0);
+				no_readings[1] = (byte)sensor.charAt(1);
+				no_readings[2] = (byte)((no_devices>>24) & 0xff);
+				no_readings[3] = (byte)((no_devices>>16) & 0xff);
+				no_readings[4] = (byte)((no_devices>>8) & 0xff);
+				no_readings[5] = (byte)(no_devices & 0xff);
+				
+				return no_readings;		
 		}
 		
 		return null;		
@@ -128,7 +127,7 @@ public class BeaconHandler implements Handler, Runnable
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		switch(sensor.charAt(1))
 		{
@@ -147,7 +146,7 @@ public class BeaconHandler implements Handler, Runnable
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		if (sensor.charAt(1) == 'N')
 			History.timelineView(nors, "BT devices [#]", "BN");
@@ -209,8 +208,8 @@ public class BeaconHandler implements Handler, Runnable
 	        }
 	        		        
 		    // if it's there, add sensor
-			SensorRepository.insertSensor(new String("BT"), new String("MAC"), new String("BT Devices"), new String("txt"), 0, 0, 1, false, polltime, this);	    
-			SensorRepository.insertSensor(new String("BN"), new String("#"), new String("BT Devices"), new String("int"), 0, 0, 50, true, polltime, this);	    
+			SensorRepository.insertSensor(new String("BT"), new String("MAC"), new String("BT Devices"), new String("txt"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("BN"), new String("#"), new String("BT Devices"), new String("int"), 0, 0, 50, true, 0, this);	    
 		}
 		catch(Exception e)
 		{
@@ -234,6 +233,11 @@ public class BeaconHandler implements Handler, Runnable
 		
 		// save current time and set so that first Acquire() will discover but substract a bit more to give BT time to fire up
 		oldtime = System.currentTimeMillis() - polltime + 2500;
+		
+		// arm the semaphores now
+		wait(BT_semaphore); 
+		wait(BN_semaphore); 
+		wait(finished_semaphore); 
 	}
 	
 	public void destroyHandler()
@@ -242,7 +246,7 @@ public class BeaconHandler implements Handler, Runnable
 		running = false;
 		
 		// cancel any discovery
-		bt_finished = true;
+		finished_semaphore.release();
 		if (mBtAdapter != null)
 			mBtAdapter.cancelDiscovery();
 		if (bt_registered == true)
@@ -264,6 +268,8 @@ public class BeaconHandler implements Handler, Runnable
     	      
 		bt_registered = true;
 
+		bt_first = true;
+
 	    no_devices = 0;
 	    reading = new StringBuffer("BT");	
         // start discovery
@@ -277,14 +283,12 @@ public class BeaconHandler implements Handler, Runnable
             return;
         }
         
-        // periodically sleep until finished
-        bt_first = true;
-        bt_finished = false;
-        while (bt_finished == false)
-        	sleep(200);
+        // sleep until finished
+		wait(finished_semaphore); 
 
         // signal availability of data
-        new_current = new_current_no = true;
+        BT_semaphore.release();
+        BN_semaphore.release();
         
         // unregister broadcast receiver
         if (bt_registered == true)
@@ -321,9 +325,7 @@ public class BeaconHandler implements Handler, Runnable
             } 
             else 
             	if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) 
-            	{
-            		bt_finished = true;
-            	}
+            		finished_semaphore.release();
         }
     };
 }

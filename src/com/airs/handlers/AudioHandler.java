@@ -17,6 +17,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 import com.airs.platform.History;
@@ -59,13 +60,7 @@ public class AudioHandler implements Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 
 	/***********************************************************************
@@ -107,7 +102,7 @@ public class AudioHandler implements Handler
 	 Return      :
 	 Description : return humand readable sharing string
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{
 		// acquire data and send out
 		try
@@ -134,7 +129,7 @@ public class AudioHandler implements Handler
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		switch(sensor.charAt(1))
 		{

@@ -29,6 +29,7 @@ import android.telephony.gsm.GsmCellLocation;
 import android.telephony.PhoneStateListener;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
@@ -77,13 +78,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 
 	private void wait(Semaphore sema)
@@ -129,7 +124,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		switch(sensor.charAt(1))
 		{
@@ -164,7 +159,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 		switch(sensor.charAt(1))
 		{

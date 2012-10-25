@@ -19,6 +19,7 @@ package com.airs.handlers;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.SensorRepository;
 
 import android.content.BroadcastReceiver;
@@ -47,13 +48,7 @@ public class EventButtonHandler implements Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 	
 	private void wait(Semaphore sema)
@@ -129,7 +124,7 @@ public class EventButtonHandler implements Handler
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		if (old_Event != null)
 			return "My last event was " + old_Event + "!";
@@ -144,7 +139,7 @@ public class EventButtonHandler implements Handler
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 	}
 

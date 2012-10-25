@@ -47,6 +47,7 @@ public class AIRS_shortcut extends Activity
 		   String preferences;
 		   long synctime;
 		   int version, i;
+		   boolean tables, tables2;
 		   
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
@@ -60,6 +61,8 @@ public class AIRS_shortcut extends Activity
 	        // get values that should not be overwritten!
 	        synctime = settings.getLong("SyncTimestamp", 0);
 	        version = settings.getInt("Version", 0);	
+	        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
+	        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
 	        // read all entries related to event annotations
 			int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
 			if (own_events<1)
@@ -102,6 +105,9 @@ public class AIRS_shortcut extends Activity
 			// write certain back in order for them to not be overwritten!
 			editor.putLong("SyncTimestamp", synctime);
 			editor.putInt("Version", version);
+			editor.putBoolean("AIRS_local::TablesExists", tables);
+			editor.putBoolean("AIRS_local::Tables2Exists", tables2);
+			
 			// put back all entries related to event annotations
 			for (i=0;i<own_events;i++)
 				editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);

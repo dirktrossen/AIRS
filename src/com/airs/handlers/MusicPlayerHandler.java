@@ -19,6 +19,7 @@ package com.airs.handlers;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
+import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
@@ -54,13 +55,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	 */
 	protected void sleep(long millis) 
 	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
+		Waker.sleep(millis);
 	}
 	
 	private void wait(Semaphore sema)
@@ -159,7 +154,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized String Share(String sensor)
+	public String Share(String sensor)
 	{		
 		// battery level?
 		if(sensor.compareTo("MP") == 0 && Artist != null && Album != null && Track != null)
@@ -184,7 +179,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	 Return      :
 	 Description : calls historical views
 	***********************************************************************/
-	public synchronized void History(String sensor)
+	public void History(String sensor)
 	{
 	}
 	

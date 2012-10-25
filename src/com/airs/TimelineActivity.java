@@ -217,13 +217,13 @@ public class TimelineActivity extends Activity
 		
 		symbol = bundle.getString("com.airs.Symbol");
 
-		String selection = "Symbol='"+ symbol +"'";
+		String selection = "Timestamp > " + startedTime + " AND Symbol='"+ symbol +"'";
 		
 		// issue query to the database
-		synchronized(airs_storage)
+//		synchronized(airs_storage)
 		{
-			values = airs_storage.query("airs_values", columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
-		    
+			values = airs_storage.query("airs_values", columns, selection, null, null, null, null, String.valueOf(history_length));
+				    
 		}
 		
 		if (values == null)
@@ -244,7 +244,7 @@ public class TimelineActivity extends Activity
     		// move to first row to start
     		values.moveToFirst();
     		// read DB values into arrays
-    		for (i=number_values-1;i>=0;i--)
+    		for (i=0;i<number_values;i++)
     		{
     			// get timestamp
     			time[i] = values.getLong(t_column);

@@ -48,14 +48,18 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- bugfixes\n
-- improved weather provider connectivity check\n
-- improved handler resource handling
+- corrected internal database structures\n
+- improved timing in BT handler\n
+- sped up historical views
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.7.1:\n
+- corrected internal database structures\n
+- improved timing in BT handler\n
+- sped up historical views\n\n
 V2.2.7:\n
 - improved weather provider connectivity check\n
 - improved handler resource handling\n\n
