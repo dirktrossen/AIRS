@@ -15,6 +15,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */package com.airs;
 
+import java.io.File;
+
+import com.airs.platform.HandlerManager;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -22,8 +26,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
+import android.provider.MediaStore.Images;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -181,14 +189,71 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 
 	    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
 	    {
+	    	String value;
+	    	
 	    	// show info for sensor selected
 		    if (AIRS_locally != null)
 		    {
- 		       // now build and start chooser intent
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, AIRS_locally.share((int)id) + "\n\n-------------------------------------------\nPublished from AIRS (https://market.android.com/details?id=com.airs)\n");
-                act.startActivity(Intent.createChooser(intent,"Share AIRS Measurements via:"));
+		    	// do we share media?
+		    	if (AIRS_locally.getSymbol((int)id).compareTo("MW") == 0)
+		    	{
+		    		value = AIRS_locally.getValue((int)id);
+		    		
+					String [] tokens = value.split(":");
+					// is it a camera picture?
+					if (tokens[0] != null)
+						if (tokens[1].trim().compareTo("camera") == 0)
+						{
+							// get filename
+							if (tokens[2] != null)
+							{
+								// cut off '[file]' suffix
+								String name = tokens[2].trim().substring(0, tokens[2].length() - " [file]".length());
+								// form full path
+								File file = new File(HandlerManager.readRMS("MediaWatcherHandler::CameraDirectory", Environment.getExternalStorageDirectory()+"/DCIM/Camera"), name.trim());
+								Uri shareUri;
+								
+								// search for file in media store
+								Cursor c = act.getContentResolver().query(Images.Media.EXTERNAL_CONTENT_URI, null, Images.Media.DATA + "=?", new String[] { file.getAbsolutePath() }, null);
+
+								// if found -> share
+								if (c.getCount() > 0 && c.moveToFirst())
+								{
+		                             shareUri = Uri.withAppendedPath(Images.Media.EXTERNAL_CONTENT_URI, ""+ c.getInt(c.getColumnIndex(Images.Media._ID)));
+
+						 		       // now build and start chooser intent
+						             Intent intent = new Intent(Intent.ACTION_SEND);
+						                
+						    	     intent.setType("*/*");
+						    		 intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+						             intent.putExtra(Intent.EXTRA_TEXT, "Published from AIRS (https://market.android.com/details?id=com.airs)\n");
+						    	     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); 
+						    		 act.startActivity(Intent.createChooser(intent,"Share AIRS snapshot to:"));			
+								}
+								else
+						     		Toast.makeText(getApplicationContext(), "Nothing to share, it seems! Have you set the camera path to the right one (the path need to the SAME as shown for pictures in the Gallery applications!).", Toast.LENGTH_LONG).show();
+
+								c.close();
+								
+							}
+						}
+						else
+				     		Toast.makeText(getApplicationContext(), "Can only share pictures, sorry!", Toast.LENGTH_LONG).show();
+		    	}
+		    	else
+		    	{
+		    		// get sharing text first
+		    		value = AIRS_locally.share((int)id);
+		    		// only share if there's something to share
+		    		if (value != null)
+		    		{
+		 		       // now build and start chooser intent
+		                Intent intent = new Intent(Intent.ACTION_SEND);
+		                intent.setType("text/plain");
+		                intent.putExtra(Intent.EXTRA_TEXT, value + "\n\n-------------------------------------------\nPublished from AIRS (https://market.android.com/details?id=com.airs)\n");
+		                act.startActivity(Intent.createChooser(intent,"Share AIRS Measurements via:"));
+		    		}
+		    	}
 		    }
 	    	return true;
 	    }

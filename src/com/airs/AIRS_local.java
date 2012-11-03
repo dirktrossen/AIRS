@@ -603,6 +603,16 @@ public class AIRS_local extends Service
 		 paused = true;
 	 }
 
+	 public String getValue(int j)
+	 {
+		 return threads[j].values_output;
+	 }
+	 
+	 public String getSymbol(int j)
+	 {
+		 return threads[j].current.Symbol;
+	 }
+	 
 	 // show info for sensor entry
 	 public String share(int j)
 	 {

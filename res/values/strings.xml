@@ -48,14 +48,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- corrected internal database structures\n
-- improved timing in BT handler\n
-- sped up historical views
+- add sharing capability for media snapshots (MW sensor) when long-clicking in the measurement window
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.7.3:\n
+- add sharing capability for media snapshots (MW sensor) when long-clicking in the measurement window\n\n
+V2.2.7.2:\n
+- bugfix in timeline/mapview visualisation\n\n
 V2.2.7.1:\n
 - corrected internal database structures\n
 - improved timing in BT handler\n

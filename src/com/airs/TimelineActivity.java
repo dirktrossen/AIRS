@@ -222,7 +222,7 @@ public class TimelineActivity extends Activity
 		// issue query to the database
 //		synchronized(airs_storage)
 		{
-			values = airs_storage.query("airs_values", columns, selection, null, null, null, null, String.valueOf(history_length));
+			values = airs_storage.query("airs_values", columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
 				    
 		}
 		
@@ -244,7 +244,7 @@ public class TimelineActivity extends Activity
     		// move to first row to start
     		values.moveToFirst();
     		// read DB values into arrays
-    		for (i=0;i<number_values;i++)
+    		for (i=number_values-1;i>-1;i--)
     		{
     			// get timestamp
     			time[i] = values.getLong(t_column);
@@ -272,6 +272,13 @@ public class TimelineActivity extends Activity
     			}
     		}       		
 
+    		// if all values are the same, draw epsilon around them!
+    		if (min == max)
+    		{
+    			min -=  min/10;
+    			max +=  min/10;
+    		}
+    		
     		// if values before left of decimal are the same -> need to show float decimals
     		if (Math.floor(min) == Math.floor(max))
     		{      

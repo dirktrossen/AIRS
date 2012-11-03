@@ -273,7 +273,7 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 		{
 //			synchronized(airs_storage)
 			{
-				values = airs_storage.query("airs_values", columns, selection, null, null, null, null, String.valueOf(history_length));
+				values = airs_storage.query("airs_values", columns, selection, null, null, null, "Timestamp DESC", String.valueOf(history_length));
 			}
 		}   	
 		if (values == null)
@@ -294,7 +294,7 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     		// move to first row to start
     		values.moveToFirst();
     		// read DB values into arrays
-    		for (i=0;i<number_values;i++)
+    		for (i=number_values-1;i>-1;i--)
     		{
     			// get timestamp
     			time[i] = values.getLong(t_column);

@@ -41,7 +41,8 @@ public class MediaWatcherHandlerUI implements HandlerUI
 	{
 	    String AboutText = new String(
 	    		"Watches various media-related folders.\n\n"+
-	    		"Camera, music and other folders can be watched with respect to creating new files, such as when taking a picture.");
+	    		"Camera, music and other folders can be watched with respect to creating new files, such as when taking a picture.\n" +
+	    		"For setting the right camera folders, go into the Gallery application, display any recent picture you have taken, display the 'Details' and look for the 'Path' entry. Select the entire path (before the actual filename) as the path for the camera folder!");
 
 		return AboutText;
 	}

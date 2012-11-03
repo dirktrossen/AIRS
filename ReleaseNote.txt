@@ -1,3 +1,9 @@
+V2.2.7.3:
+- add sharing capability for media snapshots (MW sensor) when long-clicking in the measurement window
+
+V2.2.7.2:
+- bugfix in timeline/mapview visualisation
+
 V2.2.7.1:
 - corrected internal database structures
 - improved timing in BT handler
