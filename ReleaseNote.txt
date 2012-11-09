@@ -1,3 +1,6 @@
+V2.2.7.4:
+- bugfix in event annotation handler, selecting the wrong entry
+
 V2.2.7.3:
 - add sharing capability for media snapshots (MW sensor) when long-clicking in the measurement window
 

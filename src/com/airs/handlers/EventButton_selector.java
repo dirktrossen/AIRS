@@ -61,7 +61,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	 private SharedPreferences settings;
 	 private String[] event = null;
 	 private boolean selected = false;
-	 private int selected_entry = 0;
+	 private String selected_entry;
 	 private int own_events = 5;
 	 private ArrayList<String> event_list = new ArrayList<String>();
 	 
@@ -114,7 +114,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 			        }
 			    });
 				for (i=0;i<own_events;i++)
-					event[i] = event_list.get(i);
+	        		event[i] = event_list.get(i);
 			}
 			else
 				for (i=0;i<own_events;i++)
@@ -191,7 +191,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 							editor.putString("EventButtonHandler::Event"+Integer.toString(i), "");
 		            
 					// also store selected one
-					editor.putString("EventButtonHandler::EventSelected", event[selected_entry]);
+					editor.putString("EventButtonHandler::EventSelected", selected_entry);
 		            // finally commit to storing values!!
 		            editor.commit();
 				}
@@ -201,7 +201,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	
 				// send broadcast intent to signal end of selection to mood button handler
 				Intent intent = new Intent("com.airs.eventselected");
-				intent.putExtra("Event", event[selected_entry]);
+				intent.putExtra("Event", selected_entry);
 				
 				sendBroadcast(intent);
 				
@@ -243,7 +243,8 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 
 	    public void onClick(View v) 
 		{
-	    	int i;
+	    	int i, size;
+	    	boolean added = false;
 	    	
 	    	EditText et;
 	    	// dispatch depending on button pressed
@@ -252,16 +253,48 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    	case R.id.mooddefined:
 	    		et = (EditText) findViewById(R.id.moodown);
 	    		
-	    		// move older input strings to the end of the array!
-	    		for (i=own_events-1;i>0;i--)
-	    			event[i] = event[i-1];
+	    		// is there a free field?
+	    		for (i=0;i<own_events;i++)
+	    			if (event[i].compareTo("") == 0)
+	    			{
+	    				added = true;
+	    				// add to list
+	    				event[i] = et.getText().toString();
+	    				// add also to visible list
+		        		addEventIcon(event[i], R.drawable.event_marker);
+		   	        	myCustomAdapter.notifyDataSetChanged();
+			    		selected_entry = event[i];
+	    				break;
+	    			}
 	    		
-			    // read input string from edit field
-	    		event[0] = et.getText().toString();
+	    		if (added == false)
+	    		{
+				    // read input string from edit field
+		    		event[0] = et.getText().toString();
+	    			// select this entry
+		    		selected_entry = event[0];
+
+		    		// create new entry for position 0
+			    	HandlerEntry entry = new HandlerEntry();			    	
+			    	entry.name = event[0];
+			    	entry.resid = R.drawable.event_marker;
+		    		mMoodArrayList.set((int)0, entry);
+	   	        	myCustomAdapter.notifyDataSetChanged();
+	   	        	// now read all entries again
+	   	        	
+	   	        	size = mMoodArrayList.size();
+	   	        	
+	   	        	// now re-build name array
+	   		        for (i=1;i<own_events;i++)
+	   		        	if (i<size)
+	   		        		event[i] = mMoodArrayList.get(i).name;
+	   		        	else
+	   		        		event[i] ="";
+
+	    		}
 
 	    		// indicated that we selected the first entry
 	    		selected = true;
-	    		selected_entry = 0;
 	    		finish();
 	    		break;
 	    	case R.id.mooddelete:
@@ -320,7 +353,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    	// read entries name for the selected mood
     		// indicated that we selected the first entry
 	    	selected = true;
-    		selected_entry = (int)arg3;
+    		selected_entry = mMoodArrayList.get((int)arg3).name;
 	    	finish();
 	    }
 	    
