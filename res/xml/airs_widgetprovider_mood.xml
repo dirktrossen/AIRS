@@ -20,5 +20,7 @@
     android:minWidth="74px"
     android:minHeight="106px"
     android:updatePeriodMillis="86400000"
-    android:initialLayout="@layout/widgetlayout_mood">
+    android:initialLayout="@layout/widgetlayout_mood"
+    android:widgetCategory="keyguard|home_screen"
+    android:previewImage="@drawable/mood_button1">
 </appwidget-provider>

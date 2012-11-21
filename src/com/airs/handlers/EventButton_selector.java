@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -122,13 +123,14 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 
 			// set window title
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 			setContentView(R.layout.mood_selection);
 	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
-	 
+	        
 	        // get window title fields
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
-	        mTitle.setText(R.string.app_name);
+	        mTitle.setText("AIRS Annotations");
 	        // show last selected event string
 	        last_selected = settings.getString("EventButtonHandler::EventSelected", "-");
         	mTitle2.setText("Last: " + last_selected);

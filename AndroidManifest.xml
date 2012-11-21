@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.2.7.4" android:versionCode="114" android:sharedUserId="com.airs">
+      android:versionName="2.2.8" android:versionCode="115" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -57,8 +57,8 @@
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="AIRS Local Sensing" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="AIRS Remote Sensing" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_shortcut" android:exported="true" android:label="Quick AIRS"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="AIRS Mood Selector"></activity>
-     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="AIRS Event Selector"></activity>
+     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="AIRS Mood Selector"  android:windowSoftInputMode="adjustPan"></activity>
+     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="AIRS Event Selector" android:windowSoftInputMode="adjustPan"></activity>
      <receiver android:name="com.airs.helper.Waker" android:process=":remote" />
      <receiver android:name="com.airs.handlers.EventButton_widget" android:label="AIRS Event Button">
          <meta-data android:name="android.appwidget.provider"

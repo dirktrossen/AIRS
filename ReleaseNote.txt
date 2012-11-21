@@ -1,3 +1,8 @@
+V2.2.8:
+- added lockscreen widget support for Android 4.2
+- preview of widgets now shown when added
+- changed dialog window for widgets to full screen
+
 V2.2.7.4:
 - bugfix in event annotation handler, selecting the wrong entry
 

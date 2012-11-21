@@ -54,6 +54,10 @@
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.8:\n
+- added lockscreen widget support for Android 4.2\n
+- preview of widgets now shown when added\n
+- changed dialog window for widgets to full screen\n\n
 V2.2.7.4:\n
 - bugfix in event annotation handler, selecting the wrong entry\n\n
 V2.2.7.3:\n

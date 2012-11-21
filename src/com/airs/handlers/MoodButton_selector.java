@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -82,13 +83,14 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 
 			// set window title
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 			setContentView(R.layout.mood_selection);
 	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
 	 
 	        // get window title fields
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
-	        mTitle.setText(R.string.app_name);
+	        mTitle.setText("AIRS Mood Selection");
 	        mTitle2.setText("Last: " + mood);
 		    
 	        // initialize own defined event click listener

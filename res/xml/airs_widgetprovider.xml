@@ -20,5 +20,8 @@
     android:minWidth="74px"
     android:minHeight="106px"
     android:updatePeriodMillis="86400000"
-    android:initialLayout="@layout/widgetlayout">
+    android:initialLayout="@layout/widgetlayout"
+    android:widgetCategory="keyguard|home_screen"
+    android:previewImage="@drawable/event_local" 
+    android:resizeMode="horizontal|vertical">
 </appwidget-provider>
