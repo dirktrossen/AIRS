@@ -1,3 +1,6 @@
+V2.2.8.1:
+- keep keyguard locked after selecting lockscreen widgets
+
 V2.2.8:
 - added lockscreen widget support for Android 4.2
 - preview of widgets now shown when added

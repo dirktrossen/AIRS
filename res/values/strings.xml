@@ -48,12 +48,17 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- bugfix in event annotation handler, selecting the wrong entry
+- added lockscreen widget support for Android 4.2\n
+- preview of widgets now shown when added\n
+- changed dialog window for widgets to full screen\n
+- keep keyguard locked after selecting lockscreen widgets
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.8.1:\n
+- keep keyguard locked after selecting lockscreen widgets\n\n
 V2.2.8:\n
 - added lockscreen widget support for Android 4.2\n
 - preview of widgets now shown when added\n

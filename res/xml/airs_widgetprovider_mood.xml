@@ -22,5 +22,6 @@
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/widgetlayout_mood"
     android:widgetCategory="keyguard|home_screen"
-    android:previewImage="@drawable/mood_button1">
+    android:previewImage="@drawable/mood_button1"
+    android:resizeMode="horizontal|vertical">
 </appwidget-provider>
