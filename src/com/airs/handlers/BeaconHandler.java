@@ -243,16 +243,24 @@ public class BeaconHandler implements Handler, Runnable
 	public void destroyHandler()
 	{
 		// signal thread to close down
+		runnable.interrupt();
 		running = false;
 		
 		// cancel any discovery
-		finished_semaphore.release();
-		if (mBtAdapter != null)
-			mBtAdapter.cancelDiscovery();
-		if (bt_registered == true)
+		try
 		{
-			nors.unregisterReceiver(mReceiver);
-			bt_registered = false;
+			finished_semaphore.release();
+			if (bt_registered == true)
+			{
+				nors.unregisterReceiver(mReceiver);
+				bt_registered = false;
+			}
+			if (mBtAdapter != null)
+				mBtAdapter.cancelDiscovery();
+		}
+		catch(Exception e)
+		{
+			
 		}
 	}
 	

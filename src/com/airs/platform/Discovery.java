@@ -171,7 +171,7 @@ public class Discovery implements Callback, Runnable
 			sleep(polltime);
 		}
 	}
-	
+	 
 	/***********************************************************************
 	 Function    : callback()
 	 Input       : dialog for notification

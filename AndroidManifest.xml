@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.2.8.1" android:versionCode="116" android:sharedUserId="com.airs">
+      android:versionName="2.2.9" android:versionCode="118" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
@@ -30,6 +30,7 @@
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+	<uses-permission android:name="android.permission.CAMERA"/>
  
 	<application android:icon="@drawable/icon" android:label="@string/app_name">
 	    <uses-library android:name="com.google.android.maps" />    
@@ -57,9 +58,17 @@
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="AIRS Local Sensing" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="AIRS Remote Sensing" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_shortcut" android:exported="true" android:label="Quick AIRS"></activity>
-     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="AIRS Mood Selector"  android:windowSoftInputMode="adjustPan"></activity>
-     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="AIRS Event Selector" android:windowSoftInputMode="adjustPan"></activity>
+     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="AIRS Mood Selector"  android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="AIRS Event Selector" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.HeartrateButton_selector" android:exported="false" android:label="AIRS Heartrate" android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
      <receiver android:name="com.airs.helper.Waker" android:process=":remote" />
+     <receiver android:name="com.airs.handlers.HeartrateButton_widget" android:label="AIRS Heartrate Button">
+         <meta-data android:name="android.appwidget.provider"
+                 android:resource="@xml/airs_widgetprovider_heart"/>
+         <intent-filter>
+             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+         </intent-filter>
+     </receiver>
      <receiver android:name="com.airs.handlers.EventButton_widget" android:label="AIRS Event Button">
          <meta-data android:name="android.appwidget.provider"
                  android:resource="@xml/airs_widgetprovider"/>

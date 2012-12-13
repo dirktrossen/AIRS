@@ -38,8 +38,8 @@ import com.airs.helper.SerialPortLogger;
 public class HandlerUIManager 
 {
 	// currently we have maximal 9 handlers
-    static HandlerUI handlers[] = new HandlerUI[11];
-    public final static int max_handlers = 11; 
+    static HandlerUI handlers[] = new HandlerUI[12];
+    public final static int max_handlers = 12; 
     // preferences
     static private SharedPreferences settings;
     static private Context airs;
@@ -68,6 +68,7 @@ public class HandlerUIManager
 	   handlers[index++] = new AudioHandlerUI();
 	   handlers[index++] = new ProximityHandlerUI();
 	   handlers[index++] = new HeartMonitorHandlerUI();
+	   handlers[index++] = new HeartrateHandlerUI();
 	   handlers[index++] = new BeaconHandlerUI();
 	   handlers[index++] = new CalendarHandlerUI();
 	   handlers[index++] = new EventButtonHandlerUI();
