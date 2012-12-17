@@ -49,15 +49,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-V2.2.9:
-- added pulse handler, using the camera for determining pulse.\n 
-  - You will need to add the AIRS heart rate widget to your launcher screen to start the heart rate measurement!\n
-- improved BT beacon shutdown
+- improved audio handler polling\n
+- removed camera as required feature
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.9.1:
+- improved audio handler polling\n
+- removed camera as required feature\n\n
 V2.2.9:
 - added pulse handler, using the camera for determining pulse. You will need to add the AIRS heart rate widget to your launcher screen to start the heart rate measurement!\n
 - improved BT beacon shutdown\n\n

@@ -33,12 +33,14 @@
         <item>11025 Hz</item>
         <item>16000 Hz</item>
         <item>22050 Hz</item>
+        <item>44100 Hz</item>
     </string-array>
-     <string-array name="audiohandler_entries">
+    <string-array name="audiohandler_entries">
         <item>8000</item>
         <item>11025</item>
         <item>16000</item>
         <item>22050</item>
+        <item>44100</item>
     </string-array>   
     <string-array name="gpshandler_values">
         <item>30 m</item>

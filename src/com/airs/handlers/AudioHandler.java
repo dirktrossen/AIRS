@@ -27,6 +27,8 @@ import android.media.*;
 
 public class AudioHandler implements Handler
 {
+	public static final int CHUNK_SIZE = 4;
+
 	Context airs;
 	// beacon data
 	private byte [] AS_reading;
@@ -39,6 +41,7 @@ public class AudioHandler implements Handler
 	private long    frequency = -1;
 	private long    level = -1;
 	private int		sample_rate = 8000;
+	private int 	bufferSize;
 	private int		AA_adjust = 3;
 	
 	// availability of player
@@ -175,8 +178,11 @@ public class AudioHandler implements Handler
 		// now read adjustment for AA reading
 		AA_adjust = HandlerManager.readRMS_i("AudioHandler::AA_adjust", 3);
 
+		// determine required buffer size
+		bufferSize = AudioRecord.getMinBufferSize(sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+		
 		// start player and see if it's there!
-		p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, sample_rate * 4);
+		p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
 		if (p != null)
 			if (p.getState() == AudioRecord.STATE_INITIALIZED)
 			{
@@ -226,20 +232,22 @@ public class AudioHandler implements Handler
 		try
 		{	
 			// get player resources
-			p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, sample_rate * 4);
+			p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
 			if (p != null)
 				if (p.getState() == AudioRecord.STATE_INITIALIZED)
 				{
 					// start recording
 					p.startRecording();
 					
-					// try to read from AudioRecord player until sample_rate buffer is full!
+					// try to read from AudioRecord player until sample_rate buffer is full, i.e., one second of data!
 				    i = 0;
 				    while (i < sample_rate)
 				    {
-				    	read = sample_rate/1000;
+				    	// try to always read the buffer size we gave originally
+				    	read = bufferSize;
 				    	if (read>sample_rate-i)
 				    		read = sample_rate-i;
+				    	// now read
 				    	recorded = p.read(output, i, read);
 				    	// error in reading?
 				    	if (recorded == AudioRecord.ERROR_INVALID_OPERATION)
@@ -315,7 +323,7 @@ public class AudioHandler implements Handler
 		
 		// remove last reading
 		AF_reading = null;
-		
+
 		// now record
 		try
 		{
@@ -331,9 +339,11 @@ public class AudioHandler implements Handler
 				    i = 0;
 				    while (i < sample_rate)
 				    {
-				    	read = sample_rate/1000;
+				    	// try to always read the buffer size we gave originally
+				    	read = bufferSize;
 				    	if (read>sample_rate-i)
 				    		read = sample_rate-i;
+				    	// now read
 				    	recorded = p.read(output, i, read);
 				    	// error in reading?
 				    	if (recorded == AudioRecord.ERROR_INVALID_OPERATION)
@@ -348,6 +358,7 @@ public class AudioHandler implements Handler
 				    // stop and release player again
 				    p.stop();
 				    p.release();
+				    p = null;
 
 				    // count changes in sign
 			     	for (i=0;i<output.length;i++)
