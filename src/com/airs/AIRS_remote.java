@@ -53,12 +53,15 @@ public class AIRS_remote extends Service
 	public static final int KILL_SERVICE 		= 1;
     public static final String TEXT = "TEXT";
 
+    private  Context airs = null;
 	private Discovery	 	 instDiscovery = null;
 	private Acquisition 	 instAcquisition = null;
 	private EventComponent	 instEC = null;
-	private String Vibrate;
-	private int Vibrate_i;
+    private boolean Vibrate, Lights;
+	private int Reminder_i;
     private int BatteryKill_i;
+    private String LightCode;
+    private NotificationManager mNotificationManager;
 	private String IPAddress;
 	private String IPPort;
 	public boolean running = false, started = false, failed = false;
@@ -114,8 +117,12 @@ public class AIRS_remote extends Service
   		 // if Vibrator is running, stop it!
 		try
 		{
-			if (Vibrator!=null)
-				Vibrator.thread.interrupt(); 
+	   		 // if Vibrator is running, stop it!
+	   		 if (Vibrator!=null)
+	   		 {
+	   			Vibrator.stop = true;
+	   			Vibrator.thread.interrupt(); 
+	   		 }
 		}
 		catch(Exception e)
 		{
@@ -183,14 +190,18 @@ public class AIRS_remote extends Service
 		// create timer/alarm handling
 		Waker.init(this);
 		
+		this.airs = this.getApplicationContext();
+
 		debug("create handlers...");
 		HandlerManager.createHandlers(getApplicationContext());
 		// started handlers
 		started = true;
 		
 		// get preference variables from settings
-		Vibrate 	= HandlerManager.readRMS("Vibrate", "30");
-		Vibrate_i 	= Integer.parseInt(Vibrate)*1000;
+		Reminder_i = HandlerManager.readRMS_i("Reminder", 0) * 1000;
+		Vibrate    = HandlerManager.readRMS_b("Vibrator", true);
+		Lights     = HandlerManager.readRMS_b("Lights", true);
+		LightCode  = HandlerManager.readRMS("LightCode", "00ff00");
 		IPAddress 	= HandlerManager.readRMS("IPStore", "127.0.0.1");
 		IPPort	 	= HandlerManager.readRMS("IPPort", "9000");
 		// find out whether or not to kill based on battery condition
@@ -222,7 +233,7 @@ public class AIRS_remote extends Service
 				 return false;
 			 
 			 // vibrate?
-			 if (Vibrate_i>0)
+			 if (Reminder_i>0)
 				 Vibrator = new VibrateThread();
 
 			 // update notification
@@ -312,7 +323,8 @@ public class AIRS_remote extends Service
 	 private class VibrateThread implements Runnable
 	 {
 		 public Thread thread;
-		 
+		 public boolean stop = false;
+
 		 VibrateThread()
 		 {
 			// save thread for later to stop 
@@ -321,23 +333,35 @@ public class AIRS_remote extends Service
 		 
 		 public void run()
 		 {
-			 // get system service
-			 Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+			 long vibration[] = {0,200,0};
 
-			 while (true)
+			 // get notification manager
+			 mNotificationManager = (NotificationManager)airs.getSystemService(Context.NOTIFICATION_SERVICE); 
+
+			 while (stop == false)
 			 {		
 				 // sleep for the agreed time
-				 try
-				 {
-					 Thread.sleep(Vibrate_i);
-				 }
-				 catch(InterruptedException e)
-				 {
-					 return;
-				 }
+			     sleep(Reminder_i);
+
+			     // prepare notification to user
+			     Notification notif = new Notification();
+			     notif.when              = System.currentTimeMillis(); 
+			     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
+			     if (Vibrate == true)
+			    	 notif.vibrate			 = vibration;
 				 
-				 // vibrate for 750ms
-				 vibrator.vibrate(750);
+				 if (Lights == true)
+				 {
+	                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+	                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+				 }
+	              
+				 // now shoot off alert
+				 mNotificationManager.notify(0, notif);   
+				 sleep(750);
+				 
+				 // and cancel
+	             mNotificationManager.cancel(0);
 			 }
 		 }
 	 }

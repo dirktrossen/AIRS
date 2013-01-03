@@ -181,6 +181,10 @@ public class AudioHandler implements Handler
 		// determine required buffer size
 		bufferSize = AudioRecord.getMinBufferSize(sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
 		
+		// actually use sample_rate buffer size
+		if (bufferSize<sample_rate)
+			bufferSize = sample_rate;
+		
 		// start player and see if it's there!
 		p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
 		if (p != null)
@@ -228,6 +232,8 @@ public class AudioHandler implements Handler
 		// remove last reading
 		AS_reading = null;
 		
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+		
 		// now record
 		try
 		{	
@@ -255,6 +261,7 @@ public class AudioHandler implements Handler
 				    		debug("AudioHandler:invalid operation!");
 				    		AS_reading = null;
 				    		havePlayer = false;
+				    		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DEFAULT);
 				    		return;
 				    	}
 				    	i += recorded;
@@ -304,6 +311,8 @@ public class AudioHandler implements Handler
 			AS_reading = null;
 		}	
 		
+		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DEFAULT);
+
 		// don't need player anymore
 		havePlayer = false;
 	}

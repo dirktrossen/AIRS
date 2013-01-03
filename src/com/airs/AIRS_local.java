@@ -91,6 +91,7 @@ public class AIRS_local extends Service
     public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false, registered = false;
     private ArrayAdapter<String> mSensorsArrayAdapter;
     public ArrayAdapter<String> mValuesArrayAdapter;
+    private long nextDay;		// milliseconds for next day starting
     // This is the object that receives interactions from clients
     private final IBinder mBinder = new LocalBinder();
     private VibrateThread Vibrator;
@@ -328,20 +329,20 @@ public class AIRS_local extends Service
 			    			{
 		    				    try
 		    				    {
-		    				    	execStorage("INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
+		    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
 		    				    	
 		    				    	// write sensor value in table for faster retrieval later!
 		    				    	if (started == true)
 		    				    	{
 		    				    		try
 		    				    		{
-		    				    			execStorage("INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+		    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
 		    				    		}
 		    				    		catch(Exception e)
 		    				    		{
-		    				           	 	execStorage(AIRS_database.DATABASE_TABLE_CREATE3);
-		    				           	 	execStorage(AIRS_database.DATABASE_TABLE_INDEX3);
-		    				    			execStorage("INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+		    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
+		    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
+		    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
 		    				    		}
 		    				    		started = false;
 		    				    	}
@@ -411,7 +412,7 @@ public class AIRS_local extends Service
 		Restart(true);
 	}
 
-	public synchronized void execStorage(String query)
+	public synchronized void execStorage(long milli, String query)
 	{
 		if (airs_storage == null)
 			return;
@@ -428,6 +429,41 @@ public class AIRS_local extends Service
 		    {
 		    	airs_storage.endTransaction();
 		    }
+		}
+		
+		// is the current data at the next day?
+		if (milli > nextDay)
+		{
+			 // get current day and set time to last millisecond of that day 
+	         Calendar cal = Calendar.getInstance();
+	         cal.set(Calendar.HOUR_OF_DAY, 23);
+	         cal.set(Calendar.MINUTE, 59);
+	         cal.set(Calendar.MILLISECOND, 999);
+	         int year = cal.get(Calendar.YEAR);
+	         int month = cal.get(Calendar.MONTH) + 1;
+	         int day = cal.get(Calendar.DAY_OF_MONTH);
+	         nextDay = cal.getTimeInMillis();
+	         
+	         // mark date now as having values
+	         try
+	         {
+	     		synchronized(airs_storage)
+	    		{
+	    	    	airs_storage.beginTransaction();
+	    		    try
+	    		    {
+	    		    	airs_storage.execSQL("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");
+	    		    	airs_storage.setTransactionSuccessful();
+	    		    }
+	    		    finally
+	    		    {
+	    		    	airs_storage.endTransaction();
+	    		    }
+	    		}
+	         }
+	         catch(Exception e)
+	         {
+	         }
 		}
 	}
 
@@ -463,8 +499,8 @@ public class AIRS_local extends Service
 	            // have tables been created?
 	            if (HandlerManager.readRMS_b("AIRS_local::TablesExists", false) == false)
 	            {
-	           	 	execStorage(AIRS_database.DATABASE_TABLE_CREATE);
-	           	 	execStorage(AIRS_database.DATABASE_TABLE_CREATE2);
+	           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE);
+	           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE2);
 	                HandlerManager.writeRMS_b("AIRS_local::TablesExists", true);
 	            }
 		    } 
@@ -733,7 +769,7 @@ public class AIRS_local extends Service
 		 // don't allow clearing the notification
 		 notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 
-		 startForeground(R.string.app_name, notification);	
+		 startForeground(R.string.app_name, notification);
 		 
          // store start timestamp
          HandlerManager.writeRMS_l("AIRS_local::time_started", System.currentTimeMillis());
@@ -821,19 +857,25 @@ public class AIRS_local extends Service
 		 // store persistently that AIRS is running
          HandlerManager.writeRMS_b("AIRS_local::running", true);
          
-         // mark date now as having values
+		 // get current day and set time to last millisecond of that day 
          Calendar cal = Calendar.getInstance();
+         cal.set(Calendar.HOUR_OF_DAY, 23);
+         cal.set(Calendar.MINUTE, 59);
+         cal.set(Calendar.MILLISECOND, 999);
          int year = cal.get(Calendar.YEAR);
          int month = cal.get(Calendar.MONTH) + 1;
          int day = cal.get(Calendar.DAY_OF_MONTH);
+         nextDay = cal.getTimeInMillis();
+         
+         // mark date now as having values
          try
          {
-	         execStorage("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
+	         execStorage(0, "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
          }
          catch(Exception e)
          {
-        	 execStorage("CREATE TABLE IF NOT EXISTS airs_dates (Year INT, Month INT, Day INT, Types INT);");
-	         execStorage("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
+        	 execStorage(0, "CREATE TABLE IF NOT EXISTS airs_dates (Year INT, Month INT, Day INT, Types INT);");
+	         execStorage(0, "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
          }
 
 		 return true;

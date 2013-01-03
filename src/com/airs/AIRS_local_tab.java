@@ -35,7 +35,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -193,7 +192,7 @@ public class AIRS_local_tab extends Activity implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
-    	Intent intent;
+    	final Intent intent;
     	
         switch (item.getItemId()) 
         {
@@ -286,12 +285,8 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         	intent = new Intent(this,AIRS_sync.class);
         	startActivity(intent);
         	break;
-        case R.id.main_backup:
-        	intent = new Intent(this,AIRS_backup.class);
-        	startActivity(intent);
-        	break;
-        case R.id.main_restore:
-        	intent = new Intent(this,AIRS_restore.class);
+        case R.id.main_dbadmin:
+        	intent = new Intent(this,AIRS_DBAdmin.class);
         	startActivity(intent);
         	break;
         case R.id.local_start:

@@ -232,7 +232,7 @@ public class BeaconHandler implements Handler, Runnable
 		polltime = HandlerManager.readRMS_i("BeaconHandler::Poll", 30) * 1000;
 		
 		// save current time and set so that first Acquire() will discover but substract a bit more to give BT time to fire up
-		oldtime = System.currentTimeMillis() - polltime + 2500;
+		oldtime = System.currentTimeMillis();
 		
 		// arm the semaphores now
 		wait(BT_semaphore); 

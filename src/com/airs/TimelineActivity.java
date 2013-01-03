@@ -92,9 +92,13 @@ public class TimelineActivity extends Activity
 	        // get Desktop dimensions
 	        Display display = getWindowManager().getDefaultDisplay();       
 	        int width = display.getWidth();
-
+	        int height = display.getHeight();
+	        
 	        // set dialog dimensions
-        	getWindow().setLayout(width, width*9/16); // 
+	        if (width*9/16 > height)
+	        	getWindow().setLayout(height*16/9, height);  
+	        else
+	        	getWindow().setLayout(width, width*9/16);  
 	        
 	        // get window title fields
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
