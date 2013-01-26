@@ -252,8 +252,14 @@ public class BeaconHandler implements Handler, Runnable
 			finished_semaphore.release();
 			if (bt_registered == true)
 			{
-				nors.unregisterReceiver(mReceiver);
-				bt_registered = false;
+				try
+				{
+					nors.unregisterReceiver(mReceiver);
+				}
+				catch(Exception e)
+				{
+					bt_registered = false;
+				}
 			}
 			if (mBtAdapter != null)
 				mBtAdapter.cancelDiscovery();
@@ -300,7 +306,15 @@ public class BeaconHandler implements Handler, Runnable
         
         // unregister broadcast receiver
         if (bt_registered == true)
-        	nors.unregisterReceiver(mReceiver);
+        {
+        	try
+        	{
+        		nors.unregisterReceiver(mReceiver);
+        	}
+        	catch(Exception e)
+        	{
+        	}
+        }
 		bt_registered = false;
     }	 
     

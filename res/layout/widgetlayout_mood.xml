@@ -19,15 +19,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-		<ImageButton 
-		  android:id="@+id/mood_button_local"
-		  android:layout_width="58dp"
-		  android:layout_height="58dp"
-		  android:layout_margin="10dip"
-  	      android:layout_gravity="center"
-		  android:background="@drawable/widget_bg"
-	      android:clickable="true"
-	      android:contentDescription="Mood button"
-	      android:hapticFeedbackEnabled="false"
-	 	  android:src="@drawable/widget_mood"/>
+
+		<ImageButton
+		    android:id="@+id/mood_button_local"
+		    android:layout_width="58dp"
+		    android:layout_height="58dp"
+		    android:layout_margin="7dp"
+		    android:layout_gravity="center"
+		    android:background="@drawable/widget_bg"
+		    android:clickable="true"
+		    android:contentDescription="Mood button"
+		    android:hapticFeedbackEnabled="false"
+		    android:src="@drawable/widget_mood" />
+
 </LinearLayout>

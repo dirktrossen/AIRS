@@ -1,3 +1,8 @@
+V2.2.9.4: 
+- made more features not required to include more devices in PlayStore
+- bug fix in BT handler
+- redone widgets to fit single cell
+
 V2.2.9.3: 
 - bugfixes in DB handling
 

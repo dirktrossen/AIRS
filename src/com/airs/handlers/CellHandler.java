@@ -193,7 +193,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), new String("Mobile Country Code"), new String("int"), 0, 0, 65535, false, 0, this);
 		}		
 	}
-	
+
 	public CellHandler(Context nors)
 	{
 		this.nors = nors;
