@@ -188,13 +188,25 @@ public class MediaWatcherHandler implements Handler
 	{
 		// destroy observers
 		if (camera_observer != null)
+		{
+			camera_observer.stopWatching();
 			camera_observer = null;
+		}
 		if (music_observer != null)
+		{
+			music_observer.stopWatching();
 			music_observer = null;
+		}
 		if (pictures_observer != null)
+		{
+			pictures_observer.stopWatching();
 			pictures_observer = null;
-		if (videos_observer != null)
-			videos_observer = null;
+		}
+		if (pictures_observer != null)
+		{
+			pictures_observer.stopWatching();
+			pictures_observer = null;
+		}
 	}
 	
 	// own Observer class

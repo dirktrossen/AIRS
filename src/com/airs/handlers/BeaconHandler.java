@@ -272,15 +272,18 @@ public class BeaconHandler implements Handler, Runnable
 	
     private void discover()
     {
-        // Register for broadcasts when a device is discovered
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        nors.registerReceiver(mReceiver, filter);
-
-        // Register for broadcasts when discovery has finished
-        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        nors.registerReceiver(mReceiver, filter);
-    	      
-		bt_registered = true;
+    	if (bt_registered == false)
+    	{
+	        // Register for broadcasts when a device is discovered
+	        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+	        nors.registerReceiver(mReceiver, filter);
+	
+	        // Register for broadcasts when discovery has finished
+	        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+	        nors.registerReceiver(mReceiver, filter);
+	    	      
+			bt_registered = true;
+    	}
 
 		bt_first = true;
 

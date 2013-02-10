@@ -1,3 +1,7 @@
+V2.2.9.5:
+- improvements to media watcher
+- introduction of 'TV' sensor of visible processes
+
 V2.2.9.4: 
 - made more features not required to include more devices in PlayStore
 - bug fix in BT handler

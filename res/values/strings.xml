@@ -50,14 +50,16 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- made more features not required to include more devices in PlayStore\n
-- bug fix in BT handler\n
-- redone widgets to fit single cell
+- improvements to media watcher\n
+- introduction of TV sensor of visible processes
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.2.9.5:\n
+- improvements to media watcher\n
+- introduction of TV sensor of visible processes\n\n
 V2.2.9.4:\n 
 - made more features not required to include more devices in PlayStore\n
 - bug fix in BT handler\n
