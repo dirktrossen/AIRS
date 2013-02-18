@@ -1,5 +1,6 @@
 /*
-Copyright (C) 2012, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2006 Nokia Corporation
+Copyright (C) 2008-2013, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -21,38 +22,38 @@ import android.preference.PreferenceActivity;
 import com.airs.HandlerEntry;
 import com.airs.*;
 
-public class HeartrateHandlerUI implements HandlerUI
-{
-    // BT stuff
-	public HandlerEntry init()    
-	{				
+public class DeviceInfoHandlerUI implements HandlerUI
+{   
+	public HandlerEntry init()
+	{
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Heart Rate");
-		entry.description = new String("Heart rate measured through your camera");
-		entry.resid = R.drawable.heart_monitor;
+		entry.name = new String("Device Information");
+		entry.description = new String("Various phone-based information like orientation, proximity, RAM, battery etc");
+		entry.resid = R.drawable.phone;
 		return (entry);
 	}
 
 	public int setDisplay()
 	{
-		return R.xml.prefsheartrate;
+		return R.xml.prefsdeviceinfo;
 	}
 
 	public String About()
 	{
 	    String AboutText = new String(
-	    		"Measures your heart rate by having you place your finger over the camera while the software determines changes in red colors.\n\n"+
-	    		"You can adjust the measurements with an offset value, compensating for any misalignments.");
-	    
+	    		"Senses various phone-based sensors & system information.\n\n"+
+	    		"The orientation is only supported for models with internal compass. Other information includes proximity as well as system information such as battery, RAM and tasks.");
+
 		return AboutText;
 	}
 	
 	public String AboutTitle()
 	{
-		return "Heart Rate";
+		return "Phone Sensors";
 	}
 
 	public void configurePreference(PreferenceActivity prefs)
 	{
 	}
 }
+

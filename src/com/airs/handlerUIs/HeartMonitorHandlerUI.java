@@ -33,7 +33,7 @@ public class HeartMonitorHandlerUI implements HandlerUI
 	{				
 		HandlerEntry entry = new HandlerEntry();
 		entry.name = new String("Heart Monitor");
-		entry.description = new String("ECG, heart rate, accelerometer & event button from Alive Heart Monitor");
+		entry.description = new String("Heart rate from Zephyr");
 		entry.resid = R.drawable.heart_monitor;
 		return (entry);
 	}
@@ -46,9 +46,8 @@ public class HeartMonitorHandlerUI implements HandlerUI
 	public String About()
 	{
 	    String AboutText = new String(
-	    		"Senses heart monitor equipment, based on the specification by Alive Technologies. \n\n"+
-	    		"You can enable the heart monitor sensing here as well as select the device to connect to.\n" + 
-	    		"The protocol is available from Alive Technologies.\n");
+	    		"Senses heart rate values from Zephyr\n\n"+
+	    		"You can enable the heart monitor sensing here as well as select the device to connect to.\n");
 	    
 		return AboutText;
 	}
@@ -84,35 +83,21 @@ public class HeartMonitorHandlerUI implements HandlerUI
         // If there are paired devices, add each one to the ListPreference
         if (pairedDevices.size() > 0) 
         {
-        	// first see how many AliveTechs we have paired with
-            for (BluetoothDevice device : pairedDevices) 
+        	String [] names = new String[pairedDevices.size()];
+        	String [] macs = new String[pairedDevices.size()];
+
+        	// create entry and value lists!
+        	foundAlive = 0;
+        	for (BluetoothDevice device : pairedDevices) 
             {
-                if (device.getName().contains("Alive") == true)
-                	foundAlive++;
+            	names[foundAlive] = device.getName();
+            	macs[foundAlive] = device.getAddress();
+            	foundAlive++;
             }
-            
-            // paired with at least one?
-            if (foundAlive>0)
-            {
-	        	CharSequence[] names = new CharSequence[foundAlive];
-	        	CharSequence[] macs = new CharSequence[foundAlive];
-	           
-	        	// create entry and value lists!
-	        	foundAlive = 0;
-	        	for (BluetoothDevice device : pairedDevices) 
-	            {
-	                if (device.getName().contains("Alive") == true)
-	                {
-	                	names[foundAlive] = device.getName();
-	                	macs[foundAlive] = device.getAddress();
-	                	foundAlive++;
-	                }
-	            }
-	        	// set names as entries in list
-				list.setEntries(names);
-				// set mac addresses as entries in preference
-				list.setEntryValues(macs);
-            }
+        	// set names as entries in list
+			list.setEntries(names);
+			// set mac addresses as entries in preference
+			list.setEntryValues(macs);
         } 
 	}
 }

@@ -36,7 +36,7 @@ public class AIRS_web_tab extends Activity
         mWebView.setWebViewClient(new HelloWebViewClient());
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.getSettings().setUserAgentString("online-manual");
-        mWebView.loadUrl("http://dalore.me.uk/DOT/software/airs-online-manual");
+        mWebView.loadUrl("http://tecvis.co.uk/software/software/airs/");
 
         setContentView(mWebView);
 

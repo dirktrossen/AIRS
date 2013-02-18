@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2008-2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2008-2013, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -16,8 +16,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -27,71 +29,50 @@ import android.content.Context;
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 public class HeartMonitorHandler implements Handler, Runnable
 {  
+	// HMX variables
+	public static final int HMX_STX 		= 0;
+	public static final int HMX_MSG_ID 		= 1;
+	public static final int HMX_DLC 		= 2;
+	public static final int HMX_BATTERY		= 8;
+	public static final int HMX_PULSE		= 9;
+	public static final int HMX_DISTANCE	= 47;
+	public static final int HMX_INSTANCE	= 49;
+	public static final int HMX_STRIDE		= 51;
+
 	// initialize old sensor values with float of zero
-	private int last_battery 	= 0;
-	private int last_pulse 		= 0; 
-	private int last_accX  		= 0; 
-	private int last_accY 		= 0; 
-	private int last_accZ 		= 0;
-	private int last_button		= 0;
-	private int last_sent_battery= 0;
-
-	// header lengths
-	private final static int HEADER_LENGTH 			= 6;
-	private final static int DATA_HEADER_LENGTH 	= 5;
-	
-	// data lengths
-	private final static int ECG_MAX 	= 300;
-	private final static int ECG_MIN	= 150;
-	private final static int ACC_MAX 	= 225;
-	
-	// samples length for DataProcessor
-	private int sample_ECG, sample_ACC;
-
-	// indicator if it is 3D accelerometer data
-	private boolean ACC_3D = false;
-	
-	// pulse determination variables
-    private static final int PEAK_THRESHOLD = 70;
-    private int startVoltage = 1000;
-    private int lastVoltage = 1000;
-    private int lastPeak = -1;
-    private int peakToPeakSamples = 0;
-    private boolean rememberPeaks = false;
-    private boolean overThreshold = false;
-    private int currentSample = ECG_MAX;
-	
+	private int last_battery 		= 0;
+	private int last_sent_battery 	= 0;
+	private int last_pulse 			= 0; 
+	private int last_instance		= 0; 
+	private int last_distance		= 0; 
+	private int last_distance_reading	= 0; 
+	private int last_stride			= 0; 
+	private int last_stride_reading	= 0; 
+			
 	// We will only have one instance of connection
-//    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     private BluetoothAdapter mBtAdapter;
     private BluetoothSocket mmSocket;
 	private InputStream inputStream;
 
+	// context for history
+	private Context airs;
+	
 	// indicator for connectivity
-	private boolean connected = false;
-	
-	// the next two booleans are used for read/write coordination between Acquire() and DataProcessor()
-	// indicator for reading values
-	private boolean read_values = false; 
-	// indicator for processing
-	private boolean write_values = false; 
-
-	// header fields
-	private byte Stream_Header[]  = new byte[HEADER_LENGTH];
-	private byte Data_Header[]    = new byte[DATA_HEADER_LENGTH];
-	
-	// ECG data being read (max) as double buffer
-	private byte ECGDataIn[][] = new byte[2][ECG_MAX];
-	private int  currentECG_buffer = 0;
-	private int  currentECG_index = 0;
-	private boolean ECG_overflown = false;
+	private boolean connected = false, tried = false, use_monitor = true;
+	private Semaphore pulse_semaphore 		= new Semaphore(1);	
+	private Semaphore battery_semaphore 	= new Semaphore(1);	
+	private Semaphore strides_semaphore 	= new Semaphore(1);	
+	private Semaphore distance_semaphore 	= new Semaphore(1);	
+	private Semaphore instance_semaphore 	= new Semaphore(1);	
 	
 	//`ACC data being read (max)
-	private byte ACCDataIn[]  = new byte[ACC_MAX];
 	private byte[] reading = null;
 	private Thread runnable;
 	
@@ -108,6 +89,17 @@ public class HeartMonitorHandler implements Handler, Runnable
 	{
 		Waker.sleep(millis);
 	}
+	
+	private void wait(Semaphore sema)
+	{
+		try
+		{
+			sema.acquire();
+		}
+		catch(Exception e)
+		{
+		}
+	}
 
 	/***********************************************************************
 	 Function    : HeartMonitorHandler()
@@ -116,17 +108,24 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 Return      :
 	 Description : 	reads RMS and check if version 1.0 is wanted or not
 	***********************************************************************/
-	public HeartMonitorHandler(Context nors)
+	public HeartMonitorHandler(Context airs)
 	{
-		// open port and create serial reading thread
-		if (ComPortInit() == true) 
+		// save for later
+		this.airs = airs;
+		
+		// should handler be disabled?
+		if (HandlerManager.readRMS_b("HeartMonitorHandler::BTON", false) == false)
 		{
-		    connected = true;
-			runnable = new Thread(this);
-			runnable.start();
-		}
-		else 
-			debug("Can not initialize com with heartmonitor;");
+			debug("HeartMonitorHandler::BT OFF");
+			use_monitor = false;
+		}    
+		
+		// arm semaphores
+		wait(pulse_semaphore); 
+		wait(battery_semaphore); 
+		wait(strides_semaphore); 
+		wait(distance_semaphore); 
+		wait(instance_semaphore); 
 	}
 	
 	public void destroyHandler()
@@ -152,6 +151,8 @@ public class HeartMonitorHandler implements Handler, Runnable
 			{
 			}
 		}
+  		
+  		connected = false;
 	}
 	
 	/***********************************************************************
@@ -163,20 +164,32 @@ public class HeartMonitorHandler implements Handler, Runnable
 	                result 
 	***********************************************************************/
 	synchronized public byte[] Acquire(String sensor, String query)
-	{
-		String Accreadings = null;
-		int i;
-	
-		// if not connected, return null pointer
+	{	
+		// if not connected, try now!
 		if (connected == false)
-			return null;
-
-		// writing values at the moment -> wait!
-		while (write_values == true)
-			sleep(100);
-		
-		// now indicate reading values
-		read_values = true;
+		{
+			// if we haven't tried before, do now (so that we only do once!)
+			if (tried == false)
+			{
+				// open port and create serial reading thread
+				if (ComPortInit() == true) 
+				{
+				    connected = true;
+					runnable = new Thread(this);
+					runnable.start();
+				}
+				else 
+				{
+					debug("HeartMonitorHandler::ComPort initialization failed");
+					use_monitor = false;
+				}
+				
+				// we've tried!
+				tried = true;
+			}
+			else
+				return null;
+		}
 		
 		// garbage collect the old stuff
 		reading = null;
@@ -186,27 +199,10 @@ public class HeartMonitorHandler implements Handler, Runnable
 		{			
 			switch(sensor.charAt(1))
 			{
-				case 'A' :
-					Accreadings = new String(sensor);
-					Accreadings = Accreadings.concat(Double.toString(last_accX) + ":" + Double.toString(last_accY) + ":" + Float.toString(last_accZ));
-					reading = Accreadings.getBytes();
-					Accreadings = null;
-					break;
-				case 'B' :
-					// only sent if different
-					if (last_button == 1)
-					{
-						reading = new byte[6];
-						reading[0] = (byte)sensor.charAt(0);
-						reading[1] = (byte)sensor.charAt(1);					
-						reading[2] = (byte)0;
-						reading[3] = (byte)0;
-						reading[4] = (byte)0;
-						reading[5] = (byte)(last_button & 0xff);
-						last_button = 0;
-					}
-					break;
 				case 'L' :
+					// block until semaphore available
+					wait(battery_semaphore); 
+
 					if (last_sent_battery != last_battery)
 					{
 						reading = new byte[6];
@@ -220,6 +216,9 @@ public class HeartMonitorHandler implements Handler, Runnable
 					}
 					break;
 				case 'P' :
+					// block until semaphore available
+					wait(pulse_semaphore); 
+
 					reading = new byte[6];
 					reading[0] = (byte)sensor.charAt(0);
 					reading[1] = (byte)sensor.charAt(1);
@@ -228,43 +227,44 @@ public class HeartMonitorHandler implements Handler, Runnable
 					reading[4] = (byte)0;
 					reading[5] = (byte)(last_pulse & 0xff);
 					break;
-				case 'X' :
+				case 'I' :
+					// block until semaphore available
+					wait(instance_semaphore); 
+
 					reading = new byte[6];
 					reading[0] = (byte)sensor.charAt(0);
 					reading[1] = (byte)sensor.charAt(1);
-					reading[2] = (byte)((last_accX>>24) & 0xff);
-					reading[3] = (byte)((last_accX>>16) & 0xff);
-					reading[4] = (byte)((last_accX>>8) & 0xff);
-					reading[5] = (byte)(last_accX & 0xff);
+					reading[2] = (byte)0;
+					reading[3] = (byte)0;
+					reading[4] = (byte)0;
+					reading[5] = (byte)(last_instance & 0xff);
 					break;
-				case 'Y' :
+				case 'T' :
+					// block until semaphore available
+					wait(strides_semaphore); 
+
 					reading = new byte[6];
 					reading[0] = (byte)sensor.charAt(0);
 					reading[1] = (byte)sensor.charAt(1);
-					reading[2] = (byte)((last_accY>>24) & 0xff);
-					reading[3] = (byte)((last_accY>>16) & 0xff);
-					reading[4] = (byte)((last_accY>>8) & 0xff);
-					reading[5] = (byte)(last_accY & 0xff);
+					reading[2] = (byte)((last_stride>>24) & 0xff);
+					reading[3] = (byte)((last_stride>>16) & 0xff);
+					reading[4] = (byte)((last_stride>>8) & 0xff);
+					reading[5] = (byte)(last_stride & 0xff);			
 					break;
-				case 'Z' :
+				case 'D' :
+					// block until semaphore available
+					wait(distance_semaphore); 
+
 					reading = new byte[6];
 					reading[0] = (byte)sensor.charAt(0);
 					reading[1] = (byte)sensor.charAt(1);
-					reading[2] = (byte)((last_accZ>>24) & 0xff);
-					reading[3] = (byte)((last_accZ>>16) & 0xff);
-					reading[4] = (byte)((last_accZ>>8) & 0xff);
-					reading[5] = (byte)(last_accZ & 0xff);
-					break;
-				case 'E':
-					reading = new byte[2+ECG_MAX];
-					reading[0] = (byte)sensor.charAt(0);
-					reading[1] = (byte)sensor.charAt(1);
-					for (i=0;i<ECG_MAX;i++)
-						reading[i+2] = ECGDataIn[1-currentECG_buffer][i];
+					reading[2] = (byte)((last_distance>>24) & 0xff);
+					reading[3] = (byte)((last_distance>>16) & 0xff);
+					reading[4] = (byte)((last_distance>>8) & 0xff);
+					reading[5] = (byte)(last_distance & 0xff);			
 					break;
 				default:
 					// indicate finished reading
-					read_values = false;
 					return null;
 			}
 		}
@@ -273,9 +273,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 			debug("HeartMonitorHandler:Acquire: Exception: " + e.toString());
 		}
 		
-		// indicate finished reading
-		read_values = false;
-
 		// return readings
 		return reading;
 	}
@@ -292,9 +289,12 @@ public class HeartMonitorHandler implements Handler, Runnable
 	{		
 		switch(sensor.charAt(1))
 		{
-			case 'T' :
-			case 'N' :
-				return null;
+			case 'P' : 		    
+				return "My current pulse is " + String.valueOf(last_pulse);
+			case 'I' :
+				return "My current instant speed is " + String.valueOf((double)last_instance/10.0f);
+			case 'D' :
+				return "My current distance is " + String.valueOf(last_distance);
 		}
 		
 		return null;		
@@ -309,6 +309,15 @@ public class HeartMonitorHandler implements Handler, Runnable
 	***********************************************************************/
 	public void History(String sensor)
 	{
+		switch(sensor.charAt(1))
+		{
+		case 'P':
+			History.timelineView(airs, "Heart rate [bpm]", "HP");
+			break;
+		case 'I':
+			History.timelineView(airs, "Instant Speed [m/s]", "HI");
+			break;
+		}		
 	}
 
 	/***********************************************************************
@@ -321,16 +330,13 @@ public class HeartMonitorHandler implements Handler, Runnable
 	***********************************************************************/
 	public void Discover()
 	{
-		if (connected == true)
+		if (use_monitor == true)
 		{
-			SensorRepository.insertSensor(new String("HB"), new String(""), new String("event button"), new String("int"), 0, 0, 1, false, 1000, this);
 			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("battery level"), new String("int"), 0, 0, 100, true, 10000, this);
-			SensorRepository.insertSensor(new String("HE"), new String("[]"), new String("ECG"), new String("arr"), 0, 0, 255, false, 1000, this);
-			SensorRepository.insertSensor(new String("HP"), new String("beat"), new String("Pulse"), new String("int"), 0, 0, 200, true, 2500, this);
-			SensorRepository.insertSensor(new String("HX"), new String("g"), new String("Accelerometer X"), new String("int"), -2, -500, 500, false, 1000, this);
-			SensorRepository.insertSensor(new String("HY"), new String("g"), new String("Accelerometer Y"), new String("int"), -2, -500, 500, false, 1000, this);
-			SensorRepository.insertSensor(new String("HZ"), new String("g"), new String("Accelerometer Z"), new String("int"), -2, -500, 500, false, 1000, this);
-			SensorRepository.insertSensor(new String("HA"), new String("g"), new String("Accel.  (X,Y,Z)"), new String("str"), 0, -500, 500, false, 1000, this);
+			SensorRepository.insertSensor(new String("HP"), new String("beat"), new String("Pulse"), new String("int"), 0, 0, 200, true, 1000, this);
+//			SensorRepository.insertSensor(new String("HT"), new String("strides"), new String("Stride"), new String("int"), 0, 0, 50000, true, 5000, this);
+//			SensorRepository.insertSensor(new String("HD"), new String("m"), new String("Distance"), new String("int"), 0, 0, 500000, true, 10000, this);
+			SensorRepository.insertSensor(new String("HI"), new String("m/s"), new String("Instant Speed"), new String("int"), -1, 0, 200, true, 1000, this);
 		}
 	}
 
@@ -340,18 +346,10 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 */
 	private boolean ComPortInit() 
 	{
-		// Setup your own port you want to listen and write here;
 		// this phone version read the BT address through the RMS entry and connects to it
 		try 
 		{
 			String BTAddress = null;
-
-			// should handler be disabled?
-			if (HandlerManager.readRMS_b("HeartMonitorHandler::BTON", false) == false)
-			{
-				debug("HeartMonitorHandler::BT OFF");
-			    return false;
-			}    
 
 	        // Get the local Bluetooth adapter
 	        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -361,18 +359,16 @@ public class HeartMonitorHandler implements Handler, Runnable
 	        	return false;
 
 			// read BT address from RMS
-			BTAddress = HandlerManager.readRMS("HeartMonitorHandler::BTStore", "00:14:C5:A1:01:EC");
+			BTAddress = HandlerManager.readRMS("HeartMonitorHandler::BTStore", "00:07:80:5A:3E:7E");
 
+			// now get remote device for connection
 			BluetoothDevice device = mBtAdapter.getRemoteDevice(BTAddress);
-
-			// use the unofficial method createInsecureRfcommSocket() to avoid the PIN pairing dialog with the AliveTec 
-			java.lang.reflect.Method  m = device.getClass().getMethod("createInsecureRfcommSocket", new Class[] {int.class});
-			mmSocket = (BluetoothSocket)m.invoke(device, 1);
 			
-			// this is how it should be done with proper pairing -> does not work with AliveTec!
-//			mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+			// this is how it should be done with proper pairing 
+			mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+			
 			// now connect
-            mmSocket.connect();            
+            mmSocket.connect();  
 
 			if (mmSocket != null)
 				inputStream = mmSocket.getInputStream();
@@ -381,7 +377,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 		} 
 		catch (Exception e) 
 		{
-			SerialPortLogger.debugUI("ComPort initialization failed", 2000);
+			debug("ComPort initialization failed!");
 			return false;
 		}
 
@@ -401,10 +397,12 @@ public class HeartMonitorHandler implements Handler, Runnable
 	*/
 	public void run() 
 	{
-		int i, j, data_length;
-		byte checksum[] = new byte[1];
-		byte ECG_value[] = new byte[1];
-		int missing;
+		int i;
+		byte[] header = new byte[3];
+		byte[] checksum = new byte[1];
+		byte[] endOfMessage = new byte[1];
+		byte[] payload = null;
+		int payload_length;
 		
 		if (inputStream==null)
 		{
@@ -412,142 +410,66 @@ public class HeartMonitorHandler implements Handler, Runnable
 			return;
 		}
 				
-		while (true) 
+		while (connected == true) 
 		{
 			// try to read from serial port
 			try 
 			{
 			    // read the total header information
-                // START PACKET HEADER
-                // find sync bytes (1. + 2. byte)
-                do {
-                    inputStream.read(Stream_Header, 0, 1);
-                    // check for first byte (0)
-                    if (Stream_Header[0] == (byte)0) 
-                    {
-                        inputStream.read(Stream_Header, 1, 1);
-                        // check for second byte (254)
-                        if (Stream_Header[1] == (byte)0xfe) 
-                            break;
-                        else
-                            continue;
-                    } 
-                    else
-                        continue;
+                do 
+                {
+    				for (i=0;i<3;i++)
+                        inputStream.read(header, i, 1);
+                    // check for first byte (0x02) and message ID (0x26)
+                    if (header[HMX_STX] == (byte)0x02) 
+                        if (header[HMX_MSG_ID] == (byte)0x26) 
+                        {
+                        	// extract payload length
+                        	payload_length = header[HMX_DLC];
+                        	if (payload_length != 0)
+                        		break;
+                        }
                 }while(true);
 				
+                // now generate payload packet
+                payload = new byte[payload_length];
                 // read rest of header
-				for (i=2;i<HEADER_LENGTH;i++)
-                    inputStream.read(Stream_Header, i, 1);
-
-				// values read currently? -> wait since we will manipulate common buffers!
-				while (read_values == true)
-					sleep(100);
-				
-				// now indicate writing
-				write_values = true;
-
-				// read number of data blocks given in header
-				for (j=0;j<(int)Stream_Header[5];j++)
-				{
-				    // read the ECG header information
-					for (i=0;i<DATA_HEADER_LENGTH;i++)
-	                    inputStream.read(Data_Header, i, 1);
-
-					// length of data from data header of the packet minus the length of the data header
-					data_length = ((int)(Data_Header[1] & 0xFF) << 8) | ((int)Data_Header[2] & 0xFF);
-					data_length -= DATA_HEADER_LENGTH;
-					
-					switch((int)Data_Header[0] & 0xff)
-					{
-					// ECG?
-					case 0xaa:					    		
-			    		sample_ECG = data_length;
-
-						// how many samples/s?
-						if (Data_Header[3] == (byte)0x02)
-							currentSample = ECG_MAX;
-						else
-							currentSample = ECG_MIN;
-						
-						// does the reading still fill into the double buffer?
-						if (sample_ECG+currentECG_index<ECG_MAX)
-						{
-							for (i=0;i<sample_ECG;i++, currentECG_index++)
-							{
-								// read value
-			                    inputStream.read(ECG_value, 0, 1);
-			                    // and store in buffer
-			                    ECGDataIn[currentECG_buffer][currentECG_index] = ECG_value[0];
-							}
-							// ECG has not overflown
-							ECG_overflown = false;
-						}
-						else // reading does not fit into one buffer, need to fill other one too
-						{
-							try
-							{
-							// signal the ECG has overflown in buffer
-							ECG_overflown = true;
-							// read until first buffer is full
-							missing = ECG_MAX - currentECG_index;
-							for (i=0;i<missing;i++, currentECG_index++)
-							{
-								// read value
-			                    inputStream.read(ECG_value, 0, 1);
-			                    // and store in buffer
-			                    ECGDataIn[currentECG_buffer][currentECG_index] = ECG_value[0];
-							}	
-							// start from buffer beginning
-							currentECG_index = 0;
-							// switch buffer
-							currentECG_buffer = 1-currentECG_buffer;
-							// and read missing bytes
-							for (i=0;i<sample_ECG - missing;i++, currentECG_index++)
-							{
-								// read value
-			                    inputStream.read(ECG_value, 0, 1);
-			                    // and store in buffer
-			                    ECGDataIn[currentECG_buffer][currentECG_index] = ECG_value[0];
-							}	
-							}catch(Exception e)
-							{
-								SerialPortLogger.debugForced("Something's going wrong in index");
-							}
-						}
-				    	break;
-				    // ACC 2D?
-					case 0x55:
-						ACC_3D = false;
-			    		sample_ACC = data_length;
-					
-						for (i=0;i<sample_ACC;i++)
-		                    inputStream.read(ACCDataIn, i, 1);
-						break;
-					case 0x56:
-						ACC_3D = true;
-			    		sample_ACC = data_length;
-			    		
-						for (i=0;i<sample_ACC;i++)
-		                    inputStream.read(ACCDataIn, i, 1);
-						break;
-					default:
-						throw new IOException("run:wrong data header ID:");
-					}						
-				}
+				for (i=0;i<payload_length;i++)
+                    inputStream.read(payload, i, 1);
 			    	
 		    	// read checksum
                 inputStream.read(checksum, 0, 1);
+
+		    	// read end of message
+                inputStream.read(endOfMessage, 0, 1);
+                // proper end of message?
+                if (endOfMessage[0] == (byte)0x03)
+                {	
+                	// now read values
+                	last_battery 	= (int)(payload[HMX_BATTERY] & 0xff);
+                	last_pulse 		= (int)payload[HMX_PULSE];
+                	last_instance	= (int)(payload[HMX_INSTANCE] & 0xff) | (int)(payload[HMX_INSTANCE+1] & 0xff)<<8;
+                	last_instance   = (int)Math.floor((double)last_instance/25.6f);
+                	
+                	// get the readings
+                	int stride = (int)(payload[HMX_STRIDE] & 0xff);
+                	int distance = (int)(payload[HMX_DISTANCE] & 0xff) | (int)(payload[HMX_DISTANCE+1] & 0xff)<<8;
+                	
+                	// now deal with the roll overs (128 for stride)
+                	if (last_stride_reading < stride && stride<128)
+                		last_stride+=stride - last_stride_reading;
+                	else
+                		last_stride+=stride + (128-last_stride_reading);
+                	last_stride_reading = stride;
+                	
+                	// now deal with the roll overs (4096 for distance, measured in 1/16 of a metre)
+                	if (last_distance_reading < distance && distance<4096)
+                		last_distance+=(distance - last_distance_reading)/16;
+                	else
+                		last_distance+=(distance + (4096-last_distance_reading))/16;
+                	last_distance_reading = distance;               	
+                }                
 					    	   	
-				// process payload
-				try
-				{
-				    DataProcessor();
-				}
-				catch (Exception e) 
-				{
-					debug("BytesPumper: Error in decomposing = " + e.toString());
-				}
 			} 
 			catch (Exception e) 
 			{
@@ -555,115 +477,12 @@ public class HeartMonitorHandler implements Handler, Runnable
 				return;
 			}	
 			
-			// now indicate that writing is finished
-			write_values = false;
+			// release semaphores for picking up the values
+	    	pulse_semaphore.release();
+	    	battery_semaphore.release();
+	    	strides_semaphore.release();
+	    	distance_semaphore.release();
+	    	instance_semaphore.release();
 		}
-	}
-
-	// analyze the data for all commands
-	private void DataProcessor() 
-	{		
-		// read battery value from stream header (0...200)
-		last_battery = (int)(Stream_Header[2] & 0xff) / 2;
-		// determine status of event button
-		if ((int)(Stream_Header[3] & 0x10) != 0)
-			last_button = 1;
-		
-		// determine pulse rate from ECG 
-		Determine_Pulse();
-		
-		// determine accelerometer data
-		Determine_Acc();
-		
-		// now indicate finished writing
-		write_values = false;
-	}
-	
-	// Determine pulse rate by looking for peaks in ECG
-	private void Determine_Pulse()
-	{
-		int i, voltage, ECG_index;
-		
-		// has the last input overflown the buffer -> use last buffer then
-		if (ECG_overflown == true)
-			ECG_index = 1-currentECG_buffer;
-		else
-			return;	// otherwise return until current buffer will have overflown
-//			ECG_index = currentECG_buffer;
-		
-		for (i=0;i<currentSample;i++)
-		{
-			// read voltage
-			voltage = (int)ECGDataIn[ECG_index][i];
-			
-			// peak?
-	        if((lastVoltage > voltage) && overThreshold) 
-	        {
-	            if(lastPeak != -1) 
-	            {
-	                double heartbeatA = 60D * ((double)currentSample/peakToPeakSamples);
-	                peakToPeakSamples = 0;
-	                last_pulse = (int)heartbeatA;
-	            }
-	            lastPeak = lastVoltage;
-	            rememberPeaks = true;
-	            overThreshold = false;
-	        }
-	        
-	        if(voltage <= lastVoltage) 
-	            startVoltage = voltage;
-	        else 
-	        	if((voltage - startVoltage) > PEAK_THRESHOLD) 
-	        		overThreshold = true;
-	        
-	        lastVoltage = voltage;
-	        if(rememberPeaks)
-	            peakToPeakSamples++;
-		}
-	}
-	
-	// Determine acc
-	private void Determine_Acc()
-	{
-		int i, values;
-        double acceleX;
-        double acceleY;
-        double acceleZ;
-        int accX = 0 , accY = 0, accZ = 0;
-        double step;
-
-        if (ACC_3D == false)
-        {
-        	step = (double)4 / (double)255;
-        	values = 2;
-        }
-        else
-        {
-        	step = (double)5.4 / (double)255;
-        	values = 3;
-        }
-        
-        // add up all values
-        for (i=0;i<sample_ACC;i+=values)
-        {
-        	accX += ACCDataIn[i];
-        	accY += ACCDataIn[i+1];
-        	if (values == 3)
-        		accZ += ACCDataIn[i+2];
-        }      
-        
-        // average value in samples
-        accX /= sample_ACC/values;
-        accY /= sample_ACC/values;
-        accZ /= sample_ACC/values;
-       
-        // compute acceleration, measured in "g""
-    	acceleX = (double)accX * step; 
-    	acceleY = (double)accY * step; 
-    	acceleZ = (double)accZ * step;    
-    	
-    	last_accX = (int)(acceleX * 100);
-    	last_accY = (int)(acceleY * 100);
-    	last_accZ = (int)(acceleZ * 100);
 	}
 }

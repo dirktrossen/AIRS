@@ -75,6 +75,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	// threading for XML polling
 	private Thread 	  runnable = null;
 	private boolean	  running = true;
+	private boolean   shutdown = false;
 	private int		  polltime = 10000;
 	private int		  updatemeter = 1000;
 	long oldtime = 0;
@@ -135,6 +136,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	{		
 		byte[] readings = null;
 
+ 	    // are we shutting down?
+		if (shutdown == true)
+			return null;
+		
 		// no thread started yet?
 		if (runnable == null)
 		{
@@ -449,6 +454,9 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	
 	public void destroyHandler()
 	{
+		// signal shutdown
+		shutdown = true;
+		
 		// signal thread to close down
 		running = false;
 		// wake up thread
@@ -479,6 +487,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
            switch (msg.what) 
            {
            case INIT_GPS:
+        	   // are we shutting down?
+        	   if (shutdown == true)
+        		   return;
+
     		   // request location updates
         	   if (manager!=null)
         	   {

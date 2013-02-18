@@ -44,11 +44,11 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	private SensorManager sensorManager;
 	private android.hardware.Sensor Orientation, Proximity, Light, Pressure;
 	// polltime for sensor
-	private int polltime = 10000, polltime2 = 10000;
+	private int polltime = 10000, polltime2 = 10000, polltime3 = 10000;
 	// sensor values
 	private float azimuth, roll, pitch, proximity, light, pressure;
 	private float azimuth_old, roll_old, pitch_old, proximity_old, light_old, pressure_old;
-	private Semaphore pressure_semaphore 		= new Semaphore(1);
+	private Semaphore pressure_semaphore 	= new Semaphore(1);
 	private Semaphore light_semaphore 		= new Semaphore(1);
 	private Semaphore proximity_semaphore 	= new Semaphore(1);
 	private Semaphore azimuth_semaphore 	= new Semaphore(1);
@@ -88,6 +88,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		boolean read = false;
 		int value = 0;
 		byte [] readings = null;
+		boolean value_waiting;
 		
 		// anything there?
 		if (sensor_enable == true)
@@ -95,68 +96,103 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			// see which sensors are requested
 			if (sensor.equals("Az") == true)
 			{	
-				// has Azimuth been started?
-				if (startedOrientation == false)
+				// is there a value waiting?
+				value_waiting = azimuth_semaphore.tryAcquire();
+				
+				// if not, switch on listener
+				if (value_waiting == false)
 				{
-					// send message to handler thread to start GPS
-			        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
-			        mHandler.sendMessage(msg);	
+					// has Azimuth been started?
+					if (startedOrientation == false)
+					{
+						// send message to handler thread to start orientation
+				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+				        mHandler.sendMessage(msg);	
+					}
+	
+					wait(azimuth_semaphore); 
 				}
-
-				wait(azimuth_semaphore); 
 				if (azimuth != azimuth_old)
 				{
 					read = true;
 					value = (int)(azimuth*10);
 					azimuth_old = azimuth;
 				}
+				
+				// now toggle event listener off, if necessary
+				if (value_waiting == false)
+			        mHandler.sendMessage(mHandler.obtainMessage(INIT_ORIENTATION));						
 			}
 			
 			if (read == false)
 				if (sensor.equals("Pi") == true)
-				{					
-					// has Pitch been started?
-					if (startedOrientation == false)
+				{		
+					// is there a value waiting?
+					value_waiting = pitch_semaphore.tryAcquire();
+					
+					// if not, switch on listener
+					if (value_waiting == false)
 					{
-						// send message to handler thread to start GPS
-				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
-				        mHandler.sendMessage(msg);	
+						// has Pitch been started?
+						if (startedOrientation == false)
+						{
+							// send message to handler thread to start GPS
+					        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+					        mHandler.sendMessage(msg);	
+						}
+	
+						wait(pitch_semaphore); 
 					}
-
-					wait(pitch_semaphore); 
 					if (pitch != pitch_old)
 					{
 						read = true;
 						value = (int)(pitch*10);
 						pitch_old = pitch;
 					}
+					
+					// now toggle event listener off, if necessary
+					if (value_waiting == false)
+				        mHandler.sendMessage(mHandler.obtainMessage(INIT_ORIENTATION));						
 				}
 
 			if (read == false)
 				if (sensor.equals("Ro") == true)
-				{					
-					// has Roll been started?
-					if (startedOrientation == false)
+				{		
+					// is there a value waiting?
+					value_waiting = roll_semaphore.tryAcquire();
+					
+					// if not, switch on listener
+					if (value_waiting == false)
 					{
-						// send message to handler thread to start GPS
-				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
-				        mHandler.sendMessage(msg);	
+						// has Roll been started?
+						if (startedOrientation == false)
+						{
+							// send message to handler thread to start GPS
+					        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+					        mHandler.sendMessage(msg);	
+						}
+	
+						wait(roll_semaphore); 
 					}
-
-					wait(roll_semaphore); 
 					if (roll != roll_old)
 					{
 						read = true;
 						value = (int)(roll*10);
 						roll_old = roll;
 					}
-				}				
+
+					// now toggle event listener off, if necessary
+					if (value_waiting == false)
+				        mHandler.sendMessage(mHandler.obtainMessage(INIT_ORIENTATION));						
+				}	
+			
 			if (read == false)
 				if (sensor.equals("PR") == true)
 				{					
 					// has Proximity been started?
 					if (startedProximity == false)
 					{
+						proximity_semaphore.drainPermits();
 						// send message to handler thread to start proximity
 				        Message msg = mHandler.obtainMessage(INIT_PROXIMITY);
 				        mHandler.sendMessage(msg);	
@@ -169,13 +205,19 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						value = (int)(proximity*10);
 						proximity_old = proximity;
 					}
-				}				
+					
+					// now toggle event listener off
+			        Message msg = mHandler.obtainMessage(INIT_PROXIMITY);
+			        mHandler.sendMessage(msg);						
+				}		
+			
 			if (read == false)
 				if (sensor.equals("LI") == true)
 				{					
 					// has Light been started?
 					if (startedLight == false)
 					{
+						light_semaphore.drainPermits();
 						// send message to handler thread to start light
 				        Message msg = mHandler.obtainMessage(INIT_LIGHT);
 				        mHandler.sendMessage(msg);	
@@ -188,13 +230,19 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						value = (int)(light*10);
 						light_old = light;
 					}
-				}				
+					
+					// now toggle event listener off
+			        Message msg = mHandler.obtainMessage(INIT_LIGHT);
+			        mHandler.sendMessage(msg);						
+				}
+			
 			if (read == false)
 				if (sensor.equals("PU") == true)
 				{					
 					// has Pressure been started?
 					if (startedPressure == false)
 					{
+						pressure_semaphore.drainPermits();
 						// send message to handler thread to start pressure
 				        Message msg = mHandler.obtainMessage(INIT_PRESSURE);
 				        mHandler.sendMessage(msg);	
@@ -207,6 +255,10 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						value = (int)(pressure*10);
 						pressure_old = pressure;
 					}
+					
+					// now toggle event listener off
+			        Message msg = mHandler.obtainMessage(INIT_PRESSURE);
+			        mHandler.sendMessage(msg);						
 				}				
 		}
 		
@@ -305,9 +357,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		   if (Proximity != null)
 			   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, false, polltime2, this);	
 		   if (Light != null)
-			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, true, polltime2, this);	
+			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		   if (Pressure != null)
-			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Pressure"), new String("int"), -1, 0, 50000, true, polltime2, this);	
+			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Pressure"), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		}
 	}
 	
@@ -318,6 +370,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		// read polltime
 		polltime  = HandlerManager.readRMS_i("PhoneSensorsHandler::OrientationPoll", 5) * 1000;
 		polltime2 = HandlerManager.readRMS_i("PhoneSensorsHandler::ProximityPoll", 5) * 1000;
+		polltime3 = HandlerManager.readRMS_i("PhoneSensorsHandler::EnvironmentalPoll", 10) * 1000;
 		
 		// try to open sensor services
 		try
@@ -359,16 +412,40 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
            switch (msg.what) 
            {
            case INIT_PRESSURE:
-        	   startedPressure = sensorManager.registerListener(sensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL);
+        	   if (startedPressure == false)
+        		   startedPressure = sensorManager.registerListener(sensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL);
+        	   else
+        	   {
+        		   sensorManager.unregisterListener(sensorlistener, Pressure);
+        		   startedPressure = false;
+        	   }
 	           break;  
            case INIT_LIGHT:
-        	   startedLight = sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
+        	   if (startedLight == false)
+        		   startedLight = sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
+        	   else
+        	   {
+        		   sensorManager.unregisterListener(sensorlistener, Light);
+        		   startedLight = false;
+        	   }
 	           break;  
            case INIT_PROXIMITY:
-        	   startedProximity = sensorManager.registerListener(sensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL);
+        	   if (startedProximity == false)
+        		   startedProximity = sensorManager.registerListener(sensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL);
+        	   else
+        	   {
+        		   sensorManager.unregisterListener(sensorlistener, Proximity);
+        		   startedProximity = false;        		   
+        	   }
 	           break;  
            case INIT_ORIENTATION:
-        	   startedOrientation = sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL);
+        	   if (startedOrientation == false)
+        		   startedOrientation = sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL);
+        	   else
+        	   {
+        		   sensorManager.unregisterListener(sensorlistener, Orientation);
+        		   startedOrientation = false;        		   
+        	   }
 	           break;  
            default:  
            	break;

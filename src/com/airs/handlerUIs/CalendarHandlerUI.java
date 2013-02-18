@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -25,6 +26,7 @@ import android.provider.CalendarContract;
 import com.airs.*;
 import com.airs.helper.ListPreferenceMultiSelect;
 
+@SuppressLint("NewApi")
 public class CalendarHandlerUI implements HandlerUI
 {
     // BT stuff

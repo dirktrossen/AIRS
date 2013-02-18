@@ -21,36 +21,37 @@ import android.preference.PreferenceActivity;
 import com.airs.HandlerEntry;
 import com.airs.*;
 
-public class WeatherHandlerUI implements HandlerUI
+public class EnvironmentalSensorsUI implements HandlerUI
 {   
 	public HandlerEntry init()
 	{
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Local Weather");
-		entry.description = new String("Obtains various weather conditions at current location");
+		entry.name = new String("Environmental Sensors");
+		entry.description = new String("Obtains various environmental information, such as light, barometer and weather conditions at current location");
 		entry.resid = R.drawable.weather;
 		return (entry);
 	}
 
 	public int setDisplay()
 	{
-		return R.xml.prefsweather;
+		return R.xml.prefsenvironmental;
 	}
 
 	public String About()
 	{
 	    String AboutText = new String(
-	    		"Obtains various weather conditions (temperature, humidity, ...) at the current location through the Google Weather API. ");
+	    		"Obtains environmental information such as light, barometer, and various weather conditions (temperature, humidity, ...) at the current location through an online weather API. ");
 
 		return AboutText;
 	}
 	
 	public String AboutTitle()
 	{
-		return "Local Weather";
+		return "Environmental Sensors";
 	}
 	
 	public void configurePreference(PreferenceActivity prefs)
 	{
 	}
 }
+

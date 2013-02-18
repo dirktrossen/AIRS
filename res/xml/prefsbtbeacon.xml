@@ -17,7 +17,7 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="BT Beacon Settings">
+    android:title="BT Beacon">
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="Enable BT" 

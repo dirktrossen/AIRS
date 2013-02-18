@@ -198,7 +198,10 @@ public class TimelineActivity extends Activity
 		if (event.getAction() == KeyEvent.ACTION_UP)
 			// is it the BACK key?
 			if (event.getKeyCode()==KeyEvent.KEYCODE_BACK)
+			{
                 finish();
+                return true;
+			}
 
         return super.dispatchKeyEvent(event);
     }

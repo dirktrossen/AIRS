@@ -42,6 +42,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 	Context airs;
 	// are these there?
 	private boolean enableGPS = false, startedGPS = false, useWifi = false;
+	private boolean   shutdown = false;
 	// polltime
 	private int 		polltime = 10000, updatemeter = 100;
 	// sensor data
@@ -94,6 +95,10 @@ public class GPSHandler implements com.airs.handlers.Handler
 	***********************************************************************/
 	public byte[] Acquire(String sensor, String query)
 	{
+ 	    // are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// has GPS been started?
 		if (startedGPS == false)
 		{
@@ -229,6 +234,9 @@ public class GPSHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
+		// signal shutdown
+		shutdown = true;
+
 		// remove location updates if they were started
 		if (startedGPS == true)
 			manager.removeUpdates(mReceiver);
@@ -328,6 +336,10 @@ public class GPSHandler implements com.airs.handlers.Handler
            switch (msg.what) 
            {
            case INIT_GPS:
+        	   // are we shutting down?
+        	   if (shutdown == true)
+        		   return;
+
         	   if (manager!=null)
         	   {
         		   // request location updates

@@ -17,8 +17,8 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Location Settings">
-   <PreferenceCategory android:title="GPS Settings">
+    android:title="Location">
+   <PreferenceCategory android:title="GPS">
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
@@ -64,7 +64,7 @@
         android:title="AGPS Refresh Interval [h]"
         android:key="LocationHandler::AGPSForce"/>
     </PreferenceCategory>    
-   <PreferenceCategory android:title="Wifi Settings">
+   <PreferenceCategory android:title="Wifi">
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="Enable WiFi" 

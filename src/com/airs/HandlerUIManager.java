@@ -62,18 +62,15 @@ public class HandlerUIManager
 	   handlers[0] = handlers[1] = handlers[2] = handlers[3] = handlers[4] = handlers[5] = handlers[6] = handlers[7]= handlers[8] = handlers[9] = handlers[10] = null;
    
 	   // verify the proper availability for the resources required to implement the desired functionality
-	   handlers[index++] = new PhoneSensorsHandlerUI();
-	   handlers[index++] = new LocationHandlerUI();
-	   handlers[index++] = new WeatherHandlerUI();
+	   handlers[index++] = new DeviceInfoHandlerUI();
+	   handlers[index++] = new EnvironmentalSensorsUI();
 	   handlers[index++] = new AudioHandlerUI();
-	   handlers[index++] = new ProximityHandlerUI();
+	   handlers[index++] = new LocationHandlerUI();
 	   handlers[index++] = new HeartMonitorHandlerUI();
-	   handlers[index++] = new HeartrateHandlerUI();
 	   handlers[index++] = new BeaconHandlerUI();
 	   handlers[index++] = new CalendarHandlerUI();
 	   handlers[index++] = new EventButtonHandlerUI();
 	   handlers[index++] = new MediaWatcherHandlerUI();
-	   handlers[index++] = new RandomHandlerUI();
 	   
 	   return true;
 	}

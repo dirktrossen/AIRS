@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.MediaStore.Images;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -74,6 +75,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        // set listener for sensor list
 			values.setOnItemClickListener(this);
 			values.setOnItemLongClickListener(this);
+			
 	        // bind to service
 	        if (bindService(new Intent(this, AIRS_local.class), mConnection, 0)==false)
 	     		Toast.makeText(getApplicationContext(), "Measurement Activity::Binding to service unsuccessful!", Toast.LENGTH_LONG).show();
@@ -102,14 +104,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 
 	    @Override
 	    public void onDestroy() 
-	    {
-	    	// stop service from updating value adapter
-	    	if (AIRS_locally!=null)
-	    	{
-	    		AIRS_locally.show_values = false;
-	    		unbindService(mConnection);
-	    	}
-	    		    	
+	    {	    		    	
 	        super.onDestroy();
 	    }
 
@@ -125,6 +120,27 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	      super.onConfigurationChanged(newConfig);
 	    }
 	    
+	    @Override
+	    public boolean dispatchKeyEvent(KeyEvent event) 
+	    {
+	 		// key de-pressed?
+			if (event.getAction() == KeyEvent.ACTION_UP)
+				// is it the BACK key?
+				if (event.getKeyCode()==KeyEvent.KEYCODE_BACK)
+				{
+			    	// stop service from updating value adapter
+			    	if (AIRS_locally!=null)
+			    	{
+			    		AIRS_locally.show_values = false;	    		
+			    		unbindService(mConnection);
+			    	}
+	                finish();
+	                return true;
+				}
+
+	        return super.dispatchKeyEvent(event);
+	    }	    
+
 	   @Override
 	    public boolean onPrepareOptionsMenu(Menu menu) 
 	    {
@@ -168,7 +184,12 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    		           public void onClick(DialogInterface dialog, int id) 
 	    		           {
 	    		    		   if (AIRS_locally != null)
+	    		    		   {
+	    		    			   // first unbind before stopping service!
+	    		    			   unbindService(mConnection);
 	    		    			   stopService(new Intent(act, AIRS_local.class));
+	    		    		   }
+	    		    		   	    		    		   
 	    		        	   finish();
 	    		           }
 	    		       })
@@ -264,7 +285,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 		    if (AIRS_locally != null)
 		    	AIRS_locally.show_info((int)arg3);		    
 	    }
-
+	    
 	    private ServiceConnection mConnection = new ServiceConnection() 
 	    {
 	  	    public void onServiceConnected(ComponentName className, IBinder service) 
@@ -287,7 +308,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 		        if (AIRS_locally.paused == true)
 			        mTitle2.setText("Local Sensing...Paused");
 	  	    }
-
+	
 	  	    public void onServiceDisconnected(ComponentName className) {
 	  	        // This is called when the connection with the service has been
 	  	        // unexpectedly disconnected -- that is, its process crashed.
@@ -295,5 +316,5 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	  	        // see this happen.
 	     		AIRS_locally = null;
 	  	    }
-	  	};
+	    };
 }

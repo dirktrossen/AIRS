@@ -50,13 +50,24 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- improvements to media watcher\n
-- introduction of TV sensor of visible processes
+- replaced support for AliveTech ECG monitor with support for Zephyr HxM BT heart rate monitor (pulse and instant speed supported)\n
+- improvements to TV sensor in filtering the main visible app\n
+- improvement to IH sensor\n
+- removed PS sensor\n
+- fixed erroneous GPS after shutdown\n
+- changed settings (check online manual) to group a bit more logically
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.3:\n 
+- replaced support for AliveTech ECG monitor with support for Zephyr HxM BT heart rate monitor (pulse and instant speed supported)\n
+- improvements to TV sensor in filtering the main visible app\n
+- improvement to IH sensor\n
+- removed PS sensor\n
+- fixed erroneous GPS after shutdown\n
+- changed settings (check online manual) to group a bit more logically\n\n
 V2.2.9.5:\n
 - improvements to media watcher\n
 - introduction of TV sensor of visible processes\n\n

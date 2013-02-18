@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+  Copyright (C) 2013, Dirk Trossen, airs@dirk-trossen.de
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,15 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Local Weather Settings">
+    android:title="Environmental Sensors">
+    <EditTextPreference
+        android:summary="Poll interval for light and barometer sensor in seconds"
+		android:dialogIcon="@drawable/time"
+        android:defaultValue="10"
+        android:numeric="integer"
+        android:title="Sensor Interval [s]"
+        android:key="PhoneSensorsHandler::EnvironmentalPoll"/>    
+        
     <EditTextPreference
         android:summary="Poll interval for weather update in minutes"
   		android:dialogIcon="@drawable/time"
@@ -25,6 +33,7 @@
         android:numeric="integer"
         android:title="Weather Interval [min]"
         android:key="WeatherHandler::WeatherPoll"/>
+    
     <ListPreference
     	android:dialogIcon="@drawable/location"
         android:key="WeatherHandler::LocationUpdate"

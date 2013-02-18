@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+  Copyright (C) 2013, Dirk Trossen, airs@dirk-trossen.de
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published by
@@ -17,7 +17,8 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Phone and System Sensor Settings">
+    android:title="Device Information">
+    
     <EditTextPreference
         android:summary="Poll interval for orientation sensor in seconds"
 		android:dialogIcon="@drawable/time"
@@ -25,13 +26,15 @@
         android:numeric="integer"
         android:title="Orientation Interval [s]"
         android:key="PhoneSensorsHandler::OrientationPoll"/>
+    
     <EditTextPreference
-        android:summary="Poll interval for proximity, light and barometer sensor in seconds"
+        android:summary="Poll interval for proximity sensor in seconds"
 		android:dialogIcon="@drawable/time"
         android:defaultValue="10"
         android:numeric="integer"
-        android:title="Other Sensors Interval [s]"
+        android:title="Proximity Interval [s]"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
+    
     <EditTextPreference
         android:summary="Poll interval for system information like RAM, tasks, etc"
 		android:dialogIcon="@drawable/time"

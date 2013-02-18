@@ -124,7 +124,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 		byte[] readings = null;
 		int reading_value = 0;
 		boolean read = false, task_first;
-		int i, j;
 		
 		read = false;
 
@@ -400,11 +399,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 		
 				// start with first task
 				task_first=true;
+				int i;
 				
 				for (i=0; i<tasks.size(); i++)
 				{
 					tinfo = tasks.get(i);
-					
 					// is there at least one task running?
 					if (tinfo.numRunning > 0)
 					{
@@ -443,10 +442,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 			try
 			{
 				List<ActivityManager.RunningAppProcessInfo> processes;
+			    List <RunningServiceInfo> services = am.getRunningServices(9999);
 				ActivityManager.RunningAppProcessInfo tinfo;
 				// get running services
-			    List <RunningServiceInfo> services = am.getRunningServices(9999);
-			    RunningServiceInfo service;
 
 				// get current apps running
 				processes = am.getRunningAppProcesses();
@@ -461,6 +459,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 				// start with first task
 				boolean process_first=true;
 				boolean found_service;
+				int i,j;
 
 				// run through all processes
 				for (i=0; i<processes.size(); i++)
@@ -468,7 +467,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 					tinfo = processes.get(i);
 					
 					// is there at least one task visible?
-					if (tinfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE)
+					if (tinfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE || tinfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE)
 					{
 						if (tinfo.processName != null)
 						{
@@ -476,28 +475,39 @@ public class SystemHandler implements com.airs.handlers.Handler
 							// go through all services to exclude services
 							for (j=0;j<services.size();j++)
 							{	
-								service = services.get(j);
-								if(service.process.equals(tinfo.processName))
+								if(services.get(j).process.compareTo(tinfo.processName) == 0)
 								{
-									found_service = true;
-									break;
+									if (services.get(j).clientCount == 0)
+									{
+										found_service = true;
+										break;
+									}
 								}
-							}
-	
+						    }
+								
 							// found no service that is visible?
 							if (found_service == false)
-							{
-				            	// first task? -> then no \n at the end of it!
-				            	if (process_first == true)
-				            		process_first = false;
-				            	else
-				        	        buffer.append("\n");
-			
-				            	// try to find the application label
-			            		ApplicationInfo ai = airs.getPackageManager().getApplicationInfo(tinfo.processName, 0);
-			            		String task = (String)airs.getPackageManager().getApplicationLabel(ai);
-			            		if (task != null)
-			            			buffer.append(task);
+							{			
+								try
+								{
+					            	// try to find the application label
+				            		ApplicationInfo ai = airs.getPackageManager().getApplicationInfo(tinfo.processName, 0);
+				            		String task = (String)airs.getPackageManager().getApplicationLabel(ai);
+				            		if (task != null)
+				            			if (task.trim().compareTo("")!=0)
+				            			{
+							            	// first task? -> then no \n at the end of it!
+							            	if (process_first == true)
+							            		process_first = false;
+							            	else
+							        	        buffer.append("\n");
+	
+				            				buffer.append(task.trim());
+				            			}
+								}
+								catch(Exception e)
+								{
+								}
 							}
 						}
 					}
@@ -617,7 +627,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
     	SensorRepository.insertSensor(new String("SS"), new String("SMS"), new String("Sent SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
     	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
-    	SensorRepository.insertSensor(new String("TV"), new String("Tasks"), new String("Visible processes"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
+    	SensorRepository.insertSensor(new String("TV"), new String("Tasks"), new String("Visible programs"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
 	}
 	
 	public SystemHandler(Context airs)

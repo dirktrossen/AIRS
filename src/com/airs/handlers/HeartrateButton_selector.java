@@ -68,12 +68,11 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
 
 	 private static final AtomicBoolean processing = new AtomicBoolean(false);
 	 private static int averageIndex = 0;
-	 private static final int averageArraySize = 24; // used to be 4
+	 private static final int averageArraySize = 4; // used to be 4
 	 private static final int[] averageArray = new int[averageArraySize];
 
 	 private static int currentType = GREEN;
 
-	 private static boolean firstBeat = true;
 	 private static int beatsIndex = 0;
 	 private static final int beatsArraySize = 3;
 	 private static final int[] beatsArray = new int[beatsArraySize];
@@ -184,9 +183,8 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
 
 	    @Override
 	    public void onDestroy() 
-	    {
-	    	int i;
-	    	
+	    {	    	
+	        // release camera resources
 	    	if (camera != null)
 	    		camera.release();
 	    	
@@ -292,9 +290,12 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
             }
             camera.setParameters(parameters);
             
-            // set to RUNNING already -> start preview then!
+            // set to RUNNING already -> start preview then and remember start time!
             if (previewReady == RUNNING)
+            {
+    	        startTime = System.currentTimeMillis();
             	camera.startPreview();
+            }
             else 	// otherwise signal that it is ready!
             	previewReady = READY;
         }
@@ -339,7 +340,7 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
             if (size == null) 
             	return;
 
-            // anything runing?
+            // anything running?
             if (!processing.compareAndSet(false, true)) 
             	return;
 
@@ -403,39 +404,26 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
                     return;
                 }
 
-                // is it the first measurement -> do not count to the averaging array
-                if (firstBeat == true)
-                {
-                	firstBeat = false;
+                // place in rolling array
+                if (beatsIndex == beatsArraySize) 
+                	beatsIndex = 0;
+                beatsArray[beatsIndex] = dpm;
+                beatsIndex++;
 
-                    heartrate = dpm + adjustment;
-                    mTitle2.setText(String.valueOf(heartrate)+ " beats");
-                    startTime = System.currentTimeMillis();
-                    beats = 0;
-                }
-                else
-                {
-	                // place in rolling array
-	                if (beatsIndex == beatsArraySize) 
-	                	beatsIndex = 0;
-	                beatsArray[beatsIndex] = dpm;
-	                beatsIndex++;
-	
-	                int beatsArrayAvg = 0;
-	                int beatsArrayCnt = 0;
-	                for (i = 0; i < beatsArray.length; i++) 
-	                    if (beatsArray[i] > 0) 
-	                    {
-	                        beatsArrayAvg += beatsArray[i];
-	                        beatsArrayCnt++;
-	                    }
-	
-	                int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
-	                heartrate = beatsAvg + adjustment;
-	                mTitle2.setText(String.valueOf(heartrate)+ " beats");
-	                startTime = System.currentTimeMillis();
-	                beats = 0;
-                }
+                int beatsArrayAvg = 0;
+                int beatsArrayCnt = 0;
+                for (i = 0; i < beatsArray.length; i++) 
+                    if (beatsArray[i] > 0) 
+                    {
+                        beatsArrayAvg += beatsArray[i];
+                        beatsArrayCnt++;
+                    }
+
+                int beatsAvg = (beatsArrayAvg / beatsArrayCnt);
+                heartrate = beatsAvg + adjustment;
+                mTitle2.setText(String.valueOf(heartrate)+ " beats");
+                startTime = System.currentTimeMillis();
+                beats = 0;
                 
                 // test if maximum time is reached
                 currentMeasurements++;

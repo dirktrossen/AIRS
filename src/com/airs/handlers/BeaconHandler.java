@@ -243,8 +243,11 @@ public class BeaconHandler implements Handler, Runnable
 	public void destroyHandler()
 	{
 		// signal thread to close down
-		runnable.interrupt();
-		running = false;
+		if (running == true)
+		{
+			runnable.interrupt();
+			running = false;
+		}
 		
 		// cancel any discovery
 		try
@@ -261,8 +264,10 @@ public class BeaconHandler implements Handler, Runnable
 					bt_registered = false;
 				}
 			}
+			// is discovering right now?
 			if (mBtAdapter != null)
-				mBtAdapter.cancelDiscovery();
+				if (mBtAdapter.isDiscovering() == true)
+					mBtAdapter.cancelDiscovery();
 		}
 		catch(Exception e)
 		{
