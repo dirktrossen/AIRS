@@ -186,6 +186,11 @@ public class MediaWatcherHandler implements Handler
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		watcher_semaphore.release();
+
+		reading_sensor = false;
+		
 		// destroy observers
 		if (camera_observer != null)
 		{

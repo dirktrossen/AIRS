@@ -130,6 +130,13 @@ public class HeartMonitorHandler implements Handler, Runnable
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		pulse_semaphore.release();
+		pulse_semaphore.release();
+		strides_semaphore.release();
+		distance_semaphore.release();
+		instance_semaphore.release();
+		
   		if (inputStream != null)
 		{
 			try
@@ -332,8 +339,8 @@ public class HeartMonitorHandler implements Handler, Runnable
 	{
 		if (use_monitor == true)
 		{
-			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("battery level"), new String("int"), 0, 0, 100, true, 10000, this);
-			SensorRepository.insertSensor(new String("HP"), new String("beat"), new String("Pulse"), new String("int"), 0, 0, 200, true, 1000, this);
+			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("Device battery level"), new String("int"), 0, 0, 100, true, 10000, this);
+			SensorRepository.insertSensor(new String("HP"), new String("bpm"), new String("Pulse"), new String("int"), 0, 0, 200, true, 1000, this);
 //			SensorRepository.insertSensor(new String("HT"), new String("strides"), new String("Stride"), new String("int"), 0, 0, 50000, true, 5000, this);
 //			SensorRepository.insertSensor(new String("HD"), new String("m"), new String("Distance"), new String("int"), 0, 0, 500000, true, 10000, this);
 			SensorRepository.insertSensor(new String("HI"), new String("m/s"), new String("Instant Speed"), new String("int"), -1, 0, 200, true, 1000, this);

@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 
 import android.app.Activity;
 import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SerialPortLogger 
@@ -73,12 +74,14 @@ public class SerialPortLogger
 	public static synchronized void debugForced(String msg) 
 	{
 		write(msg + "\n");
+		Log.w("AIRS:", msg);
 	}
 
 	public static synchronized void debug(String msg) 
 	{
 		if (isDebugging)
 			write(msg + "\n");
+		Log.v("AIRS:", msg);
 	}
 	
 	public static void debugUI(String msg, int wait)

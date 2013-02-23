@@ -161,7 +161,7 @@ public class AudioHandler implements Handler
 		
 		// here some midlet property check as to whether or not audio capture is supported
 		SensorRepository.insertSensor(new String("AF"), new String("Hz"), new String("Estimated Freq."), new String("int"), 0, 0, 15000, true, polltime, this);
-		SensorRepository.insertSensor(new String("AS"), new String("dB"), new String("Sound Pressure Level"), new String("int"), -2, 0, 1200, true, polltime, this);
+		SensorRepository.insertSensor(new String("AS"), new String("dB"), new String("Ambient Noise Level"), new String("int"), -2, 0, 1200, true, polltime, this);
 	}
 	
 	public AudioHandler(Context nors)

@@ -28,6 +28,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
@@ -45,7 +46,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.widget.Toast;
 
 /**
  * @author trossen
@@ -57,9 +57,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 {
 	public static final int INIT_GPS 		= 1;
 	public static final int KILL_GPS 		= 2;
-	public static final int TEXT_OUT 		= 3;
 	public static final int INIT_RECEIVER 	= 4;
-	String text_message;
 	
 	private Context nors;
 	private boolean weather_enabled;
@@ -73,12 +71,11 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	private XMLReader XMLreader;
 	private SAXParser sp;
 	// threading for XML polling
-	private Thread 	  runnable = null;
+	private Thread runnable = null;
 	private boolean	  running = true;
 	private boolean   shutdown = false;
 	private int		  polltime = 10000;
 	private int		  updatemeter = 1000;
-	long oldtime = 0;
 	// location stuff
 	private LocationManager manager;
 	private LocationListener mReceiver;
@@ -145,11 +142,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		{
 			runnable = new Thread(this);
 			runnable.start();	
-
+			
 			// initialise receiver for connectivity change
 			Message msg = mHandler.obtainMessage(INIT_RECEIVER);
-			mHandler.sendMessage(msg);	
-	
+			mHandler.sendMessage(msg);		
 		}
 		
 		// temperature in Celcius
@@ -323,81 +319,81 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	// run discovery in separate thread
 	public void run() 
 	{
-		InputSource input;
-		int sleeptime = polltime; 
-		long started = 0, ended = 0;
-		boolean startReading = true;
-		boolean firstReading = true;
-
-		// run until destroyed
-		while(running==true)
-		{
-			// sleep until next reading if it is not the first reading
-			if (firstReading == false)
-				sleep(sleeptime);
-			
-			// if killed during sleeping then return now!
-			if (running == false)
-				return;
-			
-			firstReading = false;
-			
-			// store timestamp when start reading
-			if (startReading == true)
+			InputSource input;
+			int sleeptime = polltime; 
+			long started = 0, ended = 0;
+			boolean startReading = true;
+			boolean firstReading = true;
+	
+			// run until destroyed
+			while(running==true)
 			{
-				started = System.currentTimeMillis();
-				startReading = false;
-			}
-
-			// only do location check etc if there's any connectivity to retrieve the weather!
-			wait(connectivity_semaphore); 
-			// get current weather conditions
-			try
-			{
-				// try to get current location
-				if (manager!=null)
-				{
-				   // send message to handler thread to start GPS
-			       Message msg = mHandler.obtainMessage(INIT_GPS);
-			       mHandler.sendMessage(msg);	
-        		   // wait for update
-        		   wait(location_semaphore);
-        		   // now unregister again -> saves power
-			       msg = mHandler.obtainMessage(KILL_GPS);
-			       mHandler.sendMessage(msg);	
-				}
+				// sleep until next reading if it is not the first reading
+				if (firstReading == false)
+					sleep(sleeptime);
 				
-				// if we moved, try to get weather
-				if (movedAway == true)
-				{
-					// request update for that long,lat pair!
-//			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
-		            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
-		            // 51914540,900690");
-
-		            /* Parse the xml-data from our URL. */
-		            input = new InputSource(url.openStream());
-		            XMLreader.parse(input);	 
-		            input = null;			            
-				}
-	            
-	            // get current timestamp to see how long the weather reading took all along
-				ended = System.currentTimeMillis();
-				// if there's still something to wait until next weather reading, do so
-				if ((int)(ended - started) < polltime)
-					sleeptime = polltime - (int)(ended - started);
-				else
-					sleeptime = 1;	// otherwise start right away
+				// if killed during sleeping then return now!
+				if (running == false)
+					return;
 				
-				// store start timestamp the next time around
-				startReading = true;
-			}
-			catch(Exception e)
-			{
-				// try again to read/locate in 15 secs
-				sleeptime = 15000;
-			}
-		}
+				firstReading = false;
+				
+				// store timestamp when start reading
+				if (startReading == true)
+				{
+					started = System.currentTimeMillis();
+					startReading = false;
+				}
+	
+				// only do location check etc if there's any connectivity to retrieve the weather!
+				wait(connectivity_semaphore); 
+				// get current weather conditions
+				try
+				{
+					// try to get current location
+					if (manager!=null)
+					{
+					   // send message to handler thread to start GPS
+				       Message msg = mHandler.obtainMessage(INIT_GPS);
+				       mHandler.sendMessage(msg);	
+	        		   // wait for update
+	        		   wait(location_semaphore);
+	        		   // now unregister again -> saves power
+				       msg = mHandler.obtainMessage(KILL_GPS);
+				       mHandler.sendMessage(msg);	
+					}
+					
+					// if we moved, try to get weather
+					if (movedAway == true)
+					{
+						// request update for that long,lat pair!
+	//			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
+			            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
+			            // 51914540,900690");
+	
+			            /* Parse the xml-data from our URL. */
+			            input = new InputSource(url.openStream());
+			            XMLreader.parse(input);	 
+			            input = null;			            
+					}
+		            
+		            // get current timestamp to see how long the weather reading took all along
+					ended = System.currentTimeMillis();
+					// if there's still something to wait until next weather reading, do so
+					if ((int)(ended - started) < polltime)
+						sleeptime = polltime - (int)(ended - started);
+					else
+						sleeptime = 1;	// otherwise start right away
+					
+					// store start timestamp the next time around
+					startReading = true;
+				}
+				catch(Exception e)
+				{
+					// try again to read/locate in 15 secs
+					sleeptime = 15000;
+				}
+			}		
 	}
 
 	
@@ -421,9 +417,16 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
             myWeatherHandler = new ExampleHandler();
             XMLreader.setContentHandler(myWeatherHandler);
 
-    		// save current time and set so that first Acquire() will discover
-    		oldtime = System.currentTimeMillis() - polltime;     
-    		
+			// arm semaphores
+			wait(temp_c_semaphore); 
+			wait(temp_f_semaphore); 
+			wait(hum_semaphore); 
+			wait(cond_semaphore); 
+			wait(wind_semaphore); 
+			wait(info_semaphore); 
+			wait(location_semaphore); 
+			wait(connectivity_semaphore); 
+
     		// get location manager
 			manager = (LocationManager)this.nors.getSystemService(Context.LOCATION_SERVICE);
 			if (manager != null)
@@ -432,16 +435,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			// get connectivity manager for checking connectivity
 			cm = (ConnectivityManager)this.nors.getSystemService(Context.CONNECTIVITY_SERVICE);
 			
-			// arm semaphores
-			wait(location_semaphore); 
-			wait(temp_c_semaphore); 
-			wait(temp_f_semaphore); 
-			wait(hum_semaphore); 
-			wait(cond_semaphore); 
-			wait(wind_semaphore); 
-			wait(info_semaphore); 
-			wait(connectivity_semaphore); 
-
 			// everything ok to be used
 			weather_enabled = true;
 		}
@@ -454,26 +447,29 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads	
+		temp_c_semaphore.release();
+		temp_f_semaphore.release();
+		hum_semaphore.release();
+		cond_semaphore.release();
+		wind_semaphore.release();
+		info_semaphore.release();
+		
 		// signal shutdown
 		shutdown = true;
 		
 		// signal thread to close down
 		running = false;
-		// wake up thread
-		try
-		{
+		
+		// kill thread
+		if (runnable != null)
 			runnable.interrupt();
-		}
-		catch(Exception e)
-		{
-		}
 		
 		if (startedLocation == true)
 			manager.removeUpdates(mReceiver);
 		
 		if (connectivity_listener == true)
 			nors.unregisterReceiver(ConnectivityReceiver);
-
 	}
 		   
 	// The Handler that gets information back from the other threads, initializing GPS
@@ -519,9 +515,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         		   startedLocation = false;
         	   }
 	           break;  
-           case TEXT_OUT:
-        	   Toast.makeText(nors, text_message, Toast.LENGTH_LONG).show();
-        	   break;       	   
            case INIT_RECEIVER:
         	   IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 	   		   nors.registerReceiver(ConnectivityReceiver, intentFilter);
@@ -627,7 +620,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
           }
         } 
     }
-    
+
 	private final BroadcastReceiver ConnectivityReceiver = new BroadcastReceiver() 
 	{
         @Override

@@ -45,7 +45,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	private CellHandler cellhandler;
 
 	// are these there?
-	private boolean enableProperties = false;
+	private boolean enableProperties = false, enableListener;
 	// sensor data   
 	private int cellID, cellLac, mcc;
 	private int oldCellID = -1, oldcellLac = -1, oldNCC = -1;
@@ -184,10 +184,10 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	{
 	    if (enableProperties == true)
 	    {
-		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), new String("Roaming"), new String("int"), 0, 0, 1, false, 60000, this);	    
-		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), new String("Data connected"), new String("int"), 0, 0, 1, false, 0, this);	    
-		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), new String("Signal strength"), new String("int"), 0, -120, 0, true, 0, this);	    
-		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Signal strength"), new String("int"), 0, 0, 7, true, 0, this);	    
+		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), new String("Cellular roaming"), new String("int"), 0, 0, 1, false, 60000, this);	    
+		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), new String("Cellular Data connected"), new String("int"), 0, 0, 1, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), new String("Cellular signal strength in dBm"), new String("int"), 0, -120, 0, true, 0, this);	    
+		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Cellular signal strength in bar"), new String("int"), 0, 0, 7, true, 0, this);	    
 		    SensorRepository.insertSensor(new String("CI"), new String("ID"), new String("Cell identifier"), new String("int"), 0, 0, 65535, false, 0, this);	    
 		    SensorRepository.insertSensor(new String("CL"), new String("ID"), new String("Location Area Code"), new String("int"), 0, 0, 65535, false, 0, this);	    
 		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), new String("Mobile Country Code"), new String("int"), 0, 0, 65535, false, 0, this);
@@ -230,8 +230,16 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		data_semaphore.release();
+		signal_semaphore.release();
+		bar_semaphore.release();
+		cellid_semaphore.release();
+		lac_semaphore.release();
+		mcc_semaphore.release();
+
 		// unregister listeners
-		if (enableProperties == true)
+		if (enableListener == true)
 			tm.listen(this, PhoneStateListener.LISTEN_NONE);
 	}
 
@@ -458,6 +466,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
         	   events |= PhoneStateListener.LISTEN_CELL_LOCATION;
         	   
            // register listener now
+           enableListener = true;
            tm.listen(cellhandler, events);
        }
     };

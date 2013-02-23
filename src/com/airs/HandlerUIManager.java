@@ -69,6 +69,7 @@ public class HandlerUIManager
 	   handlers[index++] = new HeartMonitorHandlerUI();
 	   handlers[index++] = new BeaconHandlerUI();
 	   handlers[index++] = new CalendarHandlerUI();
+	   handlers[index++] = new NotificationHandlerUI();
 	   handlers[index++] = new EventButtonHandlerUI();
 	   handlers[index++] = new MediaWatcherHandlerUI();
 	   

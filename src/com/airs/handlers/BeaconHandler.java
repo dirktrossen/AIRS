@@ -46,7 +46,7 @@ public class BeaconHandler implements Handler, Runnable
 	private boolean 	 bt_registered  = false;
 	private boolean 	 bt_first		= false;
 	private Thread 		 runnable = null;
-	private boolean		 running = true;
+	private boolean		 running = false;
 	private Semaphore BT_semaphore 	= new Semaphore(1);
 	private Semaphore BN_semaphore 	= new Semaphore(1);
 	private Semaphore finished_semaphore 	= new Semaphore(1);
@@ -90,6 +90,7 @@ public class BeaconHandler implements Handler, Runnable
 		// Discovery thread started?
 		if (runnable == null)
 		{
+			running = true;
 			runnable = new Thread(this);
 			runnable.start();	
 		}
@@ -208,8 +209,8 @@ public class BeaconHandler implements Handler, Runnable
 	        }
 	        		        
 		    // if it's there, add sensor
-			SensorRepository.insertSensor(new String("BT"), new String("MAC"), new String("BT Devices"), new String("txt"), 0, 0, 1, false, 0, this);	    
-			SensorRepository.insertSensor(new String("BN"), new String("#"), new String("BT Devices"), new String("int"), 0, 0, 50, true, 0, this);	    
+			SensorRepository.insertSensor(new String("BT"), new String("MAC"), new String("Surrounding BT Devices"), new String("txt"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("BN"), new String("#"), new String("# surrounding BT Devices"), new String("int"), 0, 0, 50, true, 0, this);	    
 		}
 		catch(Exception e)
 		{
@@ -242,6 +243,10 @@ public class BeaconHandler implements Handler, Runnable
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		BT_semaphore.release();
+		BN_semaphore.release();
+
 		// signal thread to close down
 		if (running == true)
 		{

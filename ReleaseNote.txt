@@ -1,3 +1,10 @@
+V2.4:
+- support for templates. You can now save the entire settings (including recording selections) into 
+  named templates and creaet shortcut from these templates - great for travel vs home vs battery-saving scenarios
+- introduced NO sensor for IM notifications (currently Skype and GTalk), using an accessibility service for this.
+  You will need to enable the service manually in the system settings.
+- many bugfixes, in particular related to AIRS shutdown, now cleaner!
+
 V2.3: 
 - replaced support for AliveTech ECG monitor with support for Zephyr HxM BT heart rate monitor (pulse and instant speed supported)
 - improvements to TV sensor in filtering the main visible app

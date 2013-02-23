@@ -660,6 +660,16 @@ public class SystemHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		battery_semaphore.release();
+		screen_semaphore.release();
+		charger_semaphore.release();
+		headset_semaphore.release();
+		caller_semaphore.release();
+		callee_semaphore.release();
+		received_semaphore.release();
+		sent_semaphore.release();
+
 		if (startedBattery == true || startedScreen==true || startedHeadset == true || startedPhoneState == true || startedOutgoingCall == true || startedSMSReceived == true)
 			airs.unregisterReceiver(SystemReceiver);
 	}

@@ -59,24 +59,24 @@ public class HandlerManager
 
 	   // here the handlers are inserted in the field
 	   // the rule is that raw sensors are inserted first before aggregated sensors are inserted.
-	   // this is due to the discovery mechanism since aggregated sensor handlers usually check the availablity of the raw sensor in order to become 'visible'	   
-	   handlers[inst_handlers++]  = new WeatherHandler(nors);
-	   handlers[inst_handlers++]  = new GPSHandler(nors);	   
-	   handlers[inst_handlers++]  = new RandomHandler(nors);
-	   handlers[inst_handlers++]  = new ProximityHandler(nors);	   
-	   handlers[inst_handlers++]  = new BeaconHandler(nors);
-	   handlers[inst_handlers++]  = new WifiHandler(nors);
-	   handlers[inst_handlers++]  = new CellHandler(nors);
-	   handlers[inst_handlers++]  = new EventButtonHandler(nors);
-	   handlers[inst_handlers++]  = new MoodButtonHandler(nors);
-	   handlers[inst_handlers++]  = new AudioHandler(nors);
-	   handlers[inst_handlers++]  = new HeartMonitorHandler(nors);
-	   handlers[inst_handlers++]  = new MusicPlayerHandler(nors);
-	   handlers[inst_handlers++]  = new SystemHandler(nors);
-	   handlers[inst_handlers++]  = new PhoneSensorHandler(nors);
-	   handlers[inst_handlers++]  = new MediaWatcherHandler(nors);
-	   handlers[inst_handlers++]  = new CalendarHandler(nors);
-	   handlers[inst_handlers++]  = new HeartrateButtonHandler(nors);
+	   // this is due to the discovery mechanism since aggregated sensor handlers usually check the availability of the raw sensor in order to become 'visible'	   
+	   handlers[inst_handlers++]  = (Handler)new GPSHandler(nors);	   
+	   handlers[inst_handlers++]  = (Handler)new WeatherHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new RandomHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new BeaconHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new WifiHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new CellHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new EventButtonHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new MoodButtonHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new AudioHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new HeartMonitorHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new MusicPlayerHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new SystemHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new PhoneSensorHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new MediaWatcherHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new CalendarHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new HeartrateButtonHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new NotificationHandler(nors);
 	   
 	   return true;
 	}
@@ -90,9 +90,11 @@ public class HandlerManager
 		   try
 		   {
 			   handlers[i].destroyHandler();
+			   handlers[i] = null;
 		   }
 		   catch(Exception e)
 		   {
+			   SerialPortLogger.debugForced("AIRS: exception in destroyHandlers with i="+String.valueOf(i));
 		   }
 	   }
 	}

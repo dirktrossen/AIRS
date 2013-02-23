@@ -89,7 +89,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		// has WiFi been started?
 		if (initialized == false)
 		{
-			// send message to handler thread to start GPS
+			// send message to handler thread to start WiFi
 	        Message msg = mHandler.obtainMessage(INIT_WIFI);
 	        mHandler.sendMessage(msg);	
 	        // wait for starting wifi

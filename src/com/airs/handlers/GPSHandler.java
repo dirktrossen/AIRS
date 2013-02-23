@@ -234,6 +234,14 @@ public class GPSHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		longitude_semaphore.release();
+		latitude_semaphore.release();
+		altitude_semaphore.release();
+		bearing_semaphore.release();
+		speed_semaphore.release();
+		full_semaphore.release();
+		
 		// signal shutdown
 		shutdown = true;
 

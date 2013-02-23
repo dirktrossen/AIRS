@@ -54,6 +54,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	private Semaphore azimuth_semaphore 	= new Semaphore(1);
 	private Semaphore roll_semaphore 		= new Semaphore(1);
 	private Semaphore pitch_semaphore 		= new Semaphore(1);
+	private boolean shutdown = false;
 	
 	/**
 	 * Sleep function 
@@ -357,9 +358,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		   if (Proximity != null)
 			   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, false, polltime2, this);	
 		   if (Light != null)
-			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Light"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Ambient Light"), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		   if (Pressure != null)
-			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Pressure"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Ambient Pressure"), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		}
 	}
 	
@@ -397,6 +398,15 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
+		shutdown = true;
+		// release all semaphores for unlocking the Acquire() threads
+		pressure_semaphore.release();
+		light_semaphore.release();
+		proximity_semaphore.release();
+		azimuth_semaphore.release();
+		roll_semaphore.release();
+		pitch_semaphore.release();
+
 		if (startedLight == true || startedProximity == true || startedOrientation == true || startedPressure == true)
 			sensorManager.unregisterListener(sensorlistener);	
 	}
@@ -408,7 +418,10 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
     {
        @Override
        public void handleMessage(Message msg) 
-       {        	
+       {   
+    	   if (shutdown == true)
+    		   return;
+    	   
            switch (msg.what) 
            {
            case INIT_PRESSURE:

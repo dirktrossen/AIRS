@@ -16,10 +16,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -140,7 +136,7 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         }
         catch(Exception e)
         {
-        }       
+        }            
     }
     
     @Override
@@ -182,7 +178,13 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         menu.clear();    		
         inflater = getMenuInflater();
         if (discovery == false)
-        	inflater.inflate(R.menu.options_main, menu);
+        {
+    		// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
+    		if (settings.getBoolean("AIRS_local::running", false) == true)
+    			inflater.inflate(R.menu.options_main2, menu);
+    		else
+    			inflater.inflate(R.menu.options_main, menu);    			
+        }
         else
         	inflater.inflate(R.menu.options_local, menu);
         
@@ -192,7 +194,7 @@ public class AIRS_local_tab extends Activity implements OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
-    	final Intent intent;
+    	Intent intent;
     	
         switch (item.getItemId()) 
         {
@@ -210,79 +212,12 @@ public class AIRS_local_tab extends Activity implements OnClickListener
         	else
         		HandlerUIManager.AboutDialog("AIRS Local", getString(R.string.LocalAbout));
     		break;
-        case R.id.main_shortcut:
-    		// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
-    		if (settings.getBoolean("AIRS_local::running", false) == true)
-    		{
-        		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        		builder.setMessage("AIRS has been running.\nYou need to stop AIRS before you can create a shortcut on your homescreen! Do you want to stop AIRS now?")
-        			   .setTitle("AIRS Local Sensing")
-        		       .setCancelable(false)
-        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
-        		       {
-        		           public void onClick(DialogInterface dialog, int id) 
-        		           {
-        		        	    // clear persistent flag
-        			           	Editor editor = settings.edit();
-        			           	editor.putBoolean("AIRS_local::running", false);
-        		                // finally commit to storing values!!
-        		                editor.commit();
-        		                // stop service
-     		    			    stopService(new Intent(airs, AIRS_local.class));
-     		    			    finish();
-        		           }
-        		       })
-        		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
-        		       {
-        		           public void onClick(DialogInterface dialog, int id) 
-        		           {
-        		                dialog.cancel();
-        		           }
-        		       });
-        		AlertDialog alert = builder.create();
-        		alert.show();
-    		}
-    		else
-    		{
-	        	File preferenceFile = new File(getFilesDir(), "../shared_prefs/com.airs_preferences.xml");
-	    		File shortcutPath = new File(getExternalFilesDir(null).getAbsolutePath());
-	            File shortcutFile = new File(shortcutPath, "shortcutPrefs_" + String.valueOf(System.currentTimeMillis()) + ".xml");
-	        	
-	        	// intent for starting AIRS
-	        	Intent shortcutIntent = new Intent(Intent.ACTION_MAIN); 
-	        	shortcutIntent.setClassName(this, AIRS_shortcut.class.getName()); 
-	        	
-	        	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	        	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	        	// copy preference file if original preferences exist
-	        	if (preferenceFile.exists() == true)
-	        	{
-		            try
-		            {
-		                FileChannel src = new FileInputStream(preferenceFile).getChannel();
-		                FileChannel dst = new FileOutputStream(shortcutFile).getChannel();
-		                dst.transferFrom(src, 0, src.size());
-		                src.close();
-		                dst.close();
-		            	shortcutIntent.putExtra("preferences", shortcutFile.toString());
-		            }
-		            catch(Exception e)
-		            {
-		            }
-	        	}        		
-	        	
-	        	// intent for creating the shortcut
-	        	intent = new Intent();
-	        	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-	        	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Quick AIRS");
-	        	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon));
-	
-	        	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-	        	sendBroadcast(intent);	 
-    		}
-        	break;
         case R.id.main_sync:
         	intent = new Intent(this,AIRS_sync.class);
+        	startActivity(intent);
+        	break;
+        case R.id.main_templates:
+        	intent = new Intent(this,AIRS_templates.class);
         	startActivity(intent);
         	break;
         case R.id.main_dbadmin:

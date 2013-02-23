@@ -222,6 +222,12 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	
 	public void destroyHandler()
 	{
+		// release all semaphores for unlocking the Acquire() threads
+		music_semaphore.release();
+		album_semaphore.release();
+		artist_semaphore.release();
+		track_semaphore.release();
+
 		if (startedMusicPlayer == true)
 			airs.unregisterReceiver(SystemReceiver);
 	}

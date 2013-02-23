@@ -20,6 +20,7 @@ import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
+import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 import android.content.BroadcastReceiver;
@@ -126,6 +127,7 @@ public class HeartrateButtonHandler implements Handler
 	***********************************************************************/
 	public void History(String sensor)
 	{
+		History.timelineView(airs, "Heart rate [bpm]", "IH");
 	}
 
 	/***********************************************************************
@@ -138,7 +140,7 @@ public class HeartrateButtonHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("IH"), new String("bpm"), new String("heart rate widget"), new String("int"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("IH"), new String("bpm"), new String("Heart rate widget"), new String("int"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	public HeartrateButtonHandler(Context airs)

@@ -17,6 +17,7 @@
  -->
 <resources>
 <string name="app_name">AIRS</string>
+<string name="accessibility_description">Accessbility service for AIRS local sensing, providing access to the Google Talk and Skype notifications through the NO sensor.</string>
 <string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen
 \n\nContact: airs@dirk-trossen.de
 \n\nManual: http://dalore.net/DOT/software/airs-online-manual
@@ -50,17 +51,22 @@
 <string name="HandlersList">Select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
-- replaced support for AliveTech ECG monitor with support for Zephyr HxM BT heart rate monitor (pulse and instant speed supported)\n
-- improvements to TV sensor in filtering the main visible app\n
-- improvement to IH sensor\n
-- removed PS sensor\n
-- fixed erroneous GPS after shutdown\n
-- changed settings (check online manual) to group a bit more logically
+- support for templates. You can now save the entire settings (including recording selections) into 
+  named templates and creaet shortcut from these templates - great for travel vs home vs battery-saving scenarios\n
+- introduced NO sensor for IM notifications (currently Skype and GTalk), using an accessibility service for this. 
+  You will need to enable the service manually in the system settings.\n
+- many bugfixes, in particular related to AIRS shutdown, now cleaner!
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.4:
+- support for templates. You can now save the entire settings (including recording selections) into 
+  named templates and creaet shortcut from these templates - great for travel vs home vs battery-saving scenarios\n
+- introduced NO sensor for IM notifications (currently Skype and GTalk), using an accessibility service for this. 
+  You will need to enable the service manually in the system settings.\n
+- many bugfixes, in particular related to AIRS shutdown, now cleaner!\n\n
 V2.3:\n 
 - replaced support for AliveTech ECG monitor with support for Zephyr HxM BT heart rate monitor (pulse and instant speed supported)\n
 - improvements to TV sensor in filtering the main visible app\n

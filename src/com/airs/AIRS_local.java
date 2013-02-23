@@ -95,7 +95,7 @@ public class AIRS_local extends Service
     // This is the object that receives interactions from clients
     private final IBinder mBinder = new LocalBinder();
     private VibrateThread Vibrator;
-    private WakeLock wl;
+    private WakeLock wl = null;
     // database variables
     static public AIRS_database database_helper;
     static public SQLiteDatabase airs_storage;
@@ -137,7 +137,7 @@ public class AIRS_local extends Service
 				line = Integer.toString(j);
 				values_output = new String(current.Symbol + " : - [" + current.Unit + "]");
 				
-				(thread = new Thread(this)).start();
+				(thread = new Thread(this, "AIRS: " + current.Symbol)).start();;
 			}
 
 			// return true if sensor has historical data
@@ -196,177 +196,178 @@ public class AIRS_local extends Service
 			}
 
 			/***********************************************************************
-			 Function    : run()
+			 Function    : HandlerTask()
 			 Input       : 
 			 Output      :
 			 Return      :
-			 Description : thread for resolving a query - to be started by the 
+			 Description : task for resolving a query - to be started by the 
 			 			   Acquisition component (usually in the callback for a dialog)!!
 			 			   if sending NOTIFY fails, thread returns, i.e., ends
 			 			   NOTIFY could fail due to termination of dialog (e.g., BYE) 
 			***********************************************************************/
 			public void run() 
 			{
-				 byte[] sensor_data=null;
-		 		 int    integer;
-		 		 double scaler;
-		 		 int 	i;
-		 		 String fileOut = null, fileIMG = null;
-
-		 		 scaler = 1;
-		 		 if (current.scaler>0)
-		 			 for (i=0;i<current.scaler;i++)
-		 				 scaler *=10;
-		 		 else
-		 			 for (i=current.scaler;i<0;i++)
-		 				 scaler /=10;
-		 			
-		 		 try
-		 		 {
-			 		 while(interrupted == false)
-			 		 {	 
-			 			// pause while told to
-			 			while(pause == true)
-			 				sleep(500);
-
-			    		// acquire latest value
-		    			sensor_data = current.handler.Acquire(current.Symbol, null);
-		    			// anything?
-	    				if (sensor_data!=null)
-	    				{
-	    					// here we handle int/float sensor values
-			    			if(current.type.equals("int") || current.type.equals("float"))
-			    			{
-			    				// do long int first
-			    				integer = ((int)(sensor_data[2] & 0xFF) << 24) 
-			     		         | ((int)(sensor_data[3] & 0xff) << 16) 
-			      				 | ((int)(sensor_data[4] & 0xFF) << 8) 
-			      				 | ((int)sensor_data[5] & 0xFF);
-			    				
-				    			// set text item in value field
-			    				if (localDisplay_b == true)
-			    				{
-				    				if (current.scaler != 0)
-				    					output(current.Symbol + " : " + String.valueOf((double)integer*scaler) + " [" + current.Unit + "]");
+					 byte[] sensor_data=null;
+			 		 int    integer;
+			 		 double scaler;
+			 		 int 	i;
+			 		 String fileOut = null, fileIMG = null;
+		
+			 		 scaler = 1;
+			 		 if (current.scaler>0)
+			 			 for (i=0;i<current.scaler;i++)
+			 				 scaler *=10;
+			 		 else
+			 			 for (i=current.scaler;i<0;i++)
+			 				 scaler /=10;
+			 			
+			 		 try
+			 		 {
+				 		 while(interrupted == false)
+				 		 {	 
+				 			// pause while told to
+				 			while(pause == true)
+				 				sleep(500);
+		
+				    		// acquire latest value
+			    			sensor_data = current.handler.Acquire(current.Symbol, null);
+			    			// anything?
+		    				if (sensor_data!=null)
+		    				{
+		    					// here we handle int/float sensor values
+				    			if(current.type.equals("int") || current.type.equals("float"))
+				    			{
+				    				// do long int first
+				    				integer = ((int)(sensor_data[2] & 0xFF) << 24) 
+				     		         | ((int)(sensor_data[3] & 0xff) << 16) 
+				      				 | ((int)(sensor_data[4] & 0xFF) << 8) 
+				      				 | ((int)sensor_data[5] & 0xFF);
+				    				
+					    			// set text item in value field
+				    				if (localDisplay_b == true)
+				    				{
+					    				if (current.scaler != 0)
+					    					output(current.Symbol + " : " + String.valueOf((double)integer*scaler) + " [" + current.Unit + "]");
+					    				else
+					    					output(current.Symbol + " : " + String.valueOf(integer) + " [" + current.Unit + "]");
+				    				}
 				    				else
-				    					output(current.Symbol + " : " + String.valueOf(integer) + " [" + current.Unit + "]");
-			    				}
-			    				else
-			    				{
-			    					no_values++;
-			    					output("# of values : " + String.valueOf(no_values));
-			    				}
-			    				
-			    				// need to store locally?
-			    				if (localStore_b == true)
-			    				{
-			    					if (current.scaler !=0)
-			    						fileOut = new String("'"+ String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf((double)integer*scaler) + "'");
-			    					else
-			    						fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf(integer) + "'");
-			    				}
-			    			}
-			    			
-	    					// here we handle txt sensor values
-			    			if(current.type.equals("txt") || current.type.equals("str"))
-			    			{
-				    			// set text item in value field
-			    				if (localDisplay_b == true)
-			    				{
-			    					output(current.Symbol + " : " + new String(sensor_data, 2, sensor_data.length - 2) + " [" + current.Unit + "]");
-			    				}
-			    				else
-			    				{
-			    					no_values++;
-			    					output("# of values : " + String.valueOf(no_values));
-			    				}			    					
-	
-			    				// need to store locally?
-			    				if (localStore_b == true)
-		    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + new String(sensor_data, 2, sensor_data.length - 2) + "'");
-			    			}
-	
-		   					// here we handle img and arr sensor values
-			    			if(current.type.equals("img") || current.type.equals("arr"))
-			    			{
-				    			// set text item in value field, here only the length of the sensor value field
-			    				if (localDisplay_b == true)
-			    				{
-			    					output(current.Symbol + " : " + Integer.toString(sensor_data.length));
-			    				}
-			    				else
-			    				{
-			    					no_values++;
-			    					output("# of values : " + String.valueOf(no_values));
-			    				}			    					
-	
-			    				// need to store locally?
-			    				if (localStore_b == true)
-			    				{
-			    				    try 
+				    				{
+				    					no_values++;
+				    					output("# of values : " + String.valueOf(no_values));
+				    				}
+				    				
+				    				// need to store locally?
+				    				if (localStore_b == true)
+				    				{
+				    					if (current.scaler !=0)
+				    						fileOut = new String("'"+ String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf((double)integer*scaler) + "'");
+				    					else
+				    						fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf(integer) + "'");
+				    				}
+				    			}
+				    			
+		    					// here we handle txt sensor values
+				    			if(current.type.equals("txt") || current.type.equals("str"))
+				    			{
+					    			// set text item in value field
+				    				if (localDisplay_b == true)
+				    				{
+				    					output(current.Symbol + " : " + new String(sensor_data, 2, sensor_data.length - 2) + " [" + current.Unit + "]");
+				    				}
+				    				else
+				    				{
+				    					no_values++;
+				    					output("# of values : " + String.valueOf(no_values));
+				    				}			    					
+		
+				    				// need to store locally?
+				    				if (localStore_b == true)
+			    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + new String(sensor_data, 2, sensor_data.length - 2) + "'");
+				    			}
+		
+			   					// here we handle img and arr sensor values
+				    			if(current.type.equals("img") || current.type.equals("arr"))
+				    			{
+					    			// set text item in value field, here only the length of the sensor value field
+				    				if (localDisplay_b == true)
+				    				{
+				    					output(current.Symbol + " : " + Integer.toString(sensor_data.length));
+				    				}
+				    				else
+				    				{
+				    					no_values++;
+				    					output("# of values : " + String.valueOf(no_values));
+				    				}			    					
+		
+				    				// need to store locally?
+				    				if (localStore_b == true)
+				    				{
+				    				    try 
+				    				    {
+				    				    	fileIMG = new String(url + String.valueOf(System.currentTimeMillis()) + "_" + current.Symbol + ".jpg" );
+				    				    	// open file with read/write - otherwise, it will through a security exception (no idea why)
+				    				        mconn = new File(path, fileIMG);
+				    			    		os2 = new BufferedOutputStream(new FileOutputStream(mconn, true));
+		
+				    			    		// store sensor data
+				    			    		os2.write(sensor_data, 2, sensor_data.length-2);
+				    			    		os2.close();
+				    			    		// store filename in recording file
+				    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + fileIMG + "'");
+		
+				    				    } 
+				    				    catch(Exception e)
+				    				    {
+				    			    		debug("Exception in opening file connection");
+				    				    }
+				    				}
+				    			}
+				    			
+				    			// anything to write to file?
+				    			if (fileOut != null)
+				    			{
+			    				    try
 			    				    {
-			    				    	fileIMG = new String(url + String.valueOf(System.currentTimeMillis()) + "_" + current.Symbol + ".jpg" );
-			    				    	// open file with read/write - otherwise, it will through a security exception (no idea why)
-			    				        mconn = new File(path, fileIMG);
-			    			    		os2 = new BufferedOutputStream(new FileOutputStream(mconn, true));
-	
-			    			    		// store sensor data
-			    			    		os2.write(sensor_data, 2, sensor_data.length-2);
-			    			    		os2.close();
-			    			    		// store filename in recording file
-			    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + fileIMG + "'");
-	
-			    				    } 
-			    				    catch(Exception e)
-			    				    {
-			    			    		debug("Exception in opening file connection");
+			    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
+			    				    	
+			    				    	// write sensor value in table for faster retrieval later!
+			    				    	if (started == true)
+			    				    	{
+			    				    		try
+			    				    		{
+			    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+			    				    		}
+			    				    		catch(Exception e)
+			    				    		{
+			    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
+			    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
+			    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+			    				    		}
+			    				    		started = false;
+			    				    	}
 			    				    }
-			    				}
-			    			}
-			    			
-			    			// anything to write to file?
-			    			if (fileOut != null)
-			    			{
-		    				    try
-		    				    {
-		    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
-		    				    	
-		    				    	// write sensor value in table for faster retrieval later!
-		    				    	if (started == true)
-		    				    	{
-		    				    		try
-		    				    		{
-		    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
-		    				    		}
-		    				    		catch(Exception e)
-		    				    		{
-		    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
-		    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
-		    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
-		    				    		}
-		    				    		started = false;
-		    				    	}
-		    				    }
-		    					catch(Exception e) 
-		    					{    					
-		    					}	
-			    			}
-	    				}
-	    				
-	    				// are we waiting for the next poll?
-	    				if (current.polltime>0)
-	    					sleep(current.polltime);
-			 		 }
-				}
-				catch(Exception e)
-				{
-					debug("HandlerThread: interrupted and terminating 1..." + current.Symbol);
+			    					catch(Exception e) 
+			    					{    					
+			    					}	
+				    			}
+		    				}
+		    				
+		    				// are we waiting for the next poll?
+		    				if (current.polltime>0 && interrupted ==false)
+		    					Thread.sleep(current.polltime);
+				 		 }
+					}
+					catch(Exception e)
+					{
+						debug("HandlerThread: interrupted and terminating 1..." + current.Symbol);
+						return;
+					}
+					
+					debug("HandlerThread: interrupted and terminating 2..."  + current.Symbol);
 					return;
-				}
-				
-				debug("HandlerThread: interrupted and terminating 2..."  + current.Symbol);
 			}
-		}
+	 }
     
 	/**
 	 * Sleep function 
@@ -419,51 +420,27 @@ public class AIRS_local extends Service
 		
 		synchronized(airs_storage)
 		{
-	    	airs_storage.beginTransaction();
-		    try
-		    {
-		    	airs_storage.execSQL(query);
-		    	airs_storage.setTransactionSuccessful();
-		    }
-		    finally
-		    {
-		    	airs_storage.endTransaction();
-		    }
-		}
+			if (airs_storage == null)
+				return;
+
+			airs_storage.execSQL(query);
 		
-		// is the current data at the next day?
-		if (milli > nextDay)
-		{
-			 // get current day and set time to last millisecond of that day 
-	         Calendar cal = Calendar.getInstance();
-	         cal.set(Calendar.HOUR_OF_DAY, 23);
-	         cal.set(Calendar.MINUTE, 59);
-	         cal.set(Calendar.MILLISECOND, 999);
-	         int year = cal.get(Calendar.YEAR);
-	         int month = cal.get(Calendar.MONTH) + 1;
-	         int day = cal.get(Calendar.DAY_OF_MONTH);
-	         nextDay = cal.getTimeInMillis();
-	         
-	         // mark date now as having values
-	         try
-	         {
-	     		synchronized(airs_storage)
-	    		{
-	    	    	airs_storage.beginTransaction();
-	    		    try
-	    		    {
-	    		    	airs_storage.execSQL("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");
-	    		    	airs_storage.setTransactionSuccessful();
-	    		    }
-	    		    finally
-	    		    {
-	    		    	airs_storage.endTransaction();
-	    		    }
-	    		}
-	         }
-	         catch(Exception e)
-	         {
-	         }
+			// is the current data at the next day?
+			if (milli > nextDay)
+			{
+				 // get current day and set time to last millisecond of that day 
+		         Calendar cal = Calendar.getInstance();
+		         cal.set(Calendar.HOUR_OF_DAY, 23);
+		         cal.set(Calendar.MINUTE, 59);
+		         cal.set(Calendar.MILLISECOND, 999);
+		         int year = cal.get(Calendar.YEAR);
+		         int month = cal.get(Calendar.MONTH) + 1;
+		         int day = cal.get(Calendar.DAY_OF_MONTH);
+		         nextDay = cal.getTimeInMillis();
+		         
+		         // mark date now as having values
+		         airs_storage.execSQL("INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");
+			}
 		}
 	}
 
@@ -517,60 +494,81 @@ public class AIRS_local extends Service
 	{
 		int i;
 		
-		SerialPortLogger.debug("AIRS_local::destroyed service!");
+		SerialPortLogger.debug("AIRS_local::destroying service!");
 
-	   	 // is local storage ongoing -> close file!
-	   	 if (localStore_b == true)
-	   	 {
-	   		 try
-	   		 {
-			    airs_storage.close();
-	   		 }
-	   		 catch(Exception e)
-	   		 {	    			 
-	   		 }
-	   	 } 
-	   	     	 
-	   	 // kill Handlers and threads
-	   	 if (started == true)
-	   	 {
-	   		 try
-	   		 {
-	   			SerialPortLogger.debugForced("AIRS_local::terminating HandlerThreads");
-		   		 // interrupt all threads for terminated
-		   		 for (i = 0; i<no_threads;i++)
-		   			 if (threads[i] != null)
-		   				 threads[i].thread.interrupt();
-
-		   		 // if Vibrator is running, stop it!
-		   		 if (Vibrator!=null)
-		   		 {
-		   			Vibrator.stop = true;
-		   			Vibrator.thread.interrupt(); 
-		   		 }
-	   		 }
-	   		 catch(Exception e)
-	   		 {
-	   			 SerialPortLogger.debugForced("AIRS_local::Exception when terminating Handlerthreads!");
-	   		 }
-	   		 
-	   		 HandlerManager.destroyHandlers();	
-
-		   	 // create wake lock if held
-		   	 if (wl != null)
-		   		 if (wl.isHeld() == true)
-		   			 wl.release();
-		   	 
-		   	 // if registered for screen activity or battery level -> unregister
-		   	 if (registered == true)
-		         unregisterReceiver(mReceiver);	   	 
-	   	 }
-
-	   	 // and kill persistent flag
-         HandlerManager.writeRMS_b("AIRS_local::running", false);
+		// get database sync to squeeze out all other threads for killing them
+		if (airs_storage != null)
+		{
+			synchronized(airs_storage)
+			{
+			   	 // kill Handlers and threads
+			   	 if (started == true)
+			   	 {
+			   		 // first kill handlers!
+			   		 HandlerManager.destroyHandlers();	
+	
+			   		 // then kill threads
+			   		 try
+			   		 {
+			   			SerialPortLogger.debug("AIRS_local::terminating " + String.valueOf(no_threads) + " HandlerThreads");
+				   		 // interrupt all threads for terminated
+				   		 for (i = 0; i<no_threads;i++)
+				   			 if (threads[i] != null)
+				   			 {
+					   			 if (threads[i] != null)
+					   			 {
+					   				 threads[i].interrupted = true;
+					   				 threads[i].thread.interrupt();
+					   			 }
+				   				 threads[i] = null;
+				   			 }
+				   		 
+				   		 // if Vibrator is running, stop it!
+				   		 if (Vibrator!=null)
+				   		 {
+				   			Vibrator.stop = true;
+				   			Vibrator.thread.interrupt(); 
+				   			Vibrator.thread = null;
+				   		 }
+			   		 }
+			   		 catch(Exception e)
+			   		 {
+			   			 SerialPortLogger.debugForced("AIRS_local::Exception when terminating Handlerthreads!");
+			   		 }
+			   		 	
+				   	 // create wake lock if held
+				   	 if (wl != null)
+				   		 if (wl.isHeld() == true)
+				   			 wl.release();
+				   	 
+				   	 // if registered for screen activity or battery level -> unregister
+				   	 if (registered == true)
+				         unregisterReceiver(mReceiver);	   	 
+			   	 }
+			   	 
+			   	 // is local storage ongoing -> close file!
+			   	 if (localStore_b == true)
+			   	 {
+			   		 try
+			   		 {
+					    airs_storage.close();
+					    airs_storage = null;
+			   		 }
+			   		 catch(Exception e)
+			   		 {	   
+			   			 SerialPortLogger.debugForced("AIRS_local::Exception when closing DB!");
+			   		 }
+			   	 } 
+			 }
+		}
+	   	 
+		// and kill persistent flag
+        HandlerManager.writeRMS_b("AIRS_local::running", false);
                   
-         // kill internal flag
-         running = false;
+        // kill internal flag
+        running = false;
+         
+ 		SerialPortLogger.debug("AIRS_local::finished destroying service!");
 	}
 	
 	@Override
@@ -1092,21 +1090,6 @@ public class AIRS_local extends Service
 		 public Thread thread;
 		 public boolean stop = false;
 		 
-			/**
-			 * Sleep function 
-			 * @param millis
-			 */
-			protected void sleep(long millis) 
-			{
-				try 
-				{
-					Thread.sleep(millis);
-				} 
-				catch (InterruptedException ignore) 
-				{
-				}
-			}
-
 		 VibrateThread()
 		 {
 			// save thread for later to stop 
@@ -1123,27 +1106,34 @@ public class AIRS_local extends Service
 			 while (stop == false)
 			 {		
 				 // sleep for the agreed time
-			     sleep(Reminder_i);
+			     try
+			     {
+			    	 Thread.sleep(Reminder_i);
 
-			     // prepare notification to user
-			     Notification notif = new Notification();
-			     notif.when              = System.currentTimeMillis(); 
-			     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
-			     if (Vibrate == true)
-			    	 notif.vibrate			 = vibration;
-				 
-				 if (Lights == true)
-				 {
-	                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
-	                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
-				 }
-	              
-				 // now shoot off alert
-				 mNotificationManager.notify(0, notif);   
-				 sleep(750);
-				 
-				 // and cancel
-	             mNotificationManager.cancel(0);
+				     // prepare notification to user
+				     Notification notif = new Notification();
+				     notif.when              = System.currentTimeMillis(); 
+				     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
+				     if (Vibrate == true)
+				    	 notif.vibrate			 = vibration;
+					 
+					 if (Lights == true)
+					 {
+		                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+		                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+					 }
+		              
+					 // now shoot off alert
+					 mNotificationManager.notify(0, notif);   
+					 sleep(750);
+					 
+					 // and cancel
+		             mNotificationManager.cancel(0);
+			     }
+			     catch(Exception e)
+			     {
+			    	 debug("AIRS_local::Vibrate thread terminated");
+			     }
 			 }
 		 }
 	 }

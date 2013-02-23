@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -30,12 +31,12 @@ public class AIRS_web_tab extends Activity
     WebView mWebView;
     public void onCreate(Bundle savedInstanceState) 
     {
+    	WebSettings settings;
         super.onCreate(savedInstanceState);
 
         mWebView = new WebView(this);
         mWebView.setWebViewClient(new HelloWebViewClient());
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setUserAgentString("online-manual");
+        settings = mWebView.getSettings();
         mWebView.loadUrl("http://tecvis.co.uk/software/software/airs/");
 
         setContentView(mWebView);
