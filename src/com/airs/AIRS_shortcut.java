@@ -79,6 +79,10 @@ public class AIRS_shortcut extends Activity
 	        if ((preferences = intent.getStringExtra("preferences")) != null)
 	        {
 	        	File preferenceFile = new File(getFilesDir(), "../shared_prefs/com.airs_preferences.xml");
+	        	// if file does not exist use a path that is usually used by GalaxyS in 2.3!!!
+            	if (preferenceFile.exists() == false)
+            		preferenceFile = new File("/dbdata/databases/com.airs/shared_prefs/com.airs_preferences.xml");
+
 	            File shortcutFile = new File(preferences);
 
 	        	// copy preference file if original preferences exist

@@ -52,18 +52,20 @@
 <string name="HandlerDescription">Handler Image</string>
 <string name="WhatsNew">
 - support for templates. You can now save the entire settings (including recording selections) into 
-  named templates and creaet shortcut from these templates - great for travel vs home vs battery-saving scenarios\n
+  named templates and create shortcut from these templates - great for travel vs home vs battery-saving scenarios\n\n
 - introduced NO sensor for IM notifications (currently Skype and GTalk), using an accessibility service for this. 
-  You will need to enable the service manually in the system settings.\n
+  You will need to enable the service manually in the system settings.\n\n
 - many bugfixes, in particular related to AIRS shutdown, now cleaner!
 </string>
 <string name="ReleaseNotes">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.4.1:\n
+- bugfixes in managing templates\n\n
 V2.4:
 - support for templates. You can now save the entire settings (including recording selections) into 
-  named templates and creaet shortcut from these templates - great for travel vs home vs battery-saving scenarios\n
+  named templates and create shortcut from these templates - great for travel vs home vs battery-saving scenarios\n
 - introduced NO sensor for IM notifications (currently Skype and GTalk), using an accessibility service for this. 
   You will need to enable the service manually in the system settings.\n
 - many bugfixes, in particular related to AIRS shutdown, now cleaner!\n\n

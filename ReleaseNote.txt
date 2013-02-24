@@ -1,6 +1,9 @@
+V2.4.1:
+- bugfixes in managing templates
+
 V2.4:
 - support for templates. You can now save the entire settings (including recording selections) into 
-  named templates and creaet shortcut from these templates - great for travel vs home vs battery-saving scenarios
+  named templates and create shortcut from these templates - great for travel vs home vs battery-saving scenarios
 - introduced NO sensor for IM notifications (currently Skype and GTalk), using an accessibility service for this.
   You will need to enable the service manually in the system settings.
 - many bugfixes, in particular related to AIRS shutdown, now cleaner!
