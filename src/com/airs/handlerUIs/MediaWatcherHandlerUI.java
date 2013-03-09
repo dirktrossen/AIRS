@@ -16,18 +16,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class MediaWatcherHandlerUI implements HandlerUI
 {   
-	public HandlerEntry init()
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Media Folders");
-		entry.description = new String("Watch various media folder such as camera, music, ...");
+		entry.name = context.getString(R.string.MediaWatcherHandlerUI_name);
+		entry.description = context.getString(R.string.MediaWatcherHandlerUI_description);
 		entry.resid = R.drawable.mediawatcher;
 		return (entry);
 	}
@@ -39,17 +43,12 @@ public class MediaWatcherHandlerUI implements HandlerUI
 
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Watches various media-related folders.\n\n"+
-	    		"Camera, music and other folders can be watched with respect to creating new files, such as when taking a picture.\n" +
-	    		"For setting the right camera folders, go into the Gallery application, display any recent picture you have taken, display the 'Details' and look for the 'Path' entry. Select the entire path (before the actual filename) as the path for the camera folder!");
-
-		return AboutText;
+		return context.getString(R.string.MediaWatcherHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Media Folders";
+		return context.getString(R.string.MediaWatcherHandlerUI_name);
 	}
 
 	public void configurePreference(PreferenceActivity prefs)

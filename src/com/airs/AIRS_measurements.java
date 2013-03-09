@@ -68,7 +68,6 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
 	        mTitle.setText(R.string.app_name);
-	        mTitle2.setText("Local Sensing");
 		    
 			// Find and set up the ListView for values
 			values 	= (ListView)findViewById(R.id.valueList);        
@@ -78,7 +77,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 			
 	        // bind to service
 	        if (bindService(new Intent(this, AIRS_local.class), mConnection, 0)==false)
-	     		Toast.makeText(getApplicationContext(), "Measurement Activity::Binding to service unsuccessful!", Toast.LENGTH_LONG).show();
+	     		Toast.makeText(getApplicationContext(), getString(R.string.binding_failed), Toast.LENGTH_LONG).show();	        
 	    }
 
 	    @Override
@@ -163,23 +162,23 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        case R.id.local_pause:
 	        	if (AIRS_locally != null)
 	        	{
-			        mTitle2.setText("Local Sensing...Paused");
+			        mTitle2.setText(getString(R.string.Local_Sensing) + "..." + getString(R.string.paused));
 			        AIRS_locally.pause_threads();
 	        	}
 	        	break;
 	        case R.id.local_resume:
 	        	if (AIRS_locally != null)
 	        	{
-	        		mTitle2.setText("Local Sensing");
+	        		mTitle2.setText(R.string.Local_Sensing);
 	        		AIRS_locally.resume_threads();
 	        	}
 	        	break;
 	        case R.id.local_exit:
 	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    		builder.setMessage("Exit will stop your local recording and close the background service!\nAre you sure you want to exit?")
-	    			   .setTitle("AIRS Local Sensing")
+	    		builder.setMessage(getString(R.string.Exit_AIRS))
+	    			   .setTitle(getString(R.string.AIRS_Local_Sensing))
 	    		       .setCancelable(false)
-	    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+	    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
 	    		       {
 	    		           public void onClick(DialogInterface dialog, int id) 
 	    		           {
@@ -193,7 +192,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    		        	   finish();
 	    		           }
 	    		       })
-	    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+	    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
 	    		       {
 	    		           public void onClick(DialogInterface dialog, int id) 
 	    		           {
@@ -247,19 +246,19 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 						                
 						    	     intent.setType("*/*");
 						    		 intent.putExtra(Intent.EXTRA_STREAM, shareUri);
-						             intent.putExtra(Intent.EXTRA_TEXT, "Published from AIRS (https://market.android.com/details?id=com.airs)\n");
+						             intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.Snapshot_publish) + " (https://market.android.com/details?id=com.airs)\n");
 						    	     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); 
-						    		 act.startActivity(Intent.createChooser(intent,"Share AIRS snapshot to:"));			
+						    		 act.startActivity(Intent.createChooser(intent,getString(R.string.Snapshot_share)));			
 								}
 								else
-						     		Toast.makeText(getApplicationContext(), "Nothing to share, it seems! Have you set the camera path to the right one (the path need to the SAME as shown for pictures in the Gallery applications!).", Toast.LENGTH_LONG).show();
+						     		Toast.makeText(getApplicationContext(), getString(R.string.Snapshot_nothing_to_share), Toast.LENGTH_LONG).show();
 
 								c.close();
 								
 							}
 						}
 						else
-				     		Toast.makeText(getApplicationContext(), "Can only share pictures, sorry!", Toast.LENGTH_LONG).show();
+				     		Toast.makeText(getApplicationContext(), getString(R.string.Snapshot_only_pictures), Toast.LENGTH_LONG).show();
 		    	}
 		    	else
 		    	{
@@ -271,8 +270,8 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 		 		       // now build and start chooser intent
 		                Intent intent = new Intent(Intent.ACTION_SEND);
 		                intent.setType("text/plain");
-		                intent.putExtra(Intent.EXTRA_TEXT, value + "\n\n-------------------------------------------\nPublished from AIRS (https://market.android.com/details?id=com.airs)\n");
-		                act.startActivity(Intent.createChooser(intent,"Share AIRS Measurements via:"));
+		                intent.putExtra(Intent.EXTRA_TEXT, value + "\n\n-------------------------------------------\n" + getString(R.string.Snapshot_publish) + " (https://market.android.com/details?id=com.airs)\n");
+		                act.startActivity(Intent.createChooser(intent,getString(R.string.Measurements_share)));
 		    		}
 		    	}
 		    }
@@ -307,6 +306,13 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 		        // set title according to paused state of local service
 		        if (AIRS_locally.paused == true)
 			        mTitle2.setText("Local Sensing...Paused");
+		        
+		        // construct title right side with possible template name
+		        if (AIRS_locally.template != null)
+		        	mTitle2.setText("Local Sensing: " + AIRS_locally.template);
+		        else
+		        	mTitle2.setText("Local Sensing");
+
 	  	    }
 	
 	  	    public void onServiceDisconnected(ComponentName className) {

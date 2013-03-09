@@ -51,6 +51,37 @@ public class SensorRepository
         }
     }
     
+    // finds sensor based on Symbol and sets valid flag
+    static synchronized public void setSensorStatus(String Symbol, int status, String reason)
+    {
+        Sensor current = root_sensor;
+        
+        while(current != null)
+        {
+            if (current.Symbol.compareTo(Symbol) == 0)
+            {
+                current.status = status;
+                current.statusString = reason;
+            }
+            current = current.next;
+        }
+    }
+
+    // finds sensor based on Symbol and returns valid flag
+    static synchronized public int getSensorStatus(String Symbol)
+    {
+        Sensor current = root_sensor;
+        
+        while(current != null)
+        {
+            if (current.Symbol.compareTo(Symbol) == 0)
+                return current.status;
+            current = current.next;
+        }
+        
+        return Sensor.SENSOR_INVALID;
+    }
+
     // finds sensor based on Symbol and returns handler serving sensor
     static synchronized public Handler findHandler(String Symbol)
     {

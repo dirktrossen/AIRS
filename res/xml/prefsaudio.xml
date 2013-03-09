@@ -17,29 +17,29 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:title="Audio Sampling">
+  android:title="@string/AudioHandlerUI_name">
     <ListPreference
     	android:dialogIcon="@drawable/audio"
         android:key="AudioHandler::SamplingRate"
-        android:title="Sampling Rate [Hz]"
-        android:summary="Sampling rate for audio capture in Hertz"
-        android:positiveButtonText="Select"
+        android:title="@string/Sampling_Rate"
+        android:summary="@string/Sampling_Rate_on"
+        android:positiveButtonText="@string/Select"
         android:entries="@array/audiohandler_values"
         android:entryValues="@array/audiohandler_entries"
         android:defaultValue="8000"
-        android:dialogTitle="Choose Sampling Rate" />
+        android:dialogTitle="@string/Choose_Sampling_Rate" />
     <EditTextPreference
 		android:dialogIcon="@drawable/time"
-        android:summary="Interval to wait after each audio capture in seconds"
+        android:summary="@string/Audio_Interval_on"
         android:defaultValue="5"
         android:numeric="integer"
-        android:title="Audio Interval [s]"
+        android:title="@string/Audio_Interval"
         android:key="AudioHandler::samplingpoll"/>        
     <EditTextPreference
 		android:dialogIcon="@drawable/audio"
-        android:summary="Adjustment in dB for Sounds Pressure Level"
+        android:summary="@string/Sound_Adjustment_on"
         android:defaultValue="3"
         android:numeric="integer"
-        android:title="Sound Pressure Adjustment [dB]"
+        android:title="@string/Sound_Adjustment"
         android:key="AudioHandler::AA_adjust"/>        
 </PreferenceScreen>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-  android:title="IM Notifications" >
+  android:title="@string/NotificationHandlerUI_name" >
       <Preference android:icon="@drawable/social"
-        	android:title="Enable Accessibility"
-        	android:summary="Jumps to System settings to enable the accessibility service required for capturing the IM notifications.">
+        	android:title="@string/Enable_Accessibility"
+        	android:summary="@string/Enable_Accessibility_on">
        <intent
         android:action="android.settings.ACCESSIBILITY_SETTINGS"
         />

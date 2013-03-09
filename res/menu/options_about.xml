@@ -18,6 +18,6 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/main_about"
-          android:icon="@android:drawable/ic_menu_info_details"
-          android:title="@string/main_About" />
+          android:icon="@android:drawable/ic_menu_help"
+          android:title="@string/Help" />
  </menu>

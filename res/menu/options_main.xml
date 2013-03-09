@@ -17,16 +17,16 @@
  -->
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/main_about"
+    <item android:id="@+id/main_copyright"
           android:icon="@android:drawable/ic_menu_info_details"
           android:title="@string/main_About" />
-    <item android:id="@+id/main_templates"
-          android:icon="@android:drawable/ic_menu_save"
-          android:title="Manage templates" />
-    <item android:id="@+id/main_sync"
-          android:icon="@android:drawable/ic_menu_upload"
-          android:title="Sync" />
+    <item android:id="@+id/main_about"
+          android:icon="@android:drawable/ic_menu_help"
+          android:title="@string/Help" />
     <item android:id="@+id/main_dbadmin"
           android:icon="@drawable/storage"
-          android:title="DB Admin" />
+          android:title="@string/DB_Admin" />
+    <item android:id="@+id/main_manual"
+          android:icon="@drawable/manual"
+          android:title="@string/Manual" />
 </menu>

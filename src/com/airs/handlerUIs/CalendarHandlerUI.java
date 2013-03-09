@@ -17,6 +17,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlerUIs;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -30,11 +31,15 @@ import com.airs.helper.ListPreferenceMultiSelect;
 public class CalendarHandlerUI implements HandlerUI
 {
     // BT stuff
-	public HandlerEntry init()    
-	{				
+	Context context; 
+	
+	public HandlerEntry init(Context context)
+	{		
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Calendar");
-		entry.description = new String("Events from your available calendars");
+		entry.name = context.getString(R.string.CalendarHandlerUI_name);
+		entry.description = context.getString(R.string.CalendarHandlerUI_description);
 		entry.resid = R.drawable.calendar;
 		return (entry);
 	}
@@ -45,17 +50,13 @@ public class CalendarHandlerUI implements HandlerUI
 	}
 
 	public String About()
-	{
-	    String AboutText = new String(
-	    		"Retrieves calendar entries from your available calendars!\n"+
-	    		"You can select the calendars that AIRS should monitor. The calendars are polled frequently for upcoming events.");
-	    
-		return AboutText;
+	{   
+		return context.getString(R.string.CalendarHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Calendar";
+		return context.getString(R.string.CalendarHandlerUI_name);
 	}
 
 	public void configurePreference(PreferenceActivity prefs)

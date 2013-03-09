@@ -18,15 +18,15 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/main_about"
-          android:icon="@android:drawable/ic_menu_info_details"
-          android:title="@string/main_About" />
+          android:icon="@android:drawable/ic_menu_help"
+          android:title="@string/Help" />
     <item android:id="@+id/local_pause"
           android:icon="@android:drawable/ic_media_pause"
-          android:title="Pause" />
+          android:title="@string/Pause" />
     <item android:id="@+id/local_resume"
           android:icon="@android:drawable/ic_media_play"
-          android:title="Resume" />
+          android:title="@string/Resume" />
     <item android:id="@+id/local_exit"
           android:icon="@android:drawable/ic_menu_close_clear_cancel"
-          android:title="Exit" />
+          android:title="@string/Exit" />
 </menu>

@@ -313,10 +313,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    	final int selected = (int)arg3;
 	    	
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setMessage("Do you want to delete this annotation from the list?")
-    			   .setTitle("AIRS Events")
+    		builder.setMessage(getString(R.string.Delete_event))
+    			   .setTitle(getString(R.string.AIRS_Events))
     		       .setCancelable(false)
-    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {
@@ -335,7 +335,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
    		                	dialog.cancel();
     		           }
     		       })
-    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {

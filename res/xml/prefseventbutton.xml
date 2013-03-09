@@ -17,19 +17,19 @@
  -->
  <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Event Button">
+    android:title="@string/EventButtonHandlerUI_name">
     <EditTextPreference
-        android:summary="Maximum number of event descriptions to be stored"
+        android:summary="@string/Event_Descriptions_on"
         android:defaultValue="5"
         android:numeric="integer"
-        android:title="Event Descriptions [1..50]"
+        android:title="@string/Event_Descriptions"
         android:key="EventButtonHandler::MaxEventDescriptions"/>    
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Sort Annotations" 
+    	android:title="@string/Sort_Annotations" 
     	android:key="EventButtonHandler::SortAnnotations" 
     	android:selectable="true" 
-    	android:summaryOn="Sort annotation texts in list that shows after selecting the annotation widget" 
-    	android:summaryOff="Do not sort annotation texts in list that shows after selecting the annotation widget"/>
+    	android:summaryOn="@string/Sort_Annotations_on" 
+    	android:summaryOff="@string/Sort_Annotations_off"/>
 </PreferenceScreen>

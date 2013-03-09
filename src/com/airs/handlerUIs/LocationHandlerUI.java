@@ -16,18 +16,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class LocationHandlerUI implements HandlerUI
 {   
-	public HandlerEntry init()
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Location");
-		entry.description = new String("Various location sources like GPS, Wifi and cell");
+		entry.name = context.getString(R.string.LocationHandlerUI_name);
+		entry.description = context.getString(R.string.LocationHandlerUI_description);
 		entry.resid = R.drawable.location;
 		return (entry);
 	}
@@ -39,18 +43,12 @@ public class LocationHandlerUI implements HandlerUI
 
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Senses location-related information.\n\n"+
-	    		"The sensor values are location values, utilizing cell identification info, Wifi beacon information as well as GPS.\n" + 
-	    		"cellID is a simple integer, GPS will give long/lat, and WLAN the MAC address, SSID as well as signal strength of nearby access points. \n\n" +
-	    		"The settings allow for selecting the poll intervalls for Wifi and GPS. Also, you can force to refresh AGPS information frequently, forcing a download of GPS ephemeral information from the network (only supported on some phones).\n");
-
-		return AboutText;
+		return context.getString(R.string.LocationHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Location";
+		return context.getString(R.string.LocationHandlerUI_name);
 	}
 
 	public void configurePreference(PreferenceActivity prefs)

@@ -17,19 +17,16 @@
  -->
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/main_about"
-          android:icon="@android:drawable/ic_menu_info_details"
-          android:title="@string/main_About" />
-    <item android:id="@+id/local_start"
-          android:icon="@android:drawable/ic_menu_mylocation"
-          android:title="Start" />
+    <item android:id="@+id/local_about"
+          android:icon="@android:drawable/ic_menu_help"
+          android:title="@string/Help" />
     <item android:id="@+id/local_selectall"
           android:icon="@android:drawable/ic_menu_agenda"
-          android:title="Select All" />
+          android:title="@string/Select_all" />
     <item android:id="@+id/local_unselectall"
           android:icon="@android:drawable/ic_menu_delete"
-          android:title="Unselect All" />
+          android:title="@string/Unselect_all" />
     <item android:id="@+id/local_sensorinfo"
           android:icon="@android:drawable/ic_menu_search"
-          android:title="Info" />
+          android:title="@string/Info" />
 </menu>

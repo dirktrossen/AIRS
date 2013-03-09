@@ -17,57 +17,57 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Media Watcher">
+    android:title="@string/MediaWatcherHandlerUI_name">
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Camera" 
+    	android:title="@string/Camera" 
     	android:key="MediaWatcherHandler::Camera" 
     	android:selectable="true" 
-    	android:summaryOn="Watch camera folder" 
-    	android:summaryOff="Do not watch camera folder"/>
+    	android:summaryOn="@string/Camera_on" 
+    	android:summaryOff="@string/Camera_off"/>
     <EditTextPreference
-        android:summary="Provide the path for camera pictures"
+        android:summary="@string/Camera_path_on"
         android:defaultValue="/sdcard/DCIM/Camera"
-        android:title="Camera path"
+        android:title="@string/Camera_path"
         android:key="MediaWatcherHandler::CameraDirectory" android:enabled="true" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Camera"/>
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Pictures" 
+    	android:title="@string/Pictures" 
     	android:key="MediaWatcherHandler::Pictures" 
     	android:selectable="true" 
-    	android:summaryOn="Watch pictures folder" 
-    	android:summaryOff="Do not watch pictures folder"/>
+    	android:summaryOn="@string/Pictures_off" 
+    	android:summaryOff="@string/Pictures_off"/>
     <EditTextPreference
-        android:summary="Provide the path for general pictures"
+        android:summary="@string/Pictures_path_on"
         android:defaultValue="/sdcard/Pictures"
-        android:title="Pictures path"
+        android:title="@string/Pictures_path"
         android:key="MediaWatcherHandler::PicturesDirectory" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Pictures"/>
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Videos" 
+    	android:title="@string/Videos" 
     	android:key="MediaWatcherHandler::Videos" 
     	android:selectable="true" 
-    	android:summaryOn="Watch videos folder" 
-    	android:summaryOff="Do not watch videos folder"/>
+    	android:summaryOn="@string/Videos_on" 
+    	android:summaryOff="@string/Videos_off"/>
     <EditTextPreference
-        android:summary="Provide the path for videos"
+        android:summary="@string/Videos_path_on"
         android:defaultValue="/sdcard/Videos"
-        android:title="Videos path"
+        android:title="@string/Videos_path"
         android:key="MediaWatcherHandler::VideosDirectory" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Videos"/>
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Music" 
+    	android:title="@string/Music" 
     	android:key="MediaWatcherHandler::Music" 
     	android:selectable="true" 
-    	android:summaryOn="Watch music folder" 
-    	android:summaryOff="Do not watch music folder"/>
+    	android:summaryOn="@string/Music_on" 
+    	android:summaryOff="@string/Music_off"/>
     <EditTextPreference
-        android:summary="Provide the path for music"
+        android:summary="@string/Music_path_on"
         android:defaultValue="/sdcard/Music"
-        android:title="Music path"
+        android:title="@string/Music_path"
         android:key="MediaWatcherHandler::MusicDirectory" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Music"/>
 </PreferenceScreen>

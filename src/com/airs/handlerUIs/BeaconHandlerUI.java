@@ -16,18 +16,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class BeaconHandlerUI implements HandlerUI
 {    
-	public HandlerEntry init()    
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{
+		this.context = context;
+
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Bluetooth Beacon");
-		entry.description = new String("Surrounding BT devices");
+		entry.name = context.getString(R.string.BeaconHandlerUI_name);
+		entry.description = context.getString(R.string.BeaconHandlerUI_description);
 		entry.resid = R.drawable.bt2;
 		return (entry);
 	}
@@ -39,18 +43,12 @@ public class BeaconHandlerUI implements HandlerUI
 
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Senses surrounding Bluetooth devices.\n\n"+
-	    		"The sensor values are of the format MAC::name for each discovered device. \n" + 
-	    		"All service devices are attempted to be discovered so that all discoverable BT devices should  be sensed.\n" +
-	    		"The user can be asked to switch on BT if it is switched off before starting the sensing.");
-
-		return AboutText;
+		return context.getString(R.string.BeaconHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "BT Beacon";
+		return context.getString(R.string.BeaconHandlerUI_name);
 	}
 	
 	public void configurePreference(PreferenceActivity prefs)

@@ -17,31 +17,31 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Environmental Sensors">
+    android:title="@string/EnvironmentalSensorsHandlerUI_name">
     <EditTextPreference
-        android:summary="Poll interval for light and barometer sensor in seconds"
+        android:summary="@string/Sensor_Interval_on"
 		android:dialogIcon="@drawable/time"
         android:defaultValue="10"
         android:numeric="integer"
-        android:title="Sensor Interval [s]"
+        android:title="@string/Sensor_Interval"
         android:key="PhoneSensorsHandler::EnvironmentalPoll"/>    
         
     <EditTextPreference
-        android:summary="Poll interval for weather update in minutes"
+        android:summary="@string/Weather_Interval_on"
   		android:dialogIcon="@drawable/time"
         android:defaultValue="30"
         android:numeric="integer"
-        android:title="Weather Interval [min]"
+        android:title="@string/Weather_Interval"
         android:key="WeatherHandler::WeatherPoll"/>
     
     <ListPreference
     	android:dialogIcon="@drawable/location"
         android:key="WeatherHandler::LocationUpdate"
-        android:title="GPS Accuracy [m]"
+        android:title="@string/GPS_Accuracy"
         android:defaultValue="0"
-        android:summary="Update weather when moved more than a certain distance (or always)"
-        android:positiveButtonText="Select"
+        android:summary="@string/GPS_Accuracy_on"
+        android:positiveButtonText="@string/Select"
         android:entries="@array/weatherhandler_values"
         android:entryValues="@array/weatherhandler_entries"
-        android:dialogTitle="Update Distance" />
+        android:dialogTitle="@string/GPS_Accuracy_title" />
 </PreferenceScreen>

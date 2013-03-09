@@ -17,13 +17,14 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
 import com.airs.HandlerEntry;
 
 public interface HandlerUI 
 {
-	public HandlerEntry init();
+	public HandlerEntry init(Context context);
 	public int setDisplay();
 	public String About();
 	public String AboutTitle();

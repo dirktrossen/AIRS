@@ -19,6 +19,7 @@ package com.airs.handlers;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import com.airs.AIRS_record_tab;
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
@@ -90,6 +91,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore callee_semaphore 		= new Semaphore(1);
 	private Semaphore received_semaphore 	= new Semaphore(1);
 	private Semaphore sent_semaphore 		= new Semaphore(1);
+	private Semaphore template_semaphore 	= new Semaphore(1);
 
 	/**
 	 * Sleep function 
@@ -126,6 +128,17 @@ public class SystemHandler implements com.airs.handlers.Handler
 		boolean read = false, task_first;
 		
 		read = false;
+
+		// recording template used?
+		if(sensor.compareTo("TE") == 0)
+		{
+			wait(template_semaphore); // block until semaphore available: it will block after the first usage since templates need only one reading!
+
+			// create Stringbuffer with template being used
+		    StringBuffer buffer = new StringBuffer("TE");
+		    buffer.append(AIRS_record_tab.current_template);
+    		return buffer.toString().getBytes();
+		}
 
 		// battery level?
 		if(sensor.compareTo("Ba") == 0)
@@ -628,6 +641,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     	SensorRepository.insertSensor(new String("SS"), new String("SMS"), new String("Sent SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
     	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
     	SensorRepository.insertSensor(new String("TV"), new String("Tasks"), new String("Visible programs"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
+    	SensorRepository.insertSensor(new String("TE"), new String("Template"), new String("Recording template"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
 	}
 	
 	public SystemHandler(Context airs)

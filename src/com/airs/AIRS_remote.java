@@ -237,11 +237,11 @@ public class AIRS_remote extends Service
 				 Vibrator = new VibrateThread();
 
 			 // update notification
-			 notification = new Notification(R.drawable.icon, "Started AIRS", System.currentTimeMillis());
+			 notification = new Notification(R.drawable.icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
 
 			 // create pending intent for starting the activity
 			 contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_remotevalues.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
-			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Remote Sensing", "...is running since...", contentIntent);
+			 notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Remote_Sensing), getString(R.string.running_since), contentIntent);
 			 notification.flags = Notification.FLAG_NO_CLEAR;
 			 startForeground(1, notification);
 
@@ -285,10 +285,10 @@ public class AIRS_remote extends Service
            	
            	// now create new notification
            	mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-  		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
+  		 	Notification notification = new Notification(R.drawable.icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
   		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
   		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
-  			notification.setLatestEventInfo(getApplicationContext(), "AIRS Remote Sensing", "...has been killed at " + Integer.toString(BatteryKill_i) + "% battery...", contentIntent);
+  			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Remote_Sensing), getString(R.string.killed_at) + " " + Integer.toString(BatteryKill_i) + "% " + getString(R.string.battery) + "...", contentIntent);
   			
   			// give full fanfare
   			notification.flags |= Notification.DEFAULT_SOUND | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;

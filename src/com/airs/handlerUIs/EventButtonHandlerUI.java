@@ -16,18 +16,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class EventButtonHandlerUI implements HandlerUI
 {    
-	public HandlerEntry init()
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{		
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Event Button");
-		entry.description = new String("A button widget to mark meaningful events");
+		entry.name = context.getString(R.string.EventButtonHandlerUI_name);
+		entry.description = context.getString(R.string.EventButtonHandlerUI_description);
 		entry.resid = R.drawable.event_local;
 		return (entry);
 	}
@@ -39,17 +43,12 @@ public class EventButtonHandlerUI implements HandlerUI
 	
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Allows for marking meaningful events through a homescreen (button) widget.\n\n"+
-	    		"The user can input their own meaningful description for the event to be marked.\n" + 
-	    		"AIRS stores the most recently defined descriptions with the maximum number to be stored configurable.");
- 
-		return AboutText;
+		return context.getString(R.string.EventButtonHandlerUI_about);
 	}	
 	
 	public String AboutTitle()
 	{
-		return "Event Button";
+		return context.getString(R.string.EventButtonHandlerUI_name);
 	}
 
 	public void configurePreference(PreferenceActivity prefs)

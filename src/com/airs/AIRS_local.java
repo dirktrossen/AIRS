@@ -22,6 +22,7 @@ import java.io.*;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -74,6 +75,7 @@ public class AIRS_local extends Service
     private HandlerThread[] threads = null;
     private int no_threads = 0;
     public  Context airs = null;
+    public  String template;
 	private int	no_values = 0;
     private boolean localStore_b;
     private boolean localDisplay_b;
@@ -156,7 +158,7 @@ public class AIRS_local extends Service
 				Calendar cal = Calendar.getInstance();
 				
 				cal.setTimeInMillis(values_time);
-				return new String("'" + current.Description + "' sensed " + number_values + " times\nLast sensing at " + DateFormat.format("dd MMM yyyy k:mm:ss", cal) + " with value :\n" + values_output);
+				return new String("'" + current.Description + "'" + getString(R.string.sensed) + " " + number_values + " " + getString(R.string.sensed2) + " " + DateFormat.format("dd MMM yyyy k:mm:ss", cal) + " " + getString(R.string.sensed3) + values_output);
 			}
 			
 			private void output(String text)
@@ -229,133 +231,151 @@ public class AIRS_local extends Service
 				 			while(pause == true)
 				 				sleep(500);
 		
-				    		// acquire latest value
-			    			sensor_data = current.handler.Acquire(current.Symbol, null);
-			    			// anything?
-		    				if (sensor_data!=null)
-		    				{
-		    					// here we handle int/float sensor values
-				    			if(current.type.equals("int") || current.type.equals("float"))
-				    			{
-				    				// do long int first
-				    				integer = ((int)(sensor_data[2] & 0xFF) << 24) 
-				     		         | ((int)(sensor_data[3] & 0xff) << 16) 
-				      				 | ((int)(sensor_data[4] & 0xFF) << 8) 
-				      				 | ((int)sensor_data[5] & 0xFF);
-				    				
-					    			// set text item in value field
-				    				if (localDisplay_b == true)
-				    				{
-					    				if (current.scaler != 0)
-					    					output(current.Symbol + " : " + String.valueOf((double)integer*scaler) + " [" + current.Unit + "]");
+				 			// handle sensor status
+				 			switch(current.status)
+				 			{
+				 			// is sensor not valid anymore -> terminate!
+				 			case Sensor.SENSOR_INVALID:
+				 				if (current.statusString != null)
+				 					output(current.Symbol + " : " + getString(R.string.Sensor_invalid) + " " + current.statusString);
+				 				else
+				 					output(current.Symbol + " : " + getString(R.string.Sensor_invalid2));
+
+				 				// now wait 
+		    					wait();
+				 				break;
+				 			case Sensor.SENSOR_SUSPEND:
+				 				break;
+				 			case Sensor.SENSOR_VALID:		 			
+					    		// acquire latest value
+				    			sensor_data = current.handler.Acquire(current.Symbol, null);
+				    			// anything?
+			    				if (sensor_data!=null)
+			    				{
+			    					// here we handle int/float sensor values
+					    			if(current.type.equals("int") || current.type.equals("float"))
+					    			{
+					    				// do long int first
+					    				integer = ((int)(sensor_data[2] & 0xFF) << 24) 
+					     		         | ((int)(sensor_data[3] & 0xff) << 16) 
+					      				 | ((int)(sensor_data[4] & 0xFF) << 8) 
+					      				 | ((int)sensor_data[5] & 0xFF);
+					    				
+						    			// set text item in value field
+					    				if (localDisplay_b == true)
+					    				{
+						    				if (current.scaler != 0)
+						    					output(current.Symbol + " : " + String.valueOf((double)integer*scaler) + " [" + current.Unit + "]");
+						    				else
+						    					output(current.Symbol + " : " + String.valueOf(integer) + " [" + current.Unit + "]");
+					    				}
 					    				else
-					    					output(current.Symbol + " : " + String.valueOf(integer) + " [" + current.Unit + "]");
-				    				}
-				    				else
-				    				{
-				    					no_values++;
-				    					output("# of values : " + String.valueOf(no_values));
-				    				}
-				    				
-				    				// need to store locally?
-				    				if (localStore_b == true)
-				    				{
-				    					if (current.scaler !=0)
-				    						fileOut = new String("'"+ String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf((double)integer*scaler) + "'");
-				    					else
-				    						fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf(integer) + "'");
-				    				}
-				    			}
-				    			
-		    					// here we handle txt sensor values
-				    			if(current.type.equals("txt") || current.type.equals("str"))
-				    			{
-					    			// set text item in value field
-				    				if (localDisplay_b == true)
-				    				{
-				    					output(current.Symbol + " : " + new String(sensor_data, 2, sensor_data.length - 2) + " [" + current.Unit + "]");
-				    				}
-				    				else
-				    				{
-				    					no_values++;
-				    					output("# of values : " + String.valueOf(no_values));
-				    				}			    					
-		
-				    				// need to store locally?
-				    				if (localStore_b == true)
-			    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + new String(sensor_data, 2, sensor_data.length - 2) + "'");
-				    			}
-		
-			   					// here we handle img and arr sensor values
-				    			if(current.type.equals("img") || current.type.equals("arr"))
-				    			{
-					    			// set text item in value field, here only the length of the sensor value field
-				    				if (localDisplay_b == true)
-				    				{
-				    					output(current.Symbol + " : " + Integer.toString(sensor_data.length));
-				    				}
-				    				else
-				    				{
-				    					no_values++;
-				    					output("# of values : " + String.valueOf(no_values));
-				    				}			    					
-		
-				    				// need to store locally?
-				    				if (localStore_b == true)
-				    				{
-				    				    try 
+					    				{
+					    					no_values++;
+					    					output("# of values : " + String.valueOf(no_values));
+					    				}
+					    				
+					    				// need to store locally?
+					    				if (localStore_b == true)
+					    				{
+					    					if (current.scaler !=0)
+					    						fileOut = new String("'"+ String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf((double)integer*scaler) + "'");
+					    					else
+					    						fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf(integer) + "'");
+					    				}
+					    			}
+					    			
+			    					// here we handle txt sensor values
+					    			if(current.type.equals("txt") || current.type.equals("str"))
+					    			{
+						    			// set text item in value field
+					    				if (localDisplay_b == true)
+					    				{
+					    					output(current.Symbol + " : " + new String(sensor_data, 2, sensor_data.length - 2) + " [" + current.Unit + "]");
+					    				}
+					    				else
+					    				{
+					    					no_values++;
+					    					output("# of values : " + String.valueOf(no_values));
+					    				}			    					
+			
+					    				// need to store locally?
+					    				if (localStore_b == true)
+				    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + new String(sensor_data, 2, sensor_data.length - 2) + "'");
+					    			}
+			
+				   					// here we handle img and arr sensor values
+					    			if(current.type.equals("img") || current.type.equals("arr"))
+					    			{
+						    			// set text item in value field, here only the length of the sensor value field
+					    				if (localDisplay_b == true)
+					    				{
+					    					output(current.Symbol + " : " + Integer.toString(sensor_data.length));
+					    				}
+					    				else
+					    				{
+					    					no_values++;
+					    					output("# of values : " + String.valueOf(no_values));
+					    				}			    					
+			
+					    				// need to store locally?
+					    				if (localStore_b == true)
+					    				{
+					    				    try 
+					    				    {
+					    				    	fileIMG = new String(url + String.valueOf(System.currentTimeMillis()) + "_" + current.Symbol + ".jpg" );
+					    				    	// open file with read/write - otherwise, it will through a security exception (no idea why)
+					    				        mconn = new File(path, fileIMG);
+					    			    		os2 = new BufferedOutputStream(new FileOutputStream(mconn, true));
+			
+					    			    		// store sensor data
+					    			    		os2.write(sensor_data, 2, sensor_data.length-2);
+					    			    		os2.close();
+					    			    		// store filename in recording file
+					    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + fileIMG + "'");
+			
+					    				    } 
+					    				    catch(Exception e)
+					    				    {
+					    			    		debug("Exception in opening file connection");
+					    				    }
+					    				}
+					    			}
+					    			
+					    			// anything to write to file?
+					    			if (fileOut != null)
+					    			{
+				    				    try
 				    				    {
-				    				    	fileIMG = new String(url + String.valueOf(System.currentTimeMillis()) + "_" + current.Symbol + ".jpg" );
-				    				    	// open file with read/write - otherwise, it will through a security exception (no idea why)
-				    				        mconn = new File(path, fileIMG);
-				    			    		os2 = new BufferedOutputStream(new FileOutputStream(mconn, true));
-		
-				    			    		// store sensor data
-				    			    		os2.write(sensor_data, 2, sensor_data.length-2);
-				    			    		os2.close();
-				    			    		// store filename in recording file
-				    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + fileIMG + "'");
-		
-				    				    } 
-				    				    catch(Exception e)
-				    				    {
-				    			    		debug("Exception in opening file connection");
+				    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
+				    				    	
+				    				    	// write sensor value in table for faster retrieval later!
+				    				    	if (started == true)
+				    				    	{
+				    				    		try
+				    				    		{
+				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+				    				    		}
+				    				    		catch(Exception e)
+				    				    		{
+				    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
+				    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
+				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+				    				    		}
+				    				    		started = false;
+				    				    	}
 				    				    }
-				    				}
-				    			}
-				    			
-				    			// anything to write to file?
-				    			if (fileOut != null)
-				    			{
-			    				    try
-			    				    {
-			    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
-			    				    	
-			    				    	// write sensor value in table for faster retrieval later!
-			    				    	if (started == true)
-			    				    	{
-			    				    		try
-			    				    		{
-			    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
-			    				    		}
-			    				    		catch(Exception e)
-			    				    		{
-			    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
-			    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
-			    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
-			    				    		}
-			    				    		started = false;
-			    				    	}
-			    				    }
-			    					catch(Exception e) 
-			    					{    					
-			    					}	
-				    			}
-		    				}
-		    				
-		    				// are we waiting for the next poll?
-		    				if (current.polltime>0 && interrupted ==false)
-		    					Thread.sleep(current.polltime);
+				    					catch(Exception e) 
+				    					{    					
+				    					}	
+					    			}
+			    				}
+			    				
+			    				// are we waiting for the next poll?
+			    				if (current.polltime>0 && interrupted ==false)
+			    					Thread.sleep(current.polltime);
+			    				break;
+				 			}
 				 		 }
 					}
 					catch(Exception e)
@@ -591,29 +611,6 @@ public class AIRS_local extends Service
 			return Service.START_STICKY;
 		}
 		
-		// sensing running?
-		if (running == true)
-			return Service.START_STICKY;
-
-		// handlers created?
-		if (start == true && started == false)
-		{
-			// create timer/alarm handling
-			Waker.init(this);
-			
-			// create handlers
-			HandlerManager.createHandlers(this.getApplicationContext());	
-			started = true;
-			return Service.START_STICKY;
-		}
-
-		// not yet discovered?
-		if (discovered == false)
-			return Service.START_STICKY;
-		
-		// start the measurements if discovered
-		running = startMeasurements(false);
-
 		return Service.START_STICKY;
 	}
 
@@ -748,20 +745,20 @@ public class AIRS_local extends Service
 		 
 		 if (j == 0)
 		 {
-     		Toast.makeText(getApplicationContext(), "You need to enable at least one sensor before starting the measurements!", Toast.LENGTH_LONG).show();
+     		Toast.makeText(getApplicationContext(), getString(R.string.Enable_at_least_one_sensor), Toast.LENGTH_LONG).show();
      		return false;
 		 }
 
 		 // create notification
-		 Notification notification = new Notification(R.drawable.icon, "Started AIRS", System.currentTimeMillis());
+		 Notification notification = new Notification(R.drawable.icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
 
 		 // create pending intent for starting the activity
 		 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_measurements.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
 		 // has it been started or restarted?
 		 if (restarted == false)
-			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is running since...", contentIntent);
+			 notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Local_Sensing), getString(R.string.running_since), contentIntent);
 		 else
-			 notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...is restarted since...", contentIntent);
+			 notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Local_Sensing), getString(R.string.restarted_since), contentIntent);
 		 // set the time again for ICS
 		 notification.when = System.currentTimeMillis();
 		 // don't allow clearing the notification
@@ -879,7 +876,27 @@ public class AIRS_local extends Service
 		 return true;
 	 }
 	 
-	 public void Discover(AIRS_local_tab airs)
+	 public void saveSelections()
+	 {
+		 int i;
+		 Sensor current = null;
+
+		 // now create measurement threads
+		 for (i=0;i<sensors.getCount();i++)
+		 {
+			current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+			if (current != null)
+			{
+    			// save setting in RMS
+				if (sensors.isItemChecked(i) == true)
+ 	                HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "On");
+		    	else
+	                HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "Off");
+			}
+		 } 	
+	 }
+	 
+	 public void Discover(Activity airs)
 	 {
 			int i;
 			String sensor_setting;
@@ -887,8 +904,16 @@ public class AIRS_local extends Service
 
 			this.airs = airs;
 			
+			// create timer/alarm handling
+			Waker.init(this);
+			
+			// create handlers
+			HandlerManager.createHandlers(this.getApplicationContext());
+			
 			// start other stuff
 			start_AIRS_local();
+
+			started = true;
 
 			airs.setContentView(R.layout.sensors);
      
@@ -964,9 +989,6 @@ public class AIRS_local extends Service
 			Sensor current;
 			
 			airs = this.getApplicationContext();
-
-			// start other stuff
-			start_AIRS_local();
      
 	        sensors 	= (ListView)new ListView(this.getApplicationContext());
 	        sensors.setItemsCanFocus(false); 
@@ -1049,15 +1071,21 @@ public class AIRS_local extends Service
 			{
 				SerialPortLogger.debugForced("AIRS_local::service was running before, trying to restart recording!");
 
-				// set debug state
-		   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
-
-		   		// init Waker resources
-		   		Waker.init(this);
-		   		
-				// create handlers
-				HandlerManager.createHandlers(this.getApplicationContext());	
-				started = true;
+				if (started == false)
+				{
+					// set debug state
+			   		SerialPortLogger.setDebugging(settings.getBoolean("Debug", false));
+	
+			   		// init Waker resources
+			   		Waker.init(this);
+			   		
+					// create handlers
+					HandlerManager.createHandlers(this.getApplicationContext());	
+					started = true;
+					
+					// start other stuff
+					start_AIRS_local();
+				}
 
 				SerialPortLogger.debugForced("AIRS_local::re-created handlers");
 
@@ -1168,10 +1196,10 @@ public class AIRS_local extends Service
             	
             	// now create new notification
             	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-       		 	Notification notification = new Notification(R.drawable.icon, "Killed AIRS", System.currentTimeMillis());
+       		 	Notification notification = new Notification(R.drawable.icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
        		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
        		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
-       			notification.setLatestEventInfo(getApplicationContext(), "AIRS Local Sensing", "...has been killed at " + Integer.toString(BatteryKill_i) + "% battery...", contentIntent);
+       			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Local_Sensing), getString(R.string.killed_at) + " " + Integer.toString(BatteryKill_i) + "% " + getString(R.string.battery) + "...", contentIntent);
        			
        			// give full fanfare
        			notification.flags |= Notification.DEFAULT_SOUND | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;

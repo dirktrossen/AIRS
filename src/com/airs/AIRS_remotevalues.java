@@ -141,10 +141,10 @@ public class AIRS_remotevalues extends Activity
 	            return true;
 	        case R.id.remote_exit:
 	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    		builder.setMessage("Are you sure you want to exit?")
-	    		       .setTitle("AIRS Remote Sensing")
+	    		builder.setMessage(getString(R.string.Exit_AIRS))
+	    		       .setTitle(getString(R.string.AIRS_Remote_Sensing))
 	    		       .setCancelable(false)
-	    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+	    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
 	    		       {
 	    		           public void onClick(DialogInterface dialog, int id) 
 	    		           {
@@ -156,7 +156,7 @@ public class AIRS_remotevalues extends Activity
 	    		        	   finish();
 	    		           }
 	    		       })
-	    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+	    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
 	    		       {
 	    		           public void onClick(DialogInterface dialog, int id) 
 	    		           {
@@ -189,7 +189,7 @@ public class AIRS_remotevalues extends Activity
 	     		}
 	     		// if not running, show text
 	  	        if (AIRS_remote.running == false)
-		     		Toast.makeText(getApplicationContext(), "RemoteSensing Activity::Sensing not running!\nThe service might have crashed!", Toast.LENGTH_SHORT).show();
+		     		Toast.makeText(getApplicationContext(), getString(R.string.Sensing_not_running), Toast.LENGTH_SHORT).show();
 	  	    }
 
 	  	    public void onServiceDisconnected(ComponentName className) {

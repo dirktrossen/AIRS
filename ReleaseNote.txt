@@ -1,3 +1,21 @@
+V2.5.2:
+- bugfixes
+
+V2.5.1:
+- internationalised AIRS for language support
+- bugfixes
+
+V2.5:
+- changed UI to make configuration faster and integrate templates better 
+- added template download from remote server
+- sync now simplified (single file only) with ability to set sync date
+- added BD sensor for list of BT devices connected at any moment
+- added TE sensor for template used for recording
+- changed Wifi handler to return empty readings if no WiFi is found
+- fixed bug in AZ, RO, PI sensors
+- added ability for sensors to disappear in failure cases (e.g., if connection to heart monitor failed)
+- show template being used in measurement window 
+
 V2.4.1:
 - bugfixes in managing templates
 

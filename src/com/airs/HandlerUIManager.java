@@ -102,7 +102,7 @@ public class HandlerUIManager
 		builder.setTitle(title)
 			   .setMessage(s)
 			   .setIcon(R.drawable.about)
-		       .setNeutralButton("OK", new DialogInterface.OnClickListener() 
+		       .setNeutralButton(airs.getString(R.string.OK), new DialogInterface.OnClickListener() 
 		       {
 		           public void onClick(DialogInterface dialog, int id) 
 		           {

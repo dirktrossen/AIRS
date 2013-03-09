@@ -20,15 +20,10 @@ import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -36,73 +31,60 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
+@SuppressWarnings("deprecation")
 public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 {
+	static public boolean sensors_shown = false;
 	private int currentTab = 0;
 	private int no_tabs = 0;
-	private int no_settings_tab, no_local_tab;
-	
-    // preferences
-    private SharedPreferences settings;
-	private boolean showRemote;
+	private TabHost tabHost;
 	
 	public void onCreate(Bundle savedInstanceState) 
 	{
 	    super.onCreate(savedInstanceState);
 	    
-        // get default preferences
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
-        showRemote = settings.getBoolean("showRemote", true);
-
         // set layout
         setContentView(R.layout.tabs);
 
 	    Resources res = getResources(); // Resource object to get Drawables
-	    TabHost tabHost = getTabHost();  // The activity TabHost
+	    tabHost = getTabHost();  // The activity TabHost
 	    TabHost.TabSpec spec;  // Resusable TabSpec for each tab
 	    Intent intent;  // Reusable Intent for each tab
 
-	    // Create an Intent to launch an Activity for the tab (to be reused)
-	    intent = new Intent().setClass(this, AIRS_local_tab.class);
-
 	    // first tab: local sensing
-	    spec = tabHost.newTabSpec("local").setIndicator("Local",
-	                      res.getDrawable(R.drawable.file))
+	    intent = new Intent().setClass(this, AIRS_record_tab.class);
+	    spec = tabHost.newTabSpec("local").setIndicator(getString(R.string.tab_Record),
+	                      res.getDrawable(R.drawable.record))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
-	    // store tab number
-	    no_local_tab = no_tabs;
 	    no_tabs++;
 
-	    // second tab: remote sensing, if it needs to be shown
-	    if (showRemote == true)
-	    {
-		    intent = new Intent().setClass(this, AIRS_remote_tab.class);
-		    spec = tabHost.newTabSpec("remote").setIndicator("Remote",
-		                      res.getDrawable(R.drawable.server))
-		                  .setContent(intent);
-		    tabHost.addTab(spec);
-		    no_tabs++;
-	    }
+	    // second tab: sync
+	    intent = new Intent().setClass(this, AIRS_sync.class);
+	    spec = tabHost.newTabSpec("remote").setIndicator(getString(R.string.tab_Sync),
+	                      res.getDrawable(R.drawable.server))
+	                  .setContent(intent);
+	    tabHost.addTab(spec);
+	    no_tabs++;
 	    
 	    // third tab: settings
 	    intent = new Intent().setClass(this, AIRS_settings_tab.class);
-	    spec = tabHost.newTabSpec("handlers").setIndicator("Settings",
+	    spec = tabHost.newTabSpec("handlers").setIndicator(getString(R.string.tab_Config),
 	                      res.getDrawable(R.drawable.general2))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
 	    // store tab number
-	    no_settings_tab = no_tabs;
-	    no_tabs++;
-
-	    // fourth tab: web view
-	    intent = new Intent().setClass(this, AIRS_web_tab.class);
-	    spec = tabHost.newTabSpec("manual").setIndicator("Online Manual",
-	                      res.getDrawable(R.drawable.manual))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
 	    no_tabs++;
 	    
+	    // fourth tab: storica
+	    intent = new Intent().setClass(this, AIRS_visualisation.class);
+	    spec = tabHost.newTabSpec("storica").setIndicator(getString(R.string.tab_Visualise),
+	                      res.getDrawable(R.drawable.visualise))
+	                  .setContent(intent);
+	    tabHost.addTab(spec);
+	    // store tab number
+	    no_tabs++;
+
 	    // current tab
 	    tabHost.setCurrentTab(currentTab);
 	    tabHost.setOnTabChangedListener(this);
@@ -122,18 +104,17 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 			if (event.getKeyCode()==KeyEvent.KEYCODE_BACK)
 			{
             		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            		builder.setMessage("Are you sure you want to exit?")
-            		       .setCancelable(false)
+            		builder.setCancelable(false)
             		       .setIcon(R.drawable.icon)
-            		       .setTitle("Exit AIRS")
-            		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+            		       .setTitle(getString(R.string.Exit_AIRS2))
+            		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
             		       {
             		           public void onClick(DialogInterface dialog, int id) 
             		           {
             		                finish();
             		           }
             		       })
-            		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+            		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
             		       {
             		           public void onClick(DialogInterface dialog, int id) 
             		           {
@@ -149,42 +130,12 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) 
-    {    	
-        switch (item.getItemId()) 
-        {
-        case R.id.main_about:
-        	// call about dialogue
-        	if (getTabHost().getCurrentTab() == no_settings_tab)
-        		HandlerUIManager.AboutDialog("Settings", getString(R.string.HandlersList));
-            return true; 
-        default:
-        	return false;
-        }
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
       //ignore orientation change
       super.onConfigurationChanged(newConfig);
     }
     
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) 
-    {
-    	if (getTabHost().getCurrentTab() == no_local_tab)
-    		return false;
-    	{
-        	MenuInflater inflater;
-            menu.clear();    		
-            inflater = getMenuInflater();
-            inflater.inflate(R.menu.options_about, menu);
-            return true;
-    	}
-
-    }
-
     public void onTabChanged(String tabId)
     {
            View currentView = getTabHost().getCurrentView();

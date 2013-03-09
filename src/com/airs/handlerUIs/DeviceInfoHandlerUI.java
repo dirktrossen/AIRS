@@ -17,18 +17,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class DeviceInfoHandlerUI implements HandlerUI
 {   
-	public HandlerEntry init()
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Device Information");
-		entry.description = new String("Various phone-based information like orientation, proximity, RAM, battery etc");
+		entry.name = context.getString(R.string.DeviceInfoHandlerUI_name);
+		entry.description = context.getString(R.string.DeviceInfoHandlerUI_description);
 		entry.resid = R.drawable.phone;
 		return (entry);
 	}
@@ -40,16 +44,12 @@ public class DeviceInfoHandlerUI implements HandlerUI
 
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Senses various phone-based sensors & system information.\n\n"+
-	    		"The orientation is only supported for models with internal compass. Other information includes proximity as well as system information such as battery, RAM and tasks.");
-
-		return AboutText;
+		return context.getString(R.string.DeviceInfoHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Phone Sensors";
+		return context.getString(R.string.DeviceInfoHandlerUI_name);
 	}
 
 	public void configurePreference(PreferenceActivity prefs)

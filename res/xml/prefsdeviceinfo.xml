@@ -17,29 +17,29 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Device Information">
+    android:title="@string/DeviceInfoHandlerUI_name">
     
     <EditTextPreference
-        android:summary="Poll interval for orientation sensor in seconds"
+        android:summary="@string/Orientation_Interval"
 		android:dialogIcon="@drawable/time"
         android:defaultValue="5"
         android:numeric="integer"
-        android:title="Orientation Interval [s]"
+        android:title="@string/Orientation_Interval"
         android:key="PhoneSensorsHandler::OrientationPoll"/>
     
     <EditTextPreference
-        android:summary="Poll interval for proximity sensor in seconds"
+        android:summary="@string/Proximity_Interval_on"
 		android:dialogIcon="@drawable/time"
         android:defaultValue="10"
         android:numeric="integer"
-        android:title="Proximity Interval [s]"
+        android:title="@string/Proximity_Interval"
         android:key="PhoneSensorsHandler::ProximityPoll"/>    
     
     <EditTextPreference
-        android:summary="Poll interval for system information like RAM, tasks, etc"
+        android:summary="@string/System_Poll_Interval_on"
 		android:dialogIcon="@drawable/time"
         android:defaultValue="10"
         android:numeric="integer"
-        android:title="System Poll Interval [s]"
+        android:title="@string/System_Poll_Interval"
         android:key="SystemSensorsHandler::SystemPoll"/>           
 </PreferenceScreen>

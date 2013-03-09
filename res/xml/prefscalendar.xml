@@ -17,14 +17,14 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:title="Calendar">
+  android:title="@string/CalendarHandlerUI_name">
     <com.airs.helper.ListPreferenceMultiSelect
 		android:dialogIcon="@drawable/calendar"
         android:key="CalendarHandler::Calendar_names"
-        android:title="Calendar Selection"
+        android:title="@string/Calendar_Selection"
         android:entries="@array/calendar_values"
         android:entryValues="@array/calendar_entries"
-        android:summary="Choose the calendars that you want to have watched"
-        android:positiveButtonText="Select"
-        android:dialogTitle="Choose Calendars" />
+        android:summary="@string/Calendar_Selection_on"
+        android:positiveButtonText="@string/Select"
+        android:dialogTitle="@string/Calendar_Selection_title" />
 </PreferenceScreen>

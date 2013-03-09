@@ -17,26 +17,26 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="BT Beacon">
+    android:title="@string/BeaconHandlerUI_name">
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Enable BT" 
+    	android:title="@string/Enable_BT" 
     	android:key="BeaconHandler::BTON" 
     	android:selectable="true" 
-    	android:summaryOn="Programmatically enable BT, if switched off" 
-    	android:summaryOff="Do not enable BT"/>
+    	android:summaryOn="@string/Enable_BT_on" 
+    	android:summaryOff="@string/Enable_BT_off"/>
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Ask before enabling" 
+    	android:title="@string/Ask_before_enabling" 
     	android:key="BeaconHandler::BTONAsk" 
     	android:selectable="true" 
-    	android:summaryOn="Requests user permission when enabling BT" 
-    	android:summaryOff="Switch on BT without explicit user permission"/>
+    	android:summaryOn="@string/Ask_before_enabling_on" 
+    	android:summaryOff="@string/Ask_before_enabling_off"/>
    <EditTextPreference
 		android:dialogIcon="@drawable/time"
-        android:summary="Poll interval for BT scanning in seconds"
+        android:summary="@string/BT_Interval_on"
         android:defaultValue="30"
         android:numeric="integer"
-        android:title="BT Interval [s]"
+        android:title="@string/BT_Interval"
         android:key="BeaconHandler::Poll"/>
 </PreferenceScreen>

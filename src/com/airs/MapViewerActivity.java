@@ -212,14 +212,14 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
         {
         case R.id.main_about:
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setTitle("AIRS Map View")
+    		builder.setTitle(getString(R.string.AIRS_Map))
     			   .setMessage(getString(R.string.MapAbout))
     			   .setIcon(R.drawable.about)
-    		       .setNeutralButton("OK", new DialogInterface.OnClickListener() 
+    		       .setNeutralButton(getString(R.string.OK), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {
-    		                dialog.cancel();
+    		                dialog.dismiss();
     		           }
     		       });
     		AlertDialog alert = builder.create();

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
-import java.nio.channels.NonWritableChannelException;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -117,15 +116,15 @@ public class AIRS_restore extends Activity
            switch (msg.what) 
            {
            case FINISH_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), "Cannot restore DB file (possible access error or external media does not exist)!", Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_restore), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case FINISH2_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), "Finished restore successfully!", Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Finished_restore), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case UPDATE_VALUES:
-	    		ProgressText.setText("Restore DB of size " + String.valueOf(msg.getData().getLong("Value")/1024) + " kB");
+	    		ProgressText.setText(getString(R.string.Restore_status) + " " + String.valueOf(msg.getData().getLong("Value")/1024) + " kB");
 	    		break;
            default:  
            	break;

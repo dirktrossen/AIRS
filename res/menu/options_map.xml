@@ -18,15 +18,15 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/main_about"
-          android:icon="@android:drawable/ic_menu_info_details"
-          android:title="@string/main_About" />
+          android:icon="@android:drawable/ic_menu_help"
+          android:title="@string/Help" />
     <item android:id="@+id/map_mapview"
           android:icon="@android:drawable/ic_menu_mapmode"
-          android:title="Map View" />
+          android:title="@string/Map_View" />
     <item android:id="@+id/map_satview"
           android:icon="@android:drawable/ic_menu_mapmode"
-          android:title="Satellite View" />
+          android:title="@string/Satellite_View" />
     <item android:id="@+id/map_path"
           android:icon="@android:drawable/ic_menu_recent_history"
-          android:title="Toggle Path" />
+          android:title="@string/Toggle_Path" />
 </menu>

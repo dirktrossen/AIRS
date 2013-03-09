@@ -33,10 +33,11 @@ import com.airs.platform.SensorRepository;
 
 public class PhoneSensorHandler implements com.airs.handlers.Handler
 {
-	public static final int INIT_LIGHT = 1;
-	public static final int INIT_PROXIMITY = 2;
-	public static final int INIT_ORIENTATION = 3;
-	public static final int INIT_PRESSURE = 4;
+	public static final int INIT_LIGHT 			= 1;
+	public static final int INIT_PROXIMITY 		= 2;
+	public static final int INIT_ORIENTATION 	= 3;
+	public static final int CLOSE_ORIENTATION 	= 4;
+	public static final int INIT_PRESSURE 		= 5;
 
 	private Context nors;
 	private boolean sensor_enable = false;
@@ -122,7 +123,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 				
 				// now toggle event listener off, if necessary
 				if (value_waiting == false)
-			        mHandler.sendMessage(mHandler.obtainMessage(INIT_ORIENTATION));						
+			        mHandler.sendMessage(mHandler.obtainMessage(CLOSE_ORIENTATION));						
 			}
 			
 			if (read == false)
@@ -153,7 +154,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					
 					// now toggle event listener off, if necessary
 					if (value_waiting == false)
-				        mHandler.sendMessage(mHandler.obtainMessage(INIT_ORIENTATION));						
+				        mHandler.sendMessage(mHandler.obtainMessage(CLOSE_ORIENTATION));						
 				}
 
 			if (read == false)
@@ -184,7 +185,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 
 					// now toggle event listener off, if necessary
 					if (value_waiting == false)
-				        mHandler.sendMessage(mHandler.obtainMessage(INIT_ORIENTATION));						
+				        mHandler.sendMessage(mHandler.obtainMessage(CLOSE_ORIENTATION));						
 				}	
 			
 			if (read == false)
@@ -454,10 +455,12 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
            case INIT_ORIENTATION:
         	   if (startedOrientation == false)
         		   startedOrientation = sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL);
-        	   else
+	           break;  
+           case CLOSE_ORIENTATION:
+        	   if (startedOrientation == true)
         	   {
-        		   sensorManager.unregisterListener(sensorlistener, Orientation);
-        		   startedOrientation = false;        		   
+	    		   sensorManager.unregisterListener(sensorlistener, Orientation);
+	    		   startedOrientation = false;        		   
         	   }
 	           break;  
            default:  

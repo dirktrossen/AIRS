@@ -18,7 +18,6 @@ package com.airs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +30,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class AIRS_DBAdmin extends Activity implements OnClickListener
@@ -40,11 +38,6 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
     private ImageButton db_backup;
     private ImageButton db_restore;
     private ImageButton db_index;
-    private TextView db_text;
-
-    // preferences
-    private SharedPreferences settings;
-    private Context		airs;
 
     /** Called when the activity is first created. */
     @Override
@@ -53,30 +46,6 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
         // Set up the window layout
         super.onCreate(savedInstanceState);
         
-        // save current instance for inner classes
-        this.airs = this;
-        
-        // get default preferences
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
-				
-		// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
-		if (settings.getBoolean("AIRS_local::running", false) == true)
-		{
-    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setMessage("AIRS has been running.\nYou will need to stop AIRS before administering the database.")
-    			   .setTitle("AIRS Local Sensing")
-    		       .setCancelable(false)
-    		       .setNeutralButton("OK!", new DialogInterface.OnClickListener() 
-    		       {
-    		           public void onClick(DialogInterface dialog, int id) 
-    		           {
- 		    			    finish();
-    		           }
-    		       });
-    		AlertDialog alert = builder.create();
-    		alert.show();
-		}
-
         // set content of View
         setContentView(R.layout.db_admin);
 
@@ -157,17 +126,17 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
         case R.id.db_index:
            	intent = new Intent(this ,AIRS_index.class);
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setMessage("Indexing your database greatly improves the performance in retrieving values for visualisation but will increase the size of your database by about 60%! You only need to index once.\n\nAre you sure that you want to continue?")
-    			   .setTitle("Database Indexing")
+    		builder.setMessage(getString(R.string.Index_DB_message))
+    			   .setTitle(getString(R.string.Index_DB))
     		       .setCancelable(false)
-    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {
 	    		        	startActivity(intent);
     		           }
     		       })
-    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {

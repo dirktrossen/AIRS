@@ -17,7 +17,10 @@
  -->
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/main_about"
-          android:icon="@android:drawable/ic_menu_info_details"
-          android:title="@string/main_About" />
-</menu>
+    <item android:id="@+id/sync_about"
+          android:icon="@android:drawable/ic_menu_help"
+          android:title="@string/Help" />
+    <item android:id="@+id/sync_setdate"
+          android:icon="@android:drawable/ic_menu_recent_history"
+          android:title="@string/Set_Sync_Date" />
+    </menu>

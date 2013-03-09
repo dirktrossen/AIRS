@@ -295,7 +295,15 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		{
 			// is Wifi switched off and shall we switch it on?
 			if (wm.isWifiEnabled() == false && enableWIFI == true)
-				wm.setWifiEnabled(true);
+			{
+				try
+				{
+					wm.setWifiEnabled(true);
+				}
+				catch(Exception e)
+				{
+				}
+			}
 		
 			// if wifi is not locked, do so to prevent it from sleeping!
 			if (sleepWIFI == false)
@@ -327,8 +335,15 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 				 
 				// is Wifi switched off and shall we switch it on?
 				if (wm.isWifiEnabled() == false && enableWIFI == true)
-					wm.setWifiEnabled(true);
-
+				{
+					try
+					{
+						wm.setWifiEnabled(true);
+					}
+					catch(Exception e)
+					{
+					}
+				}
 				// Register Broadcast Receiver
 				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 				
@@ -365,12 +380,6 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	    
 	    // scanning is over
 	    Wifi_scanning = false;
-	    // nothing scanned?
-	    if (results.size()==0)
-	    {
-		    Wifi_reading = false;	   
-	    	return;
-	    }
 	    
 		MAC_reading 	= new StringBuffer("WM");	
 		SSID_reading 	= new StringBuffer("WI");

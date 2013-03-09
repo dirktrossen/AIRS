@@ -21,21 +21,19 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 	  <LinearLayout
-	  xmlns:android="http://schemas.android.com/apk/res/android"
 	  android:orientation="horizontal"
 	  android:layout_width="match_parent"
 	  android:layout_height="wrap_content" 
 	  android:layout_marginTop="40dp">
-	    <TextView android:id="@+id/textView1" android:textAppearance="?android:attr/textAppearanceLarge" android:text="# Values : " android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	    <TextView android:id="@+id/textView1" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/Values" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 	    <TextView android:id="@+id/remote_values1" android:layout_width="wrap_content" android:text="-" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
 	  </LinearLayout>
 	  <LinearLayout
-	  xmlns:android="http://schemas.android.com/apk/res/android"
 	  android:orientation="horizontal"
 	  android:layout_width="match_parent"
 	  android:layout_height="wrap_content" 
 	  android:layout_marginTop="40dp">
-	    <TextView android:id="@+id/textView2" android:textAppearance="?android:attr/textAppearanceLarge" android:text="kBytes transferred : " android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+	    <TextView android:id="@+id/textView2" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/transferred" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 	    <TextView android:id="@+id/remote_values2" android:layout_width="wrap_content" android:text="-" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
 	  </LinearLayout>
 </LinearLayout>

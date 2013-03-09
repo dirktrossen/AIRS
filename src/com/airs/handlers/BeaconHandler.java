@@ -17,6 +17,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import android.bluetooth.BluetoothAdapter;
@@ -39,11 +41,13 @@ public class BeaconHandler implements Handler, Runnable
     private BluetoothAdapter mBtAdapter = null;
     private int			no_devices = 0;
 	private byte[] 		no_readings = new byte[6];
+	private List<String> device_list;
 	// beacon data
 	private StringBuffer reading = null;
 	private boolean 	 bt_enabled 	= true;
 	private boolean 	 bt_ask		 	= true;
 	private boolean 	 bt_registered  = false;
+	private boolean 	 bt_registered2 = false;
 	private boolean 	 bt_first		= false;
 	private Thread 		 runnable = null;
 	private boolean		 running = false;
@@ -87,6 +91,9 @@ public class BeaconHandler implements Handler, Runnable
 	***********************************************************************/
 	public synchronized byte[] Acquire(String sensor, String query)
 	{		
+		int i;
+		StringBuffer devices = null;
+
 		// Discovery thread started?
 		if (runnable == null)
 		{
@@ -114,7 +121,33 @@ public class BeaconHandler implements Handler, Runnable
 				no_readings[4] = (byte)((no_devices>>8) & 0xff);
 				no_readings[5] = (byte)(no_devices & 0xff);
 				
-				return no_readings;		
+				return no_readings;	
+			case 'D':
+				// otherwise read list and create reading buffer
+				devices = new StringBuffer("BD");
+
+				// if there's no device connected, we're finished!
+				if (device_list.size() == 0)
+					return devices.toString().getBytes();
+				
+				synchronized(device_list)
+				{
+					boolean first_one = true;
+					for (i=0;i<device_list.size();i++)
+					{
+		            	// first device? -> then no \n at the end of it!
+		            	if (first_one == true)
+		            		first_one = false;
+		            	else
+		        	        devices.append("\n");
+			
+		                // append the BluetoothDevice object from the list
+		                devices.append(device_list.get(i));
+					}
+					
+		    		return devices.toString().getBytes();
+
+				}
 		}
 		
 		return null;		
@@ -211,6 +244,16 @@ public class BeaconHandler implements Handler, Runnable
 		    // if it's there, add sensor
 			SensorRepository.insertSensor(new String("BT"), new String("MAC"), new String("Surrounding BT Devices"), new String("txt"), 0, 0, 1, false, 0, this);	    
 			SensorRepository.insertSensor(new String("BN"), new String("#"), new String("# surrounding BT Devices"), new String("int"), 0, 0, 50, true, 0, this);	    
+			SensorRepository.insertSensor(new String("BD"), new String("MAC"), new String("Connected BT Devices"), new String("txt"), 0, 0, 50, true, polltime, this);	 
+			
+			// now register for the connected device intents
+			IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+		    IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+		    IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+		    nors.registerReceiver(mReceiver2, filter1);
+		    nors.registerReceiver(mReceiver2, filter2);
+		    nors.registerReceiver(mReceiver2, filter3);
+		    
 		}
 		catch(Exception e)
 		{
@@ -234,6 +277,9 @@ public class BeaconHandler implements Handler, Runnable
 		
 		// save current time and set so that first Acquire() will discover but substract a bit more to give BT time to fire up
 		oldtime = System.currentTimeMillis();
+		
+		// create device list
+		device_list = new ArrayList<String>();
 		
 		// arm the semaphores now
 		wait(BT_semaphore); 
@@ -278,6 +324,10 @@ public class BeaconHandler implements Handler, Runnable
 		{
 			
 		}
+		
+		// rewe listening to connected devices?
+		if (bt_registered2 == true)
+			nors.unregisterReceiver(mReceiver2);
 	}
 	
     private void discover()
@@ -357,10 +407,45 @@ public class BeaconHandler implements Handler, Runnable
                 else
                 	reading.append(device.getAddress() + ":: ");
     	        no_devices ++;
-            } 
-            else 
-            	if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) 
-            		finished_semaphore.release();
+            }
+            
+        	if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) 
+        		finished_semaphore.release();
+        	
+        }
+    };
+    
+    // The BroadcastReceiver that listens for connected devices and
+    // changes the title when discovery is finished
+    private final BroadcastReceiver mReceiver2 = new BroadcastReceiver() 
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) 
+        {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            int i;
+
+            String entry;
+            
+            // If it's already paired, skip it, because it's been listed already
+            if (device.getName()!=null)
+            	entry = new String(device.getAddress() + "::" + device.getName());
+            else
+            	entry = new String(device.getAddress() + ":: ");
+
+            if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) 
+            {
+            	// add connected device to list
+            	device_list.add(entry);
+            }
+            if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) 
+            {
+            	// remove disconnected device from list
+            	for (i=0;i<device_list.size();i++)
+            		if (device_list.get(i).compareTo(entry) == 0)
+            			device_list.remove(i);
+            }           
         }
     };
 }

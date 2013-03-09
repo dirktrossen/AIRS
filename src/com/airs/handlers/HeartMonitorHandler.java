@@ -17,7 +17,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
 
@@ -30,6 +29,7 @@ import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
+import com.airs.platform.Sensor;
 import com.airs.platform.SensorRepository;
 
 public class HeartMonitorHandler implements Handler, Runnable
@@ -189,6 +189,14 @@ public class HeartMonitorHandler implements Handler, Runnable
 				{
 					debug("HeartMonitorHandler::ComPort initialization failed");
 					use_monitor = false;
+					// invalidate all sensors since we couldn't connect -> this will gracefully terminate any acquisition thread
+					SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "Could not connect to HxM");
+					SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "Could not connect to HxM");
+					SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "Could not connect to HxM");
+					SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "Could not connect to HxM");
+					SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "Could not connect to HxM");
+					
+					return null;
 				}
 				
 				// we've tried!
@@ -481,6 +489,14 @@ public class HeartMonitorHandler implements Handler, Runnable
 			catch (Exception e) 
 			{
 				debug("HeartMonitorHandler::Failed to read serial data: " + e.toString());
+				
+				// invalidate all sensors since reading failed -> this will gracefully terminate any acquisition thread
+				SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "HxM disconnected");
+				SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "HxM disconnected");
+				SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "HxM disconnected");
+				SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "HxM disconnected");
+				SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "HxM disconnected");
+
 				return;
 			}	
 			

@@ -17,22 +17,22 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:title="Heart Monitor">
+  android:title="@string/HeartMonitorHandlerUI_name">
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Enable Heartmonitor" 
+    	android:title="@string/Enable_Heartmonitor" 
     	android:key="HeartMonitorHandler::BTON" 
     	android:selectable="true" 
-    	android:summaryOn="Use heart monitor, attempting to connect at start of discovery" 
-    	android:summaryOff="Do not use heartmonitor"/>
+    	android:summaryOn="@string/Enable_Heartmonitor_on" 
+    	android:summaryOff="@string/Enable_Heartmonitor_off"/>
     <ListPreference
         android:dependency="HeartMonitorHandler::BTON"
 		android:dialogIcon="@drawable/bt2"
         android:key="HeartMonitorHandler::BTStore"
-        android:title="Device Selection"
-        android:summary="Choose one of the possible devices to connect to. You first need to pair with the device in the BT system settings!"
-        android:positiveButtonText="Select"
+        android:title="@string/Device_Selection"
+        android:summary="@string/Device_Selection_on"
+        android:positiveButtonText="@string/Select"
         android:entries="@array/heartmonitor_values"
         android:entryValues="@array/heartmonitor_entries"
-        android:dialogTitle="Choose Device" />
+        android:dialogTitle="@string/Device_Selection_title" />
 </PreferenceScreen>

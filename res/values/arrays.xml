@@ -73,5 +73,9 @@
         <item>5000</item>
         <item>10000</item>
         <item>20000</item>
-    </string-array>   
+    </string-array> 
+    <string-array name="recordinglabel_entries">
+        <item>Local</item>
+        <item>Remote</item>
+    </string-array>  
 </resources>

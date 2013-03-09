@@ -1,3 +1,4 @@
+AIRS_SENSORS=C:/Users/dana/MySoftware/airs/airs_sensors.txt
 AIRS_STORAGE=C:/Users/dana/MySoftware/myror/Data/PhoneData/
 DB_USER=airs_user
 DB_PASS=testairsdb

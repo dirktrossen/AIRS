@@ -60,7 +60,7 @@ public class AIRS_backup extends Activity
 		// check if persistent flag is running, indicating the AIRS has been running
 		if (settings.getBoolean("AIRS_local::running", false) == true)
 		{
-	  		Toast.makeText(getApplicationContext(), "Cannot backup database while AIRS is running!", Toast.LENGTH_LONG).show();
+	  		Toast.makeText(getApplicationContext(), getString(R.string.Cannot_backup), Toast.LENGTH_LONG).show();
 	  		finish();
 		}
 
@@ -116,15 +116,15 @@ public class AIRS_backup extends Activity
            switch (msg.what) 
            {
            case FINISH_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), "Cannot create backup file (possible access error or external media does not exist)!", Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_create_backup), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case FINISH2_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), "Finished backup successfully!", Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Finished_backup), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case UPDATE_VALUES:
-	    		ProgressText.setText("Backup DB of size " + String.valueOf(msg.getData().getLong("Value")/1024) + " kB");
+	    		ProgressText.setText(getString(R.string.Backup_status) + " " + String.valueOf(msg.getData().getLong("Value")/1024) + " kB");
 	    		break;
            default:  
            	break;

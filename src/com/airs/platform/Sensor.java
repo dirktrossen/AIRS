@@ -27,7 +27,11 @@ import com.airs.handlers.*;
  */
 public class Sensor 
 {
-    public Handler 	handler;			// points to handler serving this sensor
+	public static final int SENSOR_VALID 		= 0;
+	public static final int SENSOR_INVALID		= 1;
+	public static final int SENSOR_SUSPEND		= 2;
+
+	public Handler 	handler;			// points to handler serving this sensor
     // entries according to SSI for now
     public String  	Symbol;				// symbol of the sensor
     public String  	Unit;				// unit of the sensor
@@ -38,6 +42,8 @@ public class Sensor
     public int 		max;
     public boolean  hasHistory;			// does this sensor support history?
     public int		polltime;			// polling timer
+    public int	    status;				// is sensor valid?
+    public String	statusString;
     byte[]  sensor_data = null;
     byte[]  reading = null;
     long    last_read;
@@ -76,6 +82,8 @@ public class Sensor
         last_read = System.currentTimeMillis() - polltime;
         sensor_data = null;
         discovered = false;
+        status = SENSOR_VALID;
+        statusString = null;
     }
     // acquire method to allow for multiple queries accessing the same sensor values concurrently, 
     // i.e., this is the point of data acquisition

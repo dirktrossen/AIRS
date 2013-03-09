@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
 import com.airs.HandlerEntry;
@@ -23,12 +24,12 @@ import com.airs.handlerUIs.HandlerUI;
 
 public class AIRS_general_settings implements HandlerUI
 {   
-	public HandlerEntry init()
+	public HandlerEntry init(Context context)
 	{
 		HandlerEntry entry = new HandlerEntry();
 		
-		entry.name = new String("General Settings");
-		entry.description = "Set general application settings such as server IP, watchdog information and others.";
+		entry.name = new String(context.getString(R.string.main_Configure));
+		entry.description = context.getString(R.string.main_Configure);
 		entry.resid = R.drawable.general1;
 		return (entry);
 	}

@@ -17,74 +17,74 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="Location">
+    android:title="@string/LocationHandlerUI_name">
    <PreferenceCategory android:title="GPS">
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Enable GPS" 
+    	android:title="@string/Enable_GPS" 
     	android:key="LocationHandler::GPSON" 
     	android:selectable="true" 
-    	android:summaryOn="Enable GPS to show up in sensor list" 
-    	android:summaryOff="Do not use GPS"/>
+    	android:summaryOn="@string/Enable_GPS_on" 
+    	android:summaryOff="@string/Enable_GPS_off"/>
     <CheckBoxPreference 
         android:dependency="LocationHandler::GPSON"
         android:defaultValue="false"
     	android:enabled="true" 
-    	android:title="Use Network Location" 
+    	android:title="@string/Use_Network_Location" 
     	android:key="LocationHandler::UseWifi" 
     	android:selectable="true" 
-    	android:summaryOn="Use Wifi and network information for location" 
-    	android:summaryOff="Use only GPS"/>
+    	android:summaryOn="@string/Use_Network_Location_on" 
+    	android:summaryOff="@string/Use_Network_Location_off"/>
    <EditTextPreference
         android:dependency="LocationHandler::GPSON"
  		android:dialogIcon="@drawable/time"
-        android:summary="Poll interval for GPS location in seconds"
+        android:summary="@string/GPS_Interval_on"
         android:defaultValue="30"
         android:numeric="integer"
-        android:title="GPS Interval [s]"
+        android:title="@string/GPS_Interval"
         android:key="LocationHandler::LocationPoll"/>
     <ListPreference
         android:dependency="LocationHandler::GPSON"
     	android:dialogIcon="@drawable/location"
         android:key="LocationHandler::LocationUpdate"
-        android:title="GPS Accuracy [m]"
+        android:title="@string/GPS_Accuracy"
         android:defaultValue="100"
-        android:summary="Update accuracy for GPS location in meters"
-        android:positiveButtonText="Select"
+        android:summary="@string/GPS_Accuracy_on2"
+        android:positiveButtonText="@string/Select"
         android:entries="@array/gpshandler_values"
         android:entryValues="@array/gpshandler_entries"
-        android:dialogTitle="Choose Update Accuracy" />
+        android:dialogTitle="@string/GPS_Accuracy_title" />
    <EditTextPreference
         android:dependency="LocationHandler::GPSON"
  		android:dialogIcon="@drawable/time"
-        android:summary="Interval to force AGPS refresh in hours (0 = disable)"
+        android:summary="@string/AGPS_Refresh_Interval_on"
         android:defaultValue="3"
         android:numeric="integer"
-        android:title="AGPS Refresh Interval [h]"
+        android:title="@string/AGPS_Refresh_Interval"
         android:key="LocationHandler::AGPSForce"/>
     </PreferenceCategory>    
    <PreferenceCategory android:title="Wifi">
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Enable WiFi" 
+    	android:title="@string/Enable_WiFi" 
     	android:key="LocationHandler::WIFION" 
     	android:selectable="true" 
-    	android:summaryOn="Programmatically enable WiFi, if switched off" 
-    	android:summaryOff="Do not enable WiFi, if switched off"/>
+    	android:summaryOn="@string/Enable_WiFi_on" 
+    	android:summaryOff="@string/Enable_WiFi_off"/>
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Prevent WiFi Sleep" 
+    	android:title="@string/Prevent_WiFi_Sleep" 
     	android:key="LocationHandler::WIFISleep" 
     	android:selectable="true" 
-    	android:summaryOn="Prevent WiFi from sleeping (keeps wake-lock!)" 
-    	android:summaryOff="Let WiFi sleep according to system settings"/>
+    	android:summaryOn="@string/Prevent_WiFi_Sleep_on" 
+    	android:summaryOff="@string/Prevent_WiFi_Sleep_off"/>
    <EditTextPreference
-        android:summary="Poll interval for WiFi scanning in seconds"
+        android:summary="@string/WiFi_Interval_on"
  		android:dialogIcon="@drawable/time"
         android:defaultValue="30"
         android:numeric="integer"
-        android:title="WiFi Interval [s]"
+        android:title="@string/WiFi_Interval"
         android:key="LocationHandler::WifiPoll"/>
   </PreferenceCategory>    
 </PreferenceScreen>

@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,14 +32,12 @@ public class AIRS_index extends Activity
 	// states for handler 
 	public static final int FINISH_ACTIVITY			= 1;
 	public static final int FINISH2_ACTIVITY		= 2;
-	public static final int UPDATE_VALUES			= 3;
 
 	// database variables
     private AIRS_database database_helper;
     private  SQLiteDatabase airs_storage;
 
     // preferences
-    private SharedPreferences settings;
     private Context airs;
   
     // other variables
@@ -57,17 +54,6 @@ public class AIRS_index extends Activity
         // get context for thread
         airs = getApplicationContext();
         
-        // get default preferences
-        settings = PreferenceManager.getDefaultSharedPreferences(this);
-		
-        // setup resources
-		// check if persistent flag is running, indicating the AIRS has been running
-		if (settings.getBoolean("AIRS_local::running", false) == true)
-		{
-	  		Toast.makeText(getApplicationContext(), "Cannot index database while AIRS is running!", Toast.LENGTH_LONG).show();
-	  		finish();
-		}
-
 		// set custom title
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.backuprestore_dialog);		
@@ -120,16 +106,13 @@ public class AIRS_index extends Activity
            switch (msg.what) 
            {
            case FINISH_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), "Cannot index DB file (Possibly indexed already or possible access error or external media does not exist)!", Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_index), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case FINISH2_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), "Finished indexing successfully!", Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Finished_indexing), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
-           case UPDATE_VALUES:
-	    		ProgressText.setText("Restore DB of size " + String.valueOf(msg.getData().getLong("Value")/1024) + " kB");
-	    		break;
            default:  
            	break;
            }

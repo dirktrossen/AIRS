@@ -17,118 +17,96 @@
  -->
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:title="AIRS General Settings">
-   <PreferenceCategory android:title="AIRS Remote Settings">
+  android:title="@string/General_Settings">
+   <PreferenceCategory android:title="@string/Remote_Settings">
     <EditTextPreference
-        android:summary="Address of your AIRS application server"
+        android:summary="@string/Address_server"
         android:defaultValue="127.0.0.1"
         android:title="Server name"
-        android:key="IPStore" android:name="Server name"/>
+        android:key="IPStore" android:name="@string/Server_name"/>
     <EditTextPreference
-        android:summary="Port of your AIRS application server"
+        android:summary="@string/Port_server"
         android:defaultValue="9000"
         android:title="Server port"
         android:numeric="integer"
-        android:key="IPPort" android:name="Port name"/>
-    <CheckBoxPreference 
-    	android:enabled="true" 
-    	android:title="Show Remote Tab" 
-    	android:key="showRemote" 
-    	android:defaultValue="true" 
-    	android:selectable="true" 
-    	android:summaryOn="Show remote tab in user interface" 
-    	android:summaryOff="Do not show remote tab in user interface"/>
+        android:key="IPPort" android:name="@string/Port_number"/>
    </PreferenceCategory>    
-   <PreferenceCategory android:title="AIRS Local Settings">
+   <PreferenceCategory android:title="@string/Local_Settings">
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Local Display" 
+    	android:title="@string/Local_Display" 
     	android:key="localDisplay" 
     	android:defaultValue="true" 
     	android:selectable="true" 
-    	android:summaryOn="Display sensor values you subscribed to" 
-    	android:summaryOff="Do not display sensor values, only number of values sensed"/>
+    	android:summaryOn="@string/Local_Display_on" 
+    	android:summaryOff="@string/Local_Display_off"/>
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Local Storage" 
+    	android:title="@string/Local_Storage" 
     	android:key="LocalStore" 
     	android:selectable="true" 
     	android:defaultValue="true" 
-    	android:summaryOn="Store sensor values in internal SQLlite database" 
-    	android:summaryOff="Do not store sensor values"/>
+    	android:summaryOn="@string/Local_Storage_on" 
+    	android:summaryOff="@string/Local_Storage_off"/>
     <EditTextPreference
-        android:summary="Max size of temporary recording files in KB"
-        android:defaultValue="512"
-        android:numeric="integer"
-        android:title="Recording Files Size"
-        android:key="RecordingSize" android:name="Recording Size"/>
-    <CheckBoxPreference 
-    	android:enabled="true" 
-    	android:title="Remove files" 
-    	android:key="SyncRemoveFiles" 
-    	android:defaultValue="false" 
-    	android:selectable="true" 
-    	android:summaryOn="Remove temporary recording files created during the synchronization" 
-    	android:summaryOff="Keep temporary recording files created during the synchronization (less secure)"/>  
-    <EditTextPreference
-        android:summary="# of historical sensor values (0=disable)"
+        android:summary="@string/Sensor_History_on"
         android:numeric="integer"
         android:defaultValue="20"
-        android:title="Sensor History"
-        android:key="SensorHistory" android:name="Sensor History"/>
+        android:title="@string/Sensor_History"
+        android:key="SensorHistory" android:name="@string/Sensor_History"/>
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Wakeup" 
+    	android:title="@string/Wakeup" 
     	android:key="Wakeup" 
     	android:defaultValue="false" 
     	android:selectable="true" 
-    	android:summaryOn="Wakeup phone during sensing only when there is other user activity" 
-    	android:summaryOff="Keep wake lock to prevent sleeping"/>  
+    	android:summaryOn="@string/Wakeup_on" 
+    	android:summaryOff="@string/Wakeup_off"/>  
     <EditTextPreference
-        android:summary="Kill AIRS based on battery level to conserve some spare battery (0 = disable)"
+        android:summary="@string/Battery_kill_on"
         android:defaultValue="0"
         android:numeric="integer"
-        android:title="Battery Kill Condition [%]"
+        android:title="@string/Battery_kill"
         android:key="BatteryKill" android:name="Battery Kill"/>    
     </PreferenceCategory>    
-   <PreferenceCategory android:title="Reminder Settings"> 	
+   <PreferenceCategory android:title="@string/Reminder_Settings"> 	
     <EditTextPreference
 		android:dialogIcon="@drawable/time"
-        android:summary="Interval for reminder that AIRS is running (0 = disable)"
+        android:summary="@string/Reminder_Interval_on"
         android:defaultValue="0"
         android:numeric="integer"
-        android:title="Reminder Interval [s]"
+        android:title="@string/Reminder_Interval"
         android:key="Reminder" android:name="Reminder"/>
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Vibrate" 
+    	android:title="@string/Vibrate" 
     	android:key="Vibrator" 
     	android:defaultValue="true" 
     	android:selectable="true" 
-    	android:summaryOn="Vibrate as a reminder" 
-    	android:summaryOff="Don't vibrate"/>  
+    	android:summaryOn="@string/Vibrate_on" 
+    	android:summaryOff="@string/Vibrate_off"/>  
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Lights" 
+    	android:title="@string/Lights" 
     	android:key="Lights" 
     	android:defaultValue="true" 
     	android:selectable="true" 
-    	android:summaryOn="Use notification LED as a reminder" 
-    	android:summaryOff="Don't use notification LED as a reminder"/>  
+    	android:summaryOn="@string/Lights_on" 
+    	android:summaryOff="@string/Lights_off"/>  
     <EditTextPreference
-        android:summary="Color code of LED notification (in hex)"
+        android:summary="@string/Color_Code_on"
         android:defaultValue="00ff00"
-        android:title="Color Code"
+        android:title="@string/Color_Code"
         android:key="LightCode" android:name="LightCode"/>
     </PreferenceCategory>    
     <PreferenceCategory android:title="Debug Settings"> 	
     <CheckBoxPreference 
     	android:enabled="true" 
-    	android:title="Debug" 
+    	android:title="@string/Debug" 
     	android:key="Debug" 
     	android:selectable="true" 
-    	android:summaryOn="Write debug messages in AIRS_debug.txt" 
-    	android:summaryOff="Do not debug anything"/>    
+    	android:summaryOn="@string/Debug_on" 
+    	android:summaryOff="@string/Debug_off"/>    
    </PreferenceCategory>    
 </PreferenceScreen>
 

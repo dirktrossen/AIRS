@@ -133,7 +133,7 @@ public class TimelineActivity extends Activity
 	        		timeStamp.set(time[0]);
 	        		minX.setText(timeStamp.format("%H:%M:%S"));
 					
-        			Toast.makeText(getApplicationContext(), "First sensing at " + timeStamp.format("%H:%M:%S") + " with value : " + Float.toString(history_f[0]), Toast.LENGTH_LONG).show();
+        			Toast.makeText(getApplicationContext(), getString(R.string.First_sensing) + " " + timeStamp.format("%H:%M:%S") + " " + getString(R.string.First_sensing2) + " " + Float.toString(history_f[0]), Toast.LENGTH_LONG).show();
 	        		finish();
 	        		break;    
 	        }

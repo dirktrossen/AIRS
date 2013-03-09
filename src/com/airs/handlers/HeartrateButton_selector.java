@@ -140,7 +140,7 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
 	        }
 	        catch(Exception e)
 	        {
-		  		Toast.makeText(getApplicationContext(), "Can't open the camera resource!", Toast.LENGTH_LONG).show();
+		  		Toast.makeText(getApplicationContext(), getString(R.string.Camera_error), Toast.LENGTH_LONG).show();
 	        	finish();
 	        }
 	        

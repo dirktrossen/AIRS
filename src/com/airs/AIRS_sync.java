@@ -19,11 +19,12 @@ package com.airs;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,10 +33,16 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.text.format.Time;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.*;
@@ -52,25 +59,30 @@ public class AIRS_sync extends Activity implements OnClickListener
 	public static final int UPDATE_VALUES	= 3;
 	public static final int FINISH_NO_VALUES_ACTIVITY	= 4;
 
+	public static final int NO_SYNC			= 0;
+	public static final int SYNC_STARTED	= 1;
+	public static final int SYNC_CANCELLED	= 2;
+	public static final int SYNC_FINISHED	= 2;
+	
 	// states for activity management
-	public static final int SYNC_FINISHED	= 18;
     public static final int SYNC_BATCH		= 5000;
         
     // preferences
     private SharedPreferences settings;
-  
+    private Editor editor;
+    
     // other variables
-	private TextView mTitle;
-	private TextView mTitle2;
 	private TextView ProgressText;
-    private long synctime, end_synctime;
-    private boolean check_end_synctime = false;
-    private boolean remove_files = false;
-	private int max_recording_size;
+	private TextView syncText;
+	private ImageButton startSync;
+	private Button cancelButton;
+	private ProgressBar progressbar;
+    private long synctime;
 	private int read_data_entries = 0;
-    private ArrayList<Uri> uris = new ArrayList<Uri>();
-    private ArrayList<File> files = new ArrayList<File>();
+    private Uri share_file;
+    private File sync_file;
     private WakeLock wl;
+    private int syncing = NO_SYNC;
 
     // database variables
     AIRS_database database_helper;
@@ -96,58 +108,57 @@ public class AIRS_sync extends Activity implements OnClickListener
         
         // get default preferences
         settings = PreferenceManager.getDefaultSharedPreferences(this);
-		
-        // setup resources
-		// check if persistent flag is running, indicating the AIRS has been running
-		if (settings.getBoolean("AIRS_local::running", false) == true)
-		{
-			// read current recording file timestamp
-			end_synctime = Long.valueOf(settings.getString("AIRS_local::recording_file", "0"));
-			check_end_synctime = true;
-		}
+    	editor = settings.edit();
 
         // now open database
         database_helper = new AIRS_database(this.getApplicationContext());
         airs_storage = database_helper.getReadableDatabase();
 
-		// set custom title
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.sync_dialog);		
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
- 
-        // get window title fields
-        mTitle = (TextView) findViewById(R.id.title_left_text);
-        mTitle2 = (TextView) findViewById(R.id.title_right_text);
-        mTitle.setText(R.string.app_name);
-        mTitle2.setText("Synchronizing Recordings");
 
         // get progress text view
         ProgressText = (TextView) findViewById(R.id.sync_progresstext);
-        ProgressText.setText("Start synchronizing");
+        ProgressText.setVisibility(View.INVISIBLE);
 
         // get cancel button
-        Button cancel 		= (Button)findViewById(R.id.sync_cancel);
-        cancel.setOnClickListener(this);
+        cancelButton = (Button)findViewById(R.id.sync_cancel);
+        cancelButton.setOnClickListener(this);
+        cancelButton.setVisibility(View.INVISIBLE);
 
-        // get timestamp of last sync
-        synctime = settings.getLong("SyncTimestamp", 0);
+        // get start button
+        startSync	= (ImageButton)findViewById(R.id.sync_start);
+        startSync.setOnClickListener(this);
+
+        // hide progress bar first
+        progressbar	= (ProgressBar)findViewById(R.id.sync_progress);
+        progressbar.setVisibility(View.INVISIBLE);
+
+        // get sync timestamp text view
+        syncText = (TextView) findViewById(R.id.sync_text);
+
+        syncing = NO_SYNC;
         
-        // get maximum size of recording files
-        max_recording_size = Integer.parseInt(settings.getString("RecordingSize", "512")) * 1000;
-
-        // get remove temp files 
-        remove_files = settings.getBoolean("SyncRemoveFiles", false);
-	
         // create new wakelock
         PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
 		 
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AIRS Sync Lock"); 
         wl.acquire();
-
-        // start sync thread
-        new SyncThread();
     }
-    
+
+    @Override
+    public synchronized void onResume() 
+    {
+        super.onPause();
+        
+        // get timestamp of last sync
+        synctime = settings.getLong("SyncTimestamp", 0);
+
+        // set sync text view
+		Time timeStamp = new Time();
+		timeStamp.set(synctime);
+        syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
+    }
+
     @Override
     public synchronized void onPause() 
     {
@@ -164,8 +175,7 @@ public class AIRS_sync extends Activity implements OnClickListener
     public void onDestroy() 
     {
        super.onDestroy();     
-       
-
+      
        // release wake lock if held
 	   if (wl != null)
 	   	 if (wl.isHeld() == true)
@@ -179,25 +189,103 @@ public class AIRS_sync extends Activity implements OnClickListener
       super.onConfigurationChanged(newConfig);
     }
     
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) 
+    {
+    	MenuInflater inflater;
+        menu.clear();    		
+        inflater = getMenuInflater();
+		inflater.inflate(R.menu.options_sync, menu);    			
+        
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) 
+    {    	
+        switch (item.getItemId()) 
+        {
+        case R.id.sync_about:
+    		HandlerUIManager.AboutDialog(getString(R.string.main_Sync), getString(R.string.SyncAbout));
+    		return true;
+        case R.id.sync_setdate:
+	        // now get calendar data
+			Calendar cal = Calendar.getInstance(Locale.getDefault());
+			cal.setTimeInMillis(synctime);
+			int month = cal.get(Calendar.MONTH);
+			int year = cal.get(Calendar.YEAR);
+			int day = cal.get(Calendar.DAY_OF_MONTH);
+
+			DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() 
+        	{
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) 
+            {
+            	// now form synctime from day/month/year selection
+            	Calendar cal = Calendar.getInstance(Locale.getDefault());
+            	cal.set(Calendar.YEAR, year);
+            	cal.set(Calendar.MONTH, month);
+            	cal.set(Calendar.DAY_OF_MONTH, day);
+            	cal.set(Calendar.HOUR, 0);
+            	cal.set(Calendar.MINUTE, 0);
+            	cal.set(Calendar.SECOND, 0);
+            	cal.set(Calendar.MILLISECOND, 1);
+            	cal.set(Calendar.AM_PM, Calendar.AM);
+            	synctime = cal.getTimeInMillis();
+            	
+	            // set sync text view
+	    		Time timeStamp = new Time();
+	    		timeStamp.set(synctime);
+	            syncText.setText("Last sync: " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
+	            
+	            // also place in preferences!
+	       		editor.putLong("SyncTimestamp", synctime);
+	            // finally commit to storing values!!
+	            editor.commit();
+
+            }
+        	}, year, month, day);
+			dialog.setTitle(getString(R.string.Set_sync_date));
+			dialog.setMessage(getString(R.string.Set_sync_date2));
+			dialog.show();
+        	return true;
+        }
+        
+        return true;
+    }
+    
     public void onClick(View v) 
     {
-		int i;
-		File current;
-
-    	if (v.getId() == R.id.sync_cancel)
+    	if (v.getId() == R.id.sync_start && syncing == NO_SYNC)
+		{
+            ProgressText.setText(getString(R.string.Start_synchronising));
+            ProgressText.setVisibility(View.VISIBLE);
+            progressbar.setVisibility(View.VISIBLE);
+            cancelButton.setVisibility(View.VISIBLE);
+	        // signal that syncing has started
+	        syncing = SYNC_STARTED;
+	        // start sync thread
+	        new SyncThread();
+		}
+		
+    	if (v.getId() == R.id.sync_cancel && syncing == SYNC_STARTED)
     	{
     		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    		builder.setMessage("Do you want to interrupt synchronization?")
-    			   .setTitle("Synchronizing Local Recordings")
+    		builder.setMessage(getString(R.string.Interrupt_synchronising))
+    			   .setTitle(getString(R.string.main_Sync))
     		       .setCancelable(false)
-    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {
- 		    			    finish();
+    		        	   syncing = SYNC_CANCELLED;
+    		               ProgressText.setVisibility(View.INVISIBLE);
+    		               progressbar.setVisibility(View.INVISIBLE);
+    		               cancelButton.setVisibility(View.INVISIBLE);
+    		               dialog.dismiss();
     		           }
     		       })
-    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
     		       {
     		           public void onClick(DialogInterface dialog, int id) 
     		           {
@@ -206,32 +294,7 @@ public class AIRS_sync extends Activity implements OnClickListener
     		       });
     		AlertDialog alert = builder.create();
     		alert.show();
-    	}
-    	
-    	if (v.getId() == R.id.sync_finish)
-    	{
-    		// write current timestamp for later syncs
-        	Editor editor = settings.edit();
-			// put sync timestamp into store
-        	if (check_end_synctime == true)		// if there is a recording ongoing, sync timestamp is just before the current recording!
-                editor.putLong("SyncTimestamp", end_synctime - 1);
-        	else        		
-        		editor.putLong("SyncTimestamp", System.currentTimeMillis());
-            
-            // finally commit to storing values!!
-            editor.commit();
-                        
-            // remove temp files?
-            if (remove_files == true)
-            	for (i=0;i<files.size();i++)
-            	{
-            		current = files.get(i);
-            		current.delete();
-            	}
-    		
-            // now finish activity
-            finish();    		
-    	}
+    	}    	
     }   
 	
 	// The Handler that gets information back from the other threads, updating the values for the UI
@@ -240,37 +303,72 @@ public class AIRS_sync extends Activity implements OnClickListener
        @Override
        public void handleMessage(Message msg) 
        {
-	       Intent intent = new Intent(), chosen;
-	       int i;
+	       Intent chosen;
 
            switch (msg.what) 
            {
-           case START_ACTIVITY:        	   
-		     	// prepare intent for choosing sharing
-		        intent = new Intent(Intent.ACTION_SEND);
-		        intent.setType("text/plain");
-		        chosen = Intent.createChooser(intent,"Send Local Recordings To:");
-		        
-		        // anything chosen?
-		        if (chosen!=null)
-		        {
-		        	// now send files with chosen method
-			        for (i=0;i<uris.size();i++)
+           case START_ACTIVITY:   
+        	    if (syncing == SYNC_FINISHED)
+        	    {
+			     	// prepare intent for choosing sharing
+			        Intent intent = new Intent(Intent.ACTION_SEND);
+			        intent.setType("text/plain");
+			        chosen = Intent.createChooser(intent,getString(R.string.Send_local_recordings));
+			        
+			        // anything chosen?
+			        if (chosen!=null)
 			        {
-					    intent.putExtra(Intent.EXTRA_STREAM, uris.get(i));
+					    intent.putExtra(Intent.EXTRA_STREAM, share_file);
 						startActivity(chosen);
-			        }		        
-		        }	        
-           	break;
+						
+			    		// write current timestamp for later syncs
+						// put sync timestamp into store
+			        	synctime = System.currentTimeMillis();
+			       		editor.putLong("SyncTimestamp", synctime);
+			            
+			            // finally commit to storing values!!
+			            editor.commit();
+			                        
+			            // remove temp files
+			            sync_file.delete();
+			    		
+			            // now finish activity
+			            ProgressText.setVisibility(View.INVISIBLE);
+			            progressbar.setVisibility(View.INVISIBLE);
+			            cancelButton.setVisibility(View.INVISIBLE);
+			            
+			            // set sync text view
+			    		Time timeStamp = new Time();
+			    		timeStamp.set(synctime);
+			            syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
+			            
+			            // reset sync state
+			            syncing = NO_SYNC;
+			        }
+			        else
+			        {
+			            // now finish activity
+			            ProgressText.setVisibility(View.INVISIBLE);
+			            progressbar.setVisibility(View.INVISIBLE);
+			            cancelButton.setVisibility(View.INVISIBLE);
+			            
+			            // reset sync state
+			            syncing = NO_SYNC;
+			        }
+        	    }
+		        break;
            case FINISH_NO_VALUES_ACTIVITY:
-   	  			Toast.makeText(getApplicationContext(), "There are no values to synchronize!", Toast.LENGTH_LONG).show();
-   	  			finish();
+   	  			Toast.makeText(getApplicationContext(), getString(R.string.No_values_to_synchronise), Toast.LENGTH_LONG).show();
+	            // now finish activity
+	            ProgressText.setVisibility(View.INVISIBLE);
+	            progressbar.setVisibility(View.INVISIBLE);
+	            cancelButton.setVisibility(View.INVISIBLE);
+	            
+	            // reset sync state
+	            syncing = NO_SYNC;
    	  			break;
-           case FINISH_ACTIVITY:
-        	   finish();
-        	   break;
            case UPDATE_VALUES:
-	    		ProgressText.setText("Read DB Entries: " + String.valueOf(msg.getData().getLong("Value")));
+	    		ProgressText.setText(getString(R.string.Temp_sync_file) + " " + String.valueOf(msg.getData().getLong("Value")/1000));
 	    		break;
            default:  
            	break;
@@ -280,11 +378,9 @@ public class AIRS_sync extends Activity implements OnClickListener
 
 	private class SyncThread implements Runnable
 	{
-	 	private Thread thread;
-
 		SyncThread()
 		{
-			(thread = new Thread(this)).start();
+			new Thread(this).start();
 		}
 	     public void run()
 	     {
@@ -295,9 +391,8 @@ public class AIRS_sync extends Activity implements OnClickListener
 			String line_to_write;
 			byte[] writebyte;
 			int number_values;
-			boolean syncing = true;
 			int i;
-			File fconn, path;				// public for sharing file when exiting
+			File fconn;				// public for sharing file when exiting
 			BufferedOutputStream os = null;
 			long currentmilli;
 			Calendar cal = Calendar.getInstance();
@@ -305,137 +400,173 @@ public class AIRS_sync extends Activity implements OnClickListener
 			long currenttime = synctime, currentstart = 0;
 			// use handler to start activity
 	        Message start_msg = mHandler.obtainMessage(START_ACTIVITY);
-	        Message finish_msg = mHandler.obtainMessage(FINISH_ACTIVITY);
 	        Message finish2_msg = mHandler.obtainMessage(FINISH_NO_VALUES_ACTIVITY);
+
+	    	// path for templates
+	        File external_storage = getExternalFilesDir(null);
+	        
+	        if (external_storage == null)
+   	  			Toast.makeText(getApplicationContext(), getString(R.string.Cannot_find_storage), Toast.LENGTH_LONG).show();
+
+	    	sync_file = new File(external_storage, "AIRS_temp");
+	
+			// get files in directory
+			String [] file_list = sync_file.list(null);
+			
+			// remove files in AIRS_temp directory
+			if (file_list != null)
+				for (i=0;i<file_list.length;i++)
+				{
+					File remove = new File(sync_file, file_list[i]);
+					remove.delete();
+				}
 
 			read_data_entries = 0;
 			try
 			{
-				while(syncing == true)
+		    	// use current milliseconds for filename
+		    	currentmilli = System.currentTimeMillis();
+		    	// open file in public directory
+		    	sync_file = new File(external_storage, "AIRS_temp");
+		    	// make sure that path exists
+		    	sync_file.mkdirs();
+		    	// open file and create, if necessary
+	    		fconn = new File(sync_file, String.valueOf(currentmilli) + ".txt");
+    			os = new BufferedOutputStream(new FileOutputStream(fconn, true));
+		    	
+				// build URI for sharing
+				share_file = Uri.fromFile(fconn);	
+
+		    	// set timestamp when we will have found the first timestamp
+		    	set_timestamp = true;
+		    				    	
+				while (syncing == SYNC_STARTED)
 				{
-			    	// use current milliseconds for filename
-			    	currentmilli = System.currentTimeMillis();
-			    	// open file in public directory
-			    	path = new File(Environment.getExternalStorageDirectory(), "AIRS_temp");
-			    	// make sure that path exists
-			    	path.mkdirs();
-			    	// open file and create, if necessary
-		    		fconn = new File(path, String.valueOf(currentmilli) + ".txt");
-	    			os = new BufferedOutputStream(new FileOutputStream(fconn, true));
-			    	
-					// build and add URI   
-					uris.add(Uri.fromFile(fconn));	
-					// save file for later
-					files.add(fconn);
-
-			    	// set timestamp when we will have found the first timestamp
-			    	set_timestamp = true;
-			    				    	
-					while (fconn.length()<max_recording_size && syncing == true)
-					{
 //						query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " ORDER BY Timestamp ASC LIMIT " + String.valueOf(SYNC_BATCH));
-						query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " LIMIT " + String.valueOf(SYNC_BATCH));
-						values = airs_storage.rawQuery(query, null);
-						
-						// garbage collect
-						query = null;
-						
-						if (values == null)
-						{
-					        mHandler.sendMessage(finish_msg);
-					        syncing = false;
-					        break;
-						}
-
-						// get number of rows
-						number_values = values.getCount();
-
-						// if nothing is read
-						if (number_values == 0)
-						{
-							// signal end of synchronization loop
-							syncing = false;
-							break;
-						}
-						
-						// if less than asked for is read -> syncing finished!
-						if (number_values < SYNC_BATCH)
-							syncing = false;
-						
-						// get column index for timestamp and value
-						t_column = values.getColumnIndex("Timestamp");
-						s_column = values.getColumnIndex("Symbol");
-						v_column = values.getColumnIndex("Value");
-						
-						if (t_column == -1 || v_column == -1 || s_column == -1)
-						{
-					        mHandler.sendMessage(finish_msg);
-					        syncing = false;
-					        break;
-						}
-							
-						// move to first row to start
-			    		values.moveToFirst();
-			    		// read DB values into arrays
-			    		for (i=0;i<number_values;i++)
-			    		{
-			    			// get timestamp
-			    			currenttime = values.getLong(t_column);
-	
-			    			if (set_timestamp == true)
-			    			{
-						    	// set 
-						    	cal.setTimeInMillis(currenttime);
-					    		// store timestamp
-					    		String time = new String(cal.getTime().toString() + "\n");
-				    			os.write(time.getBytes(), 0, time.length());				    			
-				    			// save for later
-				    			currentstart = currenttime;
-					    		// don't set timestamp anymore later
-					    		set_timestamp = false;
-					    		at_least_once_written = true;
-			    			}
-	
-			    			// get symbol
-			    			symbol = values.getString(s_column);
-			    			// get value
-			    			value = values.getString(v_column);
-	
-			    			// create line to write to file
-			    			line_to_write = new String("#" + String.valueOf(currenttime-currentstart) + ";" + symbol + ";" + value + "\n");
-
-			    			// now write to file
-				    		writebyte = line_to_write.getBytes();
-
-			    			os.write(writebyte, 0, writebyte.length);
-			    			
-			    			// garbage collect the output data
-			    			writebyte = null;
-			    			line_to_write = null;
-			    			
-			    			// now move to next row
-			    			values.moveToNext();
-			    		}	
-			    		
-			    		// increase counter
-			    		read_data_entries += number_values;
-				        Bundle bundle = new Bundle();
-				        bundle.putLong("Value", read_data_entries);
-				        Message update_msg = mHandler.obtainMessage(UPDATE_VALUES);
-				        update_msg.setData(bundle);
-				        mHandler.sendMessage(update_msg);
-					}
+					query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " LIMIT " + String.valueOf(SYNC_BATCH));
+					values = airs_storage.rawQuery(query, null);
 					
-					// close output file
-					os.close();					
+					// garbage collect
+					query = null;
+					
+					if (values == null)
+					{
+						// signal end of synchronization
+				        syncing = SYNC_FINISHED;
+				        
+				        // purge file
+				        os.close();
+				        
+			    		if (at_least_once_written == true)
+			    			// use handler to start activity
+					        mHandler.sendMessage(start_msg);
+			    		else
+					        mHandler.sendMessage(finish2_msg);
+
+			    		return;
+					}
+
+					// get number of rows
+					number_values = values.getCount();
+
+					// if nothing is read (anymore)
+					if (number_values == 0)
+					{
+				        // purge file
+				        os.close();
+
+						// signal end of synchronization
+						syncing = SYNC_FINISHED;
+						
+			    		if (at_least_once_written == true)
+			    			// use handler to start activity
+					        mHandler.sendMessage(start_msg);
+			    		else
+					        mHandler.sendMessage(finish2_msg);
+			    		
+			    		return;
+					}
+
+					// get column index for timestamp and value
+					t_column = values.getColumnIndex("Timestamp");
+					s_column = values.getColumnIndex("Symbol");
+					v_column = values.getColumnIndex("Value");
+					
+					if (t_column == -1 || v_column == -1 || s_column == -1)
+					{
+						// signal end of synchronization
+						syncing = SYNC_FINISHED;
+						
+			    		if (at_least_once_written == true)
+			    			// use handler to start activity
+					        mHandler.sendMessage(start_msg);
+			    		else
+					        mHandler.sendMessage(finish2_msg);
+			    		
+			    		return;
+					}
+						
+					// move to first row to start
+		    		values.moveToFirst();
+		    		// read DB values into arrays
+		    		for (i=0;i<number_values;i++)
+		    		{
+		    			// get timestamp
+		    			currenttime = values.getLong(t_column);
+
+		    			if (set_timestamp == true)
+		    			{
+					    	// set 
+					    	cal.setTimeInMillis(currenttime);
+				    		// store timestamp
+				    		String time = new String(cal.getTime().toString() + "\n");
+			    			os.write(time.getBytes(), 0, time.length());				    			
+			    			// save for later
+			    			currentstart = currenttime;
+				    		// don't set timestamp anymore later
+				    		set_timestamp = false;
+				    		at_least_once_written = true;
+		    			}
+
+		    			// get symbol
+		    			symbol = values.getString(s_column);
+		    			// get value
+		    			value = values.getString(v_column);
+
+		    			// add empty string as space
+		    			if (value.compareTo("") == 0)
+		    				value = " ";
+		    			
+		    			// create line to write to file
+		    			line_to_write = new String("#" + String.valueOf(currenttime-currentstart) + ";" + symbol + ";" + value + "\n");
+
+		    			// now write to file
+			    		writebyte = line_to_write.getBytes();
+
+		    			os.write(writebyte, 0, writebyte.length);
+		    			
+		    			// garbage collect the output data
+		    			writebyte = null;
+		    			line_to_write = null;
+		    			
+		    			// now move to next row
+		    			values.moveToNext();
+		    		}	
+		    		
+		    		// increase counter
+		    		read_data_entries = (int)fconn.length();
+			        Bundle bundle = new Bundle();
+			        bundle.putLong("Value", read_data_entries);
+			        Message update_msg = mHandler.obtainMessage(UPDATE_VALUES);
+			        update_msg.setData(bundle);
+			        mHandler.sendMessage(update_msg);
+			        
+			        // close values to free up memory
+			        values.close();
 				}
 				
-	    		if (at_least_once_written == true)
-	    			// use handler to start activity
-			        mHandler.sendMessage(start_msg);
-	    		else
-			        mHandler.sendMessage(finish2_msg);
-
+				// close output file
+				os.close();					
 			}
     		catch(Exception e)
     		{
@@ -447,7 +578,7 @@ public class AIRS_sync extends Activity implements OnClickListener
     			catch(Exception ex)
     			{
     			}
-		        mHandler.sendMessage(finish_msg);
+				// signal end of synchronization
     		}	
 	     }
 	 }

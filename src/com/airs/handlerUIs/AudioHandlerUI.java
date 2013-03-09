@@ -17,18 +17,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class AudioHandlerUI implements HandlerUI
 {   
-	public HandlerEntry init()
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Audio Sampling");
-		entry.description = new String("Surrounding sound environment (level and frequency)");
+		entry.name = context.getString(R.string.AudioHandlerUI_name);
+		entry.description = context.getString(R.string.AudioHandlerUI_description);
 		entry.resid = R.drawable.audio;
 		return (entry);
 	}
@@ -40,17 +44,12 @@ public class AudioHandlerUI implements HandlerUI
 
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Senses the surrounding sound environment. \n\n"+
-	    		"The sensor values are frequency or average amplitude of a sound sample. \n" + 
-	    		"The sampling rate and the polling interval for the sampling can be set in order to optimize the reading and processing requirements.");
-
-		return AboutText;
+		return context.getString(R.string.AudioHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Audio Sampling";
+		return context.getString(R.string.AudioHandlerUI_name);
 	}
 	
 	public void configurePreference(PreferenceActivity prefs)

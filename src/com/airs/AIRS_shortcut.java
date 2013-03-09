@@ -39,12 +39,12 @@ public class AIRS_shortcut extends Activity
      private SharedPreferences settings;
 	 private AIRS_local AIRS_locally;
 	 private Activity act;
+	 private String preferences, template;
 
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 		   Intent intent= getIntent();
-		   String preferences;
 		   long synctime;
 		   int version, i;
 		   boolean tables, tables2;
@@ -84,6 +84,9 @@ public class AIRS_shortcut extends Activity
             		preferenceFile = new File("/dbdata/databases/com.airs/shared_prefs/com.airs_preferences.xml");
 
 	            File shortcutFile = new File(preferences);
+	            
+	            // get just the name of the preference template
+	            template = shortcutFile.getName();
 
 	        	// copy preference file if original preferences exist
 	        	if (shortcutFile.exists() == true)
@@ -202,8 +205,11 @@ public class AIRS_shortcut extends Activity
 	     		// use Restart() function in order to start without GUIs
         		AIRS_locally.Restart(false);
     		   
+        		// store the file that started it
+        		AIRS_locally.template = new String(template);
+        		
     		    // announce and finish
-    		    Toast.makeText(getApplicationContext(), "Started AIRS local service!\nYou can see its current view by clicking on the notification bar update.", Toast.LENGTH_LONG).show();          
+    		    Toast.makeText(getApplicationContext(), getString(R.string.AIRS_started_local), Toast.LENGTH_LONG).show();          
                 finish();
 	  	    }
 

@@ -16,18 +16,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class EnvironmentalSensorsUI implements HandlerUI
 {   
-	public HandlerEntry init()
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Environmental Sensors");
-		entry.description = new String("Obtains various environmental information, such as light, barometer and weather conditions at current location");
+		entry.name = context.getString(R.string.EnvironmentalSensorsHandlerUI_name);
+		entry.description = context.getString(R.string.EnvironmentalSensorsHandlerUI_description);
 		entry.resid = R.drawable.weather;
 		return (entry);
 	}
@@ -39,15 +43,12 @@ public class EnvironmentalSensorsUI implements HandlerUI
 
 	public String About()
 	{
-	    String AboutText = new String(
-	    		"Obtains environmental information such as light, barometer, and various weather conditions (temperature, humidity, ...) at the current location through an online weather API. ");
-
-		return AboutText;
+		return context.getString(R.string.EnvironmentalSensorsHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Environmental Sensors";
+		return context.getString(R.string.EnvironmentalSensorsHandlerUI_name);
 	}
 	
 	public void configurePreference(PreferenceActivity prefs)

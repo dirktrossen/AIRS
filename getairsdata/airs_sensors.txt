@@ -1,0 +1,68 @@
+Sensor name|Sensor ID|Sensor value type|Multi-line (Y/N)
+audio amplitude|AA| float/-21 to 0 dBm|N
+amplitude sound pressure|AS|float/0-130 dB|N
+audio frequency|AF|integer/0-15000 Hz|N
+azimuth|Az|float/0-360 degrees|N
+battery level|Ba|integer/0-100|N
+BT connected|BD|string/MAC&name|Y
+bt presence|BT|string/MAC&name|Y
+battery discharging|Bc|integer/0 or 1|N 
+cell broadcast|BS|string/area code|N
+number of bt devices|BN|integer/number of BT devices around|N
+battery voltage|BV|int/mV|N
+battery temperature|BM|integer|N
+calendar event|CA|text|Y
+net country code|CC|integer/0-65535|N
+GPRS status|CD|int/0 or 1|N
+cell id|CI|integer|N
+roaming status|CR|int/0 or 1|N
+signal strength db|CS|integer/-120 to 0 dBm|N
+signal strength in bars|CB|integer/bars|N
+location area code|CL|integer/0-65535|N
+event button on phone|EB|string/text|Y
+gps-based longitude|GO|float|N
+gps-based altitude|GA|float|N
+gps-based latitude|GL|float|N
+gps-based heading|GC|float/0-360 degrees|N
+gps-based speed|GS|float/mph|N
+gps info|GI|string/long-lat-alt|N
+headset plug state|HS|integer/0 or 1|N
+heart rate (zephyr)|HP|integer/0-240|N
+zephyr battery level|HL|integer/0-100|N
+instant speed (zephyr)|HI|float/0-15.6m/s|N
+incoming call|IC|string/number|N
+instant heart rate|IH|int|N
+light|LI|float/Lux|N
+selected mood|MO|string|Y
+current track info|MP|string|Y
+curent track artist|MA|string|Y
+current track album|ML|string|Y
+current track name|MT|string|Y
+media folder watcher|MW|string/media:file_name|Y
+notifications|NO|string/gtalk or skype::user_name:message|Y
+memory available|Rm|integer/bytes|N
+outgoing call|OC|string/number|N
+proximity|PR|float/cm|N
+pitch|Pi|float/-180 to 180 degrees|N
+roll|Ro|float/-90 to 90 degrees|N
+atmospheric pressure|PU|int/0-1200|N
+received sms|SR|string/number:body|Y
+screen on/off|Sc|integer/0 or 1|N
+sms sent|SS|text|Y
+recording template|TE|text|N
+tasks running|TR|string/list of tasks|Y
+visible programs|TV|string/list of tasks|Y
+foreground tasks|TF|string/list of tasks|Y
+temperature Celsius|VT|int/-50 to 100|N
+temperature Fahrenheit|VF|int/-50 to 100|N 
+humidity|VH|int/0-100 %|N
+current conditions|VC|string|Y
+wind speed|VW|string|N
+weather info|VI|string/lat:long:VT:VF:VH:VC:VW|Y
+wlan ssid|WI|string/SSIDs|Y
+wlan mac address|WM|string/MACs|Y
+wlan signal strength|WS|integer/%|N
+wlan position|WP|string/area|N
+wlan connected|WC|int/0 or 1|N
+wlan info|WF|string/all info|Y
+random|Rd|int|N

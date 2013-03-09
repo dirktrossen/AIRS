@@ -22,21 +22,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class AIRS_web_tab extends Activity
+public class AIRS_manual extends Activity
 {
     WebView mWebView;
     public void onCreate(Bundle savedInstanceState) 
     {
-    	WebSettings settings;
         super.onCreate(savedInstanceState);
 
         mWebView = new WebView(this);
         mWebView.setWebViewClient(new HelloWebViewClient());
-        settings = mWebView.getSettings();
         mWebView.loadUrl("http://tecvis.co.uk/software/software/airs/");
 
         setContentView(mWebView);
@@ -67,7 +64,7 @@ public class AIRS_web_tab extends Activity
         switch (item.getItemId()) 
         {
         case R.id.main_about:
-       		HandlerUIManager.AboutDialog("Online Manual", getString(R.string.ManualAbout));
+       		HandlerUIManager.AboutDialog(getString(R.string.Online_Manual), getString(R.string.ManualAbout));
        		return true;
         case R.id.web_blog:
             mWebView.loadUrl("http://dalore.me.uk/DOT/category/airs/");        	
@@ -89,3 +86,4 @@ public class AIRS_web_tab extends Activity
         }
     }
 }
+

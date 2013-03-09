@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2011-2013, Dirk Trossen, airs@dirk-trossen.de
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -20,20 +20,23 @@ import java.util.Set;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.*;
 
 public class HeartMonitorHandlerUI implements HandlerUI
 {
-    // BT stuff
-	public HandlerEntry init()    
+	Context context; 
+	
+	public HandlerEntry init(Context context)
 	{				
+		this.context = context;
+		
 		HandlerEntry entry = new HandlerEntry();
-		entry.name = new String("Heart Monitor");
-		entry.description = new String("Heart rate from Zephyr");
+		entry.name = context.getString(R.string.HeartMonitorHandlerUI_name);
+		entry.description = context.getString(R.string.HeartMonitorHandlerUI_description);
 		entry.resid = R.drawable.heart_monitor;
 		return (entry);
 	}
@@ -44,17 +47,13 @@ public class HeartMonitorHandlerUI implements HandlerUI
 	}
 
 	public String About()
-	{
-	    String AboutText = new String(
-	    		"Senses heart rate values from Zephyr\n\n"+
-	    		"You can enable the heart monitor sensing here as well as select the device to connect to.\n");
-	    
-		return AboutText;
+	{  
+		return context.getString(R.string.HeartMonitorHandlerUI_about);
 	}
 	
 	public String AboutTitle()
 	{
-		return "Heart Monitor";
+		return context.getString(R.string.HeartMonitorHandlerUI_name);
 	}
 
 	public void configurePreference(PreferenceActivity prefs)
