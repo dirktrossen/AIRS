@@ -102,7 +102,12 @@ public class AIRS_shortcut extends Activity
 		            catch(Exception e)
 		            {
 		            }
-	        	}        		
+	        	}
+	        	else
+	        	{
+		     		Toast.makeText(getApplicationContext(), getString(R.string.Shortcut_not_found), Toast.LENGTH_LONG).show();
+		     		finish();
+	        	}
 	        }
 	        
 	        // get default preferences

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2011-2012, Dirk Trossen, airs@dirk-trossen.de
+  Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published by
@@ -37,9 +38,9 @@
 <string name="GeneralSettings">\'Server\' defines the address of the AIRS application server (must be public), followed by the port.\n\n
 \'Local Display\' toggles the output of sensor values in local sensing\n\n
 \'Local Storage\' switches the local storage on/off in local sensing. \n\n
-\'Safe Writing\' writes sensor values directly to the memory in order to avoid loss in case of crashes.\n\n
+\'Sensor History\' determines the number of sensor values being shown in the AIRS visualisations.\n\n
 \'Wakeup\' only senses in local mode when there is any other (user) activity, i.e., it does not hold a wake-lock.\n\n
-\'Watchdog Interval\' defines the vibration interval for the local sensing watchdog (0 switches the vibrate off)\n\n
+\'Reminder Interval\' defines the vibration and LED notification interval for the local sensing watchdog (0 switches the vibrate off)\n\n
 \'Debug\' switches the debug output on/off. \n</string>
 <string name="MapAbout">Shows a path of recent GPS recording. You can click on a marker for more information. You can center the map either on your current location or the last stored one (using the buttons on the top right). You can also switch between map or satellite view with the appropriate options menu item.</string>
 <string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage. You can also read the <b>AIRS blog</b> by opening the options menu and selecting the appropriate menu item.</string>
@@ -52,8 +53,8 @@
 <string name="HeartrateAbout">Hold your finger over the camera lens, covering the flash.\nYou will need to keep your finger there at least for 10 seconds after which the first reading shows (updated every 10 seconds).\n\nConfirm your reading with the <b>Confirm</b> button or cancel your reading.</string>
 <string name="TimelineAbout">Shows a historical timeline of the sensor you just clicked on. You can change the number of historical values in the <b>General Settings</b>\nExit the timeline by using the <b>BACK</b> key!</string>
 <string name="DBadminAbout">Choose any of the three DB actions, namely <b>Backup</b>, <b>Restore</b> or <b>Index</b>. You can only index the DB once and cannot undo the indexing after it is done.</string>
-<string name="SyncAbout">Allows for sharing the data since the last synchronisation in files of a defined size (set in the Settings). You will likely need to share several files - please select the sharing means appropriately.\n\nYou can also manually set the last sync date, in case you need to re-sync periods.</string>
-<string name="HandlersList">Select the sensors you want to record as well as select the specific handler to configure available settings! You can also configure <b>General Settings</b> for AIRS.</string>
+<string name="SyncAbout">Allows for sharing the data since the last synchronisation as a text file.\n\nYou can also manually set the last sync date, in case you need to re-sync periods.</string>
+<string name="HandlersList">Select the sensors you want to record as well as configure various available settings for the sensors! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="Sensor_Selection">Sensor Selection</string>
 <string name="HandlerDescription">Handler Image</string>
 <string name="Online_Manual">Online Manual</string>
@@ -71,9 +72,9 @@
 <string name="Backup_status">Backup DB of size</string>
 <string name="Restore_status">Restore DB of size</string>
 <string name="Index_DB">Database Indexing</string>
-<string name="Index_DB_message">Indexing your database greatly improves the performance in retrieving values for visualisation but will increase the size of your database by about 60%! You only need to index once.\n\nAre you sure that you want to continue?</string>
+<string name="Index_DB_message">Indexing your database greatly improves the performance in retrieving values for visualisation but will increase the size of your database by about 60%! You only need to index once.\n\nDo you want to continue?</string>
 <string name="Cannot_index">Cannot index DB file (Possibly indexed already or possible access error or external media does not exist)!</string>
-<string name="Cannot_restore">Cannot restore DB file (Possibly indexed already or possible access error or external media does not exist)!</string>
+<string name="Cannot_restore">Cannot restore DB file (Possible access error or external media does not exist)!</string>
 <string name="Finished_indexing">Finished indexing successfully!</string>
 <string name="Finished_restore">Finished restore successfully!</string>
 <string name="sensed">sensed</string>
@@ -81,6 +82,8 @@
 <string name="sensed3">with value :\n</string>
 <string name="Sensor_invalid">Sensor invalid - Reason:</string>
 <string name="Sensor_invalid2">Sensor invalid - Reason: unknown</string>
+<string name="Sensor_suspended">Sensor suspended - Reason:</string>
+<string name="Sensor_suspended2">Sensor suspended - Reason: unknown</string>
 <string name="Enable_at_least_one_sensor">You need to enable at least one sensor before starting the measurements!</string>
 <string name="Started_AIRS">Started AIRS</string>
 <string name="AIRS_Remote_Sensing">AIRS Remote Sensing</string>
@@ -129,7 +132,10 @@
 <string name="First_sensing">First sensing at</string>
 <string name="First_sensing2">with value :</string>
 <string name="Delete_event">Do you want to delete this annotation from the list?</string>
-<string name="Camera_error">Can not open the camera resource!</string>
+<string name="Camera_error">Cannot open the camera resource!</string>
+<string name="Shortcut_not_found">Cannot find the shortcut preference file! Please recreate the shortcut.</string>
+<string name="Select_Sensors">Select Sensors</string>
+<string name="Select_Sensors2">Select which sensors you would like to record</string>
 
 <!-- handler UIs -->
  
@@ -287,6 +293,12 @@
 <string name="Use_Network_Location">Use Network Location</string>
 <string name="Use_Network_Location_on">Use Wifi and network information for location</string>
 <string name="Use_Network_Location_off">Use only GPS</string>
+<string name="AdaptiveGPS">Adaptive GPS</string>
+<string name="AdaptiveGPS_on">Use Wifi information to temporarily switch off GPS for better battery life. Adaptive mode might lead to delays in retrieving your GPS location once you leave WiFi zones since GPS will need to be re-started.</string>
+<string name="AdaptiveGPS_off">Do not use WiFi information to temporarily switch off GPS for better battery life</string>
+<string name="AdaptiveGPS_Selection">WiFi Selection</string>
+<string name="AdaptiveGPS_Selection_on">Choose the WiFi access points in which proximity GPS recording will be switched off. You will need to subscribe to the WI sensor for this setting to have an effect.</string>
+<string name="AdaptiveGPS_Selection_title">Choose WiFi</string>
 <string name="GPS_Interval">GPS Interval [s]</string>
 <string name="GPS_Interval_on">Poll interval for GPS location in seconds</string>
 <string name="AGPS_Refresh_Interval">AGPS Refresh Interval [h]</string>
@@ -330,7 +342,7 @@
 <!-- activity labels -->
 <string name="AIRS_Timeline">AIRS Timeline</string>
 <string name="AIRS_Mood_Selector">AIRS Mood Selector</string>
-<string name="AIRS_Event_Selector">AIRS Mood Selector</string>
+<string name="AIRS_Event_Selector">AIRS Event Selector</string>
 <string name="AIRS_Heartrate">AIRS Heartrate</string>
 <string name="AIRS_Preferences">AIRS Preferences</string>
 <string name="AIRS_Events">AIRS Events</string>
@@ -354,25 +366,26 @@
 
 <!-- visualisation tab -->
 <string name="Get_storica">Get Storica!</string>
-<string name="Storica_description">You can process and visualise your AIRS data with engaging multimedia graphics, using our Storica app. Head over to the PlayStore and try it out!</string>
+<string name="Storica_description">In addition to the short-term visualisations in AIRS, you can process and visualise your AIRS data with engaging multimedia graphics, using our Storica app. Head over to the PlayStore and try it out!</string>
 
 <string name="WhatsNew2">What\'s new in AIRS?</string>
 <string name="WhatsNew">
-- internationalised AIRS for language support\n
-- changed UI to make configuration faster and integrate templates better\n 
-- added template download from remote server\n
-- sync now simplified (single file only) with ability to set sync date\n
-- added BD sensor for list of BT devices connected at any moment\n
-- added TE sensor for template used for recording\n
-- changed Wifi handler to return empty readings if no WiFi is found\n
-- fixed bug in AZ, RO, PI sensors\n
-- added ability for sensors to disappear in failure cases (e.g., if connection to heart monitor failed)\n
-- show template being used in measurement window 
+- adaptive GPS suspends GPS when near WiFi SSIDs that you can define\n
+- improved WiFi handler with better semaphore handling\n
+- WiFi returns empty readings when switched off during recording\n
+- now checks if shortcut preference file exists\n
+- added German translation
 </string>
-<string name="ReleaseNotes">
+<string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.3:\n
+- adaptive GPS suspends GPS when near WiFi SSIDs that you can define\n
+- improved WiFi handler with better semaphore handling\n
+- WiFi returns empty readings when switched off during recording\n
+- now checks if shortcut preference file exists\n
+- added German translation\n\n
 V2.5.2:\n
 - bugfixes\n\n
 V2.5.1:\n

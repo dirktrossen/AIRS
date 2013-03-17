@@ -17,15 +17,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 public class AIRS_visualisation extends Activity
@@ -51,7 +48,7 @@ public class AIRS_visualisation extends Activity
                 
         setContentView(R.layout.visualisation);
         
-        Button get_storica = (Button)findViewById(R.id.get_storica);
+        ImageButton get_storica = (ImageButton)findViewById(R.id.get_storica);
         get_storica.setOnClickListener(new OnClickListener() 
         {
             public void onClick(View v) 

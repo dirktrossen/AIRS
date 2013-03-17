@@ -166,6 +166,8 @@ public class AudioHandler implements Handler
 	
 	public AudioHandler(Context nors)
 	{
+		boolean buffer_error = false;
+		
 		// store for later
 		airs = nors;
 		
@@ -186,17 +188,30 @@ public class AudioHandler implements Handler
 			bufferSize = sample_rate;
 		
 		// start player and see if it's there!
-		p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
-		if (p != null)
-			if (p.getState() == AudioRecord.STATE_INITIALIZED)
+		do
+		{
+			try
 			{
-				available = true;	
-				// reserve memory for recorded output
-				output = new short[sample_rate];
-				// release player again until needed
-				p.release();
-				p = null;
+			p = new AudioRecord(MediaRecorder.AudioSource.MIC, sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+			if (p != null)
+				if (p.getState() == AudioRecord.STATE_INITIALIZED)
+				{
+					available = true;	
+					// reserve memory for recorded output
+					output = new short[sample_rate];
+					// release player again until needed
+					p.release();
+					p = null;
+					buffer_error = false;
+				}
 			}
+			catch(Exception e)
+			{
+				buffer_error = true;
+				// increase buffer size by 10%
+				bufferSize += bufferSize/10;
+			}
+		}while(buffer_error == true);
 	}
 	
 	public void destroyHandler()

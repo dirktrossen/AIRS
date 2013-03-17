@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -77,13 +78,16 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	    no_tabs++;
 	    
 	    // fourth tab: storica
-	    intent = new Intent().setClass(this, AIRS_visualisation.class);
-	    spec = tabHost.newTabSpec("storica").setIndicator(getString(R.string.tab_Visualise),
-	                      res.getDrawable(R.drawable.visualise))
-	                  .setContent(intent);
-	    tabHost.addTab(spec);
-	    // store tab number
-	    no_tabs++;
+		if (Build.VERSION.SDK_INT>=14)
+		{
+		    intent = new Intent().setClass(this, AIRS_visualisation.class);
+		    spec = tabHost.newTabSpec("storica").setIndicator(getString(R.string.tab_Visualise),
+		                      res.getDrawable(R.drawable.visualise))
+		                  .setContent(intent);
+		    tabHost.addTab(spec);
+		    // store tab number
+		    no_tabs++;
+		}
 
 	    // current tab
 	    tabHost.setCurrentTab(currentTab);

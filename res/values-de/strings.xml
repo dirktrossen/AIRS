@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation as version 2.1 of the License.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+  License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this library; if not, write to the Free Software Foundation, Inc.,
+  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+ -->
+<resources>
+<string name="app_name">AIRS</string>
+<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen; \n&#169; 2013 TecVis LP
+\n\nKontakt: dot@tecvis.co.uk
+\n\nAnleitung (in Englisch): http://tecvis.co.uk/software-2/airs/
+\n\nAIRS Quellcode ist lizenziert unter der LGPL 2.0 license und ist auf Github verfügbar. Für mehr Informationen bzgl. der Lizenz, siehe <b>license.txt</b>!
+\n\nSpezielle Anerkennung für Dana Pavel, die durch die Benutzung von AIRS für ihre Forschungsarbeit (http://dalore.me.uk/Dana/research-areas) viele neue Features beigetragen hat (wie z.B. die Widgets für Anmerkungen), sowohl als auch die Stabilität von AIRS erhöht hat!
+\n\nDie Autoren sind nicht für Missbrauch von AIRS verantwortlich, z.B. für Überwachungszwecke. Die Operation von AIRS wird durch ein Symbol in der oberen Titelleiste angezeigt, um Benutzer auf Aufnahmen aufmerksam zu machen!
+</string>
+<string name="tab_Record">Aufnahme</string>
+<string name="tab_Config">Konfig</string>
+<string name="tab_Sync">Sync</string>
+<string name="tab_Visualise">Visualisiere</string>
+<string name="main_About">Über</string>
+<string name="main_Sync">Synchronisiere Aufnahme</string>
+<string name="Help">Hilfe</string>
+<string name="recording_prompt">Typ der Aufnahme</string>
+<string name="main_Configure">Generelle Einstellungen</string>
+<string name="main_Configure2">Bestimme generelle Einstellungen wie z.B. Server IP, Überwachungsfunktion und andere.</string>
+<string name="GeneralSettings">\'Server\' bestimmt die Adresse des AIRS Anwendungsservers (muss öffentlich sein), zusammen mit dem Port.\n\n
+\'Lokale Anzeige\' wechselt die Ausgabe von Sensordaten im lokalen Aufnahmemodus\n\n
+\'Lokale Speicherung\' wechselt die lokale Speicherung von Daten im lokalen Aufnahmemodus. \n\n
+\'Sensorengeschichte\' bestimmt die Anzahl der Daten, die im lokalen Aufnahmemodus angezeigt werden.\n\n
+\'Wakeup\' zeichnet nur dann auf, wenn andere Benutzeraktivitäten existieren.\n\n
+\'Erinnerungsintervall\' bestimmt das Intervall, dass den Benutzer an die Aufzeichnung erinnert durch Vibration und LED Anzeige (0 schaltet die Benachrichtungen ab)\n\n
+\'Debug\' schaltet Debugaufzeichnungen an/aus. \n</string>
+<string name="MapAbout">Zeigt einen Pfad der GPS Aufzeichnungen. Du kannst auf eine Markierung klicken für mehr Information. Du kannst die Karte auf Deine momentane oder die letzte bekannte Position zentrieren (durch die Knöpfe oben rechts). Du kannst auch zwischen Satelliten- und Kartendarstellung umschalten durch die Menüeinträge.</string>
+<string name="ManualAbout">Zeigt das AIRS Benutzerhandbuch (leider nur in Englisch).\nDu brauchst Internetzugang, um die Seite anzuzeigen. Du kannst verschiedene Handbuchkapitel anklicken wie jede andere Webseite. Du kannst auch den <b>AIRS blog</b> lesen mit Hilfe des geeigneten Menüeintrags.</string>
+<string name="RecordAbout">Starte eine Aufzeichnung und wähle den Modus der Aufzeichnung.\n\nDu kannst auch <b>Muster</b> laden oder löschen, die Du zuvor gespeichert hattest. Du kannst auch Shortcuts zu einem ausgewählten Muster erstellen. Diese Shortcuts werden auf dem Heimbildschirm dargestellt. Wenn Du auf ein Muster klickst, wird dieses automatisch geladen.\n\nZusätzlich zur Erstellung von eigenen Mustern, kannst Du auch Beispiele von unserem Server <b>herunterladen</b>.</string>
+<string name="LocalAbout">Zeigt die Sensoren, die im lokalen Aufnahmemodus verfügbar sind.\nWähle die Sensoren die Du aufzeichnen willst. Durch das Menü kannst Du alle Sensoren anwählen oder alle Anwahlen löschen. Du kannst auch Informationen über die Sensoren ansehen, wie z.B. Typ, Wertebereiche etc, die entdeckt wurden.</string>
+<string name="ValuesAbout">Zeigt die momentanen Werte der Sensoren im lokalen Aufnahmemodus an.\nVon hier aus kannst Du das Programm verlassen oder die Anzeige mit der <b>ZURÜCK</b> Taste verlassen!\Du kannst auch die Anzeige pausieren oder wiederaufnehmen (dies stoppt jedoch nicht den Dienst, der die Werte aufzeichnet in der Datenbank).</string>
+<string name="RemoteAbout">Zeigt die Anzahl der Werte übertragen, zusammen mit den kBytes, im Remote Modus.\nVon hier aus kannst Du das Programm verlassen oder die Anzeige mit der <b>ZURÜCK</b> Taste verlassen!</string>
+<string name="MoodAbout">Wähle die Gemütsstimmung aus in der Du Dich befindest. Deine Aufnahme wird mit einem Zeitstempel versehen mit dem <b>MO</b> Sensor.\nVerlasse die Auswahl mit der <b>ZURÜCK</b> Taste\nDu kannst auch Deine eigene Stimmung bestimmen mit dem Textfeld am unteren Rand.</string>
+<string name="EventAbout">Wähle das Ereignis, dass Du aufzeichen willst. Deine Auswahl wird mit einem Zeitstempel versehen mit dem <b>EB</b> Sensor.\nVerlasse die Auswahl mit der <b>ZURÜCK</b> Taste!\nDu kannst Dein eigenes Ereignis mit dem Textfeld am unteren Rand eingeben. Du kannst einen Eintrag löschen, indem Du lange auf den Eintrag klickst.\n\nAIRS speichert Deine letzte Einträge permanent.</string>
+<string name="HeartrateAbout">Halte Deinen Finger über die Kameralinse und den Blitz.\nDu musst Deinen Finger dort für mindestens 10 Sekunden halten. Danach wird der erste Wert angezeigt und alle 10 Sekunden erneuert.\n\nBestätige Deinen Wert mit dem <b>Bestätige</b> Knopf oder breche Deine Messung ab.</string>
+<string name="TimelineAbout">Zeigt den historischen Zeitverlauf des angeklickten Sensors. Du kannst die Anzahl der angezeigten Werte in den Einstellungen ändern.\nVerlasse die Anzeige mit der <b>ZURÜCK</b> Taste!</string>
+<string name="DBadminAbout">Wähle eine der drei Datenbankoperationen: <b>Speichern</b>, <b>Wiederherstellen</b> or <b>Index</b>. Du kannst die Datenbank nur einmal indizieren und diese Operation kann nicht rückgängig gemacht werden.</string>
+<string name="SyncAbout">Erlaubt die Daten seit der letzten Synchronisierung zu sichern.\n\nDu kannst das letzte Synchronisierungsdatum auch manuell ändern für den Fall, dass Du wieder synchronisieren musst.</string>
+<string name="HandlersList">Wähle die Sensoren aus, die Du aufzeichnen willst. Außerdem kannst Du hier verschiedene Einstellungen der Sensoren ändern! Weiterhin kannst Du generelle Einstellungen ändern.</string>
+<string name="Sensor_Selection">Sensorenauswahl</string>
+<string name="HandlerDescription">Handlerbild</string>
+<string name="Online_Manual">Onlineanleitung</string>
+<string name="Yes">Ja</string>
+<string name="No">Nein</string>
+<string name="OK">OK</string>
+<string name="Cancel">Abbruch</string>
+<string name="Select">Wähle</string>
+
+<string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
+<string name="Backup_Recordings">Sichere Aufnahmen</string>
+<string name="Starting_backup">Starte Sicherung</string>
+<string name="Cannot_create_backup">Kann Sicherungsdatei nicht erstellen (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
+<string name="Finished_backup">Sicherung erfolgreich beendet!</string>
+<string name="Backup_status">Sichere DB der Größe</string>
+<string name="Restore_status">Wiederherstellen DB der Größe</string>
+<string name="Index_DB">Datenbankindizierung</string>
+<string name="Index_DB_message">Indizieren der Datenbank beschleunigt Visualisierungen gewaltig, wird allerdings die Größe um ca 60% erhöhen! Du brauchst nur einmal zu indizieren.\n\nMöchtest Du fortfahren?</string>
+<string name="Cannot_index">Kann DB nicht indizieren (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
+<string name="Cannot_restore">Kann DB nicht wiederherstellen (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
+<string name="Finished_indexing">Indizierung erfolgreich beendet!</string>
+<string name="Finished_restore">Wiederherstellen erfolgreich beendet!</string>
+<string name="sensed">aufgezeichnet</string>
+<string name="sensed2">mal\nLetzte Aufnahme um</string>
+<string name="sensed3">mit Wert:\n</string>
+<string name="Sensor_invalid">Sensor ungültig - Grund:</string>
+<string name="Sensor_invalid2">Sensor ungültig - Grund: unbekannt</string>
+<string name="Sensor_suspended">Sensor angehalten - Grund:</string>
+<string name="Sensor_suspended2">Sensor angehalten - Grund: unbekannt</string>
+<string name="Enable_at_least_one_sensor">Du musst mindestens einen Sensor auswählen bevor Du Aufnahmen startest!</string>
+<string name="Started_AIRS">Startet AIRS</string>
+<string name="AIRS_Remote_Sensing">AIRS Remote Aufnahmen</string>
+<string name="AIRS_Local_Sensing">AIRS Lokale Aufnahmen</string>
+<string name="AIRS_Sensing">AIRS Aufnahmen</string>
+<string name="running_since">&#8230;läuft seit&#8230;</string>
+<string name="restarted_since">&#8230;wiedergestarted seit&#8230;</string>
+<string name="killed_at">&#8230;beendet um</string>
+<string name="AIRS_killed">AIRS beendet</string>
+<string name="battery">Batterie</string>
+<string name="binding_failed">Anbinden an den Dienst erfolglos!</string>
+<string name="Local_Sensing">Lokale Aufnahmen</string>
+<string name="paused">angehalten</string>
+<string name="Exit_AIRS">Beenden wird Deine Aufnahmen anhalten und den Hintergrunddienst beenden!\nBist Du sicher?</string>
+<string name="Exit_AIRS2">Beende AIRS?</string>
+<string name="Snapshot_nothing_to_share">Nichts zu teilen! Hast Du den Kamerapfad richtig eingestellt (der Pfad muss derselbe sein wie für Bilder in der Galerie!)?</string>
+<string name="Snapshot_share">Share AIRS Bilder:</string>
+<string name="Snapshot_publish">Hochgeladen von AIRS</string>
+<string name="Snapshot_only_pictures">Kann nur Bilder sharen!</string>
+<string name="Measurements_share">Share AIRS Aufnahmen via:</string>
+<string name="AIRS_running_exit">AIRS läuft momentan.\nMöchtest Du die mometanen Aufzeichnungen unterbrechen and neu starten? Du musst AIRS dann neu starten.</string>
+<string name="AIRS_started_local">AIRS lokale Aufzeichnungen gestartet!\nDu kannst die momentanen Werte in der Benachtigungsleiste sehen, wenn Du auf das AIRS Symbol klickst.</string>
+<string name="Delete_template">Lösche Muster</string>
+<string name="At_least_one_template">Du brauchst mindestens ein gespeichertes Muster, dass in der Liste angewählt ist, bevor Du einen Shortcut erstellen kannst!</string>
+<string name="At_least_one_template2">Du brauchst mindestens ein gespeichertes Muster, dass in der Liste angewählt ist, bevor Du einen Shortcut löschen kannst!</string>
+<string name="Created_shortcut">Habe einen AIRS Shortcut auf dem Heimbildschirm erstellt!</string>
+<string name="Load_template">Lade Muster</string>
+<string name="Load_template2">Das Laden des Musters wird die momentanen Einstellungen überschreiben!\nBist Du sicher?</string>
+<string name="Save_template">Dateinamen um Muster zu speichern</string>
+<string name="Saved_settings">Muster gespeichert</string>
+<string name="Restored_settings">Muster wiederhergestellt</string>
+<string name="Start_remote_sensing">Bist Du sicher, dass Du Internet-basierte Aufnahmen starten willst?\n\nAIRS wird versuchen den entfernten Anwendungsserver zu erreichen, während AIRS blockieren wird bis der Verbindungsversuch scheitert.</string>
+<string name="Sensing_not_running">Aufnahmen ist nicht am Laufen!\nDer Dienst ist möglicherweise abgestürtzt!</string>
+<string name="Gathering_sensors">Suche nach lokalen Sensoren</string>
+<string name="Please_wait">Bitte warte&#8230;</string>
+<string name="Cannot_find_storage">Kann keinen externen Speicher finden!</string>
+<string name="Last_sync">Letzte sync:</string>
+<string name="Set_sync_date">Setze Sync Datum</string>
+<string name="Set_sync_date2">Du kannst hier das letzte Sync Datum manuell setzen (startet um 00:00 am Morgen). Diese Operation wird den momentanen Zeitstempel überschreiben!</string>
+<string name="Start_synchronising">Starte Synchronisierung</string>
+<string name="Interrupt_synchronising">Möchtest Du die Synchronisierung abbrechen?</string>
+<string name="Send_local_recordings">Sende Lokale Aufnahmen an:</string>
+<string name="No_values_to_synchronise">Es gibt nichts zu synchronisieren!</string>
+<string name="Temp_sync_file">Temp Datei (kB):</string>
+<string name="AIRS_Map">AIRS Kartenanblick</string>
+<string name="First_sensing">Erste Aufnahme um</string>
+<string name="First_sensing2">mit Wert :</string>
+<string name="Delete_event">Möchtest Du diese Anmerkung von der Liste löschen?</string>
+<string name="Camera_error">Kann nicht auf die Kamera zugreifen!</string>
+<string name="Shortcut_not_found">Kann die Shortcut Datei nicht finden! Bitte stelle den Shortcut wieder neu her.</string>
+<string name="Select_Sensors">Wähle Sensoren</string>
+<string name="Select_Sensors2">Wähle die Sensoren aus, die Du aufzeichnen willst</string>
+
+<!-- handler UIs -->
+ 
+<string name="AudioHandlerUI_name">Audio Sampling</string>
+<string name="AudioHandlerUI_description">Umgebungsgeräusche (Pegel und Frequenz)</string>
+<string name="AudioHandlerUI_about">Zeichnet die Umgebungsgeräusche auf.\n\nThe Werte sind Frequenz oder Durchschnittspegel.\nDie Aufnahmerate und das Interval der Aufnahmen kann bestimmt, um den Batterieverbrauch zu optimisieren.</string>
+
+<string name="BeaconHandlerUI_name">Bluetooth Geräte</string>
+<string name="BeaconHandlerUI_description">Umgebene BT Geräte</string>
+<string name="BeaconHandlerUI_about">Zeichnet umgebene BT Geräte auf.\n\nDie Werte sind im Format MAC::Namen für jedes entdeckte Gerät.\nAlle Arten von Geräte werden versucht zu identifizieren.\nDer Benutzer kann gefragt werden, ob BT angeschaltet werden soll für den Fall dass es angeschaltet ist.</string>
+
+<string name="CalendarHandlerUI_name">Kalendar</string>
+<string name="CalendarHandlerUI_description">Ereignisse Deiner Kalendareinträge</string>
+<string name="CalendarHandlerUI_about">Liest Kalendareinträge von Deinem verfügbaren Kalendar!\nDu kannst die verschiedenen Kalendar auswählen, von denen AIRS auszeichnen soll. Die Kalendareinträge werden regelmäßig abgefragt.</string>
+
+<string name="DeviceInfoHandlerUI_name">Geräte Informationen</string>
+<string name="DeviceInfoHandlerUI_description">Verschiedene handy-basierte Information wie Orientierung, RAM, Batterie etc etc</string>
+<string name="DeviceInfoHandlerUI_about">Liest verschiedene handy-basierte Sensoren und Systeminformationen wie RAM, Programme, Batterie etc.\n\nOrientierung ist nur unterstützt für Modelle mit Kompass.</string>
+
+<string name="EnvironmentalSensorsHandlerUI_name">Umwelt Sensoren</string>
+<string name="EnvironmentalSensorsHandlerUI_description">Liest verschiedene Umgebungsinformation, wie Licht, Barometer, und Wetterbedingungen am momentanen Standort</string>
+<string name="EnvironmentalSensorsHandlerUI_about">Liest verschiedene Umgebungsinformation, wie Licht, Barometer, und Wetterbedingungen (Temperatur, Luftfeuchtigkeit, &#8230;)) am momentanen Standort durch einen Internet-basierten Wetterdienst.</string>
+
+<string name="EventButtonHandlerUI_name">Ereignis Knopf</string>
+<string name="EventButtonHandlerUI_description">Ein Knopf für den Heimschirm, der bedeutungsvolle Ereignisse markieren kann.</string>
+<string name="EventButtonHandlerUI_about">Erlaubt die Markierung von bedeutungsvollen Ereignisses durch ein Widget auf dem Heimschirm.\n\nDu kannst eigene bedeutungsvolle Beschreibungen eingeben für das markierte Ereignis.\nAIRS speichert die zuletzt definierten Beschreibungen, wobei die maximale Anzahl hier bestimmt werden kann.</string>
+
+<string name="HeartMonitorHandlerUI_name">Pulsmonitor</string>
+<string name="HeartMonitorHandlerUI_description">HxM BT Pulsmonitor von Zephyr, der Puls und momentane Geschwindigkeit unterstützt</string>
+<string name="HeartMonitorHandlerUI_about">Liest Pulswerte vom Zephyr Pulsmonitor\n\nDu kannst das Lesen hier einschalten und auch das Gerät auswählen.</string>
+
+<string name="LocationHandlerUI_name">Standort</string>
+<string name="LocationHandlerUI_description">Verschiedene Standortquellen wie GPS, Wifi und Mobilinformationen</string>
+<string name="LocationHandlerUI_about">Liest standortbezogene Information.\n\nDie Werte sind Standortinformation über GPS, WiFi und Mobilfunkinformationen.\nDas letztere ist eine einfache Zahl, GPS ist Länge/Breite und WLAN kann die MAC Adresse, SSID und Signalstärke von gefundenen Zugangspunkten lesen. \n\nDie Eintellungen erlauben verschiedene Abfrageintervalle für GPS and WiFi zu wählen. Außerdem kannst Du auch den Assisted-GPS Modus zwingen, regelmäßig die neuesten Daten vom Internet zu laden.</string>
+
+<string name="MediaWatcherHandlerUI_name">Mediumverzeichnisse</string>
+<string name="MediaWatcherHandlerUI_description">Beobachtet verschiedene Mediumverzeichnisse, wie für Kamera, Musik, &#8230;</string>
+<string name="MediaWatcherHandlerUI_about">Beobachtet verschiedene Mediumverzeichnisse.\n\nKamera, Musik, und andere Verzeichnisse kann bzl. dem Erstellen von neuen Dateien beobachtet werden (wie z.B. bei dem Knipsen eines Bildes).\nUm den richtigen Kamerapfad einzustellen, gehe in die Galerie und zeige ein Bild an dass Du geknipst hast. Dann zeige die \'Details\' an und schaue nach dem \'Pfad\' Eintrag. Wähle jetzt den gesamten Pfad (ohne den Dateinamen) für den Eintrag des Kamerapfades!</string>
+
+<string name="NotificationHandlerUI_name">IM Benachrichtigungen</string>
+<string name="NotificationHandlerUI_description">Zeichnet Benachrichtigungen von Instant Messaging Programmen auf (momentan nur Skype und Google Talk)</string>
+<string name="NotificationHandlerUI_about">Zeichnet Benachrichtigungen von Instant Messaging Programmen auf.\n\nMomentan, nur Skype und Google Talk werden unterstützt. Skype gibt nur den Namen Deines Kontakts an, während Google Talk den Namen und die Nachricht aufzeichnet.\nDer Sensor ist als sog. Accessibility Dienst implementiert. Daher musst Du diesen Dienst separat einschalten in den Systemeinstellungen von Android (der Entrag in den Einstellungen hier wird Dich automatisch zu den Systemeinstellungen führen).</string>
+
+<!-- buttons and other UI elements -->
+<string name="Backup">Sichern</string>
+<string name="Restore">Wiederherstellen</string>
+<string name="Index">Index</string>
+<string name="Puls">Puls:</string>
+<string name="Select_template_and_action">Wähle Muster und Aktion</string>
+<string name="Delete">Lösche</string>
+<string name="Shortcut">Shortcut</string>
+<string name="Download">Laden</string>
+<string name="Values"># Werte:</string>
+<string name="transferred">kBytes übertragen :</string>
+<string name="Sync_hint">Falls Du wieder synchronisieren willst, definiere Synchronisierungsdatum im Optionsmenü!</string>
+<string name="Save_as_Template">Speichere als Muster</string>
+<string name="Pause">Pause</string>
+<string name="Resume">Weiter</string>
+<string name="Exit">Verlassen</string>
+<string name="Select_all">Alle auswählen</string>
+<string name="Unselect_all">Auswahlen löschen</string>
+<string name="Info">Info</string>
+<string name="DB_Admin">DB Admin</string>
+<string name="Manual">Anleitung</string>
+<string name="Map_View">Kartenanblick</string>
+<string name="Satellite_View">Satelittenanblick</string>
+<string name="Toggle_Path">Wechsle Pfad</string>
+<string name="Set_Sync_Date">Setze Sync Datum</string>
+<string name="Back">Zurück</string>
+<string name="Forward">Vorwärts</string>
+
+<!-- general settings preference elements -->
+<string name="General_Settings">AIRS Generelle Einstellungen</string>
+<string name="Remote_Settings">AIRS Remote Einstellungen</string>
+<string name="Address_server">Adresse des AIRS Anwendungsservers</string>
+<string name="Server_name">Servername</string>
+<string name="Port_server">Port des AIRS Anwendungsservers</string>
+<string name="Port_number">Portnummer</string>
+<string name="Local_Settings">AIRS Lokale Einstellungen</string>
+<string name="Local_Display">Lokale Anzeige</string>
+<string name="Local_Display_on">Zeige Werte der Sensoren an die Du ausgewählt hast</string>
+<string name="Local_Display_off">Zeige keine Werte an, nur die Anzahl der Messungen</string>
+<string name="Local_Storage">Lokaler Speicher</string>
+<string name="Local_Storage_on">Speichere Werte der Sensoren in interner SQLite Datenbank</string>
+<string name="Local_Storage_off">Speichere keine Sensorenwerte</string>
+<string name="Sensor_History">Geschichte der Werte</string>
+<string name="Sensor_History_on"># der historischen Sensorenwerte (0 = ausschalten)</string>
+<string name="Wakeup">Aufwecken</string>
+<string name="Wakeup_on">Wecke Handy während der Auszeichnung nur wenn andere Benutzeraktivität existiert</string>
+<string name="Wakeup_off">Handy geht nicht schlafen (zeichnet ununterbrochen auf)</string>
+<string name="Battery_kill">Batteriegrenze für Abbruch [%]</string>
+<string name="Battery_kill_on">Bricht AIRS Aufzeichnung ab, wenn Batterie unter angegebene Grenze sinkt um Batterie zu sparen (0 = ausschalten)</string>
+<string name="Reminder_Settings">Erinnergungseinstellungen</string>
+<string name="Reminder_Interval">Erinnerungsintervall [s]</string>
+<string name="Reminder_Interval_on">Intervall für Erinnerungen das AIRS aufzeichnet (0 = ausschalten)</string>
+<string name="Vibrate">Vibration</string>
+<string name="Vibrate_on">Vibration als Erinnerung</string>
+<string name="Vibrate_off">Keine Vibration</string>
+<string name="Lights">LED</string>
+<string name="Lights_on">Benutze Benachrichtungslicht als Erinnerung</string>
+<string name="Lights_off">Benutze Benachrichtungslicht nicht als Erinnerung</string>
+<string name="Color_Code">Farbcode</string>
+<string name="Color_Code_on">Farbcode der LED Benachrichtigung (in hex)</string>
+<string name="Debug">Debug</string>
+<string name="Debug_on">Schreibe Debugnachrichten in AIRS_debug.txt</string>
+<string name="Debug_off">Keine Debugnachrichten</string>
+
+<!-- handler settings preference elements -->
+<string name="Sampling_Rate">Samplingrate [Hz]</string>
+<string name="Sampling_Rate_on">Samplingrate für die Geräuschsaufnahmen in Hertz</string>
+<string name="Choose_Sampling_Rate">Wähle Samplingrate</string>
+<string name="Audio_Interval">Audiointervall [s]</string>
+<string name="Audio_Interval_on">Intervall mit dem Audio gemessen wird in Sekunden</string>
+<string name="Sound_Adjustment">Audiodruckanpassung [dB]</string>
+<string name="Sound_Adjustment_on">Anpassung in dB für Audiodruckpegel</string>
+<string name="Enable_BT">BT Verwendung</string>
+<string name="Enable_BT_on">Schalte BT ein, falls ausgeschaltet</string>
+<string name="Enable_BT_off">Schalte BT nicht ein</string>
+<string name="Ask_before_enabling">Frage vor dem Einschalten</string>
+<string name="Ask_before_enabling_on">Frage um Benutzererlaubnis um BT einzuschalten</string>
+<string name="Ask_before_enabling_off">Schalte BT ein ohne ausdrückliche Benutzererlaubnis</string>
+<string name="BT_Interval">BT Intervall [s]</string>
+<string name="BT_Interval_on">Intervall mit dem BT abgefragt wird in Sekunden</string>
+<string name="Calendar_Selection">Kalendarauswahl</string>
+<string name="Calendar_Selection_on">Wähle die Kalendar, die beobachtet werden sollen</string>
+<string name="Calendar_Selection_title">Wähle Kalendar</string>
+<string name="Orientation_Interval">Intervall für Orientisierungssensor [s]</string>
+<string name="Orientation_Interval_on">Abfrageintervall für Orientisierungssensor in Sekunden</string>
+<string name="Proximity_Interval">Intervall für Proximitysensor[s]</string>
+<string name="Proximity_Interval_on">Abfrageintervall für Proximitysensor in Sekunden</string>
+<string name="System_Poll_Interval">System Intervall [s]</string>
+<string name="System_Poll_Interval_on">Abfrageintervall für System Information wie RAM, Programme, etc</string>
+<string name="Sensor_Interval">Sensoren Intervall [s]</string>
+<string name="Sensor_Interval_on">Abfrageintervall für Licht und Barometer Sensoren in Sekunden</string>
+<string name="Weather_Interval">Wetterintervall [min]</string>
+<string name="Weather_Interval_on">Abfrageintervall für Wetterabfragen in Minuten</string>
+<string name="GPS_Accuracy">GPS Genauigkeit [m]</string>
+<string name="GPS_Accuracy_on">Erneuere Wetterinformation nachdem eine gewisse Entfernung überwunden wurde (oder immer)</string>
+<string name="GPS_Accuracy_on2">Genauigkeit für GPS in Meter</string>
+<string name="GPS_Accuracy_title">Entfernungsgenauigkeit</string>
+<string name="Event_Descriptions">Beschreibungen für Ereignisse [1..50]</string>
+<string name="Event_Descriptions_on">Maximale Anzahl von Ereignissbeschreibungen die gespeichert werden</string>
+<string name="Sort_Annotations">Sortiere Beschreibungen</string>
+<string name="Sort_Annotations_on">Sortiere Beschreibungen in der Liste von Ereignissen</string>
+<string name="Sort_Annotations_off">Keine Sortierung der Beschreibungen in der Liste von Ereignissen</string>
+<string name="Enable_Heartmonitor">Benutzung des Pulsmonitors</string>
+<string name="Enable_Heartmonitor_on">Benutze Pulsmonitor mit dem Versuch beim AIRS Start zu verbinden</string>
+<string name="Enable_Heartmonitor_off">Benutze den Pulsmonitor nicht!</string>
+<string name="Device_Selection">Geräteauswahl</string>
+<string name="Device_Selection_on">Wähle eines der möglichen Geräte, dass benutzt werden soll. Du musst mit dem Gerät zumindest einmal verbunden gewesen sein über die Systemeinstellungen! Stelle auch sicher, dass das Gerät eingeschaltet ist wenn Du die AIRS Aufnahmen startest.</string>
+<string name="Device_Selection_title">Wähle Gerät</string>
+<string name="Enable_GPS">GPS</string>
+<string name="Enable_GPS_on">GPS soll in Sensorliste erscheinen</string>
+<string name="Enable_GPS_off">Benutze kein GPS</string>
+<string name="Use_Network_Location">Netzwerkinformation für Standorte</string>
+<string name="Use_Network_Location_on">Benutzt WiFi und Netzwerkinformation für Standorte</string>
+<string name="Use_Network_Location_off">Benutze nur GPS</string>
+<string name="AdaptiveGPS">Adaptives GPS</string>
+<string name="AdaptiveGPS_on">Benutzt WiFi um GPS zeitweilig abzuschalten, um die Batterielebenszeit zu erhöhen. Dieser Modus kann möglicherweise zu Verzögerungen führen, den GPS Standort zu bestimmen, da GPS wieder neustarten muss.</string>
+<string name="AdaptiveGPS_off">Benutzt keine WiFi Informationen, um GPS zeitweilig abzuschalten.</string>
+<string name="AdaptiveGPS_Selection">WiFi Auswahl</string>
+<string name="AdaptiveGPS_Selection_on">Wähle WiFi Zugangspunkte in deren Nähe GPS Aufzeichnungen zeitweilig ausgeschaltet wird. Du musst den WI Sensor ausgewählt haben für den adaptiven Modus.</string>
+<string name="AdaptiveGPS_Selection_title">Wähle WiFi</string>
+<string name="GPS_Interval">GPS Intervall [s]</string>
+<string name="GPS_Interval_on">Abfrageintervall für GPS Standorte in Sekunden</string>
+<string name="AGPS_Refresh_Interval">AGPS Intervall [h]</string>
+<string name="AGPS_Refresh_Interval_on">Intervall, um eine AGPS Erneuerung zu erzwingen (0 = ausschalten)</string>
+<string name="Enable_WiFi">WiFi Benutzung</string>
+<string name="Enable_WiFi_on">Schalte WiFi durch AIRS ein, falls es ausgeschaltet ist</string>
+<string name="Enable_WiFi_off">Schalte WiFi nicht ein!</string>
+<string name="Prevent_WiFi_Sleep">WiFi Schlafmodus</string>
+<string name="Prevent_WiFi_Sleep_on">Verhindere WiFi Schlafmodus</string>
+<string name="Prevent_WiFi_Sleep_off">Lasse WiFi schlafen, wie in den Systemeinstellungen bestimmt</string>
+<string name="WiFi_Interval">WiFi Intervall [s]</string>
+<string name="WiFi_Interval_on">Abfrageintervall für WiFi Scans in Sekunden</string>
+<string name="Enable_Accessibility">Accessibility</string>
+<string name="Enable_Accessibility_on">Springt zu den Systemeinstellungen, um die Bedienungshilfen für AIRS einzuschalten. Dieser wird für IM Nachrichten benötigt.</string>
+<string name="accessibility_description">Bedienungshilfe für AIRS Aufzeichnungen mit Zugriff auf Google Talk und Skype Benachrichtigungen durch den NO Sensor.</string>
+
+<string name="Camera">Kamera</string>
+<string name="Camera_on">Beobachte Kameraverzeichnis</string>
+<string name="Camera_off">Keine Beobachtung des Kameraverzeichnisses</string>
+<string name="Camera_path">Kamerapfad</string>
+<string name="Camera_path_on">Bestimme den Pfad für Kamerabilder</string>
+
+<string name="Pictures">Bilder</string>
+<string name="Pictures_on">Beobachte Bilderverzeichnis</string>
+<string name="Pictures_off">Keine Beobachtung des Bilderverzeichnisses</string>
+<string name="Pictures_path">Bilderpfad</string>
+<string name="Pictures_path_on">Bestimme den Pfad für Bilder</string>
+
+<string name="Videos">Video</string>
+<string name="Videos_on">Beobachte Videoverzeichnis</string>
+<string name="Videos_off">Keine Beobachtung des Videoverzeichnisses</string>
+<string name="Videos_path">Videopfad</string>
+<string name="Videos_path_on">Bestimme den Pfad für Videos</string>
+
+<string name="Music">Musik</string>
+<string name="Music_on">Beobachte Musikverzeichnis</string>
+<string name="Music_off">Keine Beobachtung des Musikverzeichnisses</string>
+<string name="Music_path">Musikpfad</string>
+<string name="Music_path_on">Bestimme den Pfad für Musik</string>
+
+<!-- activity labels -->
+<string name="AIRS_Timeline">AIRS Zeitverlauf</string>
+<string name="AIRS_Mood_Selector">AIRS Stimmungsauswahl</string>
+<string name="AIRS_Event_Selector">AIRS Ereignisauswahl</string>
+<string name="AIRS_Heartrate">AIRS Puls</string>
+<string name="AIRS_Preferences">AIRS Einstellungen</string>
+<string name="AIRS_Events">AIRS Ereignisse</string>
+
+<!-- mood labels -->
+<string name="Very_Happy">Sehr glücklich</string>
+<string name="Happy">Glücklich</string>
+<string name="Feeling_Good">Gutes Gefühl</string>
+<string name="Positively_Excited">Positiv Aufgeregt</string>
+<string name="Confused">Verwirrt</string>
+<string name="Anxious">Ängstlich</string>
+<string name="Doubtful">Zweifelnd</string>
+<string name="Not_Sure">Nicht sicher</string>
+<string name="Upset">Verärgert</string>
+<string name="Not_Happy">Nicht glücklich</string>
+<string name="Annoyed">Sauer</string>
+<string name="Shocked">Schockiert</string>
+<string name="Tired">Müde</string>
+<string name="Sad">Traurig</string>
+<string name="Very_Sad">Sehr traurig</string>
+
+<!-- visualisation tab -->
+<string name="Get_storica">Hole Dir Storica!</string>
+<string name="Storica_description">Zusätzlich zu den kurzzeitgen Visualisierungen in AIRS kannst Du Deine AIRS Aufnahmen auch mit engagierten Multimediagrafiken verarbeiten und anzeigen lassen. Dazu benötigst Du die Storica Anwendung - gehe zum Google PlayStore und lade sie runter!</string>
+
+<string name="WhatsNew2">Was ist neu in AIRS?</string>
+<string name="WhatsNew">
+- adaptives GPS hält GPS Aufzeichnung an, wenn in der Nähe von WiFi SSIDs die Du bestimmen kannst\n
+- verbesserter WiFi Dienst\n
+- WiFi liest jetzt leere Werte wenn WiFi während der Aufzeichnung ausgeschaltet wird\n
+- überprüft ob Shortcutdatei existiert\n
+- Deutsche Übersetzung hinzugefügt
+</string>
+</resources>

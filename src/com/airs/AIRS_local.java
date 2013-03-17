@@ -237,14 +237,26 @@ public class AIRS_local extends Service
 				 			// is sensor not valid anymore -> terminate!
 				 			case Sensor.SENSOR_INVALID:
 				 				if (current.statusString != null)
-				 					output(current.Symbol + " : " + getString(R.string.Sensor_invalid) + " " + current.statusString);
+				 					output(current.Symbol + " : " + getString(R.string.Sensor_invalid) + " " + current.statusString, false);
 				 				else
-				 					output(current.Symbol + " : " + getString(R.string.Sensor_invalid2));
+				 					output(current.Symbol + " : " + getString(R.string.Sensor_invalid2), true);
 
 				 				// now wait 
-		    					wait();
+					        	wait();
 				 				break;
 				 			case Sensor.SENSOR_SUSPEND:
+				 				if (current.statusString != null)
+				 					output(current.Symbol + " : " + getString(R.string.Sensor_suspended) + " " + current.statusString, false);
+				 				else
+				 					output(current.Symbol + " : " + getString(R.string.Sensor_suspended2), false);
+				 				
+								SerialPortLogger.debugForced("HandlerThread for " + current.Symbol + ": suspended, now waiting");
+
+								while (current.status == Sensor.SENSOR_SUSPEND)
+									sleep(5000);
+		    					
+		    					output(current.Symbol + " : - [" + current.Unit + "]", false);
+								SerialPortLogger.debugForced("HandlerThread for " + current.Symbol + ": woken up again");
 				 				break;
 				 			case Sensor.SENSOR_VALID:		 			
 					    		// acquire latest value

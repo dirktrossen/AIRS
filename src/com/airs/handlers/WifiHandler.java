@@ -1,6 +1,7 @@
 /*
 Copyright (C) 2004-2006 Nokia Corporation
 Copyright (C) 2008-2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -18,12 +19,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -37,31 +38,35 @@ import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
-public class WifiHandler extends PhoneStateListener implements com.airs.handlers.Handler
+public class WifiHandler extends PhoneStateListener implements com.airs.handlers.Handler, Runnable
 {
 	public static final int INIT_WIFI = 1;
 
 	Context nors;
 	// phone state classes
 	private WifiManager wm;
-	private ConnectivityManager cm;
 	private WifiLock wifi_lock;
 
 	// are these there?
 	private boolean enable = false, enableWIFI = false, sleepWIFI = false, initialized = false;
 	// polltime
 	private int			polltime = 5000;
-	// sensor data
-	private byte[] reading = null;
-    
-	private boolean Wifi_reading = false, Wifi_scanning = false;
-	private boolean MAC_read = false, SSID_read = false, RSSI_read=false, WLAN_read = false;
-	private boolean wifi_first = true;
-	private StringBuffer MAC_reading;	
-	private StringBuffer SSID_reading;
-	private StringBuffer RSSI_reading;
-	private StringBuffer WLAN_reading;
+	private long  oldtime = 0;
+
+	private boolean wifi_first = true, Wifi_scanning = false;
+	public StringBuffer MAC_reading;	
+	public StringBuffer SSID_reading;
+	public StringBuffer RSSI_reading;
+	public StringBuffer WLAN_reading;
 	private int old_wifi_connected = -1, wifi_connected;
+	public Semaphore nearby_semaphore 		= new Semaphore(1);
+	public Semaphore mac_semaphore 			= new Semaphore(1);
+	public Semaphore ssid_semaphore 		= new Semaphore(1);
+	public Semaphore rssi_semaphore 		= new Semaphore(1);
+	public Semaphore wlan_semaphore 		= new Semaphore(1);
+	public Semaphore connected_semaphore 	= new Semaphore(1);
+	private Thread 		 runnable = null;
+	private boolean		 running = false;
 
 	protected void debug(String msg) 
 	{
@@ -76,6 +81,18 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		Waker.sleep(millis);
 	}
 	
+	private void wait(Semaphore sema)
+	{
+		try
+		{
+			sema.acquire();
+		}
+		catch(Exception e)
+		{
+		}
+	}
+
+	
 	/***********************************************************************
 	 Function    : Acquire()
 	 Input       : sensor input is ignored here!
@@ -84,30 +101,71 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	 Description : acquires current sensors values and sends to
 	 		 	   QueryResolver component
 	***********************************************************************/
-	public synchronized byte[] Acquire(String sensor, String query)
+	public byte[] Acquire(String sensor, String query)
 	{	
+		byte[] reading = null;
+
 		// has WiFi been started?
 		if (initialized == false)
 		{
 			// send message to handler thread to start WiFi
-	        Message msg = mHandler.obtainMessage(INIT_WIFI);
-	        mHandler.sendMessage(msg);	
+	        mHandler.sendMessage(mHandler.obtainMessage(INIT_WIFI));	
 	        // wait for starting wifi
 	        while (initialized == false)
 	        	sleep(100);
 		}
+		
+		// Discovery thread started for anything but WC?
+		if (runnable == null && sensor.compareTo("WC") != 0)
+		{
+			running = true;
+			runnable = new Thread(this);
+			runnable.start();	
+		}
 
-		// acquire data and send out
-		reading = null;
-		try
+		switch(sensor.charAt(1))
 		{
-			if (enable == true)
-				WLANReading(sensor);
-		}
-		catch (Exception e) 
-		{
-			debug("WifiHandler:Acquire: Exception: " + e.toString());
-		}
+		case 'M':
+			wait(mac_semaphore); 
+
+			reading = MAC_reading.toString().getBytes();
+			break;
+		case 'I':
+			wait(ssid_semaphore); 
+
+			reading = SSID_reading.toString().getBytes();
+			break;
+		case 'S':
+			wait(rssi_semaphore); 
+
+			reading = RSSI_reading.toString().getBytes();
+			break;
+		case 'F':
+			wait(wlan_semaphore); 
+
+			reading = WLAN_reading.toString().getBytes();
+			break;
+		case 'C':
+			wait(connected_semaphore); 
+						
+			// did value change since last time?
+			if (wifi_connected != old_wifi_connected)
+			{
+				reading = new byte[6];
+				reading[0] = (byte)sensor.charAt(0);
+				reading[1] = (byte)sensor.charAt(1);
+				reading[2] = (byte)((wifi_connected>>24) & 0xff);
+				reading[3] = (byte)((wifi_connected>>16) & 0xff);
+				reading[4] = (byte)((wifi_connected>>8) & 0xff);
+				reading[5] = (byte)(wifi_connected & 0xff);
+				old_wifi_connected = wifi_connected;
+			}
+			else
+				reading = null;
+			break;
+		default:
+			reading = null;
+		}	
 		
 		return reading;		
 	}
@@ -150,11 +208,11 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		// need to test for wifi at some point!!
 	    if (enable == true)
 	    {		
-			SensorRepository.insertSensor(new String("WF"), new String("txt"), new String("WLAN info"), new String("txt"), 0, 0, 1, false, polltime, this);
-			SensorRepository.insertSensor(new String("WI"), new String("SSID"), new String("WLAN SSID"), new String("txt"), 0, 0, 1, false, polltime, this);	
-			SensorRepository.insertSensor(new String("WM"), new String("MAC"), new String("WLAN MAC address"), new String("txt"), 0, 0, 1, false, polltime, this);
-			SensorRepository.insertSensor(new String("WS"), new String("dBm"), new String("Signal strength"), new String("txt"), 0, 0, 1, false, polltime, this);
-			SensorRepository.insertSensor(new String("WC"), new String("boolean"), new String("WLAN connected"), new String("int"), 0, 0, 1, false, polltime, this);
+			SensorRepository.insertSensor(new String("WF"), new String("txt"), new String("WLAN info"), new String("txt"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WI"), new String("SSID"), new String("WLAN SSID"), new String("txt"), 0, 0, 1, false, 0, this);	
+			SensorRepository.insertSensor(new String("WM"), new String("MAC"), new String("WLAN MAC address"), new String("txt"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WS"), new String("dBm"), new String("Signal strength"), new String("txt"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WC"), new String("boolean"), new String("WLAN connected"), new String("int"), 0, 0, 1, false, 0, this);
 		}	    
 	}
 	
@@ -173,16 +231,23 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		// try getting wifi manager
 		try
 		{
-			// now get connectivity manager
-			cm = (ConnectivityManager) nors.getSystemService(Context.CONNECTIVITY_SERVICE);
-			if (cm == null)
-				return;
-			
+			// now get wifi manager
 			wm = (WifiManager)nors.getSystemService(Context.WIFI_SERVICE);
 			if (wm!=null)
 				enable = true;
 			else
 				enable = false;
+			
+			// arm semaphores
+			wait(nearby_semaphore); 
+			wait(mac_semaphore); 
+			wait(ssid_semaphore); 
+			wait(rssi_semaphore); 
+			wait(wlan_semaphore); 
+			wait(connected_semaphore); 
+			
+			// save current time and set so that first Acquire() will discover
+			oldtime = System.currentTimeMillis() - polltime;
 		}
 		catch(Exception e)
 		{
@@ -192,133 +257,88 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	
 	public void destroyHandler()
 	{
-		// unregister listeners		
-		if (enable == true)
+		// release semaphores to unlock any Acquire() threads
+		mac_semaphore.release(); 
+		ssid_semaphore.release(); 
+		rssi_semaphore.release(); 
+		wlan_semaphore.release(); 
+		connected_semaphore.release(); 
+
+		// signal thread to close down
+		if (running == true)
 		{
-			if (initialized == true)
-			{
-				// unregister receiver
-				nors.unregisterReceiver(WifiReceiver);
-				// release wifi lock
-				if (wifi_lock != null)
-		          if (wifi_lock.isHeld() == true) 
-		              wifi_lock.release();
-			}
+			runnable.interrupt();
+			running = false;
 		}
+		
+		// unregister listeners		
+		if (initialized == true)
+			nors.unregisterReceiver(WifiReceiver);
+		
+		// release wifi lock
+		if (wifi_lock != null)
+          if (wifi_lock.isHeld() == true) 
+              wifi_lock.release();
+		
+		// now release the semaphore for the adaptive GPS thread
+		nearby_semaphore.release(); 
 	}
 	
-	// do readings via WifiManager
-	synchronized private void WLANReading(String sensor)
+	// run discovery in separate thread
+	public void run() 
 	{
-		boolean dont_scan = false;
-				
-		// block until allowed to read values
-	    while (Wifi_reading == true)
-	    	sleep(100);
-	    
-	    Wifi_reading = true;
-
-	    // construct answers
-		switch(sensor.charAt(1))
+		long now;
+		
+		while(running==true)
 		{
-		case 'M':
-			if (MAC_read==true)
+			now = System.currentTimeMillis();
+			
+			// try to discover when it's time to do so
+			if (oldtime+polltime<=now)
 			{
-				reading = MAC_reading.toString().getBytes();
-				MAC_read=false;
-			}
-			break;
-		case 'I':
-			if (SSID_read==true)
-			{
-				reading = SSID_reading.toString().getBytes();
-				SSID_read=false;
-			}
-			break;
-		case 'S':
-			if (RSSI_read==true)
-			{
-				reading = RSSI_reading.toString().getBytes();
-				RSSI_read=false;
-			}
-			break;
-		case 'F':
-			if (WLAN_read==true)
-			{
-				reading = WLAN_reading.toString().getBytes();
-				WLAN_read=false;
-			}
-			break;
-		case 'C':
-			if (cm!=null)
-			{
-				// get network info for wifi
-				NetworkInfo mWifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-				
-				// check if it is connected
-				if (mWifi != null)
+				oldtime = now;
+				// shall we scan and is previous scan over?
+				if (Wifi_scanning==false)
 				{
-					if (mWifi.isConnected())
-						wifi_connected = 1;
+					// is Wifi switched off?
+					if (wm.isWifiEnabled() == false)
+					{
+						// create empty readings for next round
+						MAC_reading 	= new StringBuffer("WM");	
+						SSID_reading 	= new StringBuffer("WI");
+						RSSI_reading 	= new StringBuffer("WS");
+					    WLAN_reading	= new StringBuffer("WF");
+					    
+					    
+					    // signal that reading is done
+					    nearby_semaphore.release();
+						mac_semaphore.release(); 
+						rssi_semaphore.release(); 
+						ssid_semaphore.release(); 
+						wlan_semaphore.release(); 	
+
+					}
 					else
-						wifi_connected = 0;
-				}
-				else
-					wifi_connected = 0;
-				
-				// did value change since last time?
-				if (wifi_connected != old_wifi_connected)
-				{
-					reading = new byte[6];
-					reading[0] = (byte)sensor.charAt(0);
-					reading[1] = (byte)sensor.charAt(1);
-					reading[2] = (byte)((wifi_connected>>24) & 0xff);
-					reading[3] = (byte)((wifi_connected>>16) & 0xff);
-					reading[4] = (byte)((wifi_connected>>8) & 0xff);
-					reading[5] = (byte)(wifi_connected & 0xff);
-					old_wifi_connected = wifi_connected;
-				}
-				
-				// don't scan networks
-				dont_scan = true;
-			}
-			break;
-		default:
-			reading = null;
-		}
-		
-		// allow for writing/reading to sensor fields
-		Wifi_reading = false;
-
-		// shall we scan and is previous scan over?
-		if (dont_scan==false && Wifi_scanning==false)
-		{
-			// is Wifi switched off and shall we switch it on?
-			if (wm.isWifiEnabled() == false && enableWIFI == true)
-			{
-				try
-				{
-					wm.setWifiEnabled(true);
-				}
-				catch(Exception e)
-				{
+					{
+						// if wifi is not locked, do so to prevent it from sleeping!
+						if (sleepWIFI == false)
+							if(wifi_lock.isHeld() == false)
+					            wifi_lock.acquire();
+					        
+						// start next scan here!
+						if (wm.startScan() == true)
+							Wifi_scanning = true;
+					}
 				}
 			}
-		
-			// if wifi is not locked, do so to prevent it from sleeping!
-			if (sleepWIFI == false)
-				if(wifi_lock.isHeld() == false)
-		            wifi_lock.acquire();
-		        
-			// start next scan here!
-			wm.startScan();
-			Wifi_scanning = true;
+			else
+				sleep(polltime - (now - oldtime));
 		}
+		
+		SerialPortLogger.debugForced("WifiHandler::scanning thread - terminating");
 	}
 
-	// The Handler that gets information back from the other threads, initializing GPS
-	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the GPS
-	// since requestLocationUpdates() can only be called from the main Looper thread!!
+	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the WiFi
 	public final Handler mHandler = new Handler() 
     {
        @Override
@@ -344,13 +364,10 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 					{
 					}
 				}
-				// Register Broadcast Receiver
+				// Register Broadcast Receivers
 				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-				
-				// start first scan here!
-				wm.startScan();
-				Wifi_scanning = true;
-				
+				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+
 				// signal to Acquire()
 				initialized = true;
 			}
@@ -362,61 +379,73 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
     };
 
 	private final BroadcastReceiver WifiReceiver = new BroadcastReceiver() 
-	{
-	
+	{	
 	  @Override
 	  public void onReceive(Context c, Intent intent) 
 	  {
 		int i;
 		ScanResult result;
-		
-		// block any possible Acquire() thread from reading the values
-	    while (Wifi_reading == true)
-	    	sleep(100);
-	    
-	    Wifi_reading = true;
-	    
-	    List<ScanResult> results = wm.getScanResults();
-	    
-	    // scanning is over
-	    Wifi_scanning = false;
-	    
-		MAC_reading 	= new StringBuffer("WM");	
-		SSID_reading 	= new StringBuffer("WI");
-		RSSI_reading 	= new StringBuffer("WS");
-	    WLAN_reading	= new StringBuffer("WF");
-    
-	    wifi_first = true;
-	    
-	    // run through all results
-	    for (i=0; i<results.size();i++) 
-	    {
-        	// first device? -> then no \n at the end of it!
-        	if (wifi_first == true)
-        		wifi_first = false;
-        	else
-        	{
-        		MAC_reading.append("\n");
-        		SSID_reading.append("\n");
-        		RSSI_reading.append("\n");
-        		WLAN_reading.append("\n");
-        	}
 
-	    	// get i-th result from list
-	    	result = results.get(i);
-	    	
-	    	MAC_reading.append(result.BSSID);
-	    	SSID_reading.append(result.SSID);
-	    	RSSI_reading.append(String.valueOf(result.level));
-	    	WLAN_reading.append(result.BSSID + ":" + result.SSID + ":" + String.valueOf(result.level));
-	    }
+		// state changed?
+		if (intent.getAction().compareTo(WifiManager.NETWORK_STATE_CHANGED_ACTION) == 0)
+		{
+			NetworkInfo info = (NetworkInfo)intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+			  
+			// get connection state
+			if (info.getState().equals(NetworkInfo.State.CONNECTED))
+				wifi_connected = 1;
+			else
+				wifi_connected = 0;
+
+			// release semaphore to unlock Acquire()
+			connected_semaphore.release(); 
+		}
+
+		// scan results back?
+		if (intent.getAction().compareTo(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION) == 0)
+		{
+			List<ScanResult> results = wm.getScanResults();
 	    
-	    // all four values have been read
-	    WLAN_read = MAC_read = SSID_read = RSSI_read = true;
+		    // scanning is over
+		    Wifi_scanning = false;
+		    
+			MAC_reading 	= new StringBuffer("WM");	
+			SSID_reading 	= new StringBuffer("WI");
+			RSSI_reading 	= new StringBuffer("WS");
+		    WLAN_reading	= new StringBuffer("WF");
 	    
-	    // the Acquire() thread can now access!
-	    Wifi_reading = false;
+		    wifi_first = true;
+		    
+		    // run through all results
+		    for (i=0; i<results.size();i++) 
+		    {
+	        	// first device? -> then no \n at the end of it!
+	        	if (wifi_first == true)
+	        		wifi_first = false;
+	        	else
+	        	{
+	        		MAC_reading.append("\n");
+	        		SSID_reading.append("\n");
+	        		RSSI_reading.append("\n");
+	        		WLAN_reading.append("\n");
+	        	}
+	
+		    	// get i-th result from list
+		    	result = results.get(i);
+		    	
+		    	MAC_reading.append(result.BSSID);
+		    	SSID_reading.append(result.SSID);
+		    	RSSI_reading.append(String.valueOf(result.level));
+		    	WLAN_reading.append(result.BSSID + ":" + result.SSID + ":" + String.valueOf(result.level));
+		    }
+		    
+			// now release the semaphores
+			nearby_semaphore.release(); 
+			mac_semaphore.release(); 
+			rssi_semaphore.release(); 
+			ssid_semaphore.release(); 
+			wlan_semaphore.release(); 	
+		}
 	  }
 	};
 }
-

@@ -48,7 +48,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <TextView
-        android:id="@+id/sync_text"
+        android:id="@+id/sync_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

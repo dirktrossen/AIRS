@@ -36,7 +36,26 @@
     	android:selectable="true" 
     	android:summaryOn="@string/Use_Network_Location_on" 
     	android:summaryOff="@string/Use_Network_Location_off"/>
-   <EditTextPreference
+    <CheckBoxPreference 
+        android:dependency="LocationHandler::GPSON"
+        android:defaultValue="false"
+    	android:enabled="true" 
+    	android:title="@string/AdaptiveGPS" 
+    	android:key="LocationHandler::AdaptiveGPS" 
+    	android:selectable="true" 
+    	android:summaryOn="@string/AdaptiveGPS_on" 
+    	android:summaryOff="@string/AdaptiveGPS_off"/>
+    <com.airs.helper.ListPreferenceMultiSelect
+        android:dependency="LocationHandler::GPSON"
+		android:dialogIcon="@drawable/location"
+        android:key="LocationHandler::AdaptiveGPS_WiFis"
+        android:title="@string/AdaptiveGPS_Selection"
+        android:entries="@array/calendar_values"
+        android:entryValues="@array/calendar_entries"
+        android:summary="@string/AdaptiveGPS_Selection_on"
+        android:positiveButtonText="@string/Select"
+        android:dialogTitle="@string/AdaptiveGPS_Selection_title" /> 
+    <EditTextPreference
         android:dependency="LocationHandler::GPSON"
  		android:dialogIcon="@drawable/time"
         android:summary="@string/GPS_Interval_on"

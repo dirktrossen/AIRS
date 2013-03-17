@@ -1,3 +1,10 @@
+V2.5.3:
+- adaptive GPS suspends GPS when near WiFi SSIDs that you can define
+- improved WiFi handler with better semaphore handling
+- WiFi returns empty readings when switched off during recording
+- now checks if shortcut preference file exists
+- added German translation
+
 V2.5.2:
 - bugfixes
 

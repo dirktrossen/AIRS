@@ -52,7 +52,7 @@ public class SensorRepository
     }
     
     // finds sensor based on Symbol and sets valid flag
-    static synchronized public void setSensorStatus(String Symbol, int status, String reason)
+    static synchronized public void setSensorStatus(String Symbol, int status, String reason, Runnable thread)
     {
         Sensor current = root_sensor;
         
@@ -62,6 +62,8 @@ public class SensorRepository
             {
                 current.status = status;
                 current.statusString = reason;
+                if (thread != null)
+                	current.acquire_thread = thread;
             }
             current = current.next;
         }

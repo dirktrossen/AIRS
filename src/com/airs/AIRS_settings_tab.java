@@ -112,8 +112,8 @@ public class AIRS_settings_tab extends Activity implements OnItemClickListener
 	    // add select sensors here
 		HandlerEntry entry = new HandlerEntry();
 		
-		entry.name = new String("Select Sensors");
-		entry.description = "Select which sensors you would like to record";
+		entry.name = new String(getString(R.string.Select_Sensors));
+		entry.description = getString(R.string.Select_Sensors2);
 		entry.resid = R.drawable.select;
 	    mHandlerArrayList.add(entry);
 

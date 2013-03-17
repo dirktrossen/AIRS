@@ -48,6 +48,7 @@ public class Sensor
     byte[]  reading = null;
     long    last_read;
     boolean	discovered;
+    public Runnable acquire_thread;
     
     // linked list
     public Sensor next;

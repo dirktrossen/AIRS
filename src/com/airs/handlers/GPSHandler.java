@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2010-2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -30,14 +31,16 @@ import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
+import com.airs.platform.Sensor;
 import com.airs.platform.SensorRepository;
 
 // this handler has been separated from the standard location handler 
 // in order to prevent blocking of the other sensor types when not being able to get a GPS fix!
-public class GPSHandler implements com.airs.handlers.Handler
+public class GPSHandler implements com.airs.handlers.Handler, Runnable
 {
-	public static final int INIT_GPS = 1;
-	public static final int RESET_AGPS = 2;
+	public static final int INIT_GPS 	= 1;
+	public static final int KILL_GPS 	= 2;
+	public static final int RESET_AGPS 	= 3;
 
 	Context airs;
 	// are these there?
@@ -46,11 +49,15 @@ public class GPSHandler implements com.airs.handlers.Handler
 	// polltime
 	private int 		polltime = 10000, updatemeter = 100;
 	// sensor data
-    private double Longitude = 0, Latitude = 0, Altitude = 0, Speed, Bearing; 
+    private double Longitude = -1, Latitude = -1, Altitude = -1, Speed, Bearing; 
     private double oldLongitude = -1, oldLatitude = -1, oldAltitude = -1;
     private Location oldLocation = null;
     private long oldTime;
     private long agpsTime, agpsForce;
+	private String[] adaptiveWifis;
+	private boolean  adaptiveWifi = false;
+	private boolean  nearby = false;
+	private Thread runnable;
 	// for GPS
 	private LocationManager manager;
 	private LocationListener mReceiver;
@@ -99,8 +106,15 @@ public class GPSHandler implements com.airs.handlers.Handler
 		if (shutdown == true)
 			return null;
 
+		// need to start the adaptive WiFi thread?
+		if (adaptiveWifi == true && runnable == null)
+		{
+			runnable = new Thread(this);
+			runnable.start();
+		}
+
 		// has GPS been started?
-		if (startedGPS == false)
+		if (startedGPS == false && nearby == false)
 		{
 			// send message to handler thread to start GPS
 	        Message msg = mHandler.obtainMessage(INIT_GPS);
@@ -110,6 +124,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 	        	sleep(100);
 		}
 
+		
 		// acquire data and send out
 		if (enableGPS == true)
 			return GPSReading(sensor);
@@ -208,10 +223,18 @@ public class GPSHandler implements com.airs.handlers.Handler
 		useWifi = HandlerManager.readRMS_b("LocationHandler::UseWifi", false);
 		agpsForce = HandlerManager.readRMS_i("LocationHandler::AGPSForce", 3) * 3600*1000;
 		agpsTime = System.currentTimeMillis();
+		adaptiveWifi = HandlerManager.readRMS_b("LocationHandler::AdaptiveGPS", false);
+		String storedWifis = HandlerManager.readRMS("LocationHandler::AdaptiveGPS_WiFis", null);
 		
+		// if no GPS wanted, return
 		if (enableGPS == false)
 			return;
-			
+		
+		// retrieve individual WiFis now, if adaptation is wanted
+		if (adaptiveWifi == true)
+			if (storedWifis != null)	
+				adaptiveWifis = storedWifis.split("::");
+
 		try
 		{
 			mReceiver = new LocationReceiver();
@@ -223,7 +246,7 @@ public class GPSHandler implements com.airs.handlers.Handler
 			wait(altitude_semaphore); 
 			wait(bearing_semaphore); 
 			wait(speed_semaphore); 
-			wait(full_semaphore); 
+			wait(full_semaphore); 			
 		}
 		catch (Exception e) 
 		{
@@ -248,6 +271,10 @@ public class GPSHandler implements com.airs.handlers.Handler
 		// remove location updates if they were started
 		if (startedGPS == true)
 			manager.removeUpdates(mReceiver);
+		
+		// disrupt adaptive GPS thread
+		if (runnable != null)
+			runnable.interrupt();
 	}
 
 	// read GPS via location API!
@@ -265,31 +292,61 @@ public class GPSHandler implements com.airs.handlers.Handler
 			{
 			case 'O':
 				wait(longitude_semaphore); 
+				if (startedGPS == false)
+				{
+					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
+					return null;
+				}
 				value = (int)(Longitude * 100000);
 				read = true;
 				break;
 			case 'L':
 				wait(latitude_semaphore); 
+				if (startedGPS == false)
+				{
+					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
+					return null;
+				}
 				value = (int)(Latitude * 100000);
 				read = true;
 				break;
 			case 'A':
 				wait(altitude_semaphore); 
+				if (startedGPS == false)
+				{
+					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
+					return null;
+				}
 				value = (int)(Altitude * 10);
 				read = true;
 				break;
 			case 'S':
 				wait(speed_semaphore); 
+				if (startedGPS == false)
+				{
+					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
+					return null;
+				}
 				value = (int)(Speed * 10);
 				read = true;
 				break;
 			case 'C':
 				wait(bearing_semaphore); 
+				if (startedGPS == false)
+				{
+					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
+					return null;
+				}
 				value = (int)(Bearing * 10);
 				read = true;
 				break;
 			case 'I':
 				wait(full_semaphore); 
+				if (startedGPS == false)
+				{
+					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
+					return null;
+				}
 				// at least one value different than old one?
 				if (Longitude != oldLongitude || Latitude != oldLatitude || Altitude != oldAltitude)
 				{
@@ -332,7 +389,106 @@ public class GPSHandler implements com.airs.handlers.Handler
 		
 		return null;
 	}
+	
+	/**
+	 * 
+	 * This thread keeps on listening to WiFis 
+	*/
+	public void run() 
+	{
+		byte [] data;
+		int i, j;
+		boolean found;
+		StringBuffer SSID;
+		Sensor wifi = SensorRepository.findSensor("WI");
+		WifiHandler handler = (WifiHandler)wifi.handler;		// get handle to WiFi handler
 		
+		try
+		{
+			// is the WI sensor in the repository?
+			if (wifi != null)
+			{
+				while(shutdown == false)
+				{
+					// wait for WiFi handler to have found something 
+					wait(handler.nearby_semaphore);
+					
+					// read current WiFi APs directly from handler
+					SSID = handler.SSID_reading;
+					
+					// anything there?
+					if (SSID != null)
+					{
+						data = SSID.toString().getBytes();
+						
+						// create string with readings
+						String wifis = new String(data, 2, data.length - 2);
+						
+						// any WiFis around?
+						if (wifis != null)
+						{
+							String APs[] = wifis.split("\n");
+							
+							found = false;
+							// look for discovered AP in list of selected WiFis of settings
+							for (i=0;i<APs.length && found == false;i++)
+								for (j=0;j<adaptiveWifis.length && found == false;j++)
+									if (APs[i].compareTo(adaptiveWifis[j]) == 0)
+										found = true;
+								
+							// is device near a WiFi that is selected for suppressing GPS?
+							if (found == true)
+							{
+								// signal that we are nearby
+								nearby = true;
+								// if GPS is started, stop it
+								if (startedGPS == true)
+									mHandler.sendMessage(mHandler.obtainMessage(KILL_GPS));
+
+								startedGPS = false;
+								// now release the semaphores to return the Acquire() threads
+								longitude_semaphore.release(); 
+								latitude_semaphore.release(); 
+								altitude_semaphore.release(); 
+								speed_semaphore.release(); 
+								bearing_semaphore.release(); 
+								full_semaphore.release(); 
+							}
+							else	// signal that we are not nearby anything -> GPS will start at the next round again
+							{
+								nearby = false;
+								
+								if (startedGPS == false)
+								{
+									mHandler.sendMessage(mHandler.obtainMessage(INIT_GPS));	
+							
+									SensorRepository.setSensorStatus("GO", Sensor.SENSOR_VALID, null, null);
+									SensorRepository.setSensorStatus("GL", Sensor.SENSOR_VALID, null, null);
+									SensorRepository.setSensorStatus("GA", Sensor.SENSOR_VALID, null, null);
+									SensorRepository.setSensorStatus("GS", Sensor.SENSOR_VALID, null, null);
+									SensorRepository.setSensorStatus("GC", Sensor.SENSOR_VALID, null, null);
+									SensorRepository.setSensorStatus("GI", Sensor.SENSOR_VALID, null, null);
+									
+									// arm semaphores
+									longitude_semaphore.tryAcquire(); 
+									latitude_semaphore.tryAcquire(); 
+									altitude_semaphore.tryAcquire(); 
+									bearing_semaphore.tryAcquire(); 
+									speed_semaphore.tryAcquire(); 
+									full_semaphore.tryAcquire(); 
+								}							
+							}
+						}
+					}					
+				}				
+			}
+		}
+		catch(Exception e)
+		{
+			return;
+		}
+	}
+	
 	// The Handler that gets information back from the other threads, initializing GPS
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the GPS
 	// since requestLocationUpdates() can only be called from the main Looper thread!!
@@ -357,6 +513,17 @@ public class GPSHandler implements com.airs.handlers.Handler
         		   // signal starting to Acquire() thread
         		   startedGPS = true;
         	   }
+	           break;  
+           case KILL_GPS:
+        	   // are we shutting down?
+        	   if (shutdown == true)
+        		   return;
+
+        	   if (manager!=null)
+        		   manager.removeUpdates(mReceiver);
+        	   
+    		   // signal starting to Acquire() thread
+    		   startedGPS = false;
 	           break;  
            case RESET_AGPS:
         	   try

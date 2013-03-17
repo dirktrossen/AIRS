@@ -190,11 +190,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 					debug("HeartMonitorHandler::ComPort initialization failed");
 					use_monitor = false;
 					// invalidate all sensors since we couldn't connect -> this will gracefully terminate any acquisition thread
-					SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "Could not connect to HxM");
-					SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "Could not connect to HxM");
-					SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "Could not connect to HxM");
-					SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "Could not connect to HxM");
-					SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "Could not connect to HxM");
+					SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
+					SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
+					SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
+					SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
+					SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
 					
 					return null;
 				}
@@ -491,11 +491,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 				debug("HeartMonitorHandler::Failed to read serial data: " + e.toString());
 				
 				// invalidate all sensors since reading failed -> this will gracefully terminate any acquisition thread
-				SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "HxM disconnected");
-				SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "HxM disconnected");
-				SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "HxM disconnected");
-				SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "HxM disconnected");
-				SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "HxM disconnected");
+				SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "HxM disconnected", null);
+				SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "HxM disconnected", null);
+				SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "HxM disconnected", null);
+				SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "HxM disconnected", null);
+				SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "HxM disconnected", null);
 
 				return;
 			}	

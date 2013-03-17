@@ -38,7 +38,7 @@ public class AIRS_backup extends Activity
 	public static final int FINISH_ACTIVITY			= 1;
 	public static final int FINISH2_ACTIVITY		= 2;
 	public static final int UPDATE_VALUES			= 3;
-        
+         
     // preferences
     private SharedPreferences settings;
   
