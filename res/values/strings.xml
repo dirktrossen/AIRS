@@ -105,6 +105,7 @@
 <string name="Snapshot_only_pictures">Can only share pictures, sorry!</string>
 <string name="Measurements_share">Share AIRS Measurements via:</string>
 <string name="AIRS_running_exit">AIRS has been running.\nDo you want to interrupt the current recording and start over? You will need to start AIRS again.</string>
+<string name="AIRS_running_exit2">AIRS has been running.\nDo you want to interrupt the current recording and start over? You will need to start the shortcut again.</string>
 <string name="AIRS_started_local">Started AIRS local service!\nYou can see its current view by clicking on the notification bar update.</string>
 <string name="Delete_template">Delete Template</string>
 <string name="At_least_one_template">You need at least one template being saved AND selected from the list before you can create a shortcut!</string>
@@ -299,6 +300,7 @@
 <string name="AdaptiveGPS_Selection">WiFi Selection</string>
 <string name="AdaptiveGPS_Selection_on">Choose the WiFi access points in which proximity GPS recording will be switched off. You will need to subscribe to the WI sensor for this setting to have an effect.</string>
 <string name="AdaptiveGPS_Selection_title">Choose WiFi</string>
+<string name="AdaptiveGPS_NoWifi">Connect to at least one WiFi!</string>
 <string name="GPS_Interval">GPS Interval [s]</string>
 <string name="GPS_Interval_on">Poll interval for GPS location in seconds</string>
 <string name="AGPS_Refresh_Interval">AGPS Refresh Interval [h]</string>
@@ -370,16 +372,16 @@
 
 <string name="WhatsNew2">What\'s new in AIRS?</string>
 <string name="WhatsNew">
-- adaptive GPS suspends GPS when near WiFi SSIDs that you can define\n
-- improved WiFi handler with better semaphore handling\n
-- WiFi returns empty readings when switched off during recording\n
-- now checks if shortcut preference file exists\n
-- added German translation
+- fixed bug in location handler UI\n
+- fixed bug testing if AIRS is running when starting shortcut
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.3.1:\n 
+- fixed bug in location handler UI\n
+- fixed bug testing if AIRS is running when starting shortcut\n\n
 V2.5.3:\n
 - adaptive GPS suspends GPS when near WiFi SSIDs that you can define\n
 - improved WiFi handler with better semaphore handling\n

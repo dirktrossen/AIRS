@@ -58,6 +58,47 @@ public class AIRS_shortcut extends Activity
 	        // get default preferences
 	        settings = PreferenceManager.getDefaultSharedPreferences(this);
 	        
+			// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
+			if (settings.getBoolean("AIRS_local::running", false) == true)
+			{
+	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    		builder.setMessage(R.string.AIRS_running_exit2)
+	    			   .setTitle(R.string.AIRS_Local_Sensing)
+	    		       .setCancelable(false)
+	    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
+	    		       {
+	    		           public void onClick(DialogInterface dialog, int id) 
+	    		           {
+	    		        	    // clear persistent flag
+	    			           	Editor editor = settings.edit();
+	    			           	editor.putBoolean("AIRS_local::running", false);
+	    		                // finally commit to storing values!!
+	    		                editor.commit();
+	    		                // stop service
+	 		    			    stopService(new Intent(act, AIRS_local.class));
+	 		    			    finish();
+	    		           }
+	    		       })
+	    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
+	    		       {
+	    		           public void onClick(DialogInterface dialog, int id) 
+	    		           {
+	    		                dialog.cancel();
+	    		                finish();
+	    		           }
+	    		       });
+	    		AlertDialog alert = builder.create();
+	    		alert.show();
+			}
+			else
+			{	
+		        // start service and connect to it -> then discover the sensors
+		        startService(new Intent(this, AIRS_local.class));
+		        // bind to service
+		        if (bindService(new Intent(this, AIRS_local.class), mConnection, 0)==false)
+		     		Toast.makeText(getApplicationContext(), "Measurement Activity::Binding to service unsuccessful!", Toast.LENGTH_LONG).show();
+			}
+	        
 	        // get values that should not be overwritten!
 	        synctime = settings.getLong("SyncTimestamp", 0);
 	        version = settings.getInt("Version", 0);	
@@ -126,47 +167,6 @@ public class AIRS_shortcut extends Activity
 			editor.putString("EventButtonHandler::EventSelected", event_selected_entry);
 
 			editor.commit();
-			
-			// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
-			if (settings.getBoolean("AIRS_local::running", false) == true)
-			{
-	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    		builder.setMessage("AIRS has been running.\nDo you want to interrupt current running and start over? You will need to start Quick AIRS again.")
-	    			   .setTitle("AIRS Local Sensing")
-	    		       .setCancelable(false)
-	    		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() 
-	    		       {
-	    		           public void onClick(DialogInterface dialog, int id) 
-	    		           {
-	    		        	    // clear persistent flag
-	    			           	Editor editor = settings.edit();
-	    			           	editor.putBoolean("AIRS_local::running", false);
-	    		                // finally commit to storing values!!
-	    		                editor.commit();
-	    		                // stop service
-	 		    			    stopService(new Intent(act, AIRS_local.class));
-	 		    			    finish();
-	    		           }
-	    		       })
-	    		       .setNegativeButton("No", new DialogInterface.OnClickListener() 
-	    		       {
-	    		           public void onClick(DialogInterface dialog, int id) 
-	    		           {
-	    		                dialog.cancel();
-	    		                finish();
-	    		           }
-	    		       });
-	    		AlertDialog alert = builder.create();
-	    		alert.show();
-			}
-			else
-			{	
-		        // start service and connect to it -> then discover the sensors
-		        startService(new Intent(this, AIRS_local.class));
-		        // bind to service
-		        if (bindService(new Intent(this, AIRS_local.class), mConnection, 0)==false)
-		     		Toast.makeText(getApplicationContext(), "Measurement Activity::Binding to service unsuccessful!", Toast.LENGTH_LONG).show();
-			}
 	    }
 
 	    @Override

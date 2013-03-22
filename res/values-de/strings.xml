@@ -104,6 +104,7 @@
 <string name="Snapshot_only_pictures">Kann nur Bilder sharen!</string>
 <string name="Measurements_share">Share AIRS Aufnahmen via:</string>
 <string name="AIRS_running_exit">AIRS läuft momentan.\nMöchtest Du die mometanen Aufzeichnungen unterbrechen and neu starten? Du musst AIRS dann neu starten.</string>
+<string name="AIRS_running_exit2">AIRS läuft momentan.\nMöchtest Du die mometanen Aufzeichnungen unterbrechen and neu starten? Du musst den Shortcut dann neu starten.</string>
 <string name="AIRS_started_local">AIRS lokale Aufzeichnungen gestartet!\nDu kannst die momentanen Werte in der Benachtigungsleiste sehen, wenn Du auf das AIRS Symbol klickst.</string>
 <string name="Delete_template">Lösche Muster</string>
 <string name="At_least_one_template">Du brauchst mindestens ein gespeichertes Muster, dass in der Liste angewählt ist, bevor Du einen Shortcut erstellen kannst!</string>
@@ -298,6 +299,7 @@
 <string name="AdaptiveGPS_Selection">WiFi Auswahl</string>
 <string name="AdaptiveGPS_Selection_on">Wähle WiFi Zugangspunkte in deren Nähe GPS Aufzeichnungen zeitweilig ausgeschaltet wird. Du musst den WI Sensor ausgewählt haben für den adaptiven Modus.</string>
 <string name="AdaptiveGPS_Selection_title">Wähle WiFi</string>
+<string name="AdaptiveGPS_NoWifi">Verbinde zu mindestens einem WiFi!</string>
 <string name="GPS_Interval">GPS Intervall [s]</string>
 <string name="GPS_Interval_on">Abfrageintervall für GPS Standorte in Sekunden</string>
 <string name="AGPS_Refresh_Interval">AGPS Intervall [h]</string>
@@ -369,10 +371,7 @@
 
 <string name="WhatsNew2">Was ist neu in AIRS?</string>
 <string name="WhatsNew">
-- adaptives GPS hält GPS Aufzeichnung an, wenn in der Nähe von WiFi SSIDs die Du bestimmen kannst\n
-- verbesserter WiFi Dienst\n
-- WiFi liest jetzt leere Werte wenn WiFi während der Aufzeichnung ausgeschaltet wird\n
-- überprüft ob Shortcutdatei existiert\n
-- Deutsche Übersetzung hinzugefügt
+- Fehler in Standorthandler UI behoben, wenn kein WiFi existiert\n
+- Fehler behoben wenn AIRS am Laufen ist, wenn über Shortcut gestarted
 </string>
 </resources>

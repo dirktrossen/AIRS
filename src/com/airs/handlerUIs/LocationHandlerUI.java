@@ -88,8 +88,15 @@ public class LocationHandlerUI implements HandlerUI
 			}
 			else
 			{
-				list.setEntries(null);
-				list.setEntryValues(null);
+	        	String [] names = new String[1];
+	        	String [] names2 = new String[1];
+	        	
+	        	// create message entry
+	        	names[0] = new String(context.getString(R.string.AdaptiveGPS_NoWifi));
+	        	names2[0] = new String ("");
+	        	
+				list.setEntries(names);
+				list.setEntryValues(names2);
 			}
 		}
 	}
