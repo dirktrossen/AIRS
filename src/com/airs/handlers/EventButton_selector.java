@@ -131,10 +131,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        // get window title fields
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
-	        mTitle.setText("AIRS Annotations");
+	        mTitle.setText(getString(R.string.AIRS_Event_Selector));
 	        // show last selected event string
 	        last_selected = settings.getString("EventButtonHandler::EventSelected", "-");
-        	mTitle2.setText("Last: " + last_selected);
+        	mTitle2.setText(getString(R.string.AIRS_mood_selection2) + " " + last_selected);
 		    
 	        // initialize own defined event
     		Button bt = (Button) findViewById(R.id.mooddefined);
@@ -262,7 +262,9 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    			{
 	    				added = true;
 	    				// add to list
-	    				event[i] = et.getText().toString();
+	    				event[i] = et.getText().toString().replaceAll("'","''");
+	    				event[i] = et.getText().toString().replaceAll(":","");
+
 	    				// add also to visible list
 		        		addEventIcon(event[i], R.drawable.event_marker);
 		   	        	myCustomAdapter.notifyDataSetChanged();
@@ -273,7 +275,9 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    		if (added == false)
 	    		{
 				    // read input string from edit field
-		    		event[0] = et.getText().toString();
+		    		event[0] = et.getText().toString().replaceAll("'","''");
+    				event[0] = et.getText().toString().replaceAll(":","");
+
 	    			// select this entry
 		    		selected_entry = event[0];
 

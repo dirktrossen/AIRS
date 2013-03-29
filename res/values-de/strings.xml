@@ -19,6 +19,8 @@
 <string name="app_name">AIRS</string>
 <string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen; \n&#169; 2013 TecVis LP
 \n\nKontakt: dot@tecvis.co.uk
+\n\nFolge Uns in Twitter unter @tecvis
+\n\nFacebook: http://www.facebook.com/tecvisuk
 \n\nAnleitung (in Englisch): http://tecvis.co.uk/software-2/airs/
 \n\nAIRS Quellcode ist lizenziert unter der LGPL 2.0 license und ist auf Github verfügbar. Für mehr Informationen bzgl. der Lizenz, siehe <b>license.txt</b>!
 \n\nSpezielle Anerkennung für Dana Pavel, die durch die Benutzung von AIRS für ihre Forschungsarbeit (http://dalore.me.uk/Dana/research-areas) viele neue Features beigetragen hat (wie z.B. die Widgets für Anmerkungen), sowohl als auch die Stabilität von AIRS erhöht hat!
@@ -136,6 +138,7 @@
 <string name="Shortcut_not_found">Kann die Shortcut Datei nicht finden! Bitte stelle den Shortcut wieder neu her.</string>
 <string name="Select_Sensors">Wähle Sensoren</string>
 <string name="Select_Sensors2">Wähle die Sensoren aus, die Du aufzeichnen willst</string>
+<string name="AIRS_mood_selection2">Letzte: </string>
 
 <!-- handler UIs -->
  
@@ -369,9 +372,4 @@
 <string name="Get_storica">Hole Dir Storica!</string>
 <string name="Storica_description">Zusätzlich zu den kurzzeitgen Visualisierungen in AIRS kannst Du Deine AIRS Aufnahmen auch mit engagierten Multimediagrafiken verarbeiten und anzeigen lassen. Dazu benötigst Du die Storica Anwendung - gehe zum Google PlayStore und lade sie runter!</string>
 
-<string name="WhatsNew2">Was ist neu in AIRS?</string>
-<string name="WhatsNew">
-- Fehler in Standorthandler UI behoben, wenn kein WiFi existiert\n
-- Fehler behoben wenn AIRS am Laufen ist, wenn über Shortcut gestarted
-</string>
 </resources>

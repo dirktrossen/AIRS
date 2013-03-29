@@ -1,3 +1,14 @@
+V2.5.4: 
+- bugfix in shortcut starting
+- support selecting icon for own moods
+- bugfix in wifi handler
+
+V2.5.3.2:
+- improved adaptive GPS, re-scanning when disconnecting from WiFi (cutting down GPS switch times)
+- removed usage of GPS from weather handler (network location suffices)
+- properly support special "'" character in mood and event descriptions
+- bugfix in location handler UI
+
 V2.5.3.1: 
 - fixed bug in location handler UI
 - fixed bug testing if AIRS is running when starting shortcut

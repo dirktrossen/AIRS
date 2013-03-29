@@ -53,12 +53,13 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 
 	 // preferences
 	 private SharedPreferences settings;
-	 private String mood = null;
+	 private String mood = null, mood_icon = null;
 	 private boolean selected = false;
 	 private boolean own_defined = false;
 	 
 	 // list of mood icons
 	 private ListView mood_icons;
+	 private ImageView mood_iconown;
 	 private ArrayList<HandlerEntry> mMoodArrayList;
 
 	   @Override
@@ -90,8 +91,8 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        // get window title fields
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
-	        mTitle.setText("AIRS Mood Selection");
-	        mTitle2.setText("Last: " + mood);
+	        mTitle.setText(getString(R.string.AIRS_Mood_Selector));
+	        mTitle2.setText(getString(R.string.AIRS_mood_selection2) + " " + mood);
 		    
 	        // initialize own defined event click listener
     		Button bt = (Button) findViewById(R.id.mooddefined);
@@ -131,6 +132,10 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        addMoodIcon(getString(R.string.Tired), R.drawable.mood_tired);
 	        addMoodIcon(getString(R.string.Sad), R.drawable.mood_sad);
 	        addMoodIcon(getString(R.string.Very_Sad), R.drawable.mood_very_sad);
+	        
+	        // now hook the button for own icon selection
+	        mood_iconown 	= (ImageView)findViewById(R.id.moodown_icon);
+	        mood_iconown.setOnClickListener(this);
 	    }
 
 	    @Override
@@ -170,7 +175,16 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	
 				// send broadcast intent to signal end of selection to mood button handler
 				Intent intent = new Intent("com.airs.moodselected");
-				intent.putExtra("Mood", mood);
+				if (own_defined == true)
+				{
+					if (mood_icon != null)
+						intent.putExtra("Mood", mood + "::" + mood_icon);
+					else
+						intent.putExtra("Mood", mood);
+				}
+				else
+					intent.putExtra("Mood", mood);
+				
 				sendBroadcast(intent);
 				
 				// clear flag
@@ -183,7 +197,15 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 
 	    public void onActivityResult(int requestCode, int resultCode, Intent data) 
 	    {
-	    	return;
+    	    super.onActivityResult(requestCode, resultCode, data); 
+
+	    	// pick up selection
+	    	if (resultCode == RESULT_OK)
+	    	{
+	    		mood_icon = data.getStringExtra("mood");
+	    		int resid = data.getIntExtra("resid", R.drawable.mood_own);
+	    		mood_iconown.setImageResource(resid);
+	    	}
 	    }
 	    
 		   @Override
@@ -230,7 +252,9 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	    	case R.id.mooddefined:
 	    		et = (EditText) findViewById(R.id.moodown);
 		    	// read input string from edit field
-	    		mood = et.getText().toString();
+	    		mood = et.getText().toString().replaceAll("'","''");
+	    		mood = et.getText().toString().replaceAll(":","");
+	    		mood = et.getText().toString().replaceAll("::","");
 	    		selected = true;
 	    		own_defined = true;
 	    		finish();
@@ -239,6 +263,10 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	    		et = (EditText) findViewById(R.id.moodown);
 	    		et.setText("");
 	    		break;
+	    	case R.id.moodown_icon:
+	    		Intent intent = new Intent(getApplicationContext(), MoodButton_iconselector.class);
+		    	startActivityForResult(intent, 101);	        	
+		    	break;
 	    	}
 		}
 	    

@@ -106,7 +106,7 @@ public class HandlerUIManager
 		       {
 		           public void onClick(DialogInterface dialog, int id) 
 		           {
-		                dialog.cancel();
+		                dialog.dismiss();
 		           }
 		       });
 		AlertDialog alert = builder.create();

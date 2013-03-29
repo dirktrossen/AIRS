@@ -100,7 +100,7 @@ public class HeartrateButton_selector extends Activity implements OnClickListene
 	        // get window title fields
 	        mTitle = (TextView) findViewById(R.id.title_left_text);
 	        mTitle2 = (TextView) findViewById(R.id.heartrate_puls);
-	        mTitle.setText("AIRS Heartrate");
+	        mTitle.setText(getString(R.string.AIRS_Heartrate));
         	
         	// hook listeners into buttons
     		ImageButton ibt = (ImageButton) findViewById(R.id.heartrate_ok);

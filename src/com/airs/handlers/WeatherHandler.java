@@ -497,13 +497,6 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         		   catch(Exception e)
         		   {
         		   }
-        		   try
-        		   {
-        			   manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float)0, mReceiver);  
-        		   }
-        		   catch(Exception e)
-        		   {
-        		   }
         		   startedLocation = true;
         	   }
 	           break;  

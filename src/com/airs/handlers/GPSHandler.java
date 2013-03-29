@@ -53,7 +53,8 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
     private double oldLongitude = -1, oldLatitude = -1, oldAltitude = -1;
     private Location oldLocation = null;
     private long oldTime;
-    private long agpsTime, agpsForce;
+    private long agpsForce;
+    private boolean agps_download = false;
 	private String[] adaptiveWifis;
 	private boolean  adaptiveWifi = false;
 	private boolean  nearby = false;
@@ -105,6 +106,13 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
  	    // are we shutting down?
 		if (shutdown == true)
 			return null;
+
+		// send handler message for reset AGPS?
+		if (agps_download == false && agpsForce != 0)
+		{
+	        mHandler.sendMessage(mHandler.obtainMessage(RESET_AGPS));	
+	        agps_download = true;
+		}
 
 		// need to start the adaptive WiFi thread?
 		if (adaptiveWifi == true && runnable == null)
@@ -222,9 +230,10 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		enableGPS = HandlerManager.readRMS_b("LocationHandler::GPSON", false);
 		useWifi = HandlerManager.readRMS_b("LocationHandler::UseWifi", false);
 		agpsForce = HandlerManager.readRMS_i("LocationHandler::AGPSForce", 3) * 3600*1000;
-		agpsTime = System.currentTimeMillis();
 		adaptiveWifi = HandlerManager.readRMS_b("LocationHandler::AdaptiveGPS", false);
 		String storedWifis = HandlerManager.readRMS("LocationHandler::AdaptiveGPS_WiFis", null);
+		
+		agps_download = false;
 		
 		// if no GPS wanted, return
 		if (enableGPS == false)
@@ -535,6 +544,8 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
         	   catch(Exception e)
         	   {
         	   }
+        	   // do again repeatedly
+        	   mHandler.sendMessageDelayed(mHandler.obtainMessage(RESET_AGPS), agpsForce);
         	   break;
            default:  
            	break;
@@ -589,18 +600,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 					// save current location for later
 					oldLocation = location;
 					oldTime = newTime;
-        		}
-        		
-        		// do we need to force AGPS?
-        		if (agpsForce > 0)
-        			if (agpsTime + agpsForce < newTime)
-        			{
-        				// store current time for next force
-        				agpsTime = newTime;
-        				// send handler message for reset AGPS
-        		        Message msg = mHandler.obtainMessage(RESET_AGPS);
-        		        mHandler.sendMessage(msg);	
-       			}
+        		}        		
         	}
         }
         

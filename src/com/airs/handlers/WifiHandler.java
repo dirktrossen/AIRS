@@ -332,7 +332,18 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 				}
 			}
 			else
-				sleep(polltime - (now - oldtime));
+			{
+				try
+				{
+					Thread.sleep(oldtime + polltime - now);
+				}
+				catch(Exception e)
+				{
+					// if we got interrupted, it's either for closing down (handled by while()) or for re-scanning due to disconnect
+					oldtime = now - polltime;
+					Wifi_scanning = false;
+				}
+			}
 		}
 		
 		SerialPortLogger.debugForced("WifiHandler::scanning thread - terminating");
@@ -367,6 +378,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 				// Register Broadcast Receivers
 				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
 				// signal to Acquire()
 				initialized = true;
@@ -386,7 +398,16 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		int i;
 		ScanResult result;
 
-		// state changed?
+		// network adapter state changed?
+		if (intent.getAction().compareTo(WifiManager.WIFI_STATE_CHANGED_ACTION) == 0)
+		{
+			// is it disabled -> re-scan!
+			if (wm.isWifiEnabled() == false)
+				if (runnable!=null)
+					runnable.interrupt();
+		}
+		
+		// connection state changed?
 		if (intent.getAction().compareTo(WifiManager.NETWORK_STATE_CHANGED_ACTION) == 0)
 		{
 			NetworkInfo info = (NetworkInfo)intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
@@ -395,7 +416,12 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 			if (info.getState().equals(NetworkInfo.State.CONNECTED))
 				wifi_connected = 1;
 			else
+			{
+				// re-scan!
+				if (runnable!=null)
+					runnable.interrupt();
 				wifi_connected = 0;
+			}
 
 			// release semaphore to unlock Acquire()
 			connected_semaphore.release(); 

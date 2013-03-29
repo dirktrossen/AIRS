@@ -863,6 +863,7 @@ public class AIRS_local extends Service
 
 		 // store persistently that AIRS is running
          HandlerManager.writeRMS_b("AIRS_local::running", true);
+         running = true;
          
 		 // get current day and set time to last millisecond of that day 
          Calendar cal = Calendar.getInstance();

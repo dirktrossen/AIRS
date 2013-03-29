@@ -62,6 +62,7 @@ public class LocationHandlerUI implements HandlerUI
 	public void configurePreference(PreferenceActivity prefs)
 	{
 		int i;
+		boolean set_list = false;
 		
 		// try to find the preference we want to configure
 		ListPreference list = (ListPreference)prefs.findPreference("LocationHandler::AdaptiveGPS_WiFis");
@@ -74,19 +75,24 @@ public class LocationHandlerUI implements HandlerUI
 		{
 			List<WifiConfiguration> networks = wm.getConfiguredNetworks();
 			
-			if (networks.size() >0)
-			{
-	        	String [] names = new String[networks.size()];
-	
-				for (i=0;i<networks.size();i++)
-					names[i] = new String(networks.get(i).SSID.replace("\"", ""));
-				
-	        	// set names as entries in list
-				list.setEntries(names);
-				// set mac addresses as entries in preference
-				list.setEntryValues(names);
-			}
-			else
+			if (networks != null)
+				if (networks.size() >0)
+				{
+		        	String [] names = new String[networks.size()];
+		
+					for (i=0;i<networks.size();i++)
+						names[i] = new String(networks.get(i).SSID.replace("\"", ""));
+					
+		        	// set names as entries in list
+					list.setEntries(names);
+					// set mac addresses as entries in preference
+					list.setEntryValues(names);
+					// list is defined
+					set_list = true;
+				}
+			
+			// no list?
+			if (set_list == false)
 			{
 	        	String [] names = new String[1];
 	        	String [] names2 = new String[1];
