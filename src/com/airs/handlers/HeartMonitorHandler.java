@@ -49,10 +49,8 @@ public class HeartMonitorHandler implements Handler, Runnable
 	private int last_sent_battery 	= 0;
 	private int last_pulse 			= 0; 
 	private int last_instance		= 0; 
-	private int last_distance		= 0; 
-	private int last_distance_reading	= 0; 
-	private int last_stride			= 0; 
-	private int last_stride_reading	= 0; 
+	
+	private int time_window = 1;
 			
 	// We will only have one instance of connection
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -68,8 +66,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 	private boolean connected = false, tried = false, use_monitor = true;
 	private Semaphore pulse_semaphore 		= new Semaphore(1);	
 	private Semaphore battery_semaphore 	= new Semaphore(1);	
-	private Semaphore strides_semaphore 	= new Semaphore(1);	
-	private Semaphore distance_semaphore 	= new Semaphore(1);	
 	private Semaphore instance_semaphore 	= new Semaphore(1);	
 	
 	//`ACC data being read (max)
@@ -123,8 +119,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 		// arm semaphores
 		wait(pulse_semaphore); 
 		wait(battery_semaphore); 
-		wait(strides_semaphore); 
-		wait(distance_semaphore); 
 		wait(instance_semaphore); 
 	}
 	
@@ -133,8 +127,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 		// release all semaphores for unlocking the Acquire() threads
 		pulse_semaphore.release();
 		pulse_semaphore.release();
-		strides_semaphore.release();
-		distance_semaphore.release();
 		instance_semaphore.release();
 		
   		if (inputStream != null)
@@ -193,8 +185,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 					SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
 					SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
 					SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
-					SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
-					SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "Could not connect to HxM", Thread.currentThread());
 					
 					return null;
 				}
@@ -254,30 +244,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 					reading[4] = (byte)0;
 					reading[5] = (byte)(last_instance & 0xff);
 					break;
-				case 'T' :
-					// block until semaphore available
-					wait(strides_semaphore); 
-
-					reading = new byte[6];
-					reading[0] = (byte)sensor.charAt(0);
-					reading[1] = (byte)sensor.charAt(1);
-					reading[2] = (byte)((last_stride>>24) & 0xff);
-					reading[3] = (byte)((last_stride>>16) & 0xff);
-					reading[4] = (byte)((last_stride>>8) & 0xff);
-					reading[5] = (byte)(last_stride & 0xff);			
-					break;
-				case 'D' :
-					// block until semaphore available
-					wait(distance_semaphore); 
-
-					reading = new byte[6];
-					reading[0] = (byte)sensor.charAt(0);
-					reading[1] = (byte)sensor.charAt(1);
-					reading[2] = (byte)((last_distance>>24) & 0xff);
-					reading[3] = (byte)((last_distance>>16) & 0xff);
-					reading[4] = (byte)((last_distance>>8) & 0xff);
-					reading[5] = (byte)(last_distance & 0xff);			
-					break;
 				default:
 					// indicate finished reading
 					return null;
@@ -308,8 +274,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 				return "My current pulse is " + String.valueOf(last_pulse);
 			case 'I' :
 				return "My current instant speed is " + String.valueOf((double)last_instance/10.0f);
-			case 'D' :
-				return "My current distance is " + String.valueOf(last_distance);
 		}
 		
 		return null;		
@@ -349,8 +313,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 		{
 			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("Device battery level"), new String("int"), 0, 0, 100, true, 10000, this);
 			SensorRepository.insertSensor(new String("HP"), new String("bpm"), new String("Pulse"), new String("int"), 0, 0, 200, true, 1000, this);
-//			SensorRepository.insertSensor(new String("HT"), new String("strides"), new String("Stride"), new String("int"), 0, 0, 50000, true, 5000, this);
-//			SensorRepository.insertSensor(new String("HD"), new String("m"), new String("Distance"), new String("int"), 0, 0, 500000, true, 10000, this);
 			SensorRepository.insertSensor(new String("HI"), new String("m/s"), new String("Instant Speed"), new String("int"), -1, 0, 200, true, 1000, this);
 		}
 	}
@@ -372,6 +334,8 @@ public class HeartMonitorHandler implements Handler, Runnable
 	        // if there's no BT adapter, return without putting sensors in repository
 	        if (mBtAdapter == null) 
 	        	return false;
+
+			time_window = HandlerManager.readRMS_i("HeartMonitorHandler::Timewindow", 5);
 
 			// read BT address from RMS
 			BTAddress = HandlerManager.readRMS("HeartMonitorHandler::BTStore", "00:07:80:5A:3E:7E");
@@ -418,6 +382,9 @@ public class HeartMonitorHandler implements Handler, Runnable
 		byte[] endOfMessage = new byte[1];
 		byte[] payload = null;
 		int payload_length;
+		int averaging = 0;
+		int battery=0, pulse=0, instance=0;
+		int current_instance;
 		
 		if (inputStream==null)
 		{
@@ -461,28 +428,12 @@ public class HeartMonitorHandler implements Handler, Runnable
                 if (endOfMessage[0] == (byte)0x03)
                 {	
                 	// now read values
-                	last_battery 	= (int)(payload[HMX_BATTERY] & 0xff);
-                	last_pulse 		= (int)payload[HMX_PULSE];
-                	last_instance	= (int)(payload[HMX_INSTANCE] & 0xff) | (int)(payload[HMX_INSTANCE+1] & 0xff)<<8;
-                	last_instance   = (int)Math.floor((double)last_instance/25.6f);
-                	
-                	// get the readings
-                	int stride = (int)(payload[HMX_STRIDE] & 0xff);
-                	int distance = (int)(payload[HMX_DISTANCE] & 0xff) | (int)(payload[HMX_DISTANCE+1] & 0xff)<<8;
-                	
-                	// now deal with the roll overs (128 for stride)
-                	if (last_stride_reading < stride && stride<128)
-                		last_stride+=stride - last_stride_reading;
-                	else
-                		last_stride+=stride + (128-last_stride_reading);
-                	last_stride_reading = stride;
-                	
-                	// now deal with the roll overs (4096 for distance, measured in 1/16 of a metre)
-                	if (last_distance_reading < distance && distance<4096)
-                		last_distance+=(distance - last_distance_reading)/16;
-                	else
-                		last_distance+=(distance + (4096-last_distance_reading))/16;
-                	last_distance_reading = distance;               	
+                	battery 	+= (int)(payload[HMX_BATTERY] & 0xff);
+                	pulse 		+= (int)payload[HMX_PULSE];
+                	current_instance	= (int)(payload[HMX_INSTANCE] & 0xff) | (int)(payload[HMX_INSTANCE+1] & 0xff)<<8;
+                	instance    += (int)Math.floor((double)current_instance/25.6f);             	
+        			// now increase averaging window
+        			averaging++;
                 }                
 					    	   	
 			} 
@@ -494,18 +445,27 @@ public class HeartMonitorHandler implements Handler, Runnable
 				SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "HxM disconnected", null);
 				SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "HxM disconnected", null);
 				SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "HxM disconnected", null);
-				SensorRepository.setSensorStatus("HT", Sensor.SENSOR_INVALID, "HxM disconnected", null);
-				SensorRepository.setSensorStatus("HD", Sensor.SENSOR_INVALID, "HxM disconnected", null);
 
 				return;
 			}	
 			
-			// release semaphores for picking up the values
-	    	pulse_semaphore.release();
-	    	battery_semaphore.release();
-	    	strides_semaphore.release();
-	    	distance_semaphore.release();
-	    	instance_semaphore.release();
+			// reached averaging window length?
+			if (averaging == time_window)
+			{
+				// determine average values
+				last_battery  = battery/averaging;
+				last_pulse    = pulse/averaging;
+				last_instance = instance/averaging;
+				
+				// reset counters
+				averaging = 0;
+				battery = pulse = instance = 0;
+
+				// release semaphores for picking up the values
+		    	pulse_semaphore.release();
+		    	battery_semaphore.release();
+		    	instance_semaphore.release();
+			}
 		}
 	}
 }

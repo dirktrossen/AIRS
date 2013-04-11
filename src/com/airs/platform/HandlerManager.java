@@ -75,7 +75,7 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = (Handler)new PhoneSensorHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new MediaWatcherHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new CalendarHandler(nors);
-	   handlers[inst_handlers++]  = (Handler)new HeartrateButtonHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new BloodPressureButtonHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new NotificationHandler(nors);
 	   
 	   return true;

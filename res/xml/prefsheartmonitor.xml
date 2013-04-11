@@ -35,4 +35,15 @@
         android:entries="@array/heartmonitor_values"
         android:entryValues="@array/heartmonitor_entries"
         android:dialogTitle="@string/Device_Selection_title" />
+     <ListPreference
+        android:dependency="HeartMonitorHandler::BTON"
+    	android:dialogIcon="@drawable/time"
+        android:key="HeartMonitorHandler::Timewindow"
+        android:title="@string/Averaging_Window"
+        android:defaultValue="5"
+        android:summary="@string/Averaging_Window_on"
+        android:positiveButtonText="@string/Select"
+        android:entries="@array/heartratehandler_values"
+        android:entryValues="@array/heartratehandler_entries"
+        android:dialogTitle="@string/Averaging_Window_title" />
 </PreferenceScreen>

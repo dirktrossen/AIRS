@@ -52,7 +52,6 @@
 <string name="RemoteAbout">Shows the number of values and the bytes being sent in remote mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!</string>
 <string name="MoodAbout">Select the mood you are currently in. Your selection is recorded with a timestamp in the <b>MO</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own mood entry in the text field at the bottom.</string>
 <string name="EventAbout">Select the type of event you are currently in. Your selection is recorded with a timestamp in the <b>EB</b> sensor.\nExit the selector without selection by using the <b>BACK</b> key!\nYou can define your own event entry in the text field at the bottom. You can delete any entry by long clicking on it and confirming the deletion.\n\nAIRS stores your last defined events persistently.</string>
-<string name="HeartrateAbout">Hold your finger over the camera lens, covering the flash.\nYou will need to keep your finger there at least for 10 seconds after which the first reading shows (updated every 10 seconds).\n\nConfirm your reading with the <b>Confirm</b> button or cancel your reading.</string>
 <string name="TimelineAbout">Shows a historical timeline of the sensor you just clicked on. You can change the number of historical values in the <b>General Settings</b>\nExit the timeline by using the <b>BACK</b> key!</string>
 <string name="DBadminAbout">Choose any of the three DB actions, namely <b>Backup</b>, <b>Restore</b> or <b>Index</b>. You can only index the DB once and cannot undo the indexing after it is done.</string>
 <string name="SyncAbout">Allows for sharing the data since the last synchronisation as a text file.\n\nYou can also manually set the last sync date, in case you need to re-sync periods.</string>
@@ -291,6 +290,9 @@
 <string name="Device_Selection">Device Selection</string>
 <string name="Device_Selection_on">Choose one of the possible devices to connect to. You first need to pair with the device in the BT system settings! Make sure the device is switched on when starting AIRS.</string>
 <string name="Device_Selection_title">Choose Device</string>
+<string name="Averaging_Window">Averaging Window</string>
+<string name="Averaging_Window_on">Time window for averaging the pulse measurements, smoothening the values and reducing the numbers of recordings.</string>
+<string name="Averaging_Window_title">Choose Window [s]</string>
 <string name="Enable_GPS">Enable GPS</string>
 <string name="Enable_GPS_on">Enable GPS to show up in sensor list</string>
 <string name="Enable_GPS_off">Do not use GPS</string>
@@ -349,6 +351,7 @@
 <string name="AIRS_Mood_Selector">AIRS Mood Selector</string>
 <string name="AIRS_Event_Selector">AIRS Event Selector</string>
 <string name="AIRS_Heartrate">AIRS Heartrate</string>
+<string name="AIRS_BloodPressure">AIRS Blood Pressure</string>
 <string name="AIRS_Preferences">AIRS Preferences</string>
 <string name="AIRS_Events">AIRS Events</string>
 
@@ -375,14 +378,20 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- bugfix in shortcut starting
-- support selecting icon for own moods
-- bugfix in wifi handler
+- removed IH sensor (it just did not work well enough)\n
+- added BP sensor through blood pressure widget (based on self-annotation)\n
+- added averaging window for HP/HI sensors to smoothen values and reduce recordings (define in settings)\n
+- properly escape SMS characters now for SQL compliance
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.5:\n
+- removed IH sensor (it just did not work well enough)\n
+- added BP sensor through blood pressure widget (based on self-annotation)\n
+- added averaging window for HP/HI sensors to smoothen values and reduce recordings (define in settings)\n
+- properly escape SMS characters now for SQL compliance\n\n
 V2.5.4:\n 
 - bugfix in shortcut starting\n
 - support selecting icon for own moods\n

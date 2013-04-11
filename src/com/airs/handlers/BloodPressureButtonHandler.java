@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2012, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,6 @@ import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
-import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
 import android.content.BroadcastReceiver;
@@ -28,19 +27,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-/**
- * @author trossen
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
-public class HeartrateButtonHandler implements Handler
+public class BloodPressureButtonHandler implements Handler
 {
 	private Context airs;
 	private Semaphore event_semaphore 	= new Semaphore(1);
 	private boolean registered = false;
-	private byte [] IH_reading = new byte[6];
-	private int heartrate;
+	private StringBuffer BP_reading;
+	private String  blood_pressure;
 	
 	/**
 	 * Sleep function 
@@ -72,34 +65,25 @@ public class HeartrateButtonHandler implements Handler
 	***********************************************************************/
 	public byte[] Acquire(String sensor, String query)
 	{
-		// event button?
-		if(sensor.compareTo("IH") == 0)
+		BP_reading = new StringBuffer("BT");	
+
+		// not yet registered -> then do so!!
+		if (registered == false)
 		{
-			// not yet registered -> then do so!!
-			if (registered == false)
-			{
-				// check intents and set booleans for discovery
-				IntentFilter intentFilter = new IntentFilter("com.airs.heartratebutton");
-		        airs.registerReceiver(SystemReceiver, intentFilter);
-		        intentFilter = new IntentFilter("com.airs.heartrate");
-		        airs.registerReceiver(SystemReceiver, intentFilter);
-		        registered = true;
-			}
-
-			wait(event_semaphore); // block until semaphore available -> fired
-
-			// take positioning info and place in reading field
-			IH_reading[0] = (byte)sensor.charAt(0);
-			IH_reading[1] = (byte)sensor.charAt(1);
-			IH_reading[2] = (byte)((heartrate>>24) & 0xff);
-			IH_reading[3] = (byte)((heartrate>>16) & 0xff);
-			IH_reading[4] = (byte)((heartrate>>8) & 0xff);
-			IH_reading[5] = (byte)(heartrate & 0xff);
-
-			return IH_reading;
+			// check intents and set booleans for discovery
+			IntentFilter intentFilter = new IntentFilter("com.airs.bloodpressurebutton");
+	        airs.registerReceiver(SystemReceiver, intentFilter);
+	        intentFilter = new IntentFilter("com.airs.bloodpressure");
+	        airs.registerReceiver(SystemReceiver, intentFilter);
+	        registered = true;
 		}
-		
-		return null;
+
+		wait(event_semaphore); // block until semaphore available -> fired
+
+		// now append reading itself
+		BP_reading.append(blood_pressure);
+
+		return BP_reading.toString().getBytes();
 	}
 	
 	/***********************************************************************
@@ -112,10 +96,7 @@ public class HeartrateButtonHandler implements Handler
 	***********************************************************************/
 	public String Share(String sensor)
 	{		
-		if (heartrate != -1)
-			return "My last heart rate was " + String.valueOf(heartrate) + " beats per minute!";
-		else
-			return null;
+		return "My last blood pressure was " + blood_pressure;
 	}
 
 	/***********************************************************************
@@ -127,7 +108,6 @@ public class HeartrateButtonHandler implements Handler
 	***********************************************************************/
 	public void History(String sensor)
 	{
-		History.timelineView(airs, "Heart rate [bpm]", "IH");
 	}
 
 	/***********************************************************************
@@ -140,10 +120,10 @@ public class HeartrateButtonHandler implements Handler
 	***********************************************************************/
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("IH"), new String("bpm"), new String("Heart rate widget"), new String("int"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("BP"), new String("mmHg"), new String("Blood pressure"), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
-	public HeartrateButtonHandler(Context airs)
+	public BloodPressureButtonHandler(Context airs)
 	{
 		this.airs = airs;
 		try
@@ -173,11 +153,11 @@ public class HeartrateButtonHandler implements Handler
             String action = intent.getAction();
 
             // if mood button widget has been pressed -> start Activity for selecting mood icon
-            if (action.equals("com.airs.heartratebutton")) 
+            if (action.equals("com.airs.bloodpressurebutton")) 
             {
     			try
     			{
-    	            Intent startintent = new Intent(airs, HeartrateButton_selector.class);
+    	            Intent startintent = new Intent(airs, BloodPressureButton_selector.class);
     	            startintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     	            airs.startActivity(startintent);          
     			}
@@ -188,10 +168,10 @@ public class HeartrateButtonHandler implements Handler
             }
 
             // If event button pressed, signal to Acquire()
-            if (action.equals("com.airs.heartrate")) 
+            if (action.equals("com.airs.bloodpressure")) 
             {
             	// get mood from intent
-            	heartrate = intent.getIntExtra("Heartrate", -1);
+            	blood_pressure = intent.getStringExtra("BloodPressure");
 
             	event_semaphore.release();		// release semaphore
 				return;

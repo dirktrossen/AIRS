@@ -125,7 +125,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 //	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-			setContentView(R.layout.mood_selection);
+			setContentView(R.layout.event_selection);
 	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
 	        
 	        // get window title fields

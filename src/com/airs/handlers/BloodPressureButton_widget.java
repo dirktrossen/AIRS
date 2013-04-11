@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -25,7 +25,7 @@ import android.widget.RemoteViews;
 
 import com.airs.*;
 
-public class HeartrateButton_widget extends AppWidgetProvider
+public class BloodPressureButton_widget extends AppWidgetProvider
 {
 	Context context;
 
@@ -39,7 +39,7 @@ public class HeartrateButton_widget extends AppWidgetProvider
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetlayout_heart);
         
         // create our own broadcast event for event button pressing -> EventButtonHandler subscribes to this!
-        Intent defineIntent = new Intent("com.airs.heartratebutton");
+        Intent defineIntent = new Intent("com.airs.bloodpressurebutton");
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, defineIntent, PendingIntent.FLAG_UPDATE_CURRENT); 
         views.setOnClickPendingIntent(R.id.heart_button_local, pendingIntent);
 

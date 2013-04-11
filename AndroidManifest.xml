@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.5.4" android:versionCode="142" android:sharedUserId="com.airs">
+      android:versionName="2.5.5" android:versionCode="144" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
    
@@ -71,14 +71,14 @@
      <activity android:name="AIRS_visualisation" android:exported="false" android:label="Storica" android:configChanges="orientation|keyboardHidden"></activity>    
      <activity android:name="AIRS_sensorselection" android:exported="false" android:label="@string/Sensor_Selection"></activity> 
      <activity android:name="Prefs" android:exported="false" android:label="@string/AIRS_Preferences"></activity>
-     <activity android:name="AIRS_sync" android:exported="true" android:label="AIRS Sync" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:name="AIRS_sync" android:exported="true" android:label="@string/main_Sync" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_backup" android:exported="false" android:label="@string/Backup" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_restore" android:exported="false" android:label="@string/Restore" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_index" android:exported="false" android:label="@string/Index" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_DBAdmin" android:exported="false" android:label="@string/DB_Admin" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:name="AIRS_manual" android:exported="false" android:label="@string/Manual" android:configChanges="orientation|keyboardHidden"></activity>
      
-     <activity android:name="MapViewerActivity" android:exported="false" android:label="AIRS Mapview" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:name="MapViewerActivity" android:exported="false" android:label="@string/AIRS_Map" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="TimelineActivity" android:exported="false" android:label="@string/AIRS_Timeline"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_measurements" android:exported="false" android:label="@string/AIRS_Local_Sensing" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_remotevalues" android:exported="false" android:label="@string/AIRS_Remote_Sensing" android:configChanges="orientation|keyboardHidden"></activity>
@@ -86,23 +86,22 @@
      <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.MoodButton_selector" android:exported="false" android:label="@string/AIRS_Mood_Selector"  android:windowSoftInputMode="stateHidden|adjustResize"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.MoodButton_iconselector" android:exported="false" android:label="@string/AIRS_Mood_Selector"  android:windowSoftInputMode="stateHidden|adjustResize"></activity>
      <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="@string/AIRS_Event_Selector" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
-     <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.HeartrateButton_selector" android:exported="false" android:label="@string/AIRS_Heartrate" android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
-     <receiver android:name="com.airs.helper.Waker" android:process=":remote" />
-     <receiver android:name="com.airs.handlers.HeartrateButton_widget" android:label="AIRS Heartrate Button">
+     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.BloodPressureButton_selector" android:exported="false" android:label="@string/AIRS_BloodPressure" android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+     <receiver android:name="com.airs.handlers.BloodPressureButton_widget" android:label="@string/AIRS_BloodPressure">
          <meta-data android:name="android.appwidget.provider"
                  android:resource="@xml/airs_widgetprovider_heart"/>
          <intent-filter>
              <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
          </intent-filter>
      </receiver>
-     <receiver android:name="com.airs.handlers.EventButton_widget" android:label="AIRS Event Button">
+     <receiver android:name="com.airs.handlers.EventButton_widget" android:label="@string/AIRS_Event_Selector">
          <meta-data android:name="android.appwidget.provider"
                  android:resource="@xml/airs_widgetprovider"/>
          <intent-filter>
              <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
          </intent-filter>
      </receiver>
-     <receiver android:name="com.airs.handlers.MoodButton_widget" android:label="AIRS Mood Button">
+     <receiver android:name="com.airs.handlers.MoodButton_widget" android:label="@string/AIRS_Mood_Selector">
          <meta-data android:name="android.appwidget.provider"
                  android:resource="@xml/airs_widgetprovider_mood"/>
          <intent-filter>

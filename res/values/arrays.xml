@@ -74,6 +74,22 @@
         <item>10000</item>
         <item>20000</item>
     </string-array> 
+    <string-array name="heartratehandler_values">
+        <item>1 (not recommended)</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </string-array>
+     <string-array name="heartratehandler_entries">
+        <item>1</item>
+        <item>2</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </string-array> 
     <string-array name="recordinglabel_entries">
         <item>Local</item>
         <item>Remote</item>

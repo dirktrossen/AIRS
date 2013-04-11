@@ -284,7 +284,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
             		Music = Artist + ":" + Album + ":" + Track;
             	
 	            	// test if overall music information has changed
-	            	if (Music_old.equals(Music) == false)
+	            	if (Music_old.compareTo(Music) != 0)
 	            	{
 	            		// store changed information
 	            		HandlerManager.writeRMS("MusicPlayerHandler::Music", Music);

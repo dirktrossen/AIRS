@@ -290,7 +290,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			{
 				// create Stringbuffer with sms number being sent
 			    StringBuffer buffer = new StringBuffer("SR");
-			    buffer.append(smsReceived);
+			    buffer.append(smsReceived.replaceAll("'","''"));
 			    smsReceived = null;
 	    		return buffer.toString().getBytes();
 			}
@@ -314,7 +314,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			{
 				// create Stringbuffer with sms number being sent
 			    StringBuffer buffer = new StringBuffer("SS");
-			    buffer.append(smsSent);
+			    buffer.append(smsSent.replaceAll("'","''"));
 			    smsSent = null;
 	    		return buffer.toString().getBytes();
 			}

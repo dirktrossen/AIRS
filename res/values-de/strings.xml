@@ -51,7 +51,6 @@
 <string name="RemoteAbout">Zeigt die Anzahl der Werte übertragen, zusammen mit den kBytes, im Remote Modus.\nVon hier aus kannst Du das Programm verlassen oder die Anzeige mit der <b>ZURÜCK</b> Taste verlassen!</string>
 <string name="MoodAbout">Wähle die Gemütsstimmung aus in der Du Dich befindest. Deine Aufnahme wird mit einem Zeitstempel versehen mit dem <b>MO</b> Sensor.\nVerlasse die Auswahl mit der <b>ZURÜCK</b> Taste\nDu kannst auch Deine eigene Stimmung bestimmen mit dem Textfeld am unteren Rand.</string>
 <string name="EventAbout">Wähle das Ereignis, dass Du aufzeichen willst. Deine Auswahl wird mit einem Zeitstempel versehen mit dem <b>EB</b> Sensor.\nVerlasse die Auswahl mit der <b>ZURÜCK</b> Taste!\nDu kannst Dein eigenes Ereignis mit dem Textfeld am unteren Rand eingeben. Du kannst einen Eintrag löschen, indem Du lange auf den Eintrag klickst.\n\nAIRS speichert Deine letzte Einträge permanent.</string>
-<string name="HeartrateAbout">Halte Deinen Finger über die Kameralinse und den Blitz.\nDu musst Deinen Finger dort für mindestens 10 Sekunden halten. Danach wird der erste Wert angezeigt und alle 10 Sekunden erneuert.\n\nBestätige Deinen Wert mit dem <b>Bestätige</b> Knopf oder breche Deine Messung ab.</string>
 <string name="TimelineAbout">Zeigt den historischen Zeitverlauf des angeklickten Sensors. Du kannst die Anzahl der angezeigten Werte in den Einstellungen ändern.\nVerlasse die Anzeige mit der <b>ZURÜCK</b> Taste!</string>
 <string name="DBadminAbout">Wähle eine der drei Datenbankoperationen: <b>Speichern</b>, <b>Wiederherstellen</b> or <b>Index</b>. Du kannst die Datenbank nur einmal indizieren und diese Operation kann nicht rückgängig gemacht werden.</string>
 <string name="SyncAbout">Erlaubt die Daten seit der letzten Synchronisierung zu sichern.\n\nDu kannst das letzte Synchronisierungsdatum auch manuell ändern für den Fall, dass Du wieder synchronisieren musst.</string>
@@ -290,6 +289,9 @@
 <string name="Device_Selection">Geräteauswahl</string>
 <string name="Device_Selection_on">Wähle eines der möglichen Geräte, dass benutzt werden soll. Du musst mit dem Gerät zumindest einmal verbunden gewesen sein über die Systemeinstellungen! Stelle auch sicher, dass das Gerät eingeschaltet ist wenn Du die AIRS Aufnahmen startest.</string>
 <string name="Device_Selection_title">Wähle Gerät</string>
+<string name="Averaging_Window">Durchschnittsfenster</string>
+<string name="Averaging_Window_on">Zeitfenster für Durchschnittswerte der Pulsmessungen., glättet die Werte und verringert die Anzahl der Aufzeichnungen.</string>
+<string name="Averaging_Window_title">Wähle Fenster [s]</string>
 <string name="Enable_GPS">GPS</string>
 <string name="Enable_GPS_on">GPS soll in Sensorliste erscheinen</string>
 <string name="Enable_GPS_off">Benutze kein GPS</string>
@@ -348,6 +350,7 @@
 <string name="AIRS_Mood_Selector">AIRS Stimmungsauswahl</string>
 <string name="AIRS_Event_Selector">AIRS Ereignisauswahl</string>
 <string name="AIRS_Heartrate">AIRS Puls</string>
+<string name="AIRS_BloodPressure">AIRS Blutdruck</string>
 <string name="AIRS_Preferences">AIRS Einstellungen</string>
 <string name="AIRS_Events">AIRS Ereignisse</string>
 

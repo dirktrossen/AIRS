@@ -1,3 +1,9 @@
+V2.5.5:
+- removed IH sensor (it just did not work well enough)
+- added BP sensor through blood pressure widget (based on self-annotation)
+- added averaging window for HP/HI sensors to smoothen values and reduce recordings (define in settings)
+- properly escape SMS characters now for SQL compliance
+
 V2.5.4: 
 - bugfix in shortcut starting
 - support selecting icon for own moods
