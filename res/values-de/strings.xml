@@ -324,6 +324,9 @@
 <string name="Camera">Kamera</string>
 <string name="Camera_on">Beobachte Kameraverzeichnis</string>
 <string name="Camera_off">Keine Beobachtung des Kameraverzeichnisses</string>
+<string name="Camera_Default">Kamera Standardpfad</string>
+<string name="Camera_Default_on">Benutze den Standardpfad des Systems</string>
+<string name="Camera_Default_off">Definiere eigenen Kamerapfad</string>
 <string name="Camera_path">Kamerapfad</string>
 <string name="Camera_path_on">Bestimme den Pfad für Kamerabilder</string>
 
@@ -370,6 +373,18 @@
 <string name="Tired">Müde</string>
 <string name="Sad">Traurig</string>
 <string name="Very_Sad">Sehr traurig</string>
+<string name="Angry">Sauer</string>
+<string name="Ashamed">Beschämt</string>
+<string name="Bored">Gelangweilt</string>
+<string name="Disappointed">Enttäuscht</string>
+<string name="Embarrassed">Peinlich</string>
+<string name="Giggly">Kichernd</string>
+<string name="Scared">Angstvoll</string>
+<string name="Sick">Krank</string>
+<string name="Sleepy">Schläfrig</string>
+<string name="Staring">Starren</string>
+<string name="Surprised">Überrascht</string>
+<string name="Worried">Besorgt</string>
 
 <!-- visualisation tab -->
 <string name="Get_storica">Hole Dir Storica!</string>

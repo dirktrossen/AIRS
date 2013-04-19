@@ -1,3 +1,10 @@
+V2.5.6:
+- allow for using system path for camera watcher
+- improved heart rate monitor through low/high value filter
+- new icons for mood
+- more moods being supported now!
+- can select mood right from annotation selection window!
+
 V2.5.5:
 - removed IH sensor (it just did not work well enough)
 - added BP sensor through blood pressure widget (based on self-annotation)

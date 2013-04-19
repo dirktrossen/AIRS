@@ -26,6 +26,15 @@
     	android:selectable="true" 
     	android:summaryOn="@string/Camera_on" 
     	android:summaryOff="@string/Camera_off"/>
+    <CheckBoxPreference 
+        android:defaultValue="true"
+    	android:enabled="true" 
+    	android:title="@string/Camera_Default" 
+    	android:key="MediaWatcherHandler::CameraDefault" 
+    	android:selectable="true" 
+    	android:summaryOn="@string/Camera_Default_on" 
+    	android:summaryOff="@string/Camera_Default_off"
+    	android:dependency="MediaWatcherHandler::Camera"/>
     <EditTextPreference
         android:summary="@string/Camera_path_on"
         android:defaultValue="/sdcard/DCIM/Camera"

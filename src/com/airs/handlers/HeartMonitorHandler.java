@@ -274,6 +274,8 @@ public class HeartMonitorHandler implements Handler, Runnable
 				return "My current pulse is " + String.valueOf(last_pulse);
 			case 'I' :
 				return "My current instant speed is " + String.valueOf((double)last_instance/10.0f);
+			case 'L' : 		    
+				return "My current battery is " + String.valueOf(last_battery);
 		}
 		
 		return null;		
@@ -393,24 +395,29 @@ public class HeartMonitorHandler implements Handler, Runnable
 		}
 				
 		while (connected == true) 
-		{
+		{		
 			// try to read from serial port
 			try 
 			{
-			    // read the total header information
+			    // read the header information
                 do 
                 {
-    				for (i=0;i<3;i++)
-                        inputStream.read(header, i, 1);
+                    inputStream.read(header, 0, 1);
                     // check for first byte (0x02) and message ID (0x26)
-                    if (header[HMX_STX] == (byte)0x02) 
-                        if (header[HMX_MSG_ID] == (byte)0x26) 
+                    if (header[0] == (byte)0x02)
+                    {
+                        inputStream.read(header, 0, 1);
+
+                        if (header[0] == (byte)0x26) 
                         {
-                        	// extract payload length
-                        	payload_length = header[HMX_DLC];
+                            inputStream.read(header, 0, 1);
+
+                            // extract payload length
+                        	payload_length = header[0];
                         	if (payload_length != 0)
                         		break;
                         }
+                    }
                 }while(true);
 				
                 // now generate payload packet
@@ -427,15 +434,20 @@ public class HeartMonitorHandler implements Handler, Runnable
                 // proper end of message?
                 if (endOfMessage[0] == (byte)0x03)
                 {	
-                	// now read values
-                	battery 	+= (int)(payload[HMX_BATTERY] & 0xff);
-                	pulse 		+= (int)payload[HMX_PULSE];
-                	current_instance	= (int)(payload[HMX_INSTANCE] & 0xff) | (int)(payload[HMX_INSTANCE+1] & 0xff)<<8;
-                	instance    += (int)Math.floor((double)current_instance/25.6f);             	
-        			// now increase averaging window
-        			averaging++;
-                }                
-					    	   	
+                	int current_pulse = (int)payload[HMX_PULSE];
+                	
+                	// filter too low and too high values
+                	if (current_pulse > 30 & current_pulse<230)
+                	{
+	                	// now read values
+	                	battery 	+= (int)(payload[HMX_BATTERY] & 0xff);
+	                	pulse 		+= current_pulse;
+	                	current_instance	= (int)(payload[HMX_INSTANCE] & 0xff) | (int)(payload[HMX_INSTANCE+1] & 0xff)<<8;
+	                	instance    += (int)Math.floor((double)current_instance/25.6f);             	
+	        			// now increase averaging window
+	        			averaging++;	        			
+                	}
+                }                				    	   	
 			} 
 			catch (Exception e) 
 			{
@@ -445,6 +457,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 				SensorRepository.setSensorStatus("HL", Sensor.SENSOR_INVALID, "HxM disconnected", null);
 				SensorRepository.setSensorStatus("HP", Sensor.SENSOR_INVALID, "HxM disconnected", null);
 				SensorRepository.setSensorStatus("HI", Sensor.SENSOR_INVALID, "HxM disconnected", null);
+
+				// release semaphores for picking up the values
+		    	pulse_semaphore.release();
+		    	battery_semaphore.release();
+		    	instance_semaphore.release();
 
 				return;
 			}	

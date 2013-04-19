@@ -74,18 +74,31 @@ public class MoodButton_iconselector extends Activity implements OnItemClickList
 	        // add mood icons to list
 	        addMoodIcon(getString(R.string.Very_Happy), R.drawable.mood_very_happy);
 	        addMoodIcon(getString(R.string.Happy), R.drawable.mood_happy);
+	        addMoodIcon(getString(R.string.Giggly), R.drawable.mood_giggly);
 	        addMoodIcon(getString(R.string.Feeling_Good), R.drawable.mood_feeling_good);	       
+	        addMoodIcon(getString(R.string.Positively_Excited), R.drawable.mood_feeling_good);	       
 	        addMoodIcon(getString(R.string.Confused), R.drawable.mood_confused);
+	        addMoodIcon(getString(R.string.Anxious), R.drawable.mood_doubtful);
 	        addMoodIcon(getString(R.string.Doubtful), R.drawable.mood_doubtful);
 	        addMoodIcon(getString(R.string.Not_Sure), R.drawable.mood_not_sure);
 	        addMoodIcon(getString(R.string.Upset), R.drawable.mood_upset);
 	        addMoodIcon(getString(R.string.Not_Happy), R.drawable.mood_not_happy);
+	        addMoodIcon(getString(R.string.Angry), R.drawable.mood_angry);
 	        addMoodIcon(getString(R.string.Annoyed), R.drawable.mood_annoyed);
+	        addMoodIcon(getString(R.string.Ashamed), R.drawable.mood_ashamed);
+	        addMoodIcon(getString(R.string.Embarrassed), R.drawable.mood_embarassed);
+	        addMoodIcon(getString(R.string.Surprised), R.drawable.mood_surprised);
 	        addMoodIcon(getString(R.string.Shocked), R.drawable.mood_shocked);
+	        addMoodIcon(getString(R.string.Worried), R.drawable.mood_worried);
+	        addMoodIcon(getString(R.string.Scared), R.drawable.mood_scared);
+	        addMoodIcon(getString(R.string.Bored), R.drawable.mood_bored);
 	        addMoodIcon(getString(R.string.Tired), R.drawable.mood_tired);
+	        addMoodIcon(getString(R.string.Sleepy), R.drawable.mood_sleepy);
+	        addMoodIcon(getString(R.string.Staring), R.drawable.mood_staring);
+	        addMoodIcon(getString(R.string.Sick), R.drawable.mood_sick);
 	        addMoodIcon(getString(R.string.Sad), R.drawable.mood_sad);
 	        addMoodIcon(getString(R.string.Very_Sad), R.drawable.mood_very_sad);
-	    }
+	        addMoodIcon(getString(R.string.Disappointed), R.drawable.mood_dissappointed);	    }
 
 	    @Override
 	    public synchronized void onRestart() 

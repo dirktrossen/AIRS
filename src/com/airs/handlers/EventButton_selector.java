@@ -57,6 +57,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	 private TextView mTitle;
 	 private TextView mTitle2;
 	 private Editor editor;
+	 private ImageView mood_iconown;
 
 	 // preferences
 	 private SharedPreferences settings;
@@ -125,7 +126,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 //	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 	        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-			setContentView(R.layout.event_selection);
+			setContentView(R.layout.mood_selection);
 	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
 	        
 	        // get window title fields
@@ -163,6 +164,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        for (i=0;i<own_events;i++)
 	        	if (event[i].compareTo("") != 0)
 	        		addEventIcon(event[i], R.drawable.event_marker);
+	        
+	        // now hook the button for own icon selection
+	        mood_iconown 	= (ImageView)findViewById(R.id.moodown_icon);
+	        mood_iconown.setOnClickListener(this);
 	    }
 
 	    @Override
@@ -308,6 +313,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    		et = (EditText) findViewById(R.id.moodown);
 	    		et.setText("");
 	    		break;
+	    	case R.id.moodown_icon:
+	    		Intent intent = new Intent(getApplicationContext(), MoodButton_selector.class);
+		    	startActivity(intent);	        	
+		    	break;
 	    	}
 		}
 

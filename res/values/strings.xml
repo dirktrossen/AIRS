@@ -325,6 +325,9 @@
 <string name="Camera">Camera</string>
 <string name="Camera_on">Watch camera folder</string>
 <string name="Camera_off">Do not watch camera folder</string>
+<string name="Camera_Default">Camera Default Path</string>
+<string name="Camera_Default_on">Use system default camera folder</string>
+<string name="Camera_Default_off">Define your own camera folder</string>
 <string name="Camera_path">Camera path</string>
 <string name="Camera_path_on">Provide the path for camera pictures</string>
 
@@ -371,6 +374,18 @@
 <string name="Tired">Tired</string>
 <string name="Sad">Sad</string>
 <string name="Very_Sad">Very Sad</string>
+<string name="Angry">Angry</string>
+<string name="Ashamed">Ashamed</string>
+<string name="Bored">Bored</string>
+<string name="Disappointed">Disappointed</string>
+<string name="Embarrassed">Embarrassed</string>
+<string name="Giggly">Giggly</string>
+<string name="Scared">Scared</string>
+<string name="Sick">Sick</string>
+<string name="Sleepy">Sleepy</string>
+<string name="Staring">Staring</string>
+<string name="Surprised">Surprised</string>
+<string name="Worried">Worried</string>
 
 <!-- visualisation tab -->
 <string name="Get_storica">Get Storica!</string>
@@ -378,15 +393,22 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- removed IH sensor (it just did not work well enough)\n
-- added BP sensor through blood pressure widget (based on self-annotation)\n
-- added averaging window for HP/HI sensors to smoothen values and reduce recordings (define in settings)\n
-- properly escape SMS characters now for SQL compliance
+- allow for using system path for camera watcher\n
+- improved heart rate monitor through low/high value filter\n
+- new icons for mood\n
+- more moods being supported now!\n
+- can select mood right from annotation selection window!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.6:\n
+- allow for using system path for camera watcher\n
+- improved heart rate monitor through low/high value filter\n
+- new icons for mood\n
+- more moods being supported now!\n
+- can select mood right from annotation selection window!\n\n
 V2.5.5:\n
 - removed IH sensor (it just did not work well enough)\n
 - added BP sensor through blood pressure widget (based on self-annotation)\n

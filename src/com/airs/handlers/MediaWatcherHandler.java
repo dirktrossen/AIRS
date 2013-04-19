@@ -175,7 +175,12 @@ public class MediaWatcherHandler implements Handler
 		pictures = HandlerManager.readRMS_b("MediaWatcherHandler::Pictures", false);
 		videos   = HandlerManager.readRMS_b("MediaWatcherHandler::Videos", false);
 
-		camera_directory = HandlerManager.readRMS("MediaWatcherHandler::CameraDirectory", Environment.getExternalStorageDirectory()+"/DCIM/Camera");
+		// use system path?
+        if (HandlerManager.readRMS_b("MediaWatcherHandler::CameraDefault", true) == true)
+        	camera_directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + "/Camera";
+        else
+        	camera_directory = HandlerManager.readRMS("MediaWatcherHandler::CameraDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + "/Camera");
+
 		music_directory = HandlerManager.readRMS("MediaWatcherHandler::MusicDirectory", Environment.getExternalStorageDirectory()+"/Music");
 		pictures_directory = HandlerManager.readRMS("MediaWatcherHandler::PicturesDirectory", Environment.getExternalStorageDirectory()+"/Pictures");
 		videos_directory = HandlerManager.readRMS("MediaWatcherHandler::VideosDirectory", Environment.getExternalStorageDirectory()+"/Videos");
