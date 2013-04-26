@@ -518,6 +518,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 			    		           	long synctime;
 			    		    	    int version, i; 
 			    		    	    boolean tables, tables2;
+			    		    	    String music;
 			    		    	    String dirPath;
 			    		            File shortcutFile;
 	
@@ -537,6 +538,8 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   	        version = settings.getInt("Version", 0);	
 				    		   	        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
 				    		   	        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
+				    			        music = settings.getString("MusicPlayerHandler::Music", "");
+
 				    		   	        // read all entries related to event annotations
 				    		   			int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
 				    		   			if (own_events<1)
@@ -576,7 +579,8 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   			editor.putInt("Version", version);
 				    		   			editor.putBoolean("AIRS_local::TablesExists", tables);
 				    		   			editor.putBoolean("AIRS_local::Tables2Exists", tables2);
-				    		   			
+				    					editor.putString("MusicPlayerHandler::Music", music);
+
 				    		   			// put back all entries related to event annotations
 				    		   			for (i=0;i<own_events;i++)
 				    		   				editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);

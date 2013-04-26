@@ -50,6 +50,7 @@ public class AIRS_shortcut extends Activity
 		   long synctime;
 		   int version, i;
 		   boolean tables, tables2;
+		   String music;
 		   
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
@@ -98,7 +99,9 @@ public class AIRS_shortcut extends Activity
 		        synctime = settings.getLong("SyncTimestamp", 0);
 		        version = settings.getInt("Version", 0);	
 		        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
-		        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
+		        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);
+		        music = settings.getString("MusicPlayerHandler::Music", "");
+		        
 		        // read all entries related to event annotations
 				int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
 				if (own_events<1)
@@ -156,6 +159,7 @@ public class AIRS_shortcut extends Activity
 				editor.putInt("Version", version);
 				editor.putBoolean("AIRS_local::TablesExists", tables);
 				editor.putBoolean("AIRS_local::Tables2Exists", tables2);
+				editor.putString("MusicPlayerHandler::Music", music);
 				
 				// put back all entries related to event annotations
 				for (i=0;i<own_events;i++)

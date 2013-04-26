@@ -97,7 +97,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("MP");
-		    buffer.append(Music);
+		    buffer.append(Music.replaceAll("'","''"));
     		return buffer.toString().getBytes();
 		}
 
@@ -111,7 +111,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("MA");
-		    buffer.append(Artist);
+		    buffer.append(Artist.replaceAll("'","''"));
     		return buffer.toString().getBytes();
 		}
 
@@ -125,7 +125,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("ML");
-		    buffer.append(Album);
+		    buffer.append(Album.replaceAll("'","''"));
     		return buffer.toString().getBytes();
 		}
 
@@ -139,7 +139,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 			
 			// create reading buffer with callee number
 		    StringBuffer buffer = new StringBuffer("MT");
-		    buffer.append(Track);
+		    buffer.append(Track.replaceAll("'","''"));
     		return buffer.toString().getBytes();
 		}
 		

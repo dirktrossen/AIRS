@@ -57,7 +57,7 @@ public class NotificationHandler implements Handler
 		if(sensor.compareTo("NO") == 0)
 		{
 			wait(notify_semaphore);
-			readings.append(notify_text);
+			readings.append(notify_text.replaceAll("'","''"));
 			
 			return readings.toString().getBytes();
 		}

@@ -56,9 +56,11 @@ public class HeartMonitorHandler implements Handler, Runnable
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     private BluetoothAdapter mBtAdapter;
+    private BluetoothDevice device;
     private BluetoothSocket mmSocket;
 	private InputStream inputStream;
-
+	private String BTAddress;
+	
 	// context for history
 	private Context airs;
 	
@@ -328,7 +330,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 		// this phone version read the BT address through the RMS entry and connects to it
 		try 
 		{
-			String BTAddress = null;
+			BTAddress = null;
 
 	        // Get the local Bluetooth adapter
 	        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -343,7 +345,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 			BTAddress = HandlerManager.readRMS("HeartMonitorHandler::BTStore", "00:07:80:5A:3E:7E");
 
 			// now get remote device for connection
-			BluetoothDevice device = mBtAdapter.getRemoteDevice(BTAddress);
+			device = mBtAdapter.getRemoteDevice(BTAddress);
 			
 			// this is how it should be done with proper pairing 
 			mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
@@ -372,6 +374,68 @@ public class HeartMonitorHandler implements Handler, Runnable
 	}
 
 
+	private byte readfromBT()
+	{
+		int BT = -1;
+		
+		// read as long as we can't get anything useful
+		do
+		{
+			try
+			{
+				do
+				{
+					// read single byte
+					BT = inputStream.read();
+				}while(BT == -1);				
+			}
+			catch(Exception e)
+			{
+				try
+				{
+					mmSocket.close();
+					inputStream.close();
+				}
+				catch(Exception e2)
+				{
+					
+				}
+				mmSocket = null;
+				inputStream = null;
+			}
+			
+			// if input stream does not exist anymore, try to reconnect
+			if (inputStream == null)
+			{
+				try
+				{
+					// wait until reconnection
+					Thread.sleep(15000);
+					
+					// now get remote device for connection
+					device = mBtAdapter.getRemoteDevice(BTAddress);
+					
+					// this is how it should be done with proper pairing 
+					mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+					
+					// now connect
+		            mmSocket.connect();  
+	
+					if (mmSocket != null)
+						inputStream = mmSocket.getInputStream();
+					else
+						mmSocket.close();
+				}
+				catch(Exception e)
+				{
+					mmSocket = null;
+					inputStream = null;
+				}
+			}
+		}while (BT==-1);
+		
+		return (byte)BT;
+	}
 	/**
 	 * 
 	 * This thread keeps on reading the BT serial port  
@@ -379,9 +443,9 @@ public class HeartMonitorHandler implements Handler, Runnable
 	public void run() 
 	{
 		int i;
-		byte[] header = new byte[3];
-		byte[] checksum = new byte[1];
-		byte[] endOfMessage = new byte[1];
+		byte header;
+		byte checksum;
+		byte endOfMessage;
 		byte[] payload = null;
 		int payload_length;
 		int averaging = 0;
@@ -402,18 +466,18 @@ public class HeartMonitorHandler implements Handler, Runnable
 			    // read the header information
                 do 
                 {
-                    inputStream.read(header, 0, 1);
+                    header = readfromBT(); 
                     // check for first byte (0x02) and message ID (0x26)
-                    if (header[0] == (byte)0x02)
+                    if (header == (byte)0x02)
                     {
-                        inputStream.read(header, 0, 1);
+                        header = readfromBT(); 
 
-                        if (header[0] == (byte)0x26) 
+                        if (header == (byte)0x26) 
                         {
-                            inputStream.read(header, 0, 1);
+                            header = readfromBT(); 
 
                             // extract payload length
-                        	payload_length = header[0];
+                        	payload_length = header;
                         	if (payload_length != 0)
                         		break;
                         }
@@ -424,15 +488,16 @@ public class HeartMonitorHandler implements Handler, Runnable
                 payload = new byte[payload_length];
                 // read rest of header
 				for (i=0;i<payload_length;i++)
-                    inputStream.read(payload, i, 1);
+                    payload[i] = readfromBT();
 			    	
 		    	// read checksum
-                inputStream.read(checksum, 0, 1);
+				checksum = readfromBT(); 
 
 		    	// read end of message
-                inputStream.read(endOfMessage, 0, 1);
+                endOfMessage = readfromBT(); 
+
                 // proper end of message?
-                if (endOfMessage[0] == (byte)0x03)
+                if (endOfMessage == (byte)0x03)
                 {	
                 	int current_pulse = (int)payload[HMX_PULSE];
                 	

@@ -393,16 +393,16 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- allow for using system path for camera watcher\n
-- improved heart rate monitor through low/high value filter\n
-- new icons for mood\n
-- more moods being supported now!\n
-- can select mood right from annotation selection window!
+- improvements in reconnecting to Zephyr monitor\n
+- improvements in music player handler in recognising false readings
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.6.1:\n
+- improvements in reconnecting to Zephyr monitor\n
+- improvements in music player handler in recognising false readings\n\n
 V2.5.6:\n
 - allow for using system path for camera watcher\n
 - improved heart rate monitor through low/high value filter\n
