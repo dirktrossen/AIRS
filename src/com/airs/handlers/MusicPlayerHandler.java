@@ -268,6 +268,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
         public void onReceive(Context context, Intent intent) 
         {
             String action = intent.getAction();
+            boolean new_music = false;
             
         	if (action.compareTo("com.android.music.playbackcomplete") == 0)
         		Artist = Album = Track = Music = null;
@@ -290,16 +291,14 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	            		HandlerManager.writeRMS("MusicPlayerHandler::Music", Music);
 	            		// and remember
 	            		Music_old = new String(Music);
+	            		// signal that we have new music
+	            		new_music = true;
 	            	}
-	            	else
-	            		Artist = Album = Track = Music = null;   // if info is the same as before, don't use it!!
             	}
-            	else
-            		Artist = Album = Track = Music = null;
         	}
         	
         	// only signal if there's a changed music info
-        	if (Music != null)
+        	if (new_music == true)
         	{
 	        	music_semaphore.release();			// release semaphore
 	        	artist_semaphore.release();			// release semaphore

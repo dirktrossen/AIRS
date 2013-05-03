@@ -1,3 +1,8 @@
+V2.5.6.2:
+- improve MA/MT/ML readings
+- do not create downloaded templates if there is a download error
+- can now add WiFis to adaptive GPS list without needing to save templates all the time
+
 V2.5.6.1: 
 - improvements in reconnecting to Zephyr monitor
 - improvements in music player handler in recognising false readings

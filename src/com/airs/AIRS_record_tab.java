@@ -518,7 +518,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 			    		           	long synctime;
 			    		    	    int version, i; 
 			    		    	    boolean tables, tables2;
-			    		    	    String music;
+			    		    	    String music, storedWifis;
 			    		    	    String dirPath;
 			    		            File shortcutFile;
 	
@@ -539,6 +539,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   	        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
 				    		   	        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
 				    			        music = settings.getString("MusicPlayerHandler::Music", "");
+				    					storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
 
 				    		   	        // read all entries related to event annotations
 				    		   			int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
@@ -580,6 +581,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   			editor.putBoolean("AIRS_local::TablesExists", tables);
 				    		   			editor.putBoolean("AIRS_local::Tables2Exists", tables2);
 				    					editor.putString("MusicPlayerHandler::Music", music);
+				    					editor.putString("LocationHandler::AdaptiveGPS_WiFis", storedWifis);
 
 				    		   			// put back all entries related to event annotations
 				    		   			for (i=0;i<own_events;i++)
@@ -732,6 +734,8 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 	    public void run()
 	    {
 	    	int total_size = 0;
+	    	File file = null;
+	    	
 			try 
 			{
 				URL url = new URL("http://www.tecvis.co.uk/wp-content/uploads/story_templates/" + template_name);
@@ -750,7 +754,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 	        		shortcutPath.mkdirs();
 	
 	        	//create a new file, to save the downloaded file 
-				File file = new File(shortcutPath, template_name);
+				file = new File(shortcutPath, template_name);
 				FileOutputStream fileOutput = new FileOutputStream(file);
 	
     			SerialPortLogger.debugForced("download: created local file " + template_name);
@@ -781,6 +785,11 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 			{    				
 				// now update progress dialog, possibly dismiss and gather files again
 				mHandler.sendMessage(mHandler.obtainMessage(UPDATE_DOWNLOAD));
+				
+				// remove template file if it has been created
+				if (file != null)
+					if (file.exists() == true)
+						file.delete();
 			}
 	    }
     }

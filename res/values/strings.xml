@@ -393,13 +393,18 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- improvements in reconnecting to Zephyr monitor\n
-- improvements in music player handler in recognising false readings
+- improve MA/MT/ML readings\n
+- do not create downloaded templates if there is a download error\n
+- can now add WiFis to adaptive GPS list without needing to save templates all the time
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.6.2:\n
+- improve MA/MT/ML readings\n
+- do not create downloaded templates if there is a download error\n
+- can now add WiFis to adaptive GPS list without needing to save templates all the time\n\n
 V2.5.6.1:\n
 - improvements in reconnecting to Zephyr monitor\n
 - improvements in music player handler in recognising false readings\n\n
