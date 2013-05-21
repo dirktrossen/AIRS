@@ -22,9 +22,11 @@ import java.util.Comparator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -168,6 +170,10 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        // now hook the button for own icon selection
 	        mood_iconown 	= (ImageView)findViewById(R.id.moodown_icon);
 	        mood_iconown.setOnClickListener(this);
+	        
+	        // now hook listener for mood selections
+	        IntentFilter intentFilter = new IntentFilter("com.airs.moodselected");
+	        registerReceiver(SystemReceiver, intentFilter);
 	    }
 
 	    @Override
@@ -186,7 +192,11 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    public void onDestroy() 
 	    {
 	    	int i;
-	    	
+
+	    	// unregister mood selection listener
+			unregisterReceiver(SystemReceiver);
+
+			// anything selected?
 	    	if (selected == true)
 	    	{
 				try
@@ -439,5 +449,78 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	  		  ImageView image;
 	  		 }
 	  	}
+	  	
+		private final BroadcastReceiver SystemReceiver = new BroadcastReceiver() 
+		{
+	        @Override
+	        public void onReceive(Context context, Intent intent) 
+	        {
+	            String action = intent.getAction();
+	            
+	            // if mood has been selected, signal to handler
+	            if (action.equals("com.airs.moodselected")) 
+	            {
+	            	// get mood from intent
+	            	String mood = intent.getStringExtra("Mood");
+	            	
+	            	if (mood.compareTo(getString(R.string.Very_Happy)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_very_happy);
+	            	if (mood.compareTo(getString(R.string.Happy)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_happy);
+	            	if (mood.compareTo(getString(R.string.Giggly)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_giggly);
+	            	if (mood.compareTo(getString(R.string.Feeling_Good)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_feeling_good);
+	            	if (mood.compareTo(getString(R.string.Positively_Excited)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_feeling_good);
+	            	if (mood.compareTo(getString(R.string.Confused)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_confused);
+	            	if (mood.compareTo(getString(R.string.Anxious)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_doubtful);
+	            	if (mood.compareTo(getString(R.string.Doubtful)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_doubtful);
+	            	if (mood.compareTo(getString(R.string.Not_Sure)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_not_sure);
+	            	if (mood.compareTo(getString(R.string.Upset)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_upset);
+	            	if (mood.compareTo(getString(R.string.Not_Happy)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_not_happy);
+	            	if (mood.compareTo(getString(R.string.Angry)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_angry);
+	            	if (mood.compareTo(getString(R.string.Annoyed)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_annoyed);
+	            	if (mood.compareTo(getString(R.string.Ashamed)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_ashamed);
+	            	if (mood.compareTo(getString(R.string.Embarrassed)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_embarassed);
+	            	if (mood.compareTo(getString(R.string.Surprised)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_surprised);
+	            	if (mood.compareTo(getString(R.string.Shocked)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_shocked);
+	            	if (mood.compareTo(getString(R.string.Worried)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_worried);
+	            	if (mood.compareTo(getString(R.string.Scared)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_scared);
+	            	if (mood.compareTo(getString(R.string.Bored)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_bored);
+	            	if (mood.compareTo(getString(R.string.Tired)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_tired);
+	            	if (mood.compareTo(getString(R.string.Sleepy)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_sleepy);
+	            	if (mood.compareTo(getString(R.string.Staring)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_staring);
+	            	if (mood.compareTo(getString(R.string.Sick)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_sick);
+	            	if (mood.compareTo(getString(R.string.Sad)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_sad);
+	            	if (mood.compareTo(getString(R.string.Very_Sad)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_very_sad);
+	            	if (mood.compareTo(getString(R.string.Disappointed)) == 0)
+	            		mood_iconown.setImageResource(R.drawable.mood_dissappointed);
+	            	
+					return;
+	            }
+	        }
+	    };
 }
 

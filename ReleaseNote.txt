@@ -1,3 +1,9 @@
+V2.5.6.3:
+- change mood icon in event annotation according to mood being chosen
+- add spotify tracks to MP/MA/MT sensors (no album information is given by Spotify!) - need to enable the AIRS notification service for this!
+- improved GPS handler
+- check GI/MW for being deleted in Storica and re-inserting table entries properly
+
 V2.5.6.2:
 - improve MA/MT/ML readings
 - do not create downloaded templates if there is a download error

@@ -98,7 +98,8 @@ public class MoodButton_iconselector extends Activity implements OnItemClickList
 	        addMoodIcon(getString(R.string.Sick), R.drawable.mood_sick);
 	        addMoodIcon(getString(R.string.Sad), R.drawable.mood_sad);
 	        addMoodIcon(getString(R.string.Very_Sad), R.drawable.mood_very_sad);
-	        addMoodIcon(getString(R.string.Disappointed), R.drawable.mood_dissappointed);	    }
+	        addMoodIcon(getString(R.string.Disappointed), R.drawable.mood_dissappointed);	    
+	    }
 
 	    @Override
 	    public synchronized void onRestart() 

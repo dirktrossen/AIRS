@@ -319,7 +319,7 @@
 <string name="WiFi_Interval_on">Abfrageintervall für WiFi Scans in Sekunden</string>
 <string name="Enable_Accessibility">Accessibility</string>
 <string name="Enable_Accessibility_on">Springt zu den Systemeinstellungen, um die Bedienungshilfen für AIRS einzuschalten. Dieser wird für IM Nachrichten benötigt.</string>
-<string name="accessibility_description">Bedienungshilfe für AIRS Aufzeichnungen mit Zugriff auf Google Talk und Skype Benachrichtigungen durch den NO Sensor.</string>
+<string name="accessibility_description">Bedienungshilfe für AIRS Aufzeichnungen mit Zugriff auf Google Talk und Skype Benachrichtigungen durch den NO Sensor. Spotify ist auch unterstützt durch die MP/MA/MT Sensoren.</string>
 
 <string name="Camera">Kamera</string>
 <string name="Camera_on">Beobachte Kameraverzeichnis</string>

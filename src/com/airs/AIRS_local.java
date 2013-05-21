@@ -34,6 +34,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
 import android.widget.ArrayAdapter;
@@ -105,11 +106,11 @@ public class AIRS_local extends Service
 	// private thread for reading the sensor handlers
 	 private class HandlerThread implements Runnable
 	 {
-		 	Sensor current;
-		 	String line;
-		 	String values_output = null;
-		 	long values_time;
-		 	int number_values = 0;
+		 	private Sensor current;
+		 	private String line;
+		 	private String values_output = null;
+		 	private long values_time, time_saved;
+		 	private int number_values = 0;
 		 	public Thread thread;
 		 	private boolean interrupted = false, pause = false;;
 		 	private boolean started = true;	
@@ -359,23 +360,70 @@ public class AIRS_local extends Service
 					    			{
 				    				    try
 				    				    {
+				    				    	// write into database
 				    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
 				    				    	
 				    				    	// write sensor value in table for faster retrieval later!
 				    				    	if (started == true)
 				    				    	{
+				    				    		// save time of writing
+				    				    		time_saved = System.currentTimeMillis();
+
+				    				    		// try to enter into database
 				    				    		try
 				    				    		{
-				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
 				    				    		}
 				    				    		catch(Exception e)
 				    				    		{
 				    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
 				    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
-				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "')");
+				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
 				    				    		}
+				    				    		
 				    				    		started = false;
 				    				    	}
+				    				    	else
+				    				    		// if it's GPS or media watcher, data can be removed in Storica, so check if it's still there!
+				    				    		if(current.Symbol.compareTo("GI") == 0 || current.Symbol.compareTo("MW") == 0)
+					    				    	{
+				    				    			try
+				    				    			{
+				    				    				// try to retrieve the previously saved entry
+						    							String query = new String("SELECT Symbol from 'airs_sensors_used' WHERE Timestamp = " + String.valueOf(time_saved) + " AND Symbol=" + current.Symbol);
+						    							Cursor values = airs_storage.rawQuery(query, null);
+	
+						    							// has old entry been deleted -> then save again
+						    							if (values.getCount() == 0)
+						    							{
+							    				    		time_saved = System.currentTimeMillis();
+
+							    				    		try
+							    				    		{
+							    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
+							    				    		}
+							    				    		catch(Exception e)
+							    				    		{
+							    				    		}
+						    							}
+						    							
+						    							// and return memory
+						    							values.close();
+				    				    			}
+					    				    		catch(Exception e)
+					    				    		{
+						    				    		time_saved = System.currentTimeMillis();
+
+						    				    		try
+						    				    		{
+						    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
+						    				    		}
+						    				    		catch(Exception ex)
+						    				    		{
+						    				    		}
+					    				    		}
+					    				    		
+					    				    	}
 				    				    }
 				    					catch(Exception e) 
 				    					{    					

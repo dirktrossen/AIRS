@@ -91,7 +91,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
     private ProgressBar pb;
     private Dialog dialog;
 	private int selected_text = -1;
-	private String[] remote_templates = {"Scenario_1", "Scenario_2", "Scenario_3"};
+	private String[] remote_templates = {"Scenario_1", "Scenario_2", "Scenario_3", "PH2013"};
 	private int remote_file, downloaded_file;
 
 	protected void sleep(long millis) 

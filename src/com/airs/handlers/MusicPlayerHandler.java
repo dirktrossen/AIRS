@@ -302,7 +302,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
         	{
 	        	music_semaphore.release();			// release semaphore
 	        	artist_semaphore.release();			// release semaphore
-	        	album_semaphore.release();			// release semaphore
+        		album_semaphore.release();			// release semaphore
 	        	track_semaphore.release();			// release semaphore
         	}
         }

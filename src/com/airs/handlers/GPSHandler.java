@@ -356,29 +356,14 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
 					return null;
 				}
-				// at least one value different than old one?
-				if (Longitude != oldLongitude || Latitude != oldLatitude || Altitude != oldAltitude)
-				{
-					GPSreadings = new StringBuffer(sensor);
-					GPSreadings.append(Double.toString(Longitude) + ":" + Double.toString(Latitude) + ":" + Double.toString(Altitude));
-					
-					oldLongitude 	= Longitude;
-					oldLatitude 	= Latitude;
-					oldAltitude 	= Altitude;					
-				}
-				break;
+				GPSreadings = new StringBuffer(sensor);
+				GPSreadings.append(Double.toString(Longitude) + ":" + Double.toString(Latitude) + ":" + Double.toString(Altitude));
+				return GPSreadings.toString().getBytes().clone();
 			default:
-				GPSreadings = null;
 				break;
 			}
 
-			// any GPS readings?
-			if (GPSreadings != null)
-			{
-				reading = GPSreadings.toString().getBytes();
-				GPSreadings = null;					
-				return reading;
-			}
+			// anything read?
 			if (read == true)
 			{
 				reading = new byte[6];
@@ -388,7 +373,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 				reading[3] = (byte)((value>>16) & 0xff);
 				reading[4] = (byte)((value>>8) & 0xff);
 				reading[5] = (byte)(value & 0xff);
-				return reading;
+				return reading.clone();
 			}
 		}
 		catch(Exception e)
@@ -562,6 +547,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 			// get current timestamp
         	long newTime = System.currentTimeMillis();
         	float elapsed;
+        	boolean changed = false;
         	
         	if (location != null)
         	{
@@ -584,18 +570,52 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 					Longitude 	= location.getLongitude();
 					Latitude 	= location.getLatitude();
 					Altitude 	= location.getAltitude();
-					if (location.hasSpeed())
-						Speed		= (double)location.getSpeed();
-					if (location.hasBearing())
-						Bearing		= (double)location.getBearing();
 					
-					// now release the semaphores
-					longitude_semaphore.release(); 
-					latitude_semaphore.release(); 
-					altitude_semaphore.release(); 
-					speed_semaphore.release(); 
-					bearing_semaphore.release(); 
-					full_semaphore.release(); 
+					// don't do anything if we get a null reading for some reason
+					if (Longitude == 0.0f && Latitude == 0.0f)
+						return;
+					
+					// any speed information?
+					if (location.hasSpeed())
+					{
+						Speed		= (double)location.getSpeed();
+						speed_semaphore.release(); 
+					}
+
+					// any bearing information?
+					if (location.hasBearing())
+					{
+						Bearing		= (double)location.getBearing();
+						bearing_semaphore.release();
+					}
+					
+					// at least one value different than old one?
+					if (Longitude != oldLongitude)
+					{
+						oldLongitude 	= Longitude;
+						longitude_semaphore.release(); 
+						changed = true;
+					}
+					
+					// at least one value different than old one?
+					if (Latitude != oldLatitude)
+					{
+						oldLatitude 	= Latitude;
+						latitude_semaphore.release(); 
+						changed = true;
+					}
+					
+					// at least one value different than old one?
+					if (Altitude != oldAltitude)
+					{
+						oldAltitude 	= Altitude;	
+						altitude_semaphore.release(); 
+						changed = true;
+					}
+				
+					// has at least one changed ?
+					if (changed == true)
+						full_semaphore.release(); 
 					
 					// save current location for later
 					oldLocation = location;

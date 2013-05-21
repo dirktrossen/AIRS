@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, Dirk Trossen, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -23,6 +23,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 public class NotificationHandlerService extends AccessibilityService
@@ -32,12 +33,12 @@ public class NotificationHandlerService extends AccessibilityService
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) 
 	{
-		System.out.println("AIRS:NotificationAccessibility: Got event = " + String.valueOf(event.getEventType()));
+		Log.v("AIRS", "NotificationAccessibility: Got event = " + String.valueOf(event.getEventType()));
 	    if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) 
 	    {
 	    	// get notification shown
 	    	Notification notification = (Notification)event.getParcelableData();
-			System.out.println("AIRS:NotificationAccessibility: Got event");
+			Log.v("AIRS", "AIRS:NotificationAccessibility: Got event for package " + event.getPackageName().toString());
 	    	
 	    	// now parse the specific packages we support
 	    	// start with GTalk
@@ -56,6 +57,28 @@ public class NotificationHandlerService extends AccessibilityService
 				Intent intent = new Intent("com.airs.accessibility");
 				intent.putExtra("NotifyText", "skype::Message from " + notification.tickerText);		
 				sendBroadcast(intent);		    	
+	    	}
+	    	// anything from Spotify?
+	    	if (event.getPackageName().toString().compareTo("com.spotify.mobile.android.ui") == 0)
+	    	{
+		        // now broadcast the capturing of the accessibility service to the handler
+	    		Log.v("Notification", "Spotify : " + notification.tickerText);
+	    		
+	    		// anything delivered?
+	    		if (notification.tickerText != null)
+	    		{
+	    			// split information in tokens
+	    			String tokens[] = notification.tickerText.toString().split(" - ");
+	    			
+	    			// signal as play state changed event
+					Intent intent = new Intent("com.android.music.playstatechanged");
+					
+					// sorry, it only provides artist and track
+					intent.putExtra("artist", tokens[1]);							
+					intent.putExtra("track", tokens[0]);		
+					intent.putExtra("album", "");		
+					sendBroadcast(intent);		    	
+	    		}				
 	    	}
 	    }
 	}
@@ -106,7 +129,7 @@ public class NotificationHandlerService extends AccessibilityService
             	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
             	    info.notificationTimeout = 100;
             	    info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
-            	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.gsf" };
+            	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.gsf", "com.spotify.mobile.android.ui"};
             	    setServiceInfo(info);
             	    
             	    started = true;

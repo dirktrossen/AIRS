@@ -320,7 +320,7 @@
 <string name="WiFi_Interval_on">Poll interval for WiFi scanning in seconds</string>
 <string name="Enable_Accessibility">Enable Accessibility</string>
 <string name="Enable_Accessibility_on">Jumps to System settings to enable the accessibility service required for capturing the IM notifications.</string>
-<string name="accessibility_description">Accessbility service for AIRS local sensing, providing access to the Google Talk and Skype notifications through the NO sensor.</string>
+<string name="accessibility_description">Accessibility service for AIRS local sensing, providing access to the Google Talk and Skype notifications through the NO sensor. It also supports Spotify song changes through the MP/MA/MT sensors.</string>
 
 <string name="Camera">Camera</string>
 <string name="Camera_on">Watch camera folder</string>
@@ -393,14 +393,20 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- improve MA/MT/ML readings\n
-- do not create downloaded templates if there is a download error\n
-- can now add WiFis to adaptive GPS list without needing to save templates all the time
+- change mood icon in event annotation according to mood being chosen\n
+- add spotify tracks to MP/MA/MT sensors (no album information is given by Spotify!) - need to enable the AIRS notification service!\n
+- improved GPS handler\n
+- check GI/MW for being deleted in Storica and re-inserting table entries properly
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.6.3:
+- change mood icon in event annotation according to mood being chosen\n
+- add spotify tracks to MP/MA/MT sensors (no album information is given by Spotify!) - need to enable the AIRS notification service!\n
+- improved GPS handler\n
+- check GI/MW for being deleted in Storica and re-inserting table entries properly\n\n
 V2.5.6.2:\n
 - improve MA/MT/ML readings\n
 - do not create downloaded templates if there is a download error\n
