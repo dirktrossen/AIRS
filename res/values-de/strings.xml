@@ -177,9 +177,9 @@
 <string name="MediaWatcherHandlerUI_description">Beobachtet verschiedene Mediumverzeichnisse, wie für Kamera, Musik, &#8230;</string>
 <string name="MediaWatcherHandlerUI_about">Beobachtet verschiedene Mediumverzeichnisse.\n\nKamera, Musik, und andere Verzeichnisse kann bzl. dem Erstellen von neuen Dateien beobachtet werden (wie z.B. bei dem Knipsen eines Bildes).\nUm den richtigen Kamerapfad einzustellen, gehe in die Galerie und zeige ein Bild an dass Du geknipst hast. Dann zeige die \'Details\' an und schaue nach dem \'Pfad\' Eintrag. Wähle jetzt den gesamten Pfad (ohne den Dateinamen) für den Eintrag des Kamerapfades!</string>
 
-<string name="NotificationHandlerUI_name">IM Benachrichtigungen</string>
-<string name="NotificationHandlerUI_description">Zeichnet Benachrichtigungen von Instant Messaging Programmen auf (momentan nur Skype und Google Talk)</string>
-<string name="NotificationHandlerUI_about">Zeichnet Benachrichtigungen von Instant Messaging Programmen auf.\n\nMomentan, nur Skype und Google Talk werden unterstützt. Skype gibt nur den Namen Deines Kontakts an, während Google Talk den Namen und die Nachricht aufzeichnet.\nDer Sensor ist als sog. Accessibility Dienst implementiert. Daher musst Du diesen Dienst separat einschalten in den Systemeinstellungen von Android (der Entrag in den Einstellungen hier wird Dich automatisch zu den Systemeinstellungen führen).</string>
+<string name="NotificationHandlerUI_name">IM/Spotify Benachrichtigungen</string>
+<string name="NotificationHandlerUI_description">Zeichnet Benachrichtigungen von Instant Messaging Programmen (momentan nur Skype und Google Talk) udn Spotify auf</string>
+<string name="NotificationHandlerUI_about">Zeichnet Benachrichtigungen von Instant Messaging Programmen auf.\n\nMomentan, nur Skype und Google Talk werden unterstützt. Skype gibt nur den Namen Deines Kontakts an, während Google Talk den Namen und die Nachricht aufzeichnet\nSpotify unterstützt die Aufzeichung von Song und Artist (keine Albuminformationen werden unterstützt).\nDer Sensor ist als sog. Accessibility Dienst implementiert. Daher musst Du diesen Dienst separat einschalten in den Systemeinstellungen von Android (der Entrag in den Einstellungen hier wird Dich automatisch zu den Systemeinstellungen führen).</string>
 
 <!-- buttons and other UI elements -->
 <string name="Backup">Sichern</string>

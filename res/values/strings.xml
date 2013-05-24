@@ -178,9 +178,9 @@
 <string name="MediaWatcherHandlerUI_description">Watch various media folder such as camera, music, &#8230;</string>
 <string name="MediaWatcherHandlerUI_about">Watches various media-related folders.\n\nCamera, music and other folders can be watched with respect to creating new files, such as when taking a picture.\nFor setting the right camera folders, go into the Gallery application, display any recent picture you have taken, display the \'Details\' and look for the \'Path\' entry. Select the entire path (before the actual filename) as the path for the camera folder!</string>
 
-<string name="NotificationHandlerUI_name">IM Notifications</string>
-<string name="NotificationHandlerUI_description">Records notifications from IM programs (currently Skype and Google Talk)</string>
-<string name="NotificationHandlerUI_about">Captures notifications from certain IM programs.\n\nCurrently, Skype and Google Talk are supported. Skype only provides the name of the person you are chatting with, while Google Talk provides name and message.\nThe sensor is implemented as a so-called Accessibility service and you need to enable its usage in the system settings (which the settings entry will lead you to).</string>
+<string name="NotificationHandlerUI_name">IM/Spotify Notifications</string>
+<string name="NotificationHandlerUI_description">Records notifications from IM programs (currently Skype and Google Talk) and Spotify</string>
+<string name="NotificationHandlerUI_about">Captures notifications from certain IM programs as well as from Spotify.\n\nCurrently, Skype and Google Talk are supported. Skype only provides the name of the person you are chatting with, while Google Talk provides name and message.\nSpotify information is recorded as track and artist (album information is not provided by Spotify).\nThe sensor is implemented as a so-called Accessibility service and you need to enable its usage in the system settings (which the settings entry will lead you to).</string>
 
 <!-- buttons and other UI elements -->
 <string name="Backup">Backup</string>
@@ -393,15 +393,19 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
+- addressed wrong location reading at (-1,-1) in GPS handler when starting in adaptive GPS mode\n
+- removed CAMERA permission (since IH sensor is not supported anymore)\n
 - change mood icon in event annotation according to mood being chosen\n
 - add spotify tracks to MP/MA/MT sensors (no album information is given by Spotify!) - need to enable the AIRS notification service!\n
-- improved GPS handler\n
 - check GI/MW for being deleted in Storica and re-inserting table entries properly
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.6.4:\n
+- addressed wrong location reading at (-1,-1) in GPS handler when starting in adaptive GPS mode\n
+- removed CAMERA permission (since IH sensor is not supported anymore)\n\n
 V2.5.6.3:
 - change mood icon in event annotation according to mood being chosen\n
 - add spotify tracks to MP/MA/MT sensors (no album information is given by Spotify!) - need to enable the AIRS notification service!\n

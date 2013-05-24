@@ -26,6 +26,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
@@ -56,8 +57,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
     private long agpsForce;
     private boolean agps_download = false;
 	private String[] adaptiveWifis;
-	private boolean  adaptiveWifi = false;
-	private boolean  nearby = false;
+	private boolean  adaptiveWifi = false, nearby = false;
 	private Thread runnable;
 	// for GPS
 	private LocationManager manager;
@@ -114,6 +114,18 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	        agps_download = true;
 		}
 
+		// need to start GPS?
+		if (startedGPS == false && nearby == false)
+		{
+			// send message to handler thread to start GPS
+	        Message msg = mHandler.obtainMessage(INIT_GPS);
+	        mHandler.sendMessage(msg);	 
+	        
+	        // wait until done
+	        while (startedGPS == false)
+	        	sleep(100);
+		}
+
 		// need to start the adaptive WiFi thread?
 		if (adaptiveWifi == true && runnable == null)
 		{
@@ -121,18 +133,6 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 			runnable.start();
 		}
 
-		// has GPS been started?
-		if (startedGPS == false && nearby == false)
-		{
-			// send message to handler thread to start GPS
-	        Message msg = mHandler.obtainMessage(INIT_GPS);
-	        mHandler.sendMessage(msg);	
-	        // wait for starting GPS
-	        while (startedGPS == false)
-	        	sleep(100);
-		}
-
-		
 		// acquire data and send out
 		if (enableGPS == true)
 			return GPSReading(sensor);
@@ -305,7 +305,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 				{
 					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
 					return null;
-				}
+				}				
 				value = (int)(Longitude * 100000);
 				read = true;
 				break;
@@ -316,6 +316,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
 					return null;
 				}
+				
 				value = (int)(Latitude * 100000);
 				read = true;
 				break;
@@ -326,6 +327,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 					SensorRepository.setSensorStatus(sensor, Sensor.SENSOR_SUSPEND, "adaptive GPS", Thread.currentThread());
 					return null;
 				}
+				
 				value = (int)(Altitude * 10);
 				read = true;
 				break;
@@ -433,20 +435,25 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 							// is device near a WiFi that is selected for suppressing GPS?
 							if (found == true)
 							{
-								// signal that we are nearby
 								nearby = true;
+								
 								// if GPS is started, stop it
 								if (startedGPS == true)
+								{
 									mHandler.sendMessage(mHandler.obtainMessage(KILL_GPS));
 
-								startedGPS = false;
-								// now release the semaphores to return the Acquire() threads
-								longitude_semaphore.release(); 
-								latitude_semaphore.release(); 
-								altitude_semaphore.release(); 
-								speed_semaphore.release(); 
-								bearing_semaphore.release(); 
-								full_semaphore.release(); 
+									startedGPS = false;
+									
+									// now release the semaphores to return the Acquire() threads
+									longitude_semaphore.release(); 
+									latitude_semaphore.release(); 
+									altitude_semaphore.release(); 
+									speed_semaphore.release(); 
+									bearing_semaphore.release(); 
+									full_semaphore.release(); 
+									
+									Log.e("Storica", "Found nearby wifi");
+								}								
 							}
 							else	// signal that we are not nearby anything -> GPS will start at the next round again
 							{
@@ -455,6 +462,8 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 								if (startedGPS == false)
 								{
 									mHandler.sendMessage(mHandler.obtainMessage(INIT_GPS));	
+									
+									startedGPS = true;
 							
 									SensorRepository.setSensorStatus("GO", Sensor.SENSOR_VALID, null, null);
 									SensorRepository.setSensorStatus("GL", Sensor.SENSOR_VALID, null, null);
@@ -463,13 +472,15 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 									SensorRepository.setSensorStatus("GC", Sensor.SENSOR_VALID, null, null);
 									SensorRepository.setSensorStatus("GI", Sensor.SENSOR_VALID, null, null);
 									
-									// arm semaphores
+									// re-arm semaphores
 									longitude_semaphore.tryAcquire(); 
 									latitude_semaphore.tryAcquire(); 
 									altitude_semaphore.tryAcquire(); 
-									bearing_semaphore.tryAcquire(); 
 									speed_semaphore.tryAcquire(); 
+									bearing_semaphore.tryAcquire(); 
 									full_semaphore.tryAcquire(); 
+									
+									Log.e("Storica", "Did not find nearby wifi");
 								}							
 							}
 						}
@@ -548,7 +559,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
         	long newTime = System.currentTimeMillis();
         	float elapsed;
         	boolean changed = false;
-        	
+        	        	
         	if (location != null)
         	{
         		// is there an old location?
