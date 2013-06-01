@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2008-2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -38,17 +39,21 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	public static final int INIT_ORIENTATION 	= 3;
 	public static final int CLOSE_ORIENTATION 	= 4;
 	public static final int INIT_PRESSURE 		= 5;
+	public static final int INIT_TEMPERATURE	= 6;
+	public static final int INIT_HUMIDITY 		= 7;
 
 	private Context nors;
 	private boolean sensor_enable = false;
-	private boolean startedOrientation = false, startedLight = false, startedProximity = false, startedPressure = false;
+	private boolean startedOrientation = false, startedLight = false, startedProximity = false, startedPressure = false, startedTemperature = false, startedHumidity = false;
 	private SensorManager sensorManager;
-	private android.hardware.Sensor Orientation, Proximity, Light, Pressure;
+	private android.hardware.Sensor Orientation, Proximity, Light, Pressure, Temperature, Humidity;
 	// polltime for sensor
 	private int polltime = 10000, polltime2 = 10000, polltime3 = 10000;
 	// sensor values
-	private float azimuth, roll, pitch, proximity, light, pressure;
-	private float azimuth_old, roll_old, pitch_old, proximity_old, light_old, pressure_old;
+	private float azimuth, roll, pitch, proximity, light, pressure, temperature, humidity;
+	private float azimuth_old, roll_old, pitch_old, proximity_old, light_old, pressure_old, temperature_old, humidity_old;
+	private Semaphore humidity_semaphore 	= new Semaphore(1);
+	private Semaphore temperature_semaphore = new Semaphore(1);
 	private Semaphore pressure_semaphore 	= new Semaphore(1);
 	private Semaphore light_semaphore 		= new Semaphore(1);
 	private Semaphore proximity_semaphore 	= new Semaphore(1);
@@ -261,7 +266,57 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// now toggle event listener off
 			        Message msg = mHandler.obtainMessage(INIT_PRESSURE);
 			        mHandler.sendMessage(msg);						
-				}				
+				}	
+			
+			if (read == false)
+				if (sensor.equals("HU") == true)
+				{					
+					// has Pressure been started?
+					if (startedHumidity == false)
+					{
+						humidity_semaphore.drainPermits();
+						// send message to handler thread to start pressure
+				        Message msg = mHandler.obtainMessage(INIT_HUMIDITY);
+				        mHandler.sendMessage(msg);	
+					}
+
+					wait(humidity_semaphore); 
+					if (humidity != humidity_old)
+					{
+						read = true;
+						value = (int)(humidity*10);
+						humidity_old = humidity;
+					}
+					
+					// now toggle event listener off
+			        Message msg = mHandler.obtainMessage(INIT_HUMIDITY);
+			        mHandler.sendMessage(msg);						
+				}	
+			
+			if (read == false)
+				if (sensor.equals("TM") == true)
+				{					
+					// has Pressure been started?
+					if (startedTemperature == false)
+					{
+						temperature_semaphore.drainPermits();
+						// send message to handler thread to start pressure
+				        Message msg = mHandler.obtainMessage(INIT_TEMPERATURE);
+				        mHandler.sendMessage(msg);	
+					}
+
+					wait(temperature_semaphore); 
+					if (temperature != temperature_old)
+					{
+						read = true;
+						value = (int)(temperature*10);
+						temperature_old = temperature;
+					}
+					
+					// now toggle event listener off
+			        Message msg = mHandler.obtainMessage(INIT_TEMPERATURE);
+			        mHandler.sendMessage(msg);						
+				}	
 		}
 		
 		// anything to report?
@@ -308,6 +363,12 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		if (sensor.equals("PU") == true)
 			return "The current pressure is " + String.valueOf(pressure) + " hPa!";
 
+		if (sensor.equals("TM") == true)
+			return "The current temperature is " + String.valueOf(temperature) + " C!";
+
+		if (sensor.equals("HU") == true)
+			return "The current rel. humidity is " + String.valueOf(humidity) + "%!";
+
 		return null;		
 	}
 	
@@ -335,6 +396,12 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		
 		if (sensor.equals("PU") == true)
 			History.timelineView(nors, "Pressure [hPa]", "PU");
+
+		if (sensor.equals("TM") == true)
+			History.timelineView(nors, "Temperature [C]", "TM");
+
+		if (sensor.equals("HU") == true)
+			History.timelineView(nors, "rel. Humidity [%]", "HU");
 	}
 
 	
@@ -362,6 +429,10 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Ambient Light"), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		   if (Pressure != null)
 			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Ambient Pressure"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+		   if (Temperature != null)
+			   SensorRepository.insertSensor(new String("TM"), new String("C"), new String("Ambient Temperature"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+		   if (Humidity != null)
+			   SensorRepository.insertSensor(new String("HU"), new String("%"), new String("Ambient rel. Humidity"), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		}
 	}
 	
@@ -382,8 +453,12 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			Proximity 	= sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 			Light		= sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 			Pressure	= sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+			Temperature	= sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+			Humidity	= sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
 			sensor_enable = true;
 			// arm semaphores
+			wait(humidity_semaphore); 
+			wait(temperature_semaphore); 
 			wait(pressure_semaphore); 
 			wait(light_semaphore); 
 			wait(proximity_semaphore); 
@@ -401,6 +476,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	{
 		shutdown = true;
 		// release all semaphores for unlocking the Acquire() threads
+		humidity_semaphore.release();
+		temperature_semaphore.release();
 		pressure_semaphore.release();
 		light_semaphore.release();
 		proximity_semaphore.release();
@@ -408,7 +485,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		roll_semaphore.release();
 		pitch_semaphore.release();
 
-		if (startedLight == true || startedProximity == true || startedOrientation == true || startedPressure == true)
+		if (startedLight == true || startedProximity == true || startedOrientation == true || startedPressure == true || startedTemperature == true || startedHumidity == true)
 			sensorManager.unregisterListener(sensorlistener);	
 	}
 
@@ -425,6 +502,24 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
     	   
            switch (msg.what) 
            {
+           case INIT_HUMIDITY:
+        	   if (startedHumidity == false)
+        		   startedHumidity = sensorManager.registerListener(sensorlistener, Humidity, SensorManager.SENSOR_DELAY_NORMAL);
+        	   else
+        	   {
+        		   sensorManager.unregisterListener(sensorlistener, Humidity);
+        		   startedHumidity = false;
+        	   }
+	           break;  
+           case INIT_TEMPERATURE:
+        	   if (startedTemperature == false)
+        		   startedTemperature = sensorManager.registerListener(sensorlistener, Temperature, SensorManager.SENSOR_DELAY_NORMAL);
+        	   else
+        	   {
+        		   sensorManager.unregisterListener(sensorlistener, Temperature);
+        		   startedTemperature = false;
+        	   }
+	           break;  
            case INIT_PRESSURE:
         	   if (startedPressure == false)
         		   startedPressure = sensorManager.registerListener(sensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL);
@@ -503,6 +598,18 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 				 pressure=event.values[0];
 				 // now release the semaphores
 				 pressure_semaphore.release(); 
+    		}
+    		if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE)
+    		{
+				 temperature=event.values[0];
+				 // now release the semaphores
+				 temperature_semaphore.release(); 
+    		}
+    		if (event.sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY)
+    		{
+				 humidity=event.values[0];
+				 // now release the semaphores
+				 humidity_semaphore.release(); 
     		}
        	}
 

@@ -64,6 +64,17 @@
 <string name="OK">OK</string>
 <string name="Cancel">Cancel</string>
 <string name="Select">Select</string>
+<string name="Getting_Started">Getting Started</string>
+<string name="Getting_Started2">For local recording:\n
+- press \'Download\' for retrieving templates from our server\n
+- select \'Scenario_1\' for lifelogging settings\n
+- press \'Shortcut\' to place a shortcut on your launcher homescreen\n
+- place AIRS event and mood widgets on your homescreen for annotations\n
+- adjust settings as you like, e.g., adding WiFi hotspots to your adaptive GPS list!\n
+- start \'AIRS local\' recording from your launcher screen with the created shortcut!\n
+- for more information on recording, see http://tecvis.co.uk/software/storica/tips-for-recording\n\n
+For remote recording, download the AIRS application server (see on our websute) and read the AIRS online manual through the options menu\n
+</string>
 
 <string name="Cannot_backup">Cannot backup database while AIRS is running!</string>
 <string name="Backup_Recordings">Backup Recordings</string>
@@ -139,6 +150,7 @@
 <string name="Select_Sensors">Select Sensors</string>
 <string name="Select_Sensors2">Select which sensors you would like to record</string>
 <string name="AIRS_mood_selection2">Last: </string>
+<string name="Recorded_shared_text">Successfully recorded your shared text!</string>
 
 <!-- handler UIs -->
  
@@ -393,16 +405,20 @@
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- addressed wrong location reading at (-1,-1) in GPS handler when starting in adaptive GPS mode\n
-- removed CAMERA permission (since IH sensor is not supported anymore)\n
-- change mood icon in event annotation according to mood being chosen\n
-- add spotify tracks to MP/MA/MT sensors (no album information is given by Spotify!) - need to enable the AIRS notification service!\n
-- check GI/MW for being deleted in Storica and re-inserting table entries properly
+- added ET sensor for sharing text data to AIRS (such as links from your browser) as an annotation\n
+- added TM (ambient temperature) and HU (ambient humidity) sensors for those phones that support it (Galaxy S4 should) although I could not test it!\n
+- adjusted weather API to new URL\n
+- added Getting Started dialog for first time instructions
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.7:\n
+- added ET sensor for sharing text data to AIRS (such as links from your browser) as an annotation\n
+- added TM (ambient temperature) and HU (ambient humidity) sensors for those phones that support it (Galaxy S4 should) although I could not test it!\n
+- adjusted weather API to new URL\n
+- added Getting Started dialog for first time instructions\n\n
 V2.5.6.4:\n
 - addressed wrong location reading at (-1,-1) in GPS handler when starting in adaptive GPS mode\n
 - removed CAMERA permission (since IH sensor is not supported anymore)\n\n

@@ -437,9 +437,11 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 							{
 								nearby = true;
 								
-								// if GPS is started, stop it
-								if (startedGPS == true)
+								// if GPS is started or about to get started, stop it
+								if (startedGPS == true || mHandler.hasMessages(INIT_GPS) == true)
 								{
+									mHandler.removeMessages(INIT_GPS);
+									
 									mHandler.sendMessage(mHandler.obtainMessage(KILL_GPS));
 
 									startedGPS = false;
@@ -459,8 +461,10 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 							{
 								nearby = false;
 								
-								if (startedGPS == false)
+								if (startedGPS == false || mHandler.hasMessages(KILL_GPS) == true)
 								{
+									mHandler.removeMessages(KILL_GPS);
+
 									mHandler.sendMessage(mHandler.obtainMessage(INIT_GPS));	
 									
 									startedGPS = true;

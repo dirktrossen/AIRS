@@ -63,7 +63,17 @@
 <string name="OK">OK</string>
 <string name="Cancel">Abbruch</string>
 <string name="Select">Wähle</string>
-
+<string name="Getting_Started">Anfangen</string>
+<string name="Getting_Started2">Lokale Aufnahmen:\n
+- drücke \'Herunterladen\', um Muster von unserem Server herunterzuladen\n
+- wähle \'Scenario_1\' für Lifelogging Einstellungen\n
+- drücke \'Shortcut\', um einen Shortcut auf dem Hauptbildschirm zu erstellen\n
+- plaziere die AIRS Anmerkungen und Stimmungswidgets auf dem Hauptbildschirm für Anmerkungen\n
+- ändere gegenenfalls Einstellungen wie z.B. WiFi Namen zur Liste der adaptiven GPS Einstellungen hinzuzufügen!\n
+- starte AIRS lokale Aufzeichnungen vom Hauptbildschirm mit dem erzeugten Shortcutsymbol!\n
+- für mehr Informationen, siehe http://tecvis.co.uk/software/storica/tips-for-recording\n\n
+Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf unsere Website) und lese das AIRS Manual durch das Optionsmenü\n
+</string>
 <string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
 <string name="Backup_Recordings">Sichere Aufnahmen</string>
 <string name="Starting_backup">Starte Sicherung</string>
@@ -138,6 +148,7 @@
 <string name="Select_Sensors">Wähle Sensoren</string>
 <string name="Select_Sensors2">Wähle die Sensoren aus, die Du aufzeichnen willst</string>
 <string name="AIRS_mood_selection2">Letzte: </string>
+<string name="Recorded_shared_text">Text wurde erfolgreich aufgezeichnet!</string>
 
 <!-- handler UIs -->
  

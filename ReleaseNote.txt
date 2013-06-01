@@ -1,3 +1,9 @@
+V2.5.7:
+- added ET sensor for sharing text data to AIRS (such as links from your browser) as an annotation
+- added TM (ambient temperature) and HU (ambient humidity) sensors for those phones that support it (Galaxy S4 should) although I could not test it!
+- adjusted weather API to new URL
+- added Getting Started dialog for first time instructions
+
 V2.5.6.4:
 - addressed wrong location reading at (-1,-1) in GPS handler when starting in adaptive GPS mode
 - removed CAMERA permission (since IH sensor is not supported anymore)

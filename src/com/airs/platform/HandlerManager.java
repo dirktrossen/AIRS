@@ -1,6 +1,7 @@
 /*
 Copyright (C) 2005-2006 Nokia Corporation
 Copyright (C) 2008-2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -34,8 +35,8 @@ import com.airs.handlers.*;
 public class HandlerManager 
 {
     // currently we have maximal 3 handlers
-    static public Handler handlers[] = new Handler[20];
-    public final static int max_handlers = 20;
+    public final static int max_handlers = 24;
+    static public Handler handlers[] = new Handler[max_handlers];
     static int inst_handlers = 0; 
     static private SharedPreferences settings;
     static private Editor editor;
@@ -67,6 +68,7 @@ public class HandlerManager
 	   handlers[inst_handlers++]  = (Handler)new WifiHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new CellHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new EventButtonHandler(nors);
+	   handlers[inst_handlers++]  = (Handler)new EventTextHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new MoodButtonHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new AudioHandler(nors);
 	   handlers[inst_handlers++]  = (Handler)new HeartMonitorHandler(nors);

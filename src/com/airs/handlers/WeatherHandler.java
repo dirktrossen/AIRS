@@ -368,7 +368,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 					{
 						// request update for that long,lat pair!
 	//			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
-			            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
+	//		            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
+			            URL url = new URL("http://api.worldweatheronline.com/free/v1/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=st4dghppmrfbtcrhwggn76u8");
 			            // 51914540,900690");
 	
 			            /* Parse the xml-data from our URL. */

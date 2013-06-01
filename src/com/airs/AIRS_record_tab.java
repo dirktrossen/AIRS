@@ -44,6 +44,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -195,6 +198,35 @@ public class AIRS_record_tab extends Activity implements OnClickListener
     		       });
     		AlertDialog alert = builder.create();
     		alert.show();
+		}
+		
+		// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
+		if (settings.getBoolean("AIRS_local::first_start", false) == false)
+		{
+		    SpannableString s = new SpannableString(getString(R.string.Getting_Started2));
+		    Linkify.addLinks(s, Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS);
+
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage(s)
+    			   .setTitle(getString(R.string.Getting_Started))
+    		       .setCancelable(false)
+    		       .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		        	    // clear persistent flag
+    			           	Editor editor = settings.edit();
+    			           	editor.putBoolean("AIRS_local::first_start", true);
+    		                // finally commit to storing values!!
+    		                editor.commit();
+    		                dialog.dismiss();
+    		           }
+    		       });
+    		AlertDialog alert = builder.create();
+    		alert.show();
+    		
+    		// Make the textview clickable. Must be called after show()
+    	    ((TextView)alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 		}
 		
         // check if app has been updated
@@ -517,7 +549,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		    		           {
 			    		           	long synctime;
 			    		    	    int version, i; 
-			    		    	    boolean tables, tables2;
+			    		    	    boolean tables, tables2, first_start;
 			    		    	    String music, storedWifis;
 			    		    	    String dirPath;
 			    		            File shortcutFile;
@@ -538,6 +570,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   	        version = settings.getInt("Version", 0);	
 				    		   	        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
 				    		   	        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
+				    			        first_start = settings.getBoolean("AIRS_local::first_start", false);
 				    			        music = settings.getString("MusicPlayerHandler::Music", "");
 				    					storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
 
@@ -580,6 +613,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   			editor.putInt("Version", version);
 				    		   			editor.putBoolean("AIRS_local::TablesExists", tables);
 				    		   			editor.putBoolean("AIRS_local::Tables2Exists", tables2);
+				    					editor.putBoolean("AIRS_local::first_start", first_start);
 				    					editor.putString("MusicPlayerHandler::Music", music);
 				    					editor.putString("LocationHandler::AdaptiveGPS_WiFis", storedWifis);
 
