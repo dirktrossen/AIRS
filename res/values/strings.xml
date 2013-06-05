@@ -66,8 +66,7 @@
 <string name="Select">Select</string>
 <string name="Getting_Started">Getting Started</string>
 <string name="Getting_Started2">For local recording:\n
-- press \'Download\' for retrieving templates from our server\n
-- select \'Scenario_1\' for lifelogging settings\n
+- select \'Lifelogging\' for lifelogging settings\n
 - press \'Shortcut\' to place a shortcut on your launcher homescreen\n
 - place AIRS event and mood widgets on your homescreen for annotations\n
 - adjust settings as you like, e.g., adding WiFi hotspots to your adaptive GPS list!\n
@@ -405,15 +404,15 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- added ET sensor for sharing text data to AIRS (such as links from your browser) as an annotation\n
-- added TM (ambient temperature) and HU (ambient humidity) sensors for those phones that support it (Galaxy S4 should) although I could not test it!\n
-- adjusted weather API to new URL\n
-- added Getting Started dialog for first time instructions
+- add lifelogging template upon first start and updated the getting started instruction! There is no need anymore to download from our server - a default template is right there!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.7.1:\n
+- add lifelogging template upon first start\n
+- updated getting started instructions\n\n
 V2.5.7:\n
 - added ET sensor for sharing text data to AIRS (such as links from your browser) as an annotation\n
 - added TM (ambient temperature) and HU (ambient humidity) sensors for those phones that support it (Galaxy S4 should) although I could not test it!\n

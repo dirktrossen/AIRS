@@ -51,7 +51,7 @@ public class AIRS_shortcut extends Activity
 		   Intent intent= getIntent();
 		   long synctime;
 		   int version, i;
-		   boolean tables, tables2, first_start;
+		   boolean tables, tables2, first_start, copy_template;
 		   String music, storedWifis;
 		   
 	        // Set up the window layout
@@ -103,6 +103,7 @@ public class AIRS_shortcut extends Activity
 		        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
 		        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);
 		        first_start = settings.getBoolean("AIRS_local::first_start", false);
+		        copy_template = settings.getBoolean("AIRS_local::copy_template", false);
 		        music = settings.getString("MusicPlayerHandler::Music", "");
 				storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
 
@@ -164,6 +165,7 @@ public class AIRS_shortcut extends Activity
 				editor.putBoolean("AIRS_local::TablesExists", tables);
 				editor.putBoolean("AIRS_local::Tables2Exists", tables2);
 				editor.putBoolean("AIRS_local::first_start", first_start);
+				editor.putBoolean("AIRS_local::copy_template", copy_template);
 				editor.putString("MusicPlayerHandler::Music", music);
 				editor.putString("LocationHandler::AdaptiveGPS_WiFis", storedWifis);
 				

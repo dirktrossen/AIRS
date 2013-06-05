@@ -47,6 +47,7 @@ import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -155,7 +156,45 @@ public class AIRS_record_tab extends Activity implements OnClickListener
         download_button = (Button)findViewById(R.id.templates_download);
         download_button.setOnClickListener(this);	
                 
-        // get template entries
+        // copy default template 
+		if (settings.getBoolean("AIRS_local::copy_template", false) == false)
+		{
+			try
+			{
+		        File external_storage = getExternalFilesDir(null);
+		        if (external_storage != null)
+		        {
+	            	String dirPath = external_storage.getAbsolutePath() + "/" + "templates";
+	            	File shortcutPath = new File(dirPath);
+	            	if (!shortcutPath.exists())
+	            		shortcutPath.mkdirs();
+
+					// copy default template		
+	                InputStream src = getAssets().open("Lifelogging");
+					FileOutputStream dst = new FileOutputStream(new File(dirPath, "Lifelogging"));
+
+					int copy;
+					do
+					{
+						copy = src.read();
+						if (copy != -1)
+							dst.write(copy);
+					}while(copy != -1);
+	                src.close();
+	                dst.close();	 	                
+		        }
+			}
+			catch(Exception e)
+			{
+				Log.e("AIRS", e.toString());
+			}
+			// clear persistent flag
+           	Editor editor = settings.edit();
+           	editor.putBoolean("AIRS_local::copy_template", true);
+            // finally commit to storing values!!
+            editor.commit();           
+		}
+		// ... and then get template entries
         gatherFiles();            
 
 	    // start service and connect to it -> then discover the sensors
@@ -200,7 +239,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
     		alert.show();
 		}
 		
-		// check if persistent flag is running, indicating the AIRS has been running (and would re-start if continuing)
+		// check if first start in order to show 'Getting Started' dialog
 		if (settings.getBoolean("AIRS_local::first_start", false) == false)
 		{
 		    SpannableString s = new SpannableString(getString(R.string.Getting_Started2));
@@ -228,7 +267,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
     		// Make the textview clickable. Must be called after show()
     	    ((TextView)alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 		}
-		
+
         // check if app has been updated
         try
         {
@@ -549,7 +588,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		    		           {
 			    		           	long synctime;
 			    		    	    int version, i; 
-			    		    	    boolean tables, tables2, first_start;
+			    		    	    boolean tables, tables2, first_start, copy_template;
 			    		    	    String music, storedWifis;
 			    		    	    String dirPath;
 			    		            File shortcutFile;
@@ -571,6 +610,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   	        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
 				    		   	        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
 				    			        first_start = settings.getBoolean("AIRS_local::first_start", false);
+				    			        copy_template = settings.getBoolean("AIRS_local::copy_template", false);
 				    			        music = settings.getString("MusicPlayerHandler::Music", "");
 				    					storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
 
@@ -614,6 +654,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		   			editor.putBoolean("AIRS_local::TablesExists", tables);
 				    		   			editor.putBoolean("AIRS_local::Tables2Exists", tables2);
 				    					editor.putBoolean("AIRS_local::first_start", first_start);
+				    					editor.putBoolean("AIRS_local::copy_template", copy_template);
 				    					editor.putString("MusicPlayerHandler::Music", music);
 				    					editor.putString("LocationHandler::AdaptiveGPS_WiFis", storedWifis);
 

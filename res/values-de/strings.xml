@@ -65,8 +65,7 @@
 <string name="Select">Wähle</string>
 <string name="Getting_Started">Anfangen</string>
 <string name="Getting_Started2">Lokale Aufnahmen:\n
-- drücke \'Herunterladen\', um Muster von unserem Server herunterzuladen\n
-- wähle \'Scenario_1\' für Lifelogging Einstellungen\n
+- wähle \'Lifelogging\' für Lifelogging Einstellungen\n
 - drücke \'Shortcut\', um einen Shortcut auf dem Hauptbildschirm zu erstellen\n
 - plaziere die AIRS Anmerkungen und Stimmungswidgets auf dem Hauptbildschirm für Anmerkungen\n
 - ändere gegenenfalls Einstellungen wie z.B. WiFi Namen zur Liste der adaptiven GPS Einstellungen hinzuzufügen!\n

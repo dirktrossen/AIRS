@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+<string name="CalendarHandler::Calendar_names"></string>
+<boolean name="MediaWatcherHandler::Music" value="true" />
+<string name="AIRS_local::GS">On</string>
+<string name="EventButtonHandler::Event38">writing paper</string>
+<long name="SyncTimestamp" value="1369292391198" />
+<string name="EventButtonHandler::Event37">working</string>
+<string name="EventButtonHandler::Event39">writing proposal</string>
+<string name="AIRS_local::HP">On</string>
+<string name="WeatherHandler::WeatherPoll">30</string>
+<boolean name="AIRS_local::Tables2Exists" value="false" />
+<string name="HeartMonitorHandler::Timewindow">10</string>
+<string name="AIRS_local::HL">On</string>
+<string name="AIRS_local::Pi">Off</string>
+<string name="AIRS_local::HI">On</string>
+<boolean name="ProximityHandler::BTONAsk" value="false" />
+<string name="MusicPlayerHandler::Music">Coldplay:X&amp;Y:The Hardest Part</string>
+<boolean name="Lights" value="true" />
+<string name="AIRS_local::IC">On</string>
+<string name="AIRS_local::PU">On</string>
+<string name="AIRS_local::PS">Off</string>
+<boolean name="MediaWatcherHandler::Videos" value="true" />
+<string name="IPStore">127.0.0.1</string>
+<string name="AIRS_local::AF">Off</string>
+<string name="AudioHandler::AA_adjust">0</string>
+<boolean name="LocalStore" value="true" />
+<string name="AIRS_local::PR">Off</string>
+<string name="AIRS_local::HS">On</string>
+<string name="LocationHandler::WifiPoll">120</string>
+<boolean name="Wakeup" value="false" />
+<string name="AIRS_local::IH">On</string>
+<boolean name="localDisplay" value="true" />
+<string name="MediaWatcherHandler::PicturesDirectory">/sdcard/Pictures</string>
+<string name="AIRS_local::WM">Off</string>
+<boolean name="LocationHandler::UseWifi" value="false" />
+<string name="LightCode">0000ff</string>
+<string name="AIRS_local::WI">On</string>
+<string name="AIRS_local::WF">Off</string>
+<string name="AIRS_local::WC">Off</string>
+<string name="AIRS_local::OC">On</string>
+<string name="Reminder">30</string>
+<string name="AudioHandler::SamplingRate">8000</string>
+<boolean name="AIRS_local::running" value="false" />
+<boolean name="MediaWatcherHandler::Camera" value="true" />
+<boolean name="MediaWatcherHandler::Pictures" value="true" />
+<string name="AIRS_local::WS">Off</string>
+<long name="AIRS_local::time_started" value="1365599353633" />
+<string name="AIRS_local::GA">Off</string>
+<string name="AIRS_local::VI">On</string>
+<boolean name="LocationHandler::WIFISleep" value="false" />
+<string name="BeaconHandler::Poll">30</string>
+<string name="AIRS_local::VF">Off</string>
+<string name="AIRS_local::NO">On</string>
+<string name="AIRS_local::VH">Off</string>
+<string name="LocationHandler::AdaptiveGPS_WiFis"></string>
+<string name="AIRS_local::VC">Off</string>
+<string name="AIRS_local::GL">Off</string>
+<string name="MoodHandler::Mood">Feeling Good</string>
+<string name="SensorHistory">50</string>
+<string name="AIRS_local::GO">Off</string>
+<string name="HeartMonitorHandler::BTStore">00:07:80:5A:3B:73</string>
+<boolean name="MoodHandler::Mood_own" value="false" />
+<string name="AIRS_local::VW">Off</string>
+<string name="AIRS_local::GC">On</string>
+<string name="AIRS_local::GI">On</string>
+<string name="AIRS_local::VT">On</string>
+<string name="EventButtonHandler::EventSelected">having coffee</string>
+<string name="AIRS_local::CR">On</string>
+<string name="SystemSensorsHandler::SystemPoll">15</string>
+<string name="AIRS_local::CS">On</string>
+<string name="LocationHandler::LocationPoll">30</string>
+<boolean name="showRemote" value="false" />
+<boolean name="BeaconHandler::BTON" value="false" />
+<string name="AIRS_local::ML">Off</string>
+<boolean name="SyncRemoveFiles" value="true" />
+<string name="AIRS_local::MO">On</string>
+<string name="AIRS_local::MP">On</string>
+<string name="AIRS_local::MT">Off</string>
+<string name="AIRS_local::MW">On</string>
+<boolean name="ProximityHandler::BTON" value="false" />
+<string name="AIRS_local::MA">Off</string>
+<int name="Version" value="150" />
+<string name="ProximityHandler::SamplingRate">8000</string>
+<string name="AIRS_local::LI">On</string>
+<boolean name="Vibrator" value="false" />
+<string name="AIRS_local::Sc">On</string>
+<string name="AIRS_local::TE">Off</string>
+<string name="AIRS_local::TF">On</string>
+<boolean name="ProximityHandler::BTdiscoverable" value="true" />
+<string name="LocationHandler::LocationUpdate">100</string>
+<string name="ProximityHandler::samplingpoll">5</string>
+<string name="AIRS_local::TR">On</string>
+<string name="AIRS_local::EB">On</string>
+<string name="AIRS_local::TV">Off</string>
+<int name="ZoomLevel" value="20" />
+<string name="EventButtonHandler::Event14">listening to presentation</string>
+<string name="EventButtonHandler::Event13">listening to New Year's concert</string>
+<string name="EventButtonHandler::MaxEventDescriptions">40</string>
+<string name="EventButtonHandler::Event12">leaving</string>
+<string name="EventButtonHandler::Event11">intermezzo</string>
+<string name="EventButtonHandler::Event10">in the taxi</string>
+<string name="EventButtonHandler::Event15">meeting</string>
+<string name="AIRS_local::Rd">Off</string>
+<string name="EventButtonHandler::Event16">on a call</string>
+<string name="EventButtonHandler::Event17">paper reviewing</string>
+<string name="EventWidgetBackground">880000ff</string>
+<string name="EventButtonHandler::Event18">paper writing</string>
+<string name="EventButtonHandler::Event19">playing pool</string>
+<string name="AIRS_local::AS">On</string>
+<string name="AudioHandler::samplingpoll">10</string>
+<string name="RandomHandler::SamplingRate">5</string>
+<string name="EventButtonHandler::Event3">having a tea</string>
+<string name="EventButtonHandler::Event2">having a muffin</string>
+<string name="PhoneSensorsHandler::ProximityPoll">10</string>
+<string name="EventButtonHandler::Event1">having a cake</string>
+<string name="AIRS_local::SS">On</string>
+<string name="AIRS_local::SR">On</string>
+<string name="EventButtonHandler::Event0">having a bite</string>
+<string name="AIRS_local::Ro">Off</string>
+<string name="AIRS_local::BD">Off</string>
+<string name="AIRS_local::Rm">On</string>
+<boolean name="MediaWatcherHandler::CameraDefault" value="true" />
+<set name="CalendarHandler::Calendars">
+<string>3</string>
+<string>1</string>
+<string>4</string>
+</set>
+<string name="EventButtonHandler::Event9">having lunch</string>
+<string name="EventButtonHandler::Event21">programming</string>
+<string name="EventButtonHandler::Event8">having dinner</string>
+<string name="EventButtonHandler::Event20">presentation</string>
+<string name="EventButtonHandler::Event7">having coffee</string>
+<string name="EventButtonHandler::Event23">riding the bus</string>
+<string name="EventButtonHandler::Event22">relaxing</string>
+<string name="EventButtonHandler::Event6">having breakfast</string>
+<string name="EventButtonHandler::Event5">having an ice cream</string>
+<string name="EventButtonHandler::Event25">sightseeing</string>
+<string name="EventButtonHandler::Event24">shopping</string>
+<string name="EventButtonHandler::Event4">having an amazing cheese cake</string>
+<string name="RecordingSize">4096</string>
+<string name="MediaWatcherHandler::CameraDirectory">/storage/sdcard0/DCIM/Camera</string>
+<string name="EventButtonHandler::Event28">unclogged sink</string>
+<string name="EventButtonHandler::Event29">Waiting</string>
+<string name="AIRS_local::BP">On</string>
+<string name="AIRS_local::BM">On</string>
+<string name="EventButtonHandler::Event26">sweating</string>
+<string name="AIRS_local::BN">Off</string>
+<string name="EventButtonHandler::Event27">traveling</string>
+<boolean name="LocationHandler::AdaptiveGPS" value="true" />
+<string name="BatteryKill">0</string>
+<boolean name="LocationHandler::GPSON" value="true" />
+<string name="AIRS_local::BT">Off</string>
+<string name="WeatherHandler::LocationUpdate">0</string>
+<string name="AIRS_local::BV">Off</string>
+<string name="AIRS_local::Az">Off</string>
+<string name="MediaWatcherHandler::MusicDirectory">/sdcard/Music</string>
+<string name="AIRS_local::CA">On</string>
+<boolean name="HeartMonitorHandler::BTON" value="true" />
+<string name="AIRS_local::Bc">On</string>
+<string name="AIRS_local::CD">Off</string>
+<string name="IPPort">9000</string>
+<string name="AIRS_local::CC">On</string>
+<string name="LocationHandler::AGPSForce">0</string>
+<string name="AIRS_local::Ba">On</string>
+<string name="AIRS_local::CB">Off</string>
+<boolean name="AIRS_local::TablesExists" value="true" />
+<string name="AIRS_local::CI">Off</string>
+<boolean name="EventButtonHandler::SortAnnotations" value="true" />
+<string name="EventButtonHandler::Event32">waiting for the theatre to start</string>
+<string name="EventButtonHandler::Event31">waiting for the ferry</string>
+<string name="PhoneSensorsHandler::OrientationPoll">5</string>
+<string name="EventButtonHandler::Event30">waiting for concert to start</string>
+<string name="EventButtonHandler::Event36">wondering</string>
+<string name="PhoneSensorsHandler::EnvironmentalPoll">10</string>
+<string name="AIRS_local::CL">Off</string>
+<string name="EventButtonHandler::Event35">watching TV</string>
+<string name="MediaWatcherHandler::VideosDirectory">/sdcard/Videos</string>
+<string name="EventButtonHandler::Event34">walking</string>
+<string name="EventButtonHandler::Event33">waiting for the vaporetto</string>
+</map>

@@ -1,3 +1,7 @@
+V2.5.7.1:
+- add lifelogging template upon first start
+- updated getting started instructions
+
 V2.5.7:
 - added ET sensor for sharing text data to AIRS (such as links from your browser) as an annotation
 - added TM (ambient temperature) and HU (ambient humidity) sensors for those phones that support it (Galaxy S4 should) although I could not test it!
