@@ -1,3 +1,9 @@
+V2.5.7.2:
+- improve timeline view for teasing richer visualisations similar to those in Storica
+- add menu to rate AIRS in the market - please do!
+- improve situations where recordings cross midnight
+- improve multilingual support
+
 V2.5.7.1:
 - add lifelogging template upon first start
 - updated getting started instructions

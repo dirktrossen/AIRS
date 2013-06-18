@@ -1,73 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
-
-  This program is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as published by
-  the Free Software Foundation as version 2.1 of the License.
-
-  This program is distributed in the hope that it will be useful, but WITHOUT
-  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
-  License for more details.
-
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library; if not, write to the Free Software Foundation, Inc.,
-  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
- -->
- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:id="@+id/timeline_parent" >
 
-    <TextView
-        android:id="@+id/timeline_maxx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:gravity="center_vertical|right"
-        android:minWidth="75dip"
-        android:state_enabled="false"
-        android:text="-" />
-
-     <com.airs.TimelineView
+    <com.airs.TimelineView
         android:id="@+id/surfaceMeasure"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="1dip"
-        android:background="@drawable/timeline_border"
-        android:layout_alignBottom="@+id/timeline_miny"
+        android:layout_above="@+id/timeline_minx"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/timeline_maxy"/>
+        android:layout_alignParentRight="true"
+        android:layout_margin="1dip"
+        android:layout_toRightOf="@+id/timeline_maxy"
+        android:background="@drawable/timeline_border" />
     
-    <TextView
-        android:id="@+id/timeline_minx"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical|left"
-        android:layout_alignLeft="@+id/surfaceMeasure"
-        android:minWidth="75dip"
-        android:state_enabled="false"
-        android:text="-" />
-
     <TextView
         android:id="@+id/timeline_maxy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|right"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:gravity="right"
         android:text="-" />
 
     <TextView
         android:id="@+id/timeline_miny"
         android:layout_width="wrap_content"
-        android:gravity="center_vertical|right"
         android:layout_height="wrap_content"
         android:layout_above="@+id/timeline_minx"
+        android:layout_toLeftOf="@+id/surfaceMeasure"
         android:layout_alignParentLeft="true"
+        android:gravity="right"
+        android:text="-" />
+    
+    <TextView
+        android:id="@+id/timeline_maxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surfaceMeasure"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical|right"
+        android:state_enabled="false"
         android:text="-" />
 
+    <TextView
+        android:id="@+id/timeline_minx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/surfaceMeasure"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical|left"
+        android:state_enabled="false"
+        android:text="-" />
+        
+    <Button
+        android:id="@+id/timeline_backward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/timeline_minx"
+        android:layout_alignLeft="@+id/surfaceMeasure"
+        android:layout_alignRight="@+id/timeline_minx"
+        android:layout_alignTop="@+id/surfaceMeasure"
+        android:clickable="true"
+        android:textSize="24dp"
+        android:textColor="#ffffffff"
+        android:background="#22ffffff"
+        android:text="@string/previous_item" />
+
+    <Button
+        android:id="@+id/timeline_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/timeline_maxx"
+        android:layout_alignLeft="@+id/timeline_maxx"
+        android:layout_alignRight="@+id/surfaceMeasure"
+        android:layout_alignTop="@+id/surfaceMeasure"
+        android:clickable="true"
+        android:textSize="24dp"
+        android:textColor="#ffffffff"
+        android:background="#22ffffff"
+        android:text="@string/next_item" />
+
+    <ProgressBar
+        android:id="@+id/timeline_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:minHeight="24dip"
+        android:minWidth="24dp"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/timeline_select_maxx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surfaceMeasure"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="5dp"
+        android:layout_toLeftOf="@+id/timeline_maxx"
+        android:src="@android:drawable/ic_menu_manage" />
+
+    <ImageView
+        android:id="@+id/timeline_select_minx"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/surfaceMeasure"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/timeline_backward"
+        android:src="@android:drawable/ic_menu_manage" />
+    
 </RelativeLayout>

@@ -39,6 +39,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -377,6 +378,11 @@ public class AIRS_record_tab extends Activity implements OnClickListener
         case R.id.main_dbadmin:
         	intent = new Intent(this,AIRS_DBAdmin.class);
         	startActivity(intent);
+        	break;
+        case R.id.main_market:
+        	Intent market = new Intent(Intent.ACTION_VIEW);
+        	market.setData(Uri.parse("market://details?id=com.airs"));
+        	startActivity(market);        	
         	break;
         }
         return false;
@@ -957,18 +963,6 @@ public class AIRS_record_tab extends Activity implements OnClickListener
   				 }
   			 
   			 return -1;
-  		 }
-
-  		 public void set(int selected)
-  		 {
-  			 int i;
-  			 
-			 // set this button and reset all others
-  			 viewHolder.get(selected).checked.setChecked(true);
-
-			 for (i=0;i<ArrayList.size();i++)
-				 if (i!=selected)
-  					 viewHolder.get(i).checked.setChecked(false);  					
   		 }
 
   		 public View getView(int position, View convertView, ViewGroup parent) 

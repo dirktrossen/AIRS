@@ -60,7 +60,7 @@ public class AIRS_restore extends Activity
 		// check if persistent flag is running, indicating the AIRS has been running
 		if (settings.getBoolean("AIRS_local::running", false) == true)
 		{
-	  		Toast.makeText(getApplicationContext(), "Cannot restore database while AIRS is running!", Toast.LENGTH_LONG).show();
+	  		Toast.makeText(getApplicationContext(), getString(R.string.Cannot_restore), Toast.LENGTH_LONG).show();
 	  		finish();
 		}
 
@@ -73,11 +73,11 @@ public class AIRS_restore extends Activity
         mTitle = (TextView) findViewById(R.id.title_left_text);
         mTitle.setText(R.string.app_name);
         mTitle = (TextView) findViewById(R.id.title_right_text);
-        mTitle.setText("Backup Recordings");
+        mTitle.setText(getString(R.string.Backup_recordings));
 
         // get progress text view
         ProgressText = (TextView) findViewById(R.id.backuprestore_progresstext);
-        ProgressText.setText("Starting restore");
+        ProgressText.setText(getString(R.string.Starting_restore));
 
         new RestoreThread();
     }
@@ -116,7 +116,7 @@ public class AIRS_restore extends Activity
            switch (msg.what) 
            {
            case FINISH_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_restore), Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_restore2), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case FINISH2_ACTIVITY:

@@ -76,16 +76,19 @@ For remote recording, download the AIRS application server (see on our websute) 
 </string>
 
 <string name="Cannot_backup">Cannot backup database while AIRS is running!</string>
-<string name="Backup_Recordings">Backup Recordings</string>
-<string name="Starting_backup">Starting backup</string>
+<string name="Cannot_restore">Cannot restore database while AIRS is running!</string>
 <string name="Cannot_create_backup">Cannot create backup file (possible access error or external media does not exist)!</string>
 <string name="Finished_backup">Finished backup successfully!</string>
+<string name="Backup_recordings">Backup</string>
+<string name="Restore_recordings">Restore</string>
+<string name="Starting_backup">Starting backup</string>
+<string name="Starting_restore">Starting restore</string>
 <string name="Backup_status">Backup DB of size</string>
 <string name="Restore_status">Restore DB of size</string>
 <string name="Index_DB">Database Indexing</string>
 <string name="Index_DB_message">Indexing your database greatly improves the performance in retrieving values for visualisation but will increase the size of your database by about 60%! You only need to index once.\n\nDo you want to continue?</string>
 <string name="Cannot_index">Cannot index DB file (Possibly indexed already or possible access error or external media does not exist)!</string>
-<string name="Cannot_restore">Cannot restore DB file (Possible access error or external media does not exist)!</string>
+<string name="Cannot_restore2">Cannot restore DB file (Possible access error or external media does not exist)!</string>
 <string name="Finished_indexing">Finished indexing successfully!</string>
 <string name="Finished_restore">Finished restore successfully!</string>
 <string name="sensed">sensed</string>
@@ -150,6 +153,11 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Select_Sensors2">Select which sensors you would like to record</string>
 <string name="AIRS_mood_selection2">Last: </string>
 <string name="Recorded_shared_text">Successfully recorded your shared text!</string>
+<string name="previous_item">&lt;</string>
+<string name="next_item">&gt;</string>
+<string name="Timeline_Viewer3">Minimum Time</string>
+<string name="Timeline_Viewer4">Maximum Time</string>
+<string name="TimeFormat2">%H:%M:%S</string>
 
 <!-- handler UIs -->
  
@@ -214,6 +222,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Info">Info</string>
 <string name="DB_Admin">DB Admin</string>
 <string name="Manual">Manual</string>
+<string name="Rate">Rate AIRS</string>
 <string name="Map_View">Map View</string>
 <string name="Satellite_View">Satellite View</string>
 <string name="Toggle_Path">Toggle Path</string>
@@ -400,16 +409,24 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <!-- visualisation tab -->
 <string name="Get_storica">Get Storica!</string>
-<string name="Storica_description">In addition to the short-term visualisations in AIRS, you can process and visualise your AIRS data with engaging multimedia graphics, using our Storica app. Head over to the PlayStore and try it out!</string>
+<string name="Storica_description">In addition to the short-term visualisations in AIRS, you can process and visualise your AIRS data with engaging multimedia graphics, using our Storica app. Click on the image below to go to the Playstore!</string>
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- add lifelogging template upon first start and updated the getting started instruction! There is no need anymore to download from our server - a default template is right there!
+- improve timeline view for teasing richer visualisations similar to those in Storica\n
+- add menu to rate AIRS in the market - please do!\n
+- improve situations where recordings cross midnight\n
+- improve multilingual support
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.7.2:\n
+- improve timeline view for teasing richer visualisations similar to those in Storica\n
+- add menu to rate AIRS in the market - please do!\n
+- improve situations where recordings cross midnight\n
+- improve multilingual support\n\n
 V2.5.7.1:\n
 - add lifelogging template upon first start\n
 - updated getting started instructions\n\n

@@ -23,6 +23,9 @@
     <item android:id="@+id/main_about"
           android:icon="@android:drawable/ic_menu_help"
           android:title="@string/Help" />
+    <item android:id="@+id/main_market"
+          android:icon="@android:drawable/ic_menu_edit"
+          android:title="@string/Rate" />
     <item android:id="@+id/main_dbadmin"
           android:icon="@drawable/storage"
           android:title="@string/DB_Admin" />

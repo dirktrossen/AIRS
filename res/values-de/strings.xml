@@ -73,8 +73,12 @@
 - für mehr Informationen, siehe http://tecvis.co.uk/software/storica/tips-for-recording\n\n
 Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf unsere Website) und lese das AIRS Manual durch das Optionsmenü\n
 </string>
+
 <string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
-<string name="Backup_Recordings">Sichere Aufnahmen</string>
+<string name="Cannot_restore">Kann die Datenbank nicht wiederherstellen wenn AIRS läuft!</string>
+<string name="Backup_recordings">Sicherung</string>
+<string name="Restore_recordings">Wiederherstellen</string>
+<string name="Starting_restore">Starte Wiederherstellung</string>
 <string name="Starting_backup">Starte Sicherung</string>
 <string name="Cannot_create_backup">Kann Sicherungsdatei nicht erstellen (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
 <string name="Finished_backup">Sicherung erfolgreich beendet!</string>
@@ -83,7 +87,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Index_DB">Datenbankindizierung</string>
 <string name="Index_DB_message">Indizieren der Datenbank beschleunigt Visualisierungen gewaltig, wird allerdings die Größe um ca 60% erhöhen! Du brauchst nur einmal zu indizieren.\n\nMöchtest Du fortfahren?</string>
 <string name="Cannot_index">Kann DB nicht indizieren (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
-<string name="Cannot_restore">Kann DB nicht wiederherstellen (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
+<string name="Cannot_restore2">Kann DB nicht wiederherstellen (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
 <string name="Finished_indexing">Indizierung erfolgreich beendet!</string>
 <string name="Finished_restore">Wiederherstellen erfolgreich beendet!</string>
 <string name="sensed">aufgezeichnet</string>
@@ -148,6 +152,11 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Select_Sensors2">Wähle die Sensoren aus, die Du aufzeichnen willst</string>
 <string name="AIRS_mood_selection2">Letzte: </string>
 <string name="Recorded_shared_text">Text wurde erfolgreich aufgezeichnet!</string>
+<string name="previous_item">&lt;</string>
+<string name="next_item">&gt;</string>
+<string name="Timeline_Viewer3">Minimale Zeit</string>
+<string name="Timeline_Viewer4">Maximale Zeit</string>
+<string name="TimeFormat2">%H:%M:%S</string>
 
 <!-- handler UIs -->
  
@@ -212,6 +221,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Info">Info</string>
 <string name="DB_Admin">DB Admin</string>
 <string name="Manual">Anleitung</string>
+<string name="Rate">Bewerte AIRS</string>
 <string name="Map_View">Kartenanblick</string>
 <string name="Satellite_View">Satelittenanblick</string>
 <string name="Toggle_Path">Wechsle Pfad</string>
@@ -398,6 +408,6 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 
 <!-- visualisation tab -->
 <string name="Get_storica">Hole Dir Storica!</string>
-<string name="Storica_description">Zusätzlich zu den kurzzeitgen Visualisierungen in AIRS kannst Du Deine AIRS Aufnahmen auch mit engagierten Multimediagrafiken verarbeiten und anzeigen lassen. Dazu benötigst Du die Storica Anwendung - gehe zum Google PlayStore und lade sie runter!</string>
+<string name="Storica_description">Zusätzlich zu den kurzzeitgen Visualisierungen in AIRS kannst Du Deine AIRS Aufnahmen auch mit engagierten Multimediagrafiken verarbeiten und anzeigen lassen. Dazu benötigst Du die Storica Anwendung - drücke auf das Bild unten und lade es vom PlayStore!</string>
 
 </resources>

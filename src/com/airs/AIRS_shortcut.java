@@ -21,8 +21,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
-import com.airs.platform.HandlerManager;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;

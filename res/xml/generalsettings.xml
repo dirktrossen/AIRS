@@ -48,12 +48,6 @@
     	android:defaultValue="true" 
     	android:summaryOn="@string/Local_Storage_on" 
     	android:summaryOff="@string/Local_Storage_off"/>
-    <EditTextPreference
-        android:summary="@string/Sensor_History_on"
-        android:numeric="integer"
-        android:defaultValue="20"
-        android:title="@string/Sensor_History"
-        android:key="SensorHistory" android:name="@string/Sensor_History"/>
     <CheckBoxPreference 
     	android:enabled="true" 
     	android:title="@string/Wakeup" 

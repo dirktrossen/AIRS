@@ -360,15 +360,27 @@ public class AIRS_local extends Service
 					    			{
 				    				    try
 				    				    {
+				    				    	long timemilli = System.currentTimeMillis();
 				    				    	// write into database
-				    				    	execStorage(System.currentTimeMillis(), "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
+				    				    	execStorage(timemilli, "INSERT into airs_values (Timestamp, Symbol, Value) VALUES ("+ fileOut + ")");
 				    				    	
 				    				    	// write sensor value in table for faster retrieval later!
-				    				    	if (started == true)
+				    				    	if (started == true || timemilli > nextDay)
 				    				    	{
 				    				    		// save time of writing
-				    				    		time_saved = System.currentTimeMillis();
+				    				    		time_saved = timemilli;
 
+				    							// is the current data at the next day?
+				    							if (time_saved > nextDay)
+				    							{
+				    								 // get current day and set time to last millisecond of that day 
+				    						         Calendar cal = Calendar.getInstance();
+				    						         cal.set(Calendar.HOUR_OF_DAY, 23);
+				    						         cal.set(Calendar.MINUTE, 59);
+				    						         cal.set(Calendar.MILLISECOND, 999);
+				    						         nextDay = cal.getTimeInMillis();				    						         
+				    							}
+				    				    		
 				    				    		// try to enter into database
 				    				    		try
 				    				    		{
@@ -382,8 +394,8 @@ public class AIRS_local extends Service
 				    				    		}
 				    				    		
 				    				    		started = false;
-				    				    	}
-				    				    	else
+				    				    	 }
+				    				    	 else
 				    				    		// if it's GPS or media watcher, data can be removed in Storica, so check if it's still there!
 				    				    		if(current.Symbol.compareTo("GI") == 0 || current.Symbol.compareTo("MW") == 0)
 					    				    	{

@@ -73,11 +73,11 @@ public class AIRS_backup extends Activity
         mTitle = (TextView) findViewById(R.id.title_left_text);
         mTitle.setText(R.string.app_name);
         mTitle = (TextView) findViewById(R.id.title_right_text);
-        mTitle.setText("Backup Recordings");
+        mTitle.setText(getString(R.string.Backup_recordings));
 
         // get progress text view
         ProgressText = (TextView) findViewById(R.id.backuprestore_progresstext);
-        ProgressText.setText("Starting backup");
+        ProgressText.setText(getString(R.string.Starting_backup));
 
         new BackupThread();
     }
