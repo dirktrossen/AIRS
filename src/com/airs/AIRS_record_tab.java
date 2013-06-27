@@ -267,14 +267,9 @@ public class AIRS_record_tab extends Activity implements OnClickListener
     		
     		// Make the textview clickable. Must be called after show()
     	    ((TextView)alert.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-		}
-
-        // check if app has been updated
-        try
-        {
-        	// is stored version code different from the package's?
-	        if (this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode != settings.getInt("Version", 0))
-	        {
+    	    
+    	    try
+    	    {
 	        	// get editor for settings
 	        	Editor editor = settings.edit();
     			// put version code into store
@@ -282,14 +277,35 @@ public class AIRS_record_tab extends Activity implements OnClickListener
                 
                 // finally commit to storing values!!
                 editor.commit();
-                
-                // and now show what's new
-    			HandlerUIManager.AboutDialog(getString(R.string.WhatsNew2) , getString(R.string.WhatsNew));
+    	    }
+    	    catch(Exception e)
+    	    {	    	
+    	    }
+		}
+		else
+		{
+	        // check if app has been updated, assuming that it is not the first start
+	        try
+	        {
+	        	// is stored version code different from the package's?
+		        if (this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode != settings.getInt("Version", 0))
+		        {
+		        	// get editor for settings
+		        	Editor editor = settings.edit();
+	    			// put version code into store
+	                editor.putInt("Version", this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionCode);
+	                
+	                // finally commit to storing values!!
+	                editor.commit();
+	                
+	                // and now show what's new
+	    			HandlerUIManager.AboutDialog(getString(R.string.WhatsNew2) , getString(R.string.WhatsNew));
+		        }
 	        }
-        }
-        catch(Exception e)
-        {
-        }            
+	        catch(Exception e)
+	        {
+	        }  
+		}
     }
 
     @Override

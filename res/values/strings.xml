@@ -71,6 +71,7 @@
 - place AIRS event and mood widgets on your homescreen for annotations\n
 - adjust settings as you like, e.g., adding WiFi hotspots to your adaptive GPS list!\n
 - start \'AIRS local\' recording from your launcher screen with the created shortcut!\n
+- for more complex visualisations of your recordings, download our Storica app at http://play.google.com/store/apps/details?id=com.storica\n
 - for more information on recording, see http://tecvis.co.uk/software/storica/tips-for-recording\n\n
 For remote recording, download the AIRS application server (see on our websute) and read the AIRS online manual through the options menu\n
 </string>
@@ -125,6 +126,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="At_least_one_template">You need at least one template being saved AND selected from the list before you can create a shortcut!</string>
 <string name="At_least_one_template2">You need at least one template being saved AND selected from the list before you can delete a template!</string>
 <string name="Created_shortcut">Created AIRS shortcut on launcher homescreen!</string>
+<string name="Configured_airs">Created AIRS template and shortcut on launcher homescreen!</string>
 <string name="Load_template">Load Template</string>
 <string name="Load_template2">Loading the template will override the current settings!\nAre you sure?</string>
 <string name="Save_template">Filename to Save Settings as Template</string>
@@ -307,6 +309,9 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Enable_Heartmonitor">Enable Heartmonitor</string>
 <string name="Enable_Heartmonitor_on">Use heart monitor, attempting to connect at start of discovery</string>
 <string name="Enable_Heartmonitor_off">Do not use heartmonitor</string>
+<string name="Enable_QSensor">Enable Q Sensor</string>
+<string name="Enable_qsensor_on">Use Q sensor, attempting to connect at start of discovery</string>
+<string name="Enable_qsensor_off">Do not use Q sensor</string>
 <string name="Device_Selection">Device Selection</string>
 <string name="Device_Selection_on">Choose one of the possible devices to connect to. You first need to pair with the device in the BT system settings! Make sure the device is switched on when starting AIRS.</string>
 <string name="Device_Selection_title">Choose Device</string>
@@ -413,15 +418,18 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- improve timeline view for teasing richer visualisations similar to those in Storica\n
-- add menu to rate AIRS in the market - please do!\n
-- improve situations where recordings cross midnight\n
-- improve multilingual support
+- changed from old Google Talk to Hangout support in NO sensor\n
+- extended also map view to full day viewing\n
+- added support for automatically configuring AIRS from other apps
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.8:\n
+- changed from old Google Talk to Hangout support in NO sensor\n
+- extended also map view to full day viewing\n
+- added support for automatically configuring AIRS from other apps\n\n
 V2.5.7.2:\n
 - improve timeline view for teasing richer visualisations similar to those in Storica\n
 - add menu to rate AIRS in the market - please do!\n

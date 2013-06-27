@@ -1,3 +1,8 @@
+V2.5.8:
+- changed from old Google Talk to Hangout support in NO sensor
+- extended also map view to full day viewing
+- added support for automatically configuring AIRS from other apps
+
 V2.5.7.2:
 - improve timeline view for teasing richer visualisations similar to those in Storica
 - add menu to rate AIRS in the market - please do!

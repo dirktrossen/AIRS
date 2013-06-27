@@ -17,10 +17,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlerUIs;
 
 import java.util.List;
-import java.util.Set;
-
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;

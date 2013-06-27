@@ -42,7 +42,7 @@ public class NotificationHandlerService extends AccessibilityService
 	    	
 	    	// now parse the specific packages we support
 	    	// start with GTalk
-	    	if (event.getPackageName().toString().compareTo("com.google.android.gsf") == 0)
+	    	if (event.getPackageName().toString().compareTo("com.google.android.talk") == 0)
 	    	{
 		        // now broadcast the capturing of the accessibility service to the handler
 				Intent intent = new Intent("com.airs.accessibility");
@@ -129,7 +129,7 @@ public class NotificationHandlerService extends AccessibilityService
             	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
             	    info.notificationTimeout = 100;
             	    info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
-            	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.gsf", "com.spotify.mobile.android.ui"};
+            	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.talk", "com.spotify.mobile.android.ui"};
             	    setServiceInfo(info);
             	    
             	    started = true;

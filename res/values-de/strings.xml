@@ -70,6 +70,7 @@
 - plaziere die AIRS Anmerkungen und Stimmungswidgets auf dem Hauptbildschirm für Anmerkungen\n
 - ändere gegenenfalls Einstellungen wie z.B. WiFi Namen zur Liste der adaptiven GPS Einstellungen hinzuzufügen!\n
 - starte AIRS lokale Aufzeichnungen vom Hauptbildschirm mit dem erzeugten Shortcutsymbol!\n
+- für Visualisierungen der Aufzeichnungen, lade unsere Storica app herunter von http://play.google.com/store/apps/details?id=com.storica\n
 - für mehr Informationen, siehe http://tecvis.co.uk/software/storica/tips-for-recording\n\n
 Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf unsere Website) und lese das AIRS Manual durch das Optionsmenü\n
 </string>
@@ -124,6 +125,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="At_least_one_template">Du brauchst mindestens ein gespeichertes Muster, dass in der Liste angewählt ist, bevor Du einen Shortcut erstellen kannst!</string>
 <string name="At_least_one_template2">Du brauchst mindestens ein gespeichertes Muster, dass in der Liste angewählt ist, bevor Du einen Shortcut löschen kannst!</string>
 <string name="Created_shortcut">Habe einen AIRS Shortcut auf dem Heimbildschirm erstellt!</string>
+<string name="Configured_airs">Habe ein AIRS Muster und Shortcut auf dem Heimbildschirm erstellt!</string>
 <string name="Load_template">Lade Muster</string>
 <string name="Load_template2">Das Laden des Musters wird die momentanen Einstellungen überschreiben!\nBist Du sicher?</string>
 <string name="Save_template">Dateinamen um Muster zu speichern</string>
@@ -306,6 +308,9 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Enable_Heartmonitor">Benutzung des Pulsmonitors</string>
 <string name="Enable_Heartmonitor_on">Benutze Pulsmonitor mit dem Versuch beim AIRS Start zu verbinden</string>
 <string name="Enable_Heartmonitor_off">Benutze den Pulsmonitor nicht!</string>
+<string name="Enable_QSensor">Benutzung des Q Sensors</string>
+<string name="Enable_qsensor_on">Benutze Q Sensor mit dem Versuch beim AIRS Start zu verbinden</string>
+<string name="Enable_qsensor_off">Benutze den Pulsmonitor nicht!</string>
 <string name="Device_Selection">Geräteauswahl</string>
 <string name="Device_Selection_on">Wähle eines der möglichen Geräte, dass benutzt werden soll. Du musst mit dem Gerät zumindest einmal verbunden gewesen sein über die Systemeinstellungen! Stelle auch sicher, dass das Gerät eingeschaltet ist wenn Du die AIRS Aufnahmen startest.</string>
 <string name="Device_Selection_title">Wähle Gerät</string>
