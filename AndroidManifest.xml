@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.5.8" android:versionCode="154" android:sharedUserId="com.airs">
+      android:versionName="2.5.8.1" android:versionCode="155" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
    
@@ -71,7 +71,7 @@
      <activity android:name="AIRS_sensorselection" android:exported="false" android:label="@string/Sensor_Selection"></activity> 
      <activity android:name="Prefs" android:exported="false" android:label="@string/AIRS_Preferences"></activity>
      <activity android:name="AIRS_sync" android:exported="false" android:label="@string/main_Sync" android:configChanges="orientation|keyboardHidden"></activity>
-     <activity android:name="AIRS_configure_remote" android:exported="true" android:label="Configure..." android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_configure_remote" android:exported="true" android:label="@string/Configure_AIRS" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_backup" android:exported="false" android:label="@string/Backup" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_restore" android:exported="false" android:label="@string/Restore" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="AIRS_index" android:exported="false" android:label="@string/Index" android:configChanges="orientation|keyboardHidden"></activity>

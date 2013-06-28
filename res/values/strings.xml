@@ -127,6 +127,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="At_least_one_template2">You need at least one template being saved AND selected from the list before you can delete a template!</string>
 <string name="Created_shortcut">Created AIRS shortcut on launcher homescreen!</string>
 <string name="Configured_airs">Created AIRS template and shortcut on launcher homescreen!</string>
+<string name="Configure_AIRS">Configure AIRS...please wait</string>
 <string name="Load_template">Load Template</string>
 <string name="Load_template2">Loading the template will override the current settings!\nAre you sure?</string>
 <string name="Save_template">Filename to Save Settings as Template</string>
@@ -418,14 +419,16 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- changed from old Google Talk to Hangout support in NO sensor\n
-- extended also map view to full day viewing\n
-- added support for automatically configuring AIRS from other apps
+- bugfix in automatic configuration function\n
+- bugfix in shortcut creation
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.8.1:\n
+- bugfix in automatic configuration function\n
+- bugfix in shortcut creation\n\n
 V2.5.8:\n
 - changed from old Google Talk to Hangout support in NO sensor\n
 - extended also map view to full day viewing\n

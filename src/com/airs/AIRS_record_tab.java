@@ -65,6 +65,8 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.airs.helper.SafeCopyPreferences;
 import com.airs.helper.SerialPortLogger;
 
 public class AIRS_record_tab extends Activity implements OnClickListener
@@ -623,70 +625,8 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				    		       		dirPath = external_storage.getAbsolutePath() + "/" + "templates";
 		  	    		                shortcutFile = new File(dirPath, annotations.get(selected_text));
 			
-				    		   	        // get default preferences
-				    		   	        settings = PreferenceManager.getDefaultSharedPreferences(airs);
-				    		   	        
-				    		   	        // get values that should not be overwritten!
-				    		   	        synctime = settings.getLong("SyncTimestamp", 0);
-				    		   	        version = settings.getInt("Version", 0);	
-				    		   	        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
-				    		   	        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);	
-				    			        first_start = settings.getBoolean("AIRS_local::first_start", false);
-				    			        copy_template = settings.getBoolean("AIRS_local::copy_template", false);
-				    			        music = settings.getString("MusicPlayerHandler::Music", "");
-				    					storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
-
-				    		   	        // read all entries related to event annotations
-				    		   			int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
-				    		   			if (own_events<1)
-				    		   				own_events = 5;
-				    		   			if (own_events>50)
-				    		   				own_events = 50;
-			
-				    		   			String event_selected_entry = settings.getString("EventButtonHandler::EventSelected", "");
-				    		   			String[] event = new String[own_events];			
-				    		   			for (i=0;i<own_events;i++)
-				    		   				event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
-				    		   	        
-				    		           	File preferenceFile = new File(getFilesDir(), "../shared_prefs/com.airs_preferences.xml");
-			
-				    		           	// copy preference file if original preferences exist
-				    		           	if (shortcutFile.exists() == true)
-				    		           	{
-				    		   	            try
-				    		   	            {
-				    		   	                FileChannel src = new FileInputStream(shortcutFile).getChannel();
-				    		   	                FileChannel dst = new FileOutputStream(preferenceFile).getChannel();
-				    		   	                dst.transferFrom(src, 0, src.size());
-				    		   	                src.close();
-				    		   	                dst.close();		                
-				    		   	            }
-				    		   	            catch(Exception e)
-				    		   	            {
-				    		   	            }
-				    		           	}        		
-				    		   	        
-				    		   	        // get default preferences
-				    		   	        settings = PreferenceManager.getDefaultSharedPreferences(airs);
-				    		   			Editor editor = settings.edit();
-				    		   			
-				    		   			// write certain back in order for them to not be overwritten!
-				    		   			editor.putLong("SyncTimestamp", synctime);
-				    		   			editor.putInt("Version", version);
-				    		   			editor.putBoolean("AIRS_local::TablesExists", tables);
-				    		   			editor.putBoolean("AIRS_local::Tables2Exists", tables2);
-				    					editor.putBoolean("AIRS_local::first_start", first_start);
-				    					editor.putBoolean("AIRS_local::copy_template", copy_template);
-				    					editor.putString("MusicPlayerHandler::Music", music);
-				    					editor.putString("LocationHandler::AdaptiveGPS_WiFis", storedWifis);
-
-				    		   			// put back all entries related to event annotations
-				    		   			for (i=0;i<own_events;i++)
-				    		   				editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
-				    		   			editor.putString("EventButtonHandler::EventSelected", event_selected_entry);
-			
-				    		   			editor.commit();
-				    		   			
+		  	    		                SafeCopyPreferences.copyPreferences(airs, shortcutFile);
+		  	    		                
 				    		   			// notify user
 			    		              	Toast.makeText(getApplicationContext(), getString(R.string.Restored_settings) + " '" + annotations.get(selected_text) + "'", Toast.LENGTH_LONG).show();          
 			    		              	
@@ -767,7 +707,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
             	{
             		dialog.dismiss();
             		gatherFiles();
-            	}
+            	} 
             default:  
            	break;
            }

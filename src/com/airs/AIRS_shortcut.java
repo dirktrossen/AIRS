@@ -17,9 +17,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */package com.airs;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
+
+import com.airs.helper.SafeCopyPreferences;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -46,11 +45,7 @@ public class AIRS_shortcut extends Activity
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
-		   Intent intent= getIntent();
-		   long synctime;
-		   int version, i;
-		   boolean tables, tables2, first_start, copy_template;
-		   String music, storedWifis;
+		    Intent intent= getIntent();
 		   
 	        // Set up the window layout
 	        super.onCreate(savedInstanceState);
@@ -95,36 +90,9 @@ public class AIRS_shortcut extends Activity
 			}
 			else
 			{	        
-		        // get values that should not be overwritten!
-		        synctime = settings.getLong("SyncTimestamp", 0);
-		        version = settings.getInt("Version", 0);	
-		        tables = settings.getBoolean("AIRS_local::TablesExists", false);	
-		        tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);
-		        first_start = settings.getBoolean("AIRS_local::first_start", false);
-		        copy_template = settings.getBoolean("AIRS_local::copy_template", false);
-		        music = settings.getString("MusicPlayerHandler::Music", "");
-				storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
-
-		        // read all entries related to event annotations
-				int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
-				if (own_events<1)
-					own_events = 5;
-				if (own_events>50)
-					own_events = 50;
-	
-				String event_selected_entry = settings.getString("EventButtonHandler::EventSelected", "");
-				String[] event = new String[own_events];			
-				for (i=0;i<own_events;i++)
-					event[i]	= settings.getString("EventButtonHandler::Event"+Integer.toString(i), "");
-		        
 		        // get intent extras
 		        if ((preferences = intent.getStringExtra("preferences")) != null)
-		        {
-		        	File preferenceFile = new File(getFilesDir(), "../shared_prefs/com.airs_preferences.xml");
-		        	// if file does not exist use a path that is usually used by GalaxyS in 2.3!!!
-	            	if (preferenceFile.exists() == false)
-	            		preferenceFile = new File("/dbdata/databases/com.airs/shared_prefs/com.airs_preferences.xml");
-	
+		        {	
 		            File shortcutFile = new File(preferences);
 		            
 		            // get just the name of the preference template
@@ -132,19 +100,7 @@ public class AIRS_shortcut extends Activity
 	
 		        	// copy preference file if original preferences exist
 		        	if (shortcutFile.exists() == true)
-		        	{
-			            try
-			            {
-			                FileChannel src = new FileInputStream(shortcutFile).getChannel();
-			                FileChannel dst = new FileOutputStream(preferenceFile).getChannel();
-			                dst.transferFrom(src, 0, src.size());
-			                src.close();
-			                dst.close();		                
-			            }
-			            catch(Exception e)
-			            {
-			            }
-		        	}
+		        		SafeCopyPreferences.copyPreferences(this, shortcutFile);
 		        	else
 		        	{
 			     		Toast.makeText(getApplicationContext(), getString(R.string.Shortcut_not_found), Toast.LENGTH_LONG).show();
@@ -152,28 +108,6 @@ public class AIRS_shortcut extends Activity
 		        	}
 		        }
 		        
-		        settings = PreferenceManager.getDefaultSharedPreferences(this.getBaseContext());
-	
-		        // get default preferences
-				Editor editor = settings.edit();
-				
-				// write certain back in order for them to not be overwritten!
-				editor.putLong("SyncTimestamp", synctime);
-				editor.putInt("Version", version);
-				editor.putBoolean("AIRS_local::TablesExists", tables);
-				editor.putBoolean("AIRS_local::Tables2Exists", tables2);
-				editor.putBoolean("AIRS_local::first_start", first_start);
-				editor.putBoolean("AIRS_local::copy_template", copy_template);
-				editor.putString("MusicPlayerHandler::Music", music);
-				editor.putString("LocationHandler::AdaptiveGPS_WiFis", storedWifis);
-				
-				// put back all entries related to event annotations
-				for (i=0;i<own_events;i++)
-					editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
-				editor.putString("EventButtonHandler::EventSelected", event_selected_entry);
-	
-				editor.commit();
-				
 		        // start service and connect to it -> then discover the sensors
 		        startService(new Intent(this, AIRS_local.class));
 		        // bind to service

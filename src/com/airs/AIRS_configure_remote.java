@@ -18,8 +18,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import java.io.File;
 import java.io.FileOutputStream;
 
+import com.airs.helper.SafeCopyPreferences;
+
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,8 +44,7 @@ public class AIRS_configure_remote extends Activity
 	        Bundle bundle = getIntent().getExtras();
 	        template = bundle.getString("com.airs.template.name");
 	        template_text = bundle.getString("com.airs.template.text");
-	        
-	        
+	               
 	        // now create shortcut to new template
 			File external_storage = getExternalFilesDir(null);
      	   
@@ -52,21 +52,27 @@ public class AIRS_configure_remote extends Activity
 			{
 	    		// get current template file
 	        	dirPath = external_storage.getAbsolutePath() + "/" + "templates";
+            	File shortcutPath = new File(dirPath);
+            	if (!shortcutPath.exists())
+            		shortcutPath.mkdirs();
 	            shortcutFile = new File(dirPath, template);
 	            
 	            // now write text into file
 	            try
 	            {
-	                FileOutputStream fos = openFileOutput(shortcutFile.toString(), Context.MODE_PRIVATE);
-	                fos.write(template_text.getBytes());
-	                fos.close();
+					FileOutputStream dst = new FileOutputStream(shortcutFile);
+	                dst.write(template_text.getBytes());
+	                dst.close();	                
 	            }
                 catch (Exception e)
                 {
-                	Log.v("AIRS", "Cannot write template text into file!");
+                	Log.e("AIRS", "Cannot write template text into file!");
                 	finish();
                 }
-	            
+
+                // now copy template safely to preferences
+                SafeCopyPreferences.copyPreferences(this, shortcutFile);
+                
 	            // intent for starting AIRS
 	    	    Intent intent;
 	        	Intent shortcutIntent = new Intent(Intent.ACTION_MAIN); 
@@ -88,6 +94,9 @@ public class AIRS_configure_remote extends Activity
 	        	
 	           	Toast.makeText(getApplicationContext(), getString(R.string.Configured_airs), Toast.LENGTH_LONG).show();          
 			}
+			
+			// close activity again!
+			finish();
 	    }
 
 	    @Override

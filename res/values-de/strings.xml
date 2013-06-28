@@ -126,6 +126,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="At_least_one_template2">Du brauchst mindestens ein gespeichertes Muster, dass in der Liste angewählt ist, bevor Du einen Shortcut löschen kannst!</string>
 <string name="Created_shortcut">Habe einen AIRS Shortcut auf dem Heimbildschirm erstellt!</string>
 <string name="Configured_airs">Habe ein AIRS Muster und Shortcut auf dem Heimbildschirm erstellt!</string>
+<string name="Configure_AIRS">Konfiguriere AIRS...bitte warten</string>
 <string name="Load_template">Lade Muster</string>
 <string name="Load_template2">Das Laden des Musters wird die momentanen Einstellungen überschreiben!\nBist Du sicher?</string>
 <string name="Save_template">Dateinamen um Muster zu speichern</string>
