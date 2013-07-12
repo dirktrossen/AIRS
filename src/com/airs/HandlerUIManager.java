@@ -29,26 +29,25 @@ import com.airs.handlerUIs.*;
 import com.airs.helper.SerialPortLogger;
 
 /**
- * @author trossen
- * @date Mar 13, 2006
- * 
- * Purpose: initializes the handler UIs and stores them in static variable
- * later being used to point to in N_RSA_GW
+ * Initializes the handler UIs and stores them in static variable
+ * later being used to point to in the recording services
  */
 public class HandlerUIManager 
 {
-	// currently we have maximal 9 handlers
+	/**
+	 * array with HandlerUI references
+	 */
     static HandlerUI handlers[] = new HandlerUI[12];
     public final static int max_handlers = 12; 
     // preferences
     static private SharedPreferences settings;
     static private Context airs;
     
-	protected static void debug(String msg) 
-	{
-		SerialPortLogger.debug(msg);
-	}
-	
+    /**
+     * Create the HandlerUI class instances and places them in the static array
+     * @param activity Reference to the calling {@link android.app.Activity}
+     * @return true, if successful, false otherwise
+     */
 	static boolean createHandlerUIs(Context activity)
 	{
 		int index = 0;
@@ -76,7 +75,12 @@ public class HandlerUIManager
 	   return true;
 	}
 	
-	// read string from RMS for persistency
+	/**
+	 * read string from RMS for persistency
+	 * @param store String of the persistent field
+	 * @param defaultString Default value for the persistent field
+	 * @return String that has been read from the persistent field
+	 */
 	static public String readRMS(String store, String defaultString)
 	{
 		String value = null;
@@ -92,6 +96,11 @@ public class HandlerUIManager
 		return value;
 	}
 	
+	/**
+	 * Show About Dialog for other UIs
+	 * @param title Window title
+	 * @param text Text shown in the dialog box
+	 */
 	static public void AboutDialog(String title, String text)
 	{				
 		// Linkify the message

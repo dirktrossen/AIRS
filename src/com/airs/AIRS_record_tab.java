@@ -17,12 +17,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -69,13 +67,20 @@ import android.widget.Toast;
 import com.airs.helper.SafeCopyPreferences;
 import com.airs.helper.SerialPortLogger;
 
+/**
+ * Activity for the Record tab in the main UI, controlling the recording and managing the templates
+ *
+ * @see         AIRS_local
+ */
 public class AIRS_record_tab extends Activity implements OnClickListener
 {
     // handler for starting local AIRS
-	public static final int START_REMOTELY = 3;
-	public static final int UPDATE_DOWNLOAD = 1;
+	private static final int START_REMOTELY = 3;
+	private static final int UPDATE_DOWNLOAD = 1;
 
-	// expose template for other tabs
+	/**
+	 * expose template for other tabs
+	 */
 	public static String current_template = "";
 	
 	// Layout Views
@@ -101,19 +106,10 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 	private String[] remote_templates = {"Scenario_1", "Scenario_2", "Scenario_3", "PH2013"};
 	private int remote_file, downloaded_file;
 
-	protected void sleep(long millis) 
-	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
-	}
-
-    /** Called when the activity is first created. */
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         // Set up the window layout
@@ -310,7 +306,9 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		}
     }
 
-    @Override
+	/** Called when the activity is resumed. 
+     */
+	@Override
     public synchronized void onResume() 
     {
         super.onResume();
@@ -319,19 +317,25 @@ public class AIRS_record_tab extends Activity implements OnClickListener
         gatherFiles();        
     }
 
-    @Override
+	/** Called when the activity is paused. 
+     */
+	@Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
-    @Override
+	/** Called when the activity is stopped. 
+     */
+	@Override
     public void onStop() 
     {
         super.onStop();
     }
 
-    @Override
+	/** Called when the activity is destroyed. 
+     */
+	@Override
     public void onDestroy() 
     {
        super.onDestroy();
@@ -353,13 +357,19 @@ public class AIRS_record_tab extends Activity implements OnClickListener
        }
     }
     
-    @Override
+	/** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
     	super.onConfigurationChanged(newConfig);
     }
  
-    @Override
+	/** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
+	@Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
     	MenuInflater inflater;
@@ -370,7 +380,10 @@ public class AIRS_record_tab extends Activity implements OnClickListener
         return true;
     }
 
-    @Override
+	/** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
     	Intent intent;
@@ -406,7 +419,10 @@ public class AIRS_record_tab extends Activity implements OnClickListener
         return false;
     }
         
-    public void onClick(View v) 
+	/** Called when a button has been clicked on by the user
+     * @param v Reference to the {android.view.View} of the button
+     */
+	public void onClick(View v) 
     {
     	AlertDialog.Builder builder;
     	AlertDialog alert;
@@ -610,10 +626,6 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		    		       {
 		    		           public void onClick(DialogInterface dialog, int id) 
 		    		           {
-			    		           	long synctime;
-			    		    	    int version, i; 
-			    		    	    boolean tables, tables2, first_start, copy_template;
-			    		    	    String music, storedWifis;
 			    		    	    String dirPath;
 			    		            File shortcutFile;
 	
@@ -679,7 +691,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 	}
 
 	 // The Handler that gets information back from the other threads, starting the various services from the main thread
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -831,7 +843,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 	    }
     }
     
-    void showProgress(int max_files)
+    private void showProgress(int max_files)
     {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.downloadprogress);

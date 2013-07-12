@@ -1,6 +1,7 @@
 /*
 Copyright (C) 2004-2006 Nokia Corporation
 Copyright (C) 2008-2011, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -20,8 +21,6 @@ package com.airs;
 import java.util.*;
 import java.io.*;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -56,26 +55,32 @@ import com.airs.platform.Sensor;
 import com.airs.platform.SensorRepository;
 
 /**
- * @author trossen
- * @date April 28, 2006
- * 
- * Purpose: implements local application. In our case, it is a simple display of sensor data
+ * Class to implement the local recording
+ *
+ * @see AIRS_remote
+ * @see AIRS_record_tab
+ * @see android.app.Service
  */
-@TargetApi(11)
-@SuppressLint({ "NewApi", "NewApi", "NewApi", "NewApi", "NewApi", "NewApi" })
 public class AIRS_local extends Service
 {
 	// states for handler 
-	public static final int REFRESH_VALUES 		= 1;
-	public static final int SHOW_NOTIFICATION 	= 2;
-	public static final int BATTERY_KILL 		= 3;
-    public static final String LINE = "LINE";
-    public static final String TEXT = "TEXT";
+	private static final int REFRESH_VALUES 		= 1;
+	private static final int SHOW_NOTIFICATION 	= 2;
+	private static final int BATTERY_KILL 		= 3;
+    private static final String LINE = "LINE";
+    private static final String TEXT = "TEXT";
 
     public  boolean show_values=false;
     private HandlerThread[] threads = null;
     private int no_threads = 0;
+    /**
+     * Context of the main Service
+     * @see android.content.Context
+     */
     public  Context airs = null;
+    /**
+     * Template being used for starting the recording, if any used
+     */
     public  String template;
 	private int	no_values = 0;
     private boolean localStore_b;
@@ -91,8 +96,39 @@ public class AIRS_local extends Service
 	private BufferedOutputStream os2;
 	private int numberSensors = 0;
     private ListView sensors;
-    public boolean discovered = false, running = false, restarted = false, started = false, start = false, paused = false, registered = false;
+    /**
+     * Flag if discovery has been done
+     */
+    public boolean discovered = false;
+    /**
+     * Flag if AIRS is recording
+     */
+    public boolean running = false;
+    /**
+     * Flag if AIRS has been restarted
+     */
+    public boolean restarted = false;
+    /**
+     * Flag if AIRS has been started as a service already
+     */
+    public boolean started = false;
+    /**
+     * Flag that AIRS should be started initially
+     */
+    public boolean start = false;
+    /**
+     * Flag that recording should be paused (where possible)
+     */
+    public boolean paused = false;
+    /**
+     * Flag that sensors have been registered
+     */
+    public boolean registered = false;
     private ArrayAdapter<String> mSensorsArrayAdapter;
+    /**
+     * List of Values, being used in visualisation activity
+     * @see AIRS_measurements
+     */
     public ArrayAdapter<String> mValuesArrayAdapter;
     private long nextDay;		// milliseconds for next day starting
     // This is the object that receives interactions from clients
@@ -100,7 +136,15 @@ public class AIRS_local extends Service
     private VibrateThread Vibrator;
     private WakeLock wl = null;
     // database variables
+    /**
+     * Reference to current AIRS_database
+     * @see AIRS_database
+     */
     static public AIRS_database database_helper;
+    /**
+     * Reference to AIRS database
+     * @see android.database.sqlite.SQLiteDatabase
+     */
     static public SQLiteDatabase airs_storage;
     
 	// private thread for reading the sensor handlers
@@ -465,12 +509,12 @@ public class AIRS_local extends Service
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected static void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
     
-	protected static void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
@@ -483,6 +527,11 @@ public class AIRS_local extends Service
         }
     }
     
+    /**
+     * Returns current instance of AIRS_local Service to anybody binding to AIRS_local
+     * @param intent Reference to calling {@link android.content.Intent}
+     * @return current instance to service
+     */
 	@Override
 	public IBinder onBind(Intent intent) 
 	{
@@ -490,12 +539,20 @@ public class AIRS_local extends Service
 		return mBinder;
 	}
 		
+	/**
+	 * Called when system is running low on memory
+	 * @see android.app.Service
+	 */
 	@Override
 	public void onLowMemory()
 	{
 		SerialPortLogger.debugForced("AIRS_local::low memory warning from system - about to get killed!");
 	}
 
+	/**
+	 * Called when starting the service the first time around
+	 * @see android.app.Service
+	 */
 	@Override
 	public void onCreate() 
 	{
@@ -505,6 +562,11 @@ public class AIRS_local extends Service
 		Restart(true);
 	}
 
+	/**
+	 * Synchronised method for writing to AIRS database from the recording threads being created
+	 * @param milli timestamp of the recording
+	 * @param query the SQL query being executed, formed in the recording threads
+	 */
 	public synchronized void execStorage(long milli, String query)
 	{
 		if (airs_storage == null)
@@ -581,6 +643,10 @@ public class AIRS_local extends Service
 		}
 	}
 
+	/**
+	 * Called when service is destroyed, e.g., by stopService()
+	 * Here, we tear down all recording threads, close all handlers, unregister receivers for battery signal and close the thread for indicating the recording
+	 */
 	@Override
 	public void onDestroy() 
 	{
@@ -664,12 +730,20 @@ public class AIRS_local extends Service
 	}
 	
 	@Override
-	// the sequence of calling is:
-	// 1. startService()
-	// 2. bindService()
-	// 3. set start = true and call startService() again
-	// 4. service.Discover() -> sets discovered == true
-	// 5. startService() again for measurements
+	/**
+	 * Called when startService() is invoked by other parts of AIRS (AIRS_record_tab as well as AIRS_shortcut)
+	 * The sequence of calling this appropriately (be careful to not change this)
+	 * 1. startService()
+	 * 2. bindService()
+	 * 3. set start = true and call startService() again
+	 * 4. service.Discover() -> sets discovered == true
+	 * 5. startService() again for measurements 
+	 * @params intent Reference to the calling {@link Intent}
+	 * @params flags Flags set by the caller
+	 * @params startId ID created per calling of the service (identifying the caller)
+	 * @see AIRS_shortcut
+	 * @see AIRS_record_tab
+	 */
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
 		SerialPortLogger.debugForced("AIRS_local::started service ID " + Integer.toString(startId));
@@ -686,7 +760,9 @@ public class AIRS_local extends Service
 		return Service.START_STICKY;
 	}
 
-	// ask threads to refresh latest value
+	/**
+	 * Asks threads to refresh latest value
+	 */
 	 public void refresh_values()
 	 {
 		 int i;
@@ -695,7 +771,9 @@ public class AIRS_local extends Service
 			 threads[i].refresh();
 	 }
 
-	// ask threads to pause
+	 /**
+	  * Asks threads to pause
+	  */
 	 public void pause_threads()
 	 {
 		 int i;
@@ -706,23 +784,40 @@ public class AIRS_local extends Service
 		 paused = true;
 	 }
 
+	 /**
+	  * Gets Value of the j-th thread
+	  * @param j index to thread which should provide the value
+	  * @return String of the current recording
+	  */
 	 public String getValue(int j)
 	 {
 		 return threads[j].values_output;
 	 }
 	 
+	 /**
+	  * Gets Sensor symbol that the j-th thread is recording
+	  * @param j index to thread which should provide the symbol
+	  * @return String of the sensor symbol, see http://tecvis.co.uk/software/airs/internal-workings for list of supported sensor symbols
+	  */
 	 public String getSymbol(int j)
 	 {
 		 return threads[j].current.Symbol;
 	 }
 	 
-	 // show info for sensor entry
+	 /**
+	  * Sharing info for sensor entry that j-th thread is recording
+	  * @param j index to thread which should provide the sharing string
+	  * @return String to be shared or null if nothing to share
+	  */
 	 public String share(int j)
 	 {
 		return threads[j].share();
 	 }
 
-	 // show info for sensor entry
+	 /**
+	  * Show timeline, map or similar for sensor entry that j-th thread is recording
+	  * @param j index to thread which should show the information
+	  */
 	 public void show_info(int j)
 	 {
 		if (threads[j].hasHistory() == true)
@@ -734,7 +829,9 @@ public class AIRS_local extends Service
 		}
 	 }
 
-	// ask threads to pause
+	 /**
+	  * Ask threads to pause recording. Where callback receivers are used, such pausing is not supported!
+	  */
 	 public void resume_threads()
 	 {
 		 int i;
@@ -745,6 +842,9 @@ public class AIRS_local extends Service
 		 paused = false;
 	 }
 
+	 /**
+	  * Sets all sensors being selected in the sensor list - called from UI in {@link AIRS_record_tab}
+	  */
 	 public void selectall()
 	 {
 		 int i;
@@ -753,6 +853,9 @@ public class AIRS_local extends Service
     		 sensors.setItemChecked(i, true);
      }
 	
+	 /**
+	  * Unselects all sensors in the sensor list - called from UI in {@link AIRS_record_tab}
+	  */
 	 public void unselectall()
 	 {    	 
 		 int i;
@@ -762,6 +865,9 @@ public class AIRS_local extends Service
     		 sensors.setItemChecked(i, false);
      }
 
+	 /**
+	  * Builds {@link android.app.AlertDialog} with sensor information
+	  */
 	 public void sensor_info()
 	 {
 		 float scaler;
@@ -797,8 +903,11 @@ public class AIRS_local extends Service
 	 	 alert.show();	 		
 	 }
 	 
-	 // main thread to run, acquires values, stores them locally and displays them (if wanted)
-	 @SuppressLint("NewApi")
+	/**
+	 * Sets up the main threads to run, acquire values, store them locally and display them (if wanted)
+	 * @param restarted is this measurements restarted (true) or not (false). 
+	 * @return true if successfully started, false otherwise
+	 */
 	public boolean startMeasurements(boolean restarted)
 	 {
 		 int i, j;
@@ -949,6 +1058,9 @@ public class AIRS_local extends Service
 		 return true;
 	 }
 	 
+	/**
+	 * Save all sensor selections in the UI sensor list as persistent values in the preference file
+	 */
 	 public void saveSelections()
 	 {
 		 int i;
@@ -969,6 +1081,12 @@ public class AIRS_local extends Service
 		 } 	
 	 }
 	 
+	 /**
+	  * Called to start all sensor handlers and inquire the discovered sensors from these handlers
+	  * The function also populates the UI sensor list and shows the appropriate view
+	  * This function needs calling from a UI thread, e.g., from AIRS_record_tab
+	  * @param airs Reference to the current {@link android.app.Activity}
+	  */
 	 public void Discover(Activity airs)
 	 {
 			int i;
@@ -1055,6 +1173,10 @@ public class AIRS_local extends Service
 			discovered = true;
 	 }	
 
+	 /**
+	  * Similar to the Discover() function. However, no UI is served here as well as the handlers are assumed to have been created already.
+	  * This function is usually called in the restart modus.
+	  */
 	 private void ReDiscover()
 	 {
 			int i;
@@ -1127,6 +1249,10 @@ public class AIRS_local extends Service
 			discovered = true;
 	 }	
 	 
+	 /**
+	  * Restarts the AIRS_local recording service, calling the Rediscover() function, restarting all recordings threads and then make the service sticky
+	  * @param check Should the service been running (true) and was it therefore restarted?
+	  */
 	 public void Restart(boolean check)
 	 {
 		boolean p_running;
@@ -1240,7 +1366,7 @@ public class AIRS_local extends Service
 	 }
 	 
 	 // The Handler that gets information back from the other threads, updating the values for the UI
-	 public final Handler mHandler = new Handler() 
+	 private final Handler mHandler = new Handler() 
      {
         @Override
         public void handleMessage(Message msg) 
@@ -1291,7 +1417,7 @@ public class AIRS_local extends Service
         }
      };
      
-     public final BroadcastReceiver mReceiver = new BroadcastReceiver() 
+     private final BroadcastReceiver mReceiver = new BroadcastReceiver() 
      {
          @Override
          public void onReceive(Context context, Intent intent) 

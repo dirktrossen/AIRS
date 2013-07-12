@@ -45,6 +45,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.airs.*;
 
+/** Activity to self-annotate moods
+ * @see android.app.Activity
+ */
 public class MoodButton_selector extends Activity implements OnItemClickListener, OnClickListener
 {
 	 private TextView mTitle;
@@ -62,7 +65,11 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	 private ImageView mood_iconown;
 	 private ArrayList<HandlerEntry> mMoodArrayList;
 
-	   @Override
+	 /**
+	  * Started when creating the {@link android.app.Activity}
+	  * @see android.app.Activity#onCreate(android.os.Bundle)
+	  */
+	 @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 	        // Set up the window layout
@@ -150,19 +157,30 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        mood_iconown.setOnClickListener(this);
 	    }
 
-	    @Override
+	 /** Called when restarting the {@link android.app.Activty}
+	    * @see android.app.Activity#onRestart()
+	    */
+	 @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
-	    @Override
+	    
+	 /** Called when stopping the {@link android.app.Activty}
+	    * @see android.app.Activity#onStop()
+	    */
+	 @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
-	    @Override
+	 /** Called when destroying the {@link android.app.Activty}
+	  * Here, we save the selections and send a broadcast to the {@link com.airs.handlers.MoodButtonHandler}
+	    * @see android.app.Activity#onDestroy()
+	    */
+	 @Override
 	    public void onDestroy() 
 	    {
 	    	if (selected == true)
@@ -207,7 +225,11 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	        super.onDestroy();
 	    }
 
-	    public void onActivityResult(int requestCode, int resultCode, Intent data) 
+	 	/**
+	     * Called when returning from another activity - here we pick up the selection of the mood icon being chosen when defining one's own mood definition
+	     * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	     */
+	 	public void onActivityResult(int requestCode, int resultCode, Intent data) 
 	    {
     	    super.onActivityResult(requestCode, resultCode, data); 
 
@@ -220,31 +242,50 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	    	}
 	    }
 	    
-		   @Override
-		    public boolean onPrepareOptionsMenu(Menu menu) 
-		    {
-		    	MenuInflater inflater;
+	 	/**
+	 	 * Called when the Options menu botton is pressed, inflating the menu to be shown
+	 	 * @param menu Reference of the {@link android.view.Menu} to be shown
+	 	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 	 */
+	 	@Override
+	    public boolean onPrepareOptionsMenu(Menu menu) 
+	    {
+	    	MenuInflater inflater;
 
-		    	menu.clear();    		
-		    	inflater = getMenuInflater();
-		    	inflater.inflate(R.menu.options_about, menu);    		
-		    	return true;
-		    }
+	    	menu.clear();    		
+	    	inflater = getMenuInflater();
+	    	inflater.inflate(R.menu.options_about, menu);    		
+	    	return true;
+	    }
 
-		    @Override
-		    public boolean onOptionsItemSelected(MenuItem item) 
-		    {
-		        switch (item.getItemId()) 
-		        {
-		        case R.id.main_about:
-		        		Toast.makeText(getApplicationContext(), R.string.MoodAbout, Toast.LENGTH_LONG).show();
-		            return true;
-		        }
-		        return false;
-		    }
+	 	/**
+		    * Called when a menu item in the Options menu has been selected
+		    * @param item Reference to the {@link android.view.MenuItem}
+		    * @return true, if item selection was consumed
+		    * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+		    */
+	 	@Override
+	    public boolean onOptionsItemSelected(MenuItem item) 
+	    {
+	        switch (item.getItemId()) 
+	        {
+	        case R.id.main_about:
+	        		Toast.makeText(getApplicationContext(), R.string.MoodAbout, Toast.LENGTH_LONG).show();
+	            return true;
+	        }
+	        return false;
+	    }
 
 
-	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
+	 	/**
+	     * Called if a list item has been clicked on, here any of the mood annotations
+	     * @param av Reference to the parent view
+	     * @param v Reference to the {@link android.view.View} being clicked on
+	     * @param arg2 don't care
+	     * @param arg3 index of the list items being clicked on
+	     * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	     */
+	 	public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
 	    {
 	    	// get list view entry
 	    	HandlerEntry entry = (HandlerEntry)av.getItemAtPosition((int)arg3);
@@ -255,7 +296,12 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	    	finish();
 	    }
 	    
-	    public void onClick(View v) 
+	 	/**
+	     * Called when button, here the own mood definition field, the delete button or the enter button, has been clicked
+	     * @param v Reference of the {android.view.View} being clicked
+	     * @see android.view.View.OnClickListener#onClick(android.view.View)
+	     */
+	 	public void onClick(View v) 
 		{
 	    	EditText et;
 	    	// dispatch depending on button pressed

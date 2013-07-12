@@ -52,6 +52,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.airs.*;
 
+/** Activity to self-annotate events
+ * @see android.app.Activity
+ */
 public class EventButton_selector extends Activity implements OnItemClickListener, OnClickListener, OnItemLongClickListener
 {
 	 private final static int MAX_STRINGS 	= 50;
@@ -74,7 +77,11 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	 private ArrayList<HandlerEntry> mMoodArrayList;
 	 private MyCustomBaseAdapter myCustomAdapter;
 
-	   @Override
+	 /**
+	  * Started when creating the {@link android.app.Activity}
+	  * @see android.app.Activity#onCreate(android.os.Bundle)
+	  */
+	 @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 		    int i;
@@ -176,19 +183,30 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        registerReceiver(SystemReceiver, intentFilter);
 	    }
 
-	    @Override
+	    
+	 /** Called when restarting the {@link android.app.Activty}
+	    * @see android.app.Activity#onRestart()
+	    */
+	 @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
-	    @Override
+	 /** Called when stopping the {@link android.app.Activty}
+	    * @see android.app.Activity#onStop()
+	    */
+	 @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
-	    @Override
+	 /** Called when destroying the {@link android.app.Activty}
+	  * Here, we save the selections and send a broadcast to the {@link com.airs.handlers.EventButtonHandler}
+	    * @see android.app.Activity#onDestroy()
+	    */
+	 @Override
 	    public void onDestroy() 
 	    {
 	    	int i;
@@ -231,34 +249,54 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	        super.onDestroy();
 	    }
 
-	    public void onActivityResult(int requestCode, int resultCode, Intent data) 
+	    /**
+	     * Called when returning from another activity - here not doing anything
+	     * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	     */
+	 	public void onActivityResult(int requestCode, int resultCode, Intent data) 
 	    {
 	    	return;
 	    }
 	    
-		   @Override
-		    public boolean onPrepareOptionsMenu(Menu menu) 
-		    {
-		    	MenuInflater inflater;
+	 	/**
+	 	 * Called when the Options menu botton is pressed, inflating the menu to be shown
+	 	 * @param menu Reference of the {@link android.view.Menu} to be shown
+	 	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 	 */
+	   @Override
+	    public boolean onPrepareOptionsMenu(Menu menu) 
+	    {
+	    	MenuInflater inflater;
 
-		    	menu.clear();    		
-		    	inflater = getMenuInflater();
-		    	inflater.inflate(R.menu.options_about, menu);    		
-		    	return true;
-		    }
+	    	menu.clear();    		
+	    	inflater = getMenuInflater();
+	    	inflater.inflate(R.menu.options_about, menu);    		
+	    	return true;
+	    }
 
-		    @Override
-		    public boolean onOptionsItemSelected(MenuItem item) 
-		    {
-		        switch (item.getItemId()) 
-		        {
-		        case R.id.main_about:
-		        		Toast.makeText(getApplicationContext(), R.string.EventAbout, Toast.LENGTH_LONG).show();
-		            return true;
-		        }
-		        return false;
-		    }
+	   /**
+	    * Called when a menu item in the Options menu has been selected
+	    * @param item Reference to the {@link android.view.MenuItem}
+	    * @return true, if item selection was consumed
+	    * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	    */
+	    @Override
+	    public boolean onOptionsItemSelected(MenuItem item) 
+	    {
+	        switch (item.getItemId()) 
+	        {
+	        case R.id.main_about:
+	        		Toast.makeText(getApplicationContext(), R.string.EventAbout, Toast.LENGTH_LONG).show();
+	            return true;
+	        }
+	        return false;
+	    }
 
+	    /**
+	     * Called when button, here the text field, the mood button or the enter button, has been clicked
+	     * @param v Reference of the {android.view.View} being clicked
+	     * @see android.view.View.OnClickListener#onClick(android.view.View)
+	     */
 	    public void onClick(View v) 
 		{
 	    	int i, size;
@@ -331,6 +369,16 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 		}
 
 
+	    /**
+	     * Called when a button has been long-clicked
+	     * Here, it is an item in the event list that we are after
+	     * @param av Reference to the parent view
+	     * @param v Reference to the {@link android.view.View} being clicked on
+	     * @param arg2 don't care
+	     * @param arg3 the selected entry in the list
+	     * @return true, if item selection has been consumed
+	     * @see android.widget.AdapterView.OnItemLongClickListener#onItemLongClick(android.widget.AdapterView, android.view.View, int, long)
+	     */
 	    public boolean onItemLongClick(AdapterView<?> av, View v, int arg2, long arg3)
 	    {
 	    	final int selected = (int)arg3;
@@ -371,6 +419,14 @@ public class EventButton_selector extends Activity implements OnItemClickListene
     		return true;
 	    }
 
+	    /**
+	     * Called if a list item has been clicked on, here any of the event annotations
+	     * @param av Reference to the parent view
+	     * @param v Reference to the {@link android.view.View} being clicked on
+	     * @param arg2 don't care
+	     * @param arg3 index of the list items being clicked on
+	     * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	     */
 	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
 	    {
 	    	// get list view entry

@@ -29,7 +29,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
-import android.os.Vibrator;
 import android.os.PowerManager.WakeLock;
 import android.widget.Toast;
 
@@ -41,19 +40,26 @@ import com.airs.platform.EventComponent;
 import com.airs.platform.HandlerManager;
 
 /**
- * @author trossen
- * @date Dec 3, 2004
- * 
- * Purpose: 
+ * Service to implement the remote recording
+ *
+ * @see AIRS_local
+ * @see AIRS_record_tab
+ * @see android.app.Service
  */
 public class AIRS_remote extends Service
 {
-	public static final int BATTERY_KILL 		= 3;
+	private static final int BATTERY_KILL 		= 3;
+	/**
+	 * Handler variable for showing a notification through the UI thread
+	 */
 	public static final int SHOW_NOTIFICATION 	= 2;
-	public static final int KILL_SERVICE 		= 1;
-    public static final String TEXT = "TEXT";
+	private static final int KILL_SERVICE 		= 1;
+	/**
+	 * Handler variable for the text shown by the notification
+	 */
+	public static final String TEXT = "TEXT";
 
-    private  Context airs = null;
+    private Context airs = null;
 	private Discovery	 	 instDiscovery = null;
 	private Acquisition 	 instAcquisition = null;
 	private EventComponent	 instEC = null;
@@ -64,23 +70,41 @@ public class AIRS_remote extends Service
     private NotificationManager mNotificationManager;
 	private String IPAddress;
 	private String IPPort;
-	public boolean running = false, started = false, failed = false;
+	/**
+     * Flag if AIRS is recording
+     */
+    public boolean running = false;
+   /**
+     * Flag if AIRS has been started as a service already
+     */
+    public boolean started = false;
+    /**
+     * Flag that connection request to your own NORS application server has failed
+     */
+    public boolean failed = false;
     // This is the object that receives interactions from clients
     private final IBinder mBinder = new LocalBinder();
     private VibrateThread Vibrator;
     private WakeLock wl;
-    public int bytes_sent = 0, values_sent = 0;
+    /**
+     * Bytes sent to your own NORS application server during the recording
+     */
+    public int bytes_sent = 0;
+    /**
+     * Values sent to your own NORS application server during the recording
+     */
+    public int values_sent = 0;
 
 	/**
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected static void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
     
-	protected static void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
@@ -93,19 +117,33 @@ public class AIRS_remote extends Service
         }
     }
     
-	@Override
+    /**
+     * Returns current instance of AIRS_local Service to anybody binding to AIRS_local
+     * @param intent Reference to calling {@link android.content.Intent}
+     * @return current instance to service
+     */
+    @Override
 	public IBinder onBind(Intent intent) 
 	{
 		debug("RSA_remote::bound service!");
 		return mBinder;
 	}
 
-	@Override
+    /**
+	 * Called when starting the service the first time around
+	 * @see android.app.Service
+	 */
+    @Override
 	public void onCreate() 
 	{
 	}
 	
-	@Override
+    /**
+	 * Called when service is destroyed, e.g., by stopService()
+	 * Here, we tear down all recording threads, close all handlers, unregister receivers for battery signal and close the thread for indicating the recording
+	 * @see android.app.Service
+	 */
+    @Override
 	public void onDestroy() 
 	{
 		SerialPortLogger.debug("RSA_remote::destroying service...");
@@ -149,6 +187,20 @@ public class AIRS_remote extends Service
 		SerialPortLogger.debug("RSA_remote::...onDestroy() finished");
 	 }
 	
+	/**
+	 * Called when startService() is invoked by other parts of AIRS (AIRS_record_tab as well as AIRS_shortcut)
+	 * The sequence of calling this appropriately (be careful to not change this)
+	 * 1. startService()
+	 * 2. bindService()
+	 * 3. set start = true and call startService() again
+	 * 4. service.Discover() -> sets discovered == true
+	 * 5. startService() again for measurements 
+	 * @param intent Reference to the calling {@link android.content.Intent}
+	 * @param flags Flags set by the caller
+	 * @param startId ID created per calling of the service (identifying the caller)
+	 * @see AIRS_shortcut
+	 * @see AIRS_record_tab
+	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) 
 	{
@@ -269,8 +321,8 @@ public class AIRS_remote extends Service
 	}
 	
 	
-	 // The Handler that gets information back from the other threads, updating the values for the UI
-	 public final Handler mHandler = new Handler() 
+	// The Handler that gets information back from the other threads, updating the values for the UI
+	public final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -366,7 +418,7 @@ public class AIRS_remote extends Service
 		 }
 	 }
 	 
-     public final BroadcastReceiver mReceiver = new BroadcastReceiver() 
+     private final BroadcastReceiver mReceiver = new BroadcastReceiver() 
      {
          @Override
          public void onReceive(Context context, Intent intent) 

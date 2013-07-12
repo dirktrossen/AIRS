@@ -16,11 +16,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
-import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
-import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -31,10 +29,13 @@ import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Instances;
 
-@SuppressLint("NewApi")
+/**
+ * Class to read calendar sensors, specifically the CA sensor
+ * @see Handler
+ */
 public class CalendarHandler implements Handler
 {
-	Context airs;
+	private Context airs;
 	// configuration data
 	private int polltime = 60000;
 	private long currentRead = 0;
@@ -42,25 +43,14 @@ public class CalendarHandler implements Handler
 	private boolean no_calendars = false;
 	
 	// calendar data
-	StringBuffer reading;
+	private StringBuffer reading;
 	
 	/**
-	 * Sleep function 
-	 * @param millis
+	 * Method to acquire sensor data
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
 	 */
-	protected void sleep(long millis) 
-	{
-		Waker.sleep(millis);
-	}
-
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
 		// acquire data and send out
@@ -75,44 +65,46 @@ public class CalendarHandler implements Handler
 			return null;
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : return humand readable sharing string
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor - here doing nothing
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{
 		return null;
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - here doing nothing
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if there is at least one calendar selected by the user
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		if (no_calendars == true)
 			SensorRepository.insertSensor(new String("CA"), new String("-"), new String("Calendar entry"), new String("str"), 0, 0, 1, false, polltime, this);
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, reading the various RMS values of the preferences
+	 * Then, we see if there are at least one calendar selected
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public CalendarHandler(Context nors)
 	{
 		String storedCalendars;
@@ -137,6 +129,10 @@ public class CalendarHandler implements Handler
 
 	}
 	
+	/**
+	 * Method to release all handler resources - here doing nothing
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 	}

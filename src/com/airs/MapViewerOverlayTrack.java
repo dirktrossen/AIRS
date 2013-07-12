@@ -26,16 +26,32 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
+/**
+ * Class for the overlay track being shown for the GI/VI sensors
+ */
 public class MapViewerOverlayTrack extends Overlay 
 {
     private GeoPoint gp1;
     private GeoPoint gp2;
 
-    public MapViewerOverlayTrack(GeoPoint gp1, GeoPoint gp2) {
+    /**
+     * Constructor
+     * @param gp1 first point to draw from
+     * @param gp2 second point to draw to
+     */
+    public MapViewerOverlayTrack(GeoPoint gp1, GeoPoint gp2) 
+    {
         this.gp1 = gp1;
         this.gp2 = gp2;
     }
 
+    /**
+     * Draws the overlay track on the canvas
+     * @param canvas Reference to the {@link android.graphics.Canvas} to drawn on
+     * @param mapView Reference to the {@link com.google.android.maps.MapView} that the track appears on
+     * @param shadow draws a shadow (true) or not (false) under the track
+     * @param when not used here but required, simply forwarded to super method
+     */
     @Override
     public boolean draw(Canvas canvas, MapView mapView, boolean shadow,
             long when) 
@@ -65,6 +81,12 @@ public class MapViewerOverlayTrack extends Overlay
         return super.draw(canvas, mapView, shadow, when);
     }
 
+    /**
+     * Draws the overlay track on the canvas
+     * @param canvas Reference to the {@link android.graphics.Canvas} to drawn on
+     * @param mapView Reference to the {@link com.google.android.maps.MapView} that the track appears on
+     * @param shadow draws a shadow (true) or not (false) under the track
+     */
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) 
     {

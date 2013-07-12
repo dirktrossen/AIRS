@@ -27,31 +27,37 @@ import android.telephony.TelephonyManager;
 import com.airs.AIRS_remote;
 import com.airs.helper.SerialPortLogger;
 
+/**
+ * Class implementing the TCP client for the remote sensing connection to your own application server
+ *
+ */
 public class TCPClient
 {
 	private Socket socket = null;
 	private OutputStream out = null;
 	private InputStream in = null;
+	/**
+	 * true, if currently connected, false otherwise
+	 */
 	public boolean 	 connected=false;
+	/**
+	 * String holding the phone's IMEI number which is used for authorisation purposes at the application server
+	 */
 	public String IMEI=null;
 	private AIRS_remote airs;
-	
-	protected void sleep(long millis) 
-	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
-	}
 
-	protected static void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
 
+	/**
+	 * Starts the TCP client
+	 * @param airs Reference to the {@link AIRS_remote} service calling this TCP client
+	 * @param IPAddress String holding the IP address to connect to
+	 * @param IPPort Port of the application server to connect to
+	 * @return true, if successful, or false otherwise
+	 */
 	public boolean startTCP(AIRS_remote airs, String IPAddress, String IPPort)
 	{
 		TelephonyManager tm;
@@ -86,7 +92,9 @@ public class TCPClient
 	}
 
 	/** 
-	* connecting to application server with IP:port information obtained through SMS
+	* Connecting to application server with IP:port information
+	* @param IPAddress String of the IP address of the application server to connect to
+	* @param Port port number of the application server
 	*/
 	public void connect(String IPAddress, String Port)
 	{		
@@ -130,7 +138,7 @@ public class TCPClient
 	}
 
 	/** 
-	* disconnecting from application server with eventually restarting Imlet
+	* Disconnecting from application server
 	*/
 	public synchronized void disconnect()
 	{
@@ -160,7 +168,8 @@ public class TCPClient
 	}
 
 	/** 
-	* writes Method to TCP connection
+	* Writes a {@link Method} to current TCP connection
+	* @param method Reference to the {@link Method} to be written
 	*/
 	public synchronized boolean write(Method method)
 	{
@@ -308,7 +317,8 @@ public class TCPClient
 	}
 
 	/** 
-	* reads Method from TCP connection
+	* Reads Method from TCP connection
+	* @return Reference to {@link Method} that was read
 	*/
 	public Method read()
 	{

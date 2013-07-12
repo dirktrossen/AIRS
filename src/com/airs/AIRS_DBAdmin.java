@@ -30,6 +30,13 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+/**
+ * Activity to administer the AIRS database, calling the index, backup and restore activities from a small UI
+ *
+ * @see AIRS_restore
+ * @see AIRS_backup
+ * @see AIRS_index
+ */
 public class AIRS_DBAdmin extends Activity implements OnClickListener
 {
 	// Layout Views
@@ -37,7 +44,9 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
     private ImageButton db_restore;
     private ImageButton db_index;
 
-    /** Called when the activity is first created. */
+    /** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -56,18 +65,24 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
         db_index.setOnClickListener(this);             
     }
     
+    /** Called when the activity is paused. 
+     */
     @Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
+    /** Called when the activity is stopped. 
+     */
     @Override
     public void onStop() 
     {
         super.onStop();
     }
 
+    /** Called when the activity is destroyed. 
+     */
     @Override
     public void onDestroy() 
     {
@@ -75,12 +90,18 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
        
     }
     
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
     	super.onConfigurationChanged(newConfig);
     }
  
+    /** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
@@ -92,6 +113,9 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
         return true;
     }
     
+    /** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
@@ -105,7 +129,9 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
         return false;
     }
 
-
+    /** Called when a button has been clicked on by the user
+     * @param v Reference to the {@link android.view.View} of the button
+     */
     @Override
     public void onClick(View v) 
     {

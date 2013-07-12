@@ -25,11 +25,15 @@ import android.content.IntentFilter;
 
 import com.airs.platform.SensorRepository;
 
+/**
+ * Class to read notification related sensors, specifically the NO sensor
+ * @see Handler
+ */
 public class NotificationHandler implements Handler
 {
 	private Context airs;
 	private Semaphore notify_semaphore 	= new Semaphore(1);
-	String notify_text;
+	private String notify_text;
 	
 	private void wait(Semaphore sema)
 	{
@@ -42,14 +46,12 @@ public class NotificationHandler implements Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
 		StringBuffer readings = new StringBuffer("NO");
@@ -64,43 +66,43 @@ public class NotificationHandler implements Handler
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor - here doing nothing
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public synchronized String Share(String sensor)
 	{		
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - here doing nothing
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public synchronized void History(String sensor)
 	{
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 	    SensorRepository.insertSensor(new String("NO"), new String("text"), new String("Notification"), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's only arming the semaphore and registering the accessibility broadcast event as well as firing the start event to the accessibility service
+	 * @param airs Reference to the calling {@link android.content.Context}
+	 */
 	public NotificationHandler(Context airs)
 	{
 		this.airs = airs;
@@ -118,6 +120,11 @@ public class NotificationHandler implements Handler
 		airs.sendBroadcast(intent);			
 	}
 
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the broadcast receiver and release all semaphores
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads

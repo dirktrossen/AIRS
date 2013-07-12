@@ -19,7 +19,6 @@ package com.airs.handlers;
 import java.util.concurrent.Semaphore;
 
 import com.airs.helper.SerialPortLogger;
-import com.airs.helper.Waker;
 import com.airs.platform.SensorRepository;
 
 import android.content.BroadcastReceiver;
@@ -28,11 +27,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Vibrator;
 
-/**
- * @author trossen
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+/** 
+ * Class to read event annotation sensor, specifically the EB sensor
+ * @see Handler
  */
 public class EventButtonHandler implements Handler
 {
@@ -42,15 +39,6 @@ public class EventButtonHandler implements Handler
 	private Vibrator vibrator;
 	private boolean registered = false;
 
-	/**
-	 * Sleep function 
-	 * @param millis
-	 */
-	protected void sleep(long millis) 
-	{
-		Waker.sleep(millis);
-	}
-	
 	private void wait(Semaphore sema)
 	{
 		try
@@ -62,14 +50,13 @@ public class EventButtonHandler implements Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, we register the broadcast receiver to receive the event widget notification, if not done before
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{
 		long[] pattern = {0l, 450l, 250l, 450l, 250l, 450l};
@@ -116,14 +103,12 @@ public class EventButtonHandler implements Handler
 		return null;
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		if (old_Event != null)
@@ -132,30 +117,32 @@ public class EventButtonHandler implements Handler
 			return null;
 	}
 
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - doing nothing in this handler
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 	}
 
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		SensorRepository.insertSensor(new String("EB"), new String("Event"), new String("Event button widget"), new String("str"), 0, 0, 1, false, 0, this);	    
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's only arming the semaphore and getting a reference to the {@link android.os.Vibrator} service
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public EventButtonHandler(Context nors)
 	{
 		this.nors = nors;
@@ -173,6 +160,11 @@ public class EventButtonHandler implements Handler
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the broadcast receiver
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		if (registered == true)

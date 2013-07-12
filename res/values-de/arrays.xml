@@ -94,4 +94,8 @@
         <item>Local</item>
         <item>Remote</item>
     </string-array>  
+    <string-array name="hitlistduration_entries">
+        <item>1 Woche</item>
+        <item>1 Monat</item>
+    </string-array>  
 </resources>

@@ -35,6 +35,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.airs.*;
 
+/** Activity to select the mood icon being chosen for own mood definitions
+ * @see android.app.Activity
+ */
 public class MoodButton_iconselector extends Activity implements OnItemClickListener
 {
 	 private TextView mTitle;
@@ -47,7 +50,11 @@ public class MoodButton_iconselector extends Activity implements OnItemClickList
 	 private GridView mood_icons;
 	 private ArrayList<MoodEntry> mMoodArrayList;
 
-	   @Override
+	 /**
+	  * Started when creating the {@link android.app.Activity}
+	  * @see android.app.Activity#onCreate(android.os.Bundle)
+	  */
+	 @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 	        // Set up the window layout
@@ -101,26 +108,43 @@ public class MoodButton_iconselector extends Activity implements OnItemClickList
 	        addMoodIcon(getString(R.string.Disappointed), R.drawable.mood_dissappointed);	    
 	    }
 
-	    @Override
+	 /** Called when restarting the {@link android.app.Activty}
+	    * @see android.app.Activity#onRestart()
+	    */
+	 @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
-	    @Override
+	 /** Called when stopping the {@link android.app.Activty}
+	    * @see android.app.Activity#onStop()
+	    */
+	 @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
-	    @Override
+	 /** Called when destroying the {@link android.app.Activty}
+	    * @see android.app.Activity#onDestroy()
+	    */
+	 @Override
 	    public void onDestroy() 
 	    {			
 			// now destroy activity
 	        super.onDestroy();
 	    }
     
-	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
+	 /**
+     * Called if a list item has been clicked on, here any of the mood annotations
+     * @param av Reference to the parent view
+     * @param v Reference to the {@link android.view.View} being clicked on
+     * @param arg2 don't care
+     * @param arg3 index of the list items being clicked on
+     * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+     */
+	 public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
 	    {
 	    	// get list view entry
 	    	MoodEntry entry = (MoodEntry)av.getItemAtPosition((int)arg3);

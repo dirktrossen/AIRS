@@ -27,11 +27,16 @@ import android.content.*;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Class to index the AIRS database
+ *
+ * @see         AIRS_database
+ */
 public class AIRS_index extends Activity
 {
 	// states for handler 
-	public static final int FINISH_ACTIVITY			= 1;
-	public static final int FINISH2_ACTIVITY		= 2;
+	private static final int FINISH_ACTIVITY			= 1;
+	private static final int FINISH2_ACTIVITY		= 2;
 
 	// database variables
     private AIRS_database database_helper;
@@ -72,24 +77,33 @@ public class AIRS_index extends Activity
         new IndexThread();
     }
     
+    /** Called when the activity is paused. 
+     */
     @Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
+    /** Called when the activity is stopped. 
+     */
     @Override
     public void onStop() 
     {
         super.onStop();
     }
 
+    /** Called when the activity is destroyed. 
+     */
     @Override
     public void onDestroy() 
     {
        super.onDestroy();       
     }
      
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -98,7 +112,7 @@ public class AIRS_index extends Activity
     }
 	
 	// The Handler that gets information back from the other threads, updating the values for the UI
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -126,7 +140,9 @@ public class AIRS_index extends Activity
 			new Thread(this).start();
 		}
 		
-	     public void run()
+		/** Thread for indexing.
+	     */
+		public void run()
 	     {
 	    	 Message finish_msg = mHandler.obtainMessage(FINISH_ACTIVITY);
 	    	 Message finish2_msg = mHandler.obtainMessage(FINISH2_ACTIVITY);

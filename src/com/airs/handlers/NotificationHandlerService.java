@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2013, Dirk Trossen, support@tecvis.co.uk
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -26,10 +26,18 @@ import android.content.IntentFilter;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+/**
+ * Class to implement the AIRS accessibility service
+ */
 public class NotificationHandlerService extends AccessibilityService
 {	
 	boolean started = true;
 	
+	/**
+	 * Called when an accessibility event occurs - here, we check the particular component packages that fired the event, filtering out the ones we support
+	 * @param event Reference to the fired {android.view.accessibility.AccessibilityEvent}
+	 * @see android.accessibilityservice.AccessibilityService#onAccessibilityEvent(android.view.accessibility.AccessibilityEvent)
+	 */
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) 
 	{
@@ -74,15 +82,24 @@ public class NotificationHandlerService extends AccessibilityService
 					Intent intent = new Intent("com.android.music.playstatechanged");
 					
 					// sorry, it only provides artist and track
-					intent.putExtra("artist", tokens[1]);							
-					intent.putExtra("track", tokens[0]);		
-					intent.putExtra("album", "");		
-					sendBroadcast(intent);		    	
+					if (tokens.length == 2)
+					{
+						intent.putExtra("artist", tokens[1]);							
+						intent.putExtra("track", tokens[0]);		
+						intent.putExtra("album", "");		
+						sendBroadcast(intent);		    	
+					}
 	    		}				
 	    	}
 	    }
 	}
 	
+	/**
+	 * Called when the service is started (usually after boot). We register the events we are interested in (change of notification) and also register to the start broadcast event, sent by AIRS
+	 * Originally, we set the package filters to something that does not exist, so that we minimise the firing of the callback
+	 * After the start broadcast event will be received, the proper package names will be set for recording
+	 * @see android.accessibilityservice.AccessibilityService#onServiceConnected()
+	 */
 	@Override
 	protected void onServiceConnected() 
 	{	    
@@ -101,11 +118,19 @@ public class NotificationHandlerService extends AccessibilityService
 	    setServiceInfo(info);   
 	}
 
+	/*
+	 * Called when interrupting the service
+	 * @see android.accessibilityservice.AccessibilityService#onInterrupt()
+	 */
 	@Override
 	public void onInterrupt() 
 	{
 	}
 	
+	/*
+	 * Called when destroying the service
+	 * @see android.app.Service#onDestroy()
+	 */
     @Override
     public void onDestroy() 
     {

@@ -1,3 +1,8 @@
+V2.5.9: 
+- change in Location settings, providing now a list of most visited WiFi APs in the last week/month
+- bugfix in Spotify notication recordings
+- Javadoc integration for developer information
+
 V2.5.8.1:
 - bugfix in automatic configuration function
 - bugfix in shortcut creation

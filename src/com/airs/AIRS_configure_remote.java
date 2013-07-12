@@ -26,11 +26,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Activity to remotely configure AIRS. The parameters for the configuration are sent through
+ * an Android Intent with the paramters
+ * @param com.airs.template.name name of the template shortcut to be created
+ * @param com.airs.template.text text of the template file to be created and used in the shortcut
+ */
 public class AIRS_configure_remote extends Activity
 {
      // template to be set
 	 private String template, template_text;
 
+	    /** Called when the activity is first created. 
+	     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+	     */
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
@@ -99,18 +108,24 @@ public class AIRS_configure_remote extends Activity
 			finish();
 	    }
 
+	    /** Called when the activity is restarted. 
+	     */
 	    @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
+	    /** Called when the activity is stopped. 
+	     */
 	    @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
+	    /** Called when the activity is destroyed. 
+	     */
 	    @Override
 	    public void onDestroy() 
 	    {

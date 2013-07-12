@@ -25,22 +25,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
+/**
+ * Activity to show an image button and information text pointing to the Storica app
+ *
+ */
 public class AIRS_visualisation extends Activity
 { 
-    // other variables
-	protected void sleep(long millis) 
-	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
-	}
-
-    /** Called when the activity is first created. */
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         // Set up the window layout
@@ -60,25 +54,34 @@ public class AIRS_visualisation extends Activity
 	       });
     }
 
-    @Override
+	/** Called when the activity is paused. 
+     */
+	@Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
-    @Override
+	/** Called when the activity is stopped. 
+     */
+	@Override
     public void onStop() 
     {
         super.onStop();
     }
 
-    @Override
+	/** Called when the activity is destroyed. 
+     */
+	@Override
     public void onDestroy() 
     {
        super.onDestroy();      
     }
     
-    @Override
+	/** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
     	super.onConfigurationChanged(newConfig);

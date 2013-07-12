@@ -18,6 +18,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.platform;
 
 
+/**
+ * Return codes for CONFIRM methods
+ */
 class Ret_Codes
 {
 	static final String RC_200_OK			= new String("200 OK");
@@ -26,7 +29,10 @@ class Ret_Codes
 	static final String RC_489_BAD_EVENT	= new String("489 Bad Event");
 	static final String RC_4xx_BAD_STATE	= new String("4xx Bad State");
 }
-// enum definition of dialog_state
+
+/**
+ * Dialog_state
+ */
 class dialog_state
 {
 	static final short	SUBSCRIPTION_PENDING			= 0;
@@ -38,21 +44,27 @@ class dialog_state
 	static final short	PUBLICATION_VALID				= 6;
 }
 
-// definition of an octet string to be transferred over the wire 
+/**
+ *  definition of an octet string to be transferred over the wire 
+ */
 class OctetString
 {
 	public short		length=0;
 	public byte			string[]=null;
 }
 
-//definition of an octet string with long int of length to be transferred over the wire 
+/**
+ * definition of an octet string with long int of length to be transferred over the wire 
+ */
 class lOctetString
 {
 	public int			length=0;
 	public byte			string[]=null;
 }
 
-// enum definition of method_type 
+/**
+ * Definition of method_type 
+ */
 class method_type
 {
 	static final short	method_SUBSCRIBE		= 0;
@@ -62,15 +74,18 @@ class method_type
 	static final short	method_BYE				= 4;
 }
 
-// enum definition of confirm_type 
+/**
+ * Definition of confirm_type 
+ */
 class confirm_type
 {
 	static final short	confirm_PUBLISH			= 0;
 	static final short	confirm_OTHERS			= 1;
 }
 
-// first the method-specific structures
-// see comments in EventComponent.h of application server implementation
+/**
+ * Structure of a SUBSCRIBE
+ */
 class SUBSCRIBE
 {
 	public short 		dialog_id;
@@ -78,18 +93,27 @@ class SUBSCRIBE
 	public int			Expires;
 }
 
+/**
+ * Structure of a NOTIFY
+ */
 class NOTIFY
 {
 	public short 		dialog_id;
 	public short		CSeq;
 }
 
+/**
+ * Structure of a PUBLISH
+ */
 class PUBLISH
 {
 	public int		e_tag;
 	public int		Expires;
 }
 
+/**
+ * Structure of a CONFIRM
+ */
 class CONFIRM
 {
 	public short		confirm_type;
@@ -110,6 +134,9 @@ class CONFIRM
 	}
 }
 
+/**
+ * Structure of a BYE
+ */
 class BYE
 {
 	public short		dialog_id;
@@ -121,6 +148,9 @@ class BYE
 	}
 }
 
+/**
+ * Structure of a general Method (which can be either SUBSCRIBE, PUBLISH, CONFIRM or BYE)
+ */
 class Method 
 {
 	public short		method_type;
@@ -150,6 +180,10 @@ class Method
 	}
 }
 
+/**
+ * Structure that holds a specific dialog information
+ *
+ */
 class DIALOG_INFO
 {
 	public Method			current_method;		// current method of dialog
@@ -170,6 +204,10 @@ class DIALOG_INFO
 	}
 }
 
+/**
+ * Structure that holds information about the user agent, specifically the event it serves and the callback it provides
+ *
+ */
 class EVENT_UA
 {
 	EVENT_UA() 

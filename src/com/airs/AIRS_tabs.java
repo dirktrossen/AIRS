@@ -33,6 +33,14 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
 @SuppressWarnings("deprecation")
+/**
+ * Activity to hosts the various tabs
+ * @see AIRS_record_tab
+ * @see AIRS_visualisation
+ * @see AIRS_settings_tab
+ * @see AIRS_sync
+ *
+ */
 public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 {
 	static public boolean sensors_shown = false;
@@ -40,6 +48,9 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	private int no_tabs = 0;
 	private TabHost tabHost;
 	
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
 	public void onCreate(Bundle savedInstanceState) 
 	{
 	    super.onCreate(savedInstanceState);
@@ -94,7 +105,12 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	    tabHost.setOnTabChangedListener(this);
 	}
 	
-    @Override
+    /**
+     * Called for dispatching key events sent to the Activity
+     * @param event Reference to the {@link android.view.KeyEvent} being pressed
+     * @return true, if consumed, false otherwise
+     */
+	@Override
     public boolean dispatchKeyEvent(KeyEvent event) 
     {
     	if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -133,14 +149,20 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
         return super.dispatchKeyEvent(event);
     }
 
-    @Override
+	/** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
       //ignore orientation change
       super.onConfigurationChanged(newConfig);
     }
     
-    public void onTabChanged(String tabId)
+	/** Called when the tab has changed.
+     * @param tabId ID of the new tab
+     */
+	public void onTabChanged(String tabId)
     {
            View currentView = getTabHost().getCurrentView();
            if (getTabHost().getCurrentTab() > currentTab)
@@ -155,7 +177,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
            currentTab = getTabHost().getCurrentTab();
     }
     
-    public Animation inFromRightAnimation()
+    private Animation inFromRightAnimation()
     {
         Animation inFromRight = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, +1.0f,
@@ -167,7 +189,7 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
         return inFromRight;
     }
 
-    public Animation outToRightAnimation()
+    private Animation outToRightAnimation()
     {
         Animation outtoLeft = new TranslateAnimation(
                 Animation.RELATIVE_TO_PARENT, -1.0f,

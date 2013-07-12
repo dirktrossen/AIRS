@@ -38,11 +38,15 @@ import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
+/** 
+ * Class to read WiFi related sensors, specifically the WF, WI, WM, WS, WC sensor
+ * @see Handler
+ */
 public class WifiHandler extends PhoneStateListener implements com.airs.handlers.Handler, Runnable
 {
-	public static final int INIT_WIFI = 1;
+	private static final int INIT_WIFI = 1;
 
-	Context nors;
+	private Context nors;
 	// phone state classes
 	private WifiManager wm;
 	private WifiLock wifi_lock;
@@ -54,29 +58,55 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	private long  oldtime = 0;
 
 	private boolean wifi_first = true, Wifi_scanning = false;
+	/**
+	 * current MAC reading
+	 */
 	public StringBuffer MAC_reading;	
+	/**
+	 * current SSID reading
+	 */
 	public StringBuffer SSID_reading;
+	/**
+	 * current RSSI reading
+	 */
 	public StringBuffer RSSI_reading;
+	/**
+	 * current WLAN reading
+	 */
 	public StringBuffer WLAN_reading;
 	private int old_wifi_connected = -1, wifi_connected;
+	/**
+	 * semaphore for nearby thread - released by GPS handler
+	 */
 	public Semaphore nearby_semaphore 		= new Semaphore(1);
+	/**
+	 * semaphore for MAC reading - released by GPS handler
+	 */
 	public Semaphore mac_semaphore 			= new Semaphore(1);
+	/**
+	 * semaphore for SSID reading - released by GPS handler
+	 */
 	public Semaphore ssid_semaphore 		= new Semaphore(1);
+	/**
+	 * semaphore for RSSI reading - released by GPS handler
+	 */
 	public Semaphore rssi_semaphore 		= new Semaphore(1);
+	/**
+	 * semaphore for WiFi combined reading - released by GPS handler
+	 */
 	public Semaphore wlan_semaphore 		= new Semaphore(1);
+	/**
+	 * semaphore for WiFi connected reading - released by GPS handler
+	 */
 	public Semaphore connected_semaphore 	= new Semaphore(1);
 	private Thread 		 runnable = null;
 	private boolean		 running = false;
 
-	protected void debug(String msg) 
-	{
-		SerialPortLogger.debug(msg);
-	}
 	/**
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
@@ -93,14 +123,14 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	}
 
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Initialise WiFi scanning thread, if not done before
+	 * Also initialise the WC sensor thread
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{	
 		byte[] reading = null;
@@ -170,42 +200,36 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		return reading;		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/** 
+	 * Method to share the last value of the given sensor - here doing nothing
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - here doing nothing
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 	}
 
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if WiFi available
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
-		// need to test for wifi at some point!!
 	    if (enable == true)
 	    {		
 			SensorRepository.insertSensor(new String("WF"), new String("txt"), new String("WLAN info"), new String("txt"), 0, 0, 1, false, 0, this);
@@ -216,6 +240,12 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		}	    
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's reading the preference settings for the polltime and enabling WiFi
+	 * Then, it's getting a reference to the {@link android.net.wifi.WifiManager} and finally, it's arming the semaphores
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public WifiHandler(Context nors)
 	{
 		this.nors = nors;
@@ -255,6 +285,11 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we release all semaphores, then shut down any acquisition threads and release the wifi lock, if held
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release semaphores to unlock any Acquire() threads
@@ -284,7 +319,10 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		nearby_semaphore.release(); 
 	}
 	
-	// run discovery in separate thread
+	/**
+	 * run WiFi discovery in separate thread
+	 * @see java.lang.Runnable#run()
+	 */
 	public void run() 
 	{
 		long now;
@@ -350,7 +388,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	}
 
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the WiFi
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 

@@ -55,6 +55,7 @@
 <string name="TimelineAbout">Shows a historical timeline of the sensor you just clicked on. You can change the number of historical values in the <b>General Settings</b>\nExit the timeline by using the <b>BACK</b> key!</string>
 <string name="DBadminAbout">Choose any of the three DB actions, namely <b>Backup</b>, <b>Restore</b> or <b>Index</b>. You can only index the DB once and cannot undo the indexing after it is done.</string>
 <string name="SyncAbout">Allows for sharing the data since the last synchronisation as a text file.\n\nYou can also manually set the last sync date, in case you need to re-sync periods.</string>
+<string name="AdaptiveGPSAbout">This list shows you the most visited WiFi APs over a given period. Only APs that you have connected to will be shown here!</string>
 <string name="HandlersList">Select the sensors you want to record as well as configure various available settings for the sensors! You can also configure <b>General Settings</b> for AIRS.</string>
 <string name="Sensor_Selection">Sensor Selection</string>
 <string name="HandlerDescription">Handler Image</string>
@@ -64,6 +65,8 @@
 <string name="OK">OK</string>
 <string name="Cancel">Cancel</string>
 <string name="Select">Select</string>
+<string name="Duration">Duration</string>
+
 <string name="Getting_Started">Getting Started</string>
 <string name="Getting_Started2">For local recording:\n
 - select \'Lifelogging\' for lifelogging settings\n
@@ -127,7 +130,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="At_least_one_template2">You need at least one template being saved AND selected from the list before you can delete a template!</string>
 <string name="Created_shortcut">Created AIRS shortcut on launcher homescreen!</string>
 <string name="Configured_airs">Created AIRS template and shortcut on launcher homescreen!</string>
-<string name="Configure_AIRS">Configure AIRS...please wait</string>
+<string name="Configure_AIRS">Configure AIRS&#8230;please wait</string>
 <string name="Load_template">Load Template</string>
 <string name="Load_template2">Loading the template will override the current settings!\nAre you sure?</string>
 <string name="Save_template">Filename to Save Settings as Template</string>
@@ -326,12 +329,16 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Use_Network_Location_on">Use Wifi and network information for location</string>
 <string name="Use_Network_Location_off">Use only GPS</string>
 <string name="AdaptiveGPS">Adaptive GPS</string>
-<string name="AdaptiveGPS_on">Use Wifi information to temporarily switch off GPS for better battery life. Adaptive mode might lead to delays in retrieving your GPS location once you leave WiFi zones since GPS will need to be re-started.</string>
+<string name="AdaptiveGPS_on">Use Wifi data to temporarily switch off GPS for better battery life. This might lead to delays in locating you once leaving WiFi zones since GPS will need to be re-started.</string>
 <string name="AdaptiveGPS_off">Do not use WiFi information to temporarily switch off GPS for better battery life</string>
 <string name="AdaptiveGPS_Selection">WiFi Selection</string>
 <string name="AdaptiveGPS_Selection_on">Choose the WiFi access points in which proximity GPS recording will be switched off. You will need to subscribe to the WI sensor for this setting to have an effect.</string>
+<string name="AdaptiveGPS_Hitlist">Most visited WiFis</string>
+<string name="AdaptiveGPS_Hitlist_on">Shows you the most visited WiFis in a given period so that you can optimise your adaptive GPS.</string>
+<string name="AdaptiveGPS_Hitlist_Click">Long click on any entry in the list to see how often you visited this WiFi access point.</string>
 <string name="AdaptiveGPS_Selection_title">Choose WiFi</string>
 <string name="AdaptiveGPS_NoWifi">Connect to at least one WiFi!</string>
+<string name="AdaptiveGPS_NothingFound">Cannot find recordings for WiFi - record the WI sensor for some time!</string>
 <string name="GPS_Interval">GPS Interval [s]</string>
 <string name="GPS_Interval_on">Poll interval for GPS location in seconds</string>
 <string name="AGPS_Refresh_Interval">AGPS Refresh Interval [h]</string>
@@ -419,13 +426,16 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- bugfix in automatic configuration function\n
-- bugfix in shortcut creation
+- change in Location settings, providing now a list of most visited WiFi APs in the last week/month\n
+- bugfix in Spotify notication recordings
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.9:\n
+- change in Location settings, providing now a list of most visited WiFi APs in the last week/month\n
+- bugfix in Spotify notication recordings\n\n
 V2.5.8.1:\n
 - bugfix in automatic configuration function\n
 - bugfix in shortcut creation\n\n

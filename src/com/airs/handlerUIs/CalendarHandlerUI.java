@@ -16,7 +16,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,12 +26,20 @@ import android.provider.CalendarContract;
 import com.airs.*;
 import com.airs.helper.ListPreferenceMultiSelect;
 
-@SuppressLint("NewApi")
+/**
+ * Class to implement the CalendarHandler configuration UI, based on the HandlerUI interface class
+ *
+ * @see com.airs.handlerUIs.HandlerUI HandlerUI 
+ * @see com.airs.handlers.CalendarHandler CalendarHandler
+ */
 public class CalendarHandlerUI implements HandlerUI
 {
-    // BT stuff
-	Context context; 
+	private Context context; 
 	
+	/**
+	 * Initialises the settings entry with the name, description and icon resource ID
+	 * @param context Reference to the {@link android.content.Context} realising this entry
+	 */
 	public HandlerEntry init(Context context)
 	{		
 		this.context = context;
@@ -44,21 +51,44 @@ public class CalendarHandlerUI implements HandlerUI
 		return (entry);
 	}
 
+	/**
+	 * Returns the resource ID to the preference XML file containing the layout of the preference
+	 * @return resource ID
+	 */
 	public int setDisplay()
 	{
 		return R.xml.prefscalendar;
 	}
 
+	/**
+	 * Returns the About String shown when selecting the About menu item in the Options menu
+	 * @return About String of the About text
+	 */
 	public String About()
 	{   
 		return context.getString(R.string.CalendarHandlerUI_about);
 	}
 	
+	/**
+	 * Returns the Title for the About Dialog shown when selecting the About menu item in the Options menu
+	 * @return String of the title
+	 */
 	public String AboutTitle()
 	{
 		return context.getString(R.string.CalendarHandlerUI_name);
 	}
-
+	
+    /**
+     * Destroys any resources for this {@link HandlerUI}
+     */
+    public void destroy()
+    {
+    }
+    
+	/**
+	 * Function to configure the Preference activity with any preset value necessary - here we populate the ListPreference for the calendars with all calendars available on this device
+	 * @param prefs Reference to {@link android.preference.PreferenceActivity}
+	 */
 	public void configurePreference(PreferenceActivity prefs)
 	{	
 		int i;

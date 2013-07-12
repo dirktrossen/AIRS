@@ -50,21 +50,24 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Activity to sync the AIRS database
+ *
+ */
 public class AIRS_sync extends Activity implements OnClickListener
 {
 	// states for handler 
-	public static final int START_ACTIVITY	= 1;
-	public static final int FINISH_ACTIVITY	= 2;
-	public static final int UPDATE_VALUES	= 3;
-	public static final int FINISH_NO_VALUES_ACTIVITY	= 4;
+	private static final int START_ACTIVITY	= 1;
+	private static final int UPDATE_VALUES	= 2;
+	private static final int FINISH_NO_VALUES_ACTIVITY	= 3;
 
-	public static final int NO_SYNC			= 0;
-	public static final int SYNC_STARTED	= 1;
-	public static final int SYNC_CANCELLED	= 2;
-	public static final int SYNC_FINISHED	= 2;
+	private static final int NO_SYNC			= 0;
+	private static final int SYNC_STARTED	= 1;
+	private static final int SYNC_CANCELLED	= 2;
+	private static final int SYNC_FINISHED	= 2;
 	
 	// states for activity management
-    public static final int SYNC_BATCH		= 5000;
+	private static final int SYNC_BATCH		= 5000;
         
     // preferences
     private SharedPreferences settings;
@@ -84,21 +87,12 @@ public class AIRS_sync extends Activity implements OnClickListener
     private int syncing = NO_SYNC;
 
     // database variables
-    AIRS_database database_helper;
-    SQLiteDatabase airs_storage;
+    private AIRS_database database_helper;
+    private SQLiteDatabase airs_storage;
 
-	protected void sleep(long millis) 
-	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
-	}
-
-    /** Called when the activity is first created. */
+    /** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -144,6 +138,8 @@ public class AIRS_sync extends Activity implements OnClickListener
         wl.acquire();
     }
 
+    /** Called when the activity is resumed. 
+     */
     @Override
     public synchronized void onResume() 
     {
@@ -158,18 +154,24 @@ public class AIRS_sync extends Activity implements OnClickListener
         syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
     }
 
+    /** Called when the activity is paused. 
+     */
     @Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
+    /** Called when the activity is stopped. 
+     */
     @Override
     public void onStop() 
     {
         super.onStop();
     }
 
+    /** Called when the activity is destroyed. 
+     */
     @Override
     public void onDestroy() 
     {
@@ -181,6 +183,9 @@ public class AIRS_sync extends Activity implements OnClickListener
 	   		 wl.release();
     }
      
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -188,6 +193,9 @@ public class AIRS_sync extends Activity implements OnClickListener
       super.onConfigurationChanged(newConfig);
     }
     
+    /** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
@@ -199,6 +207,9 @@ public class AIRS_sync extends Activity implements OnClickListener
         return true;
     }
 
+    /** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
@@ -253,6 +264,9 @@ public class AIRS_sync extends Activity implements OnClickListener
         return true;
     }
     
+    /** Called when a button has been clicked on by the user
+     * @param v Reference to the {@link android.view.View} of the button
+     */
     public void onClick(View v) 
     {
     	if (v.getId() == R.id.sync_start && syncing == NO_SYNC)
@@ -297,7 +311,7 @@ public class AIRS_sync extends Activity implements OnClickListener
     }   
 	
 	// The Handler that gets information back from the other threads, updating the values for the UI
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 

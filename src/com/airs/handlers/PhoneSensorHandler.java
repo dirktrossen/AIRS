@@ -27,20 +27,23 @@ import android.hardware.Sensor;
 import android.os.Handler;
 import android.os.Message;
 
-import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
+/** 
+ * Class to read internal phone sensors, specifically the Az, Pi, Ro, PR, LI, PU, TM, HU sensor
+ * @see Handler
+ */
 public class PhoneSensorHandler implements com.airs.handlers.Handler
 {
-	public static final int INIT_LIGHT 			= 1;
-	public static final int INIT_PROXIMITY 		= 2;
-	public static final int INIT_ORIENTATION 	= 3;
-	public static final int CLOSE_ORIENTATION 	= 4;
-	public static final int INIT_PRESSURE 		= 5;
-	public static final int INIT_TEMPERATURE	= 6;
-	public static final int INIT_HUMIDITY 		= 7;
+	private static final int INIT_LIGHT 		= 1;
+	private static final int INIT_PROXIMITY 	= 2;
+	private static final int INIT_ORIENTATION 	= 3;
+	private static final int CLOSE_ORIENTATION 	= 4;
+	private static final int INIT_PRESSURE 		= 5;
+	private static final int INIT_TEMPERATURE	= 6;
+	private static final int INIT_HUMIDITY 		= 7;
 
 	private Context nors;
 	private boolean sensor_enable = false;
@@ -62,15 +65,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	private Semaphore pitch_semaphore 		= new Semaphore(1);
 	private boolean shutdown = false;
 	
-	/**
-	 * Sleep function 
-	 * @param millis
-	 */
-	protected void sleep(long millis) 
-	{
-		Waker.sleep(millis);
-	}
-	
 	private void wait(Semaphore sema)
 	{
 		try
@@ -82,14 +76,13 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		}
 	}
 
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * For each sensor, we will fire a handler event to start the sensor reading, wait for the semaphore, then read the latest sensor value and fire another event to unregister the sensor callback -> this saves processing!
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{
 		boolean read = false;
@@ -334,14 +327,12 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		return readings;		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		// see which sensors are requested
@@ -372,13 +363,11 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		// see which sensors are requested
@@ -405,14 +394,13 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	}
 
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if sensors can be used and depending on which sensors are available on the device
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		if (sensor_enable == true)
@@ -436,6 +424,11 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		}
 	}
 	
+	/*
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's reading the preferences for the different polling intervals, checking the various sensors and arming the semaphores
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public PhoneSensorHandler(Context activity)
 	{
 		nors = activity;
@@ -472,6 +465,11 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the sensor listener, if registered, and release all semaphores
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		shutdown = true;
@@ -492,7 +490,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	// The Handler that gets information back from the other threads, initializing phone sensors
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the invidiaul sensors
 	// since registerListener() can only be called from the main Looper thread!!
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 

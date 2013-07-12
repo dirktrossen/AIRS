@@ -25,11 +25,13 @@ import com.airs.platform.History;
 import android.content.Context;
 import android.media.*;
 
+/** 
+ * Class to read audio-related sensors, specifically the AS and AF sensor
+ * @see Handler
+ */
 public class AudioHandler implements Handler
 {
-	public static final int CHUNK_SIZE = 4;
-
-	Context airs;
+	private Context airs;
 	// beacon data
 	private byte [] AS_reading;
 	private byte [] AF_reading;
@@ -52,7 +54,7 @@ public class AudioHandler implements Handler
 	private AudioRecord p;
 	private short[] output = null;
 
-	protected void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
@@ -61,19 +63,17 @@ public class AudioHandler implements Handler
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
 
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
 		// acquire data and send out
@@ -98,13 +98,12 @@ public class AudioHandler implements Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : return humand readable sharing string
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{
 		// acquire data and send out
@@ -125,13 +124,11 @@ public class AudioHandler implements Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		switch(sensor.charAt(1))
@@ -145,14 +142,13 @@ public class AudioHandler implements Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		// return right away if no player could be created in constructor!
@@ -164,6 +160,13 @@ public class AudioHandler implements Handler
 		SensorRepository.insertSensor(new String("AS"), new String("dB"), new String("Ambient Noise Level"), new String("int"), -2, 0, 1200, true, polltime, this);
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, reading the various RMS values of the preferences
+	 * Then, determining the minimal buffer size for the recording
+	 * Then, creating an AudioPlayer just to see if it works (tear it down again right after creation)
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public AudioHandler(Context nors)
 	{
 		boolean buffer_error = false;
@@ -214,6 +217,11 @@ public class AudioHandler implements Handler
 		}while(buffer_error == true);
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we stop any playing AudioPlayer and release its resources
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		try

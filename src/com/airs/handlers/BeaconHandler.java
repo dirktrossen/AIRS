@@ -34,6 +34,10 @@ import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
+/** 
+ * Class to read audio-related sensors, specifically the BN, BD, BT sensor
+ * @see Handler
+ */
 public class BeaconHandler implements Handler, Runnable 
 {
 	// BT stuff
@@ -58,14 +62,14 @@ public class BeaconHandler implements Handler, Runnable
 //	private char EOL = 13;
 
 	// config data
-	int polltime = 15000;
-	long oldtime = 0;
+	private int polltime = 15000;
+	private long oldtime = 0;
 
 	/**
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
@@ -81,14 +85,13 @@ public class BeaconHandler implements Handler, Runnable
 		}
 	}
 
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, start BT discovery thread in case it hasn't run yet
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{		
 		int i;
@@ -153,14 +156,12 @@ public class BeaconHandler implements Handler, Runnable
 		return null;		
 	}
 
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		switch(sensor.charAt(1))
@@ -173,20 +174,21 @@ public class BeaconHandler implements Handler, Runnable
 		return null;		
 	}
 
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		if (sensor.charAt(1) == 'N')
 			History.timelineView(nors, "BT devices [#]", "BN");
 	}
 
-	// run discovery in separate thread
+	/**
+	 * BT Discovery thread, being executed every polltime seconds, using the sleep() function to wait
+	 * @see java.lang.Runnable#run()
+	 */
 	public void run() 
 	{
 		long now;
@@ -206,14 +208,15 @@ public class BeaconHandler implements Handler, Runnable
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * Here, we also check if the BT adapter is available and also enable it, in case it is disabled and it is configured (by the user) to switch BT on
+	 * Furthermore, we register the receivers for getting BT connect and disconnects messages
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		try
@@ -262,6 +265,11 @@ public class BeaconHandler implements Handler, Runnable
 		}
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, reading the various RMS values of the preferences and arming the semaphores
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public BeaconHandler(Context nors)
 	{		
 		// store for later
@@ -287,6 +295,11 @@ public class BeaconHandler implements Handler, Runnable
 		wait(finished_semaphore); 
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we interrupt the discovery thread and stop any ongoing BT discovery
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads

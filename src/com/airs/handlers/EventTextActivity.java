@@ -26,10 +26,17 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+/** Activity to self-annotate any text being pasted to AIRS
+ * @see android.app.Activity
+ */
 public class EventTextActivity extends Activity 
 {
 	private ActivityManager am;
 	
+	/**
+	  * Started when creating the {@link android.app.Activity}
+	  * @see android.app.Activity#onCreate(android.os.Bundle)
+	  */
 	@Override
 	public void onCreate (Bundle savedInstanceState) 
 	{

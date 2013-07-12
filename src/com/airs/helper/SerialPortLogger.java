@@ -26,6 +26,10 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Class to handle debug messages to the file system and the ADB
+ *
+ */
 public class SerialPortLogger 
 {
 	private static boolean isDebugging = true;
@@ -34,8 +38,8 @@ public class SerialPortLogger
 	private static BufferedOutputStream os = null;
 
 	/**
-	 * Write message to the serial port.
-	 * 
+	 * Write message to the file system
+	 * @param msg String to be written
 	 */
 	public static synchronized void write(String msg) 
 	{
@@ -66,38 +70,27 @@ public class SerialPortLogger
 	}
 
 	/**
-	 * By setting is Debugging: output to the port;
-	 * By setting isSMSDebugging: send debug info to a cell phone;
-	 * 	  
-	 */
-	
+	 * Forces debug output to the file system, even if debugging is switched off	  
+	 */	
 	public static synchronized void debugForced(String msg) 
 	{
 		write(msg + "\n");
 		Log.w("AIRS:", msg);
 	}
 
+	/**
+	 * Debugs only if the debugging flag is switched on
+	 * @param msg String to be written to the filesystem
+	 */
 	public static synchronized void debug(String msg) 
 	{
 		if (isDebugging)
 			write(msg + "\n");
 		Log.v("AIRS:", msg);
 	}
-	
-	public static void debugUI(String msg, int wait)
-	{
-		Toast.makeText(nors.getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-		try 
-		{
-			Thread.sleep(wait);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
-
-	}
 
 	/**
+	 * Checks if debugging is on (true) or off (false)
 	 * @return is Debugging
 	 */
 	public static boolean isDebugging() 
@@ -106,7 +99,8 @@ public class SerialPortLogger
 	}
 
 	/**
-	 * @param b
+	 * Set the debug mode
+	 * @param b debug (true) or not (false)
 	 */
 	public static void setDebugging(boolean b) 
 	{

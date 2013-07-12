@@ -23,15 +23,9 @@ import android.os.Message;
 import com.airs.AIRS_remote;
 import com.airs.helper.SerialPortLogger;
 
+
 /**
- * @author trossen
- *
- */
-/**
- * @author trossen
- * @date Nov 2, 2004
- * 
- * Purpose: 
+ * Class that handles all incoming {@link Method} types 
  */
 public class EventComponent implements Runnable 
 {
@@ -40,10 +34,16 @@ public class EventComponent implements Runnable
 	private TCPClient	current_TCPClient=null;
 	private short		dialog_id= 0;
 	private Thread 		thread = null;
+	/**
+	 * Reference to {@link AIRS_remote} service
+	 */
 	public  AIRS_remote  airs;
+	/**
+	 * Flag if connected (true) or not (false)
+	 */
 	public  boolean		connected = false;
 	
-	protected static void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
@@ -52,7 +52,7 @@ public class EventComponent implements Runnable
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected static void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		try 
 		{
@@ -63,13 +63,12 @@ public class EventComponent implements Runnable
 		}
 	}
 
-	/***********************************************************************
-	 Function    : EventComponent()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : constructor of class, creates TCPClient and starts own thread
-	***********************************************************************/
+	/**
+	 * Start the EventComponent after being instantiated
+	 * @param airs Reference to the {@link AIRS_remote} service which started this component
+	 * @param IPAddress String with the IP address to connect to 
+	 * @param IPPort Port to connect to at the given IP address
+	 */
 	public boolean startEC(AIRS_remote airs, String IPAddress, String IPPort)
 	{
 		current_TCPClient	= new TCPClient();
@@ -88,13 +87,9 @@ public class EventComponent implements Runnable
 		return true;
 	}
 
-	/***********************************************************************
-	 Function    : run()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : Runnable thread of this class for receiving methods
-	***********************************************************************/
+	/**
+	 * Runnable thread of this class for receiving methods from remote application server
+	 */
 	public void run() 
 	{
 		Method current_method;
@@ -131,13 +126,9 @@ public class EventComponent implements Runnable
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : stop()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : stop EventComponent
-	***********************************************************************/
+	/**
+	 * Stop the EventComponent
+	 */
 	public void stop() 
 	{
 		// signal thread that being disconnected -> will disconnect TCP Client and show alerter
@@ -146,14 +137,12 @@ public class EventComponent implements Runnable
 		current_TCPClient.disconnect();
 	}
 	
-	/***********************************************************************
-	 Function    : registerEventServer()
-	 Input       : pointer to callback for this event server, pointer to 
-	               event name
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : registers event server UA with event delivery component
-	***********************************************************************/
+	/**
+	 * Register an event server with a given Callback for a given event name
+	 * @param callback Reference to the {@link Callback} for this event
+	 * @param event_name_string String for the event name being registered
+	 * @return true, if successful
+	 */
 	synchronized public boolean registerEventServer(Callback callback, String event_name_string)
 	{
 		EVENT_UA	new_UA = null;
@@ -189,14 +178,16 @@ public class EventComponent implements Runnable
 	}
 
 
-	/***********************************************************************
-	 Function    : Subscribe()
-	 Input       : pointer to server, pointer to event name, pointer to 
-				   event body, body length, pointer to callback function
-	 Output      :
-	 Return      : pointer to dialog info
-	 Description : Establishes subscription dialog
-	***********************************************************************/
+	/**
+	 * Establishes a SUBSCRIBE dialog
+	 * @param TO byte array with the name to send this to (usually 'application server')
+	 * @param event_name byte array with the event name being subscribed to
+	 * @param event_body byte array with the event body
+	 * @param body_length length of the event body array
+	 * @param Expires time to expire in milliseconds
+	 * @param callback Reference to the {@link Callback} for this dialog 
+	 * @return DIALOG_INFO of the established dialog
+	 */
 	synchronized public DIALOG_INFO Subscribe(byte TO[], byte event_name[], byte event_body[], int body_length, int Expires, Callback callback)
 	{
 		Method	  method = new Method();
@@ -231,14 +222,13 @@ public class EventComponent implements Runnable
 		return null;
 	}
 
-	/***********************************************************************
-	 Function    : Notify()
-	 Input       : pointer to dialog, event body and length, and callback to 
-	               handle confirmations
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : sends notification in subscription dialog
-	***********************************************************************/
+	/**
+	 * Sends notification in subscription dialog
+	 * @param dialog_id identifier for the dialog being used
+	 * @param event_body byte array with the event body being sent
+	 * @param callback Reference to the {@link Callback} being notified upon completion
+	 * @return true, if successful
+	 */
 	synchronized public boolean Notify(short dialog_id, byte event_body[], Callback callback)
 	{
 		DIALOG_INFO	current_dialog;
@@ -320,13 +310,15 @@ public class EventComponent implements Runnable
 		return false;
 	}
 
-	/***********************************************************************
-	 Function    : Publish()
-	 Input       : pointer to method struct and callback to handle confirmations
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : establishes publication dialog
-	***********************************************************************/
+	/**
+	 * Establishes a new PUBLISH dialog
+	 * @param TO byte array with the name to send this to (usually 'application server')
+	 * @param event_name byte array with the event name being subscribed to
+	 * @param event_body byte array with the event body
+	 * @param Expires time to expire in milliseconds
+	 * @param callback Reference to the {@link Callback} for this dialog 
+	 * @return DIALOG_INFO of the established dialog
+	 */
 	synchronized public DIALOG_INFO Publish(byte TO[], byte event_name[], byte event_body[], int Expires, Callback callback)
 	{
 		Method	  method = new Method();
@@ -362,14 +354,15 @@ public class EventComponent implements Runnable
 		return null;
 	}
 
-
-	/***********************************************************************
-	 Function    : Publish()
-	 Input       : pointer to method struct and callback to handle confirmations
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : establishes publication dialog
-	***********************************************************************/
+	/**
+	 * Sends a PUBLISH method in an existing dialog
+	 * @param dialog Reference to the {@link DIALOG_INFO} that holds the dialog information to be used
+	 * @param TO byte array with the name to send this to (usually 'application server')
+	 * @param event_name byte array with the event name being subscribed to
+	 * @param event_body byte array with the event body
+	 * @param Expires time to expire in milliseconds
+	 * @return true, if successful
+	 */
 	synchronized public boolean Publish(DIALOG_INFO dialog, byte TO[], byte event_name[], byte event_body[], int Expires)
 	{
 		// not connected?
@@ -394,14 +387,12 @@ public class EventComponent implements Runnable
 		return current_TCPClient.write(dialog.current_method);
 	}
 
-	/***********************************************************************
-	 Function    : Confirm()
-	 Input       : pointer to method struct, pointer to return code
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : sends confirmation outside of any existing dialog, using 
-	               the information from the old method
-	***********************************************************************/
+	/**
+	 * sends confirmation outside of any existing dialog, using the information from the old method
+	 * @param method Reference to the {@link Method} being re-used
+	 * @param ret_code Return code being inserted into the CONFIRM method
+	 * @return true, if successful
+	 */
 	synchronized public boolean Confirm(Method method, String ret_code)
 	{
 		byte swap[];
@@ -454,13 +445,12 @@ public class EventComponent implements Runnable
 		return return_code;
 	}
 
-	/***********************************************************************
-	 Function    : Confirm()
-	 Input       : pointer to dialog struct, pointer to return code
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : sends confirmation within existing dialog
-	***********************************************************************/
+	/**
+	 * sends confirmation within existing dialog
+	 * @param dialog_info Reference to the {@link DIALOG_INFO} of the dialog being used
+	 * @param ret_code Return code being inserted into the CONFIRM method
+	 * @return true, if successful
+	 */
 	synchronized public boolean Confirm(DIALOG_INFO dialog_info, String ret_code)
 	{
 		boolean return_code;
@@ -520,25 +510,22 @@ public class EventComponent implements Runnable
 		return return_code;
 	}
 
-	/***********************************************************************
-	 Function    : Bye()
-	 Input       : pointer to method struct and callback to handle confirmations
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : terminates existing dialog
-	***********************************************************************/
+	/**
+	 * Terminates existing dialog
+	 * @param dialog Reference to the {@link DIALOG_INFO} of the dialog to be terminated
+	 * @param callback Reference to the {@link Callback} of this dialog
+	 * @return true, if successful
+	 */
 	synchronized public boolean Bye(DIALOG_INFO dialog, Callback callback)
 	{
 		return true;
 	}
 
-	/***********************************************************************
-	 Function    : Dispatch()
-	 Input       : 
-	 Output      :
-	 Return      : 'true' if successful
-	 Description : dispatches incoming method
-	***********************************************************************/
+	/**
+	 * Dispatches incoming method
+	 * @param Reference to the {@link Method} being dispatched
+	 * @return true, if successful
+	 */
 	boolean Dispatch(Method current_method)
 	{
 		short dialog_id;
@@ -698,20 +685,17 @@ public class EventComponent implements Runnable
 		return ret_value;
 	}
 
-	/***********************************************************************
-	 Function    : create_Dialog()
-	 Input       : pointer to current method, pointer to current callback,
-				   state, boolean for direction
-	 Output      :
-	 Return      : pointer to new dialog
-	 Description : creates new dialog
-				   for incoming dialogs, we'll take the dialog id that came 
-				   with the method
-				   for outgoing dialogs, we create a dialog id bound to the
-				   TCP client
-				   Hence, the dialog id is always set by the client (subscriber
-				   or publisher)!
-	***********************************************************************/
+	/**
+	 * creates new dialog: 
+	 * for incoming dialogs, we'll take the dialog id that came with the method
+	 * for outgoing dialogs, we create a dialog id bound to the TCP client
+	 * Hence, the dialog id is always set by the client (subscriber or publisher)!
+	 * @param method Reference to the {@link Method} that creates the dialog
+	 * @param callback Reference to the {@link Callback} for this dialog
+	 * @param state initial state of the dialog
+	 * @param direction true, if outgoing, false if incoming
+	 * @return Reference to a {@link DIALOG_INFO} that has been created for this new dialog
+	 */
 	DIALOG_INFO create_Dialog(Method method, Callback callback, short state, boolean direction)
 	{
 		DIALOG_INFO new_insert = new DIALOG_INFO();
@@ -768,13 +752,11 @@ public class EventComponent implements Runnable
 		return new_insert;
 	}
 
-	/***********************************************************************
-	 Function    : delete_Dialog()
-	 Input       : pointer to dialog, boolean for direction
-	 Output      :
-	 Return      : 
-	 Description : deletes dialog information
-	***********************************************************************/
+	/**
+	 * Deletes dialog information
+	 * @param dialog Reference to the {@link DIALOG_INFO} being deleted
+	 * @param direction Direction of the dialog with true for outgoing, false for incoming
+	 */
 	void delete_Dialog(DIALOG_INFO dialog, boolean direction)
 	{
 		DIALOG_INFO	last, search;
@@ -811,13 +793,12 @@ public class EventComponent implements Runnable
 		}
 	}
 
-	/***********************************************************************
-	 Function    : find_Dialog()
-	 Input       : dialog identifier, boolean for direction (true=incoming)
-	 Output      :
-	 Return      : DIALOG_INFO that matches dialog_id
-	 Description : finds dialog information that matches dialog_id
-	***********************************************************************/
+	/**
+	 * Finds dialog information that matches dialog_id
+	 * @param dialog_id identifier of the dialog to be searched for
+	 * @param direction Direction of the dialog with true for outgoing, false for incoming
+	 * @return Reference to the {@link DIALOG_INFO} being found
+	 */
 	DIALOG_INFO	find_Dialog(short dialog_id, boolean direction)
 	{
 		DIALOG_INFO	search;
@@ -839,13 +820,11 @@ public class EventComponent implements Runnable
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : find_EventUA()
-	 Input       : event name 
-	 Output      :
-	 Return      : pointer to callback
-	 Description : finds callback for event name -> used for incoming subscription
-	***********************************************************************/
+	/**
+	 * Finds callback for event name -> used for incoming subscription
+	 * @param event_name byte array of the event name whose UA is to be found
+	 * @return Reference to {@link Callback}
+	 */
 	Callback find_EventUA(byte event_name[])
 	{
 		EVENT_UA	search = event_ua;

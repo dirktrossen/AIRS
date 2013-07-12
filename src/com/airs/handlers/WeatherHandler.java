@@ -28,7 +28,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
@@ -48,16 +47,14 @@ import android.os.Handler;
 import android.os.Message;
 
 /**
- * @author trossen
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ * Class to read weather related sensors, specifically the VT, VF, VH, VC, VW, VI sensor
+ * @see Handler
  */
 public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 {
-	public static final int INIT_GPS 		= 1;
-	public static final int KILL_GPS 		= 2;
-	public static final int INIT_RECEIVER 	= 4;
+	private static final int INIT_GPS 		= 1;
+	private static final int KILL_GPS 		= 2;
+	private static final int INIT_RECEIVER 	= 4;
 	
 	private Context nors;
 	private boolean weather_enabled;
@@ -105,7 +102,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
@@ -121,14 +118,13 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, we start the thread for retrieving the weather and switch on the GPS, if not done before
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{		
 		byte[] readings = null;
@@ -231,14 +227,12 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		return null;
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		// temperature in Celcius
@@ -268,13 +262,11 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		return null;		
 	}
 
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		// temperature in Celcius
@@ -295,14 +287,13 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler, if the weather is supported
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		if (weather_enabled == true)
@@ -316,7 +307,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		}
 	}
 	
-	// run discovery in separate thread
+	/**
+	 * run weather retrieval in separate thread
+	 * @see java.lang.Runnable#run()
+	 */
 	public void run() 
 	{
 			InputSource input;
@@ -397,10 +391,14 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			}		
 	}
 
-	
-	public WeatherHandler(Context nors)
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's arming the semaphore and retrieving the reference to the XMLParser as well as a reference to the {@link android.location.LocationManager}
+	 * @param airs Reference to the calling {@link android.content.Context}
+	 */
+	public WeatherHandler(Context airs)
 	{
-		this.nors = nors;
+		this.nors = airs;
 
 		// read polltime from preferences
 		polltime = HandlerManager.readRMS_i("WeatherHandler::WeatherPoll", 10) * 1000 * 60;
@@ -446,6 +444,11 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the location receiver, shut down the retrieval thread, unregister the connectivity receiver and release all semaphores
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads	
@@ -476,7 +479,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	// The Handler that gets information back from the other threads, initializing GPS
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the GPS
 	// since requestLocationUpdates() can only be called from the main Looper thread!!
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -520,7 +523,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
        }
     };
 
-    public class ExampleHandler extends DefaultHandler
+    private class ExampleHandler extends DefaultHandler
     {    	 
     	private boolean current_cond = false;
 

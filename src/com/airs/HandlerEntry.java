@@ -16,9 +16,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
+/**
+ * Class for describing a HandlerUI entry
+ *
+ */
 public class HandlerEntry 
 {
+	/**
+	 * Name of the HandlerUI entry
+	 */
 	public String name;
+	/**
+	 * Description of the entry
+	 */
 	public String description;
+	/**
+	 * Resource ID to the icon shown
+	 */
 	public int resid;
 }

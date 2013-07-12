@@ -21,7 +21,6 @@ import java.util.concurrent.Semaphore;
 
 import com.airs.AIRS_record_tab;
 import com.airs.helper.SerialPortLogger;
-import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -48,22 +47,20 @@ import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 
 /**
- * @author trossen
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
- */
+ * Class to read system related sensors, specifically the Ba, BV, Bc, BM, Rm, Sc, HS, IC, OC, SR, SS, TR, TV, TE sensor
+ * @see Handler
+ */  
 public class SystemHandler implements com.airs.handlers.Handler
 {
-	public static final int INIT_BATTERY 		= 1;
-	public static final int INIT_SCREEN 		= 2;
-	public static final int INIT_HEADSET 		= 3;
-	public static final int INIT_PHONESTATE 	= 4;
-	public static final int INIT_OUTGOINGCALL 	= 5;
-	public static final int INIT_SMSRECEIVED 	= 6;
-	public static final int INIT_SMSSENT	 	= 7;
+	private static final int INIT_BATTERY 		= 1;
+	private static final int INIT_SCREEN 		= 2;
+	private static final int INIT_HEADSET 		= 3;
+	private static final int INIT_PHONESTATE 	= 4;
+	private static final int INIT_OUTGOINGCALL 	= 5;
+	private static final int INIT_SMSRECEIVED 	= 6;
+	private static final int INIT_SMSSENT	 	= 7;
 
-	static final Uri SMS_STATUS_URI = Uri.parse("content://sms/");
+	static private final Uri SMS_STATUS_URI = Uri.parse("content://sms/");
 
 	private Context airs;
 	private int oldBattery = -1;
@@ -92,15 +89,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore received_semaphore 	= new Semaphore(1);
 	private Semaphore sent_semaphore 		= new Semaphore(1);
 	private Semaphore template_semaphore 	= new Semaphore(1);
-
-	/**
-	 * Sleep function 
-	 * @param millis
-	 */
-	protected void sleep(long millis) 
-	{
-		Waker.sleep(millis);
-	}
 	
 	private void wait(Semaphore sema)
 	{
@@ -113,14 +101,13 @@ public class SystemHandler implements com.airs.handlers.Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, we start various receivers for system data upon first Acquire() call
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{
 		byte[] readings = null;
@@ -549,14 +536,12 @@ public class SystemHandler implements com.airs.handlers.Handler
 		return null;
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		// battery level?
@@ -592,13 +577,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		// battery level?
@@ -618,14 +601,13 @@ public class SystemHandler implements com.airs.handlers.Handler
 			History.timelineView(airs, "RAM [kByte]", "Rm");
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, true, 0, this);	    
@@ -644,6 +626,11 @@ public class SystemHandler implements com.airs.handlers.Handler
     	SensorRepository.insertSensor(new String("TE"), new String("Template"), new String("Recording template"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's only arming the semaphores and obtaining a reference to the {android.app.ActivityManager} for the task information
+	 * @param airs Reference to the calling {@link android.content.Context}
+	 */
 	public SystemHandler(Context airs)
 	{
 		// read polltime
@@ -672,6 +659,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the broadcast receiver and release all semaphores
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads

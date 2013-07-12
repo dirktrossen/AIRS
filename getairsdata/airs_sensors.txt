@@ -11,6 +11,7 @@ cell broadcast|BS|string/area code|N
 number of bt devices|BN|integer/number of BT devices around|N
 battery voltage|BV|int/mV|N
 battery temperature|BM|integer|N
+blood pressure|BP|string|N
 calendar event|CA|text|Y
 net country code|CC|integer/0-65535|N
 GPRS status|CD|int/0 or 1|N
@@ -20,6 +21,7 @@ signal strength db|CS|integer/-120 to 0 dBm|N
 signal strength in bars|CB|integer/bars|N
 location area code|CL|integer/0-65535|N
 event button on phone|EB|string/text|Y
+event text on phone|ET|string/text|Y
 gps-based longitude|GO|float|N
 gps-based altitude|GA|float|N
 gps-based latitude|GL|float|N
@@ -44,8 +46,9 @@ memory available|Rm|integer/bytes|N
 outgoing call|OC|string/number|N
 proximity|PR|float/cm|N
 pitch|Pi|float/-180 to 180 degrees|N
-roll|Ro|float/-90 to 90 degrees|N
 atmospheric pressure|PU|int/0-1200|N
+roll|Ro|float/-90 to 90 degrees|N
+random number (used for testing)|Rd|int|N
 received sms|SR|string/number:body|Y
 screen on/off|Sc|integer/0 or 1|N
 sms sent|SS|text|Y
@@ -65,4 +68,3 @@ wlan signal strength|WS|integer/%|N
 wlan position|WP|string/area|N
 wlan connected|WC|int/0 or 1|N
 wlan info|WF|string/all info|Y
-random|Rd|int|N

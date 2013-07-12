@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2008-2013, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -26,23 +26,26 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
 import com.airs.helper.SerialPortLogger;
-import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.Sensor;
 import com.airs.platform.SensorRepository;
 
+/**
+ * Class to read Zephyr HxM related sensors, specifically the HL, HP, HI sensor
+ * @see Handler
+ */
 public class HeartMonitorHandler implements Handler, Runnable
 {  
 	// HMX variables
-	public static final int HMX_STX 		= 0;
-	public static final int HMX_MSG_ID 		= 1;
-	public static final int HMX_DLC 		= 2;
-	public static final int HMX_BATTERY		= 8;
-	public static final int HMX_PULSE		= 9;
-	public static final int HMX_DISTANCE	= 47;
-	public static final int HMX_INSTANCE	= 49;
-	public static final int HMX_STRIDE		= 51;
+//	private static final int HMX_STX 		= 0;
+//	private static final int HMX_MSG_ID 	= 1;
+//	private static final int HMX_DLC 		= 2;
+	private static final int HMX_BATTERY	= 8;
+	private static final int HMX_PULSE		= 9;
+//	private static final int HMX_DISTANCE	= 47;
+	private static final int HMX_INSTANCE	= 49;
+//	private static final int HMX_STRIDE		= 51;
 
 	// initialize old sensor values with float of zero
 	private int last_battery 		= 0;
@@ -74,20 +77,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 	private byte[] reading = null;
 	private Thread runnable;
 	
-	protected void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
 
-	/**
-	 * Sleep function 
-	 * @param millis
-	 */
-	protected void sleep(long millis) 
-	{
-		Waker.sleep(millis);
-	}
-	
 	private void wait(Semaphore sema)
 	{
 		try
@@ -99,13 +93,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 		}
 	}
 
-	/***********************************************************************
-	 Function    : HeartMonitorHandler()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : 	reads RMS and check if version 1.0 is wanted or not
-	***********************************************************************/
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's arming the semaphore
+	 * @param airs Reference to the calling {@link android.content.Context}
+	 */
 	public HeartMonitorHandler(Context airs)
 	{
 		// save for later
@@ -124,6 +116,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 		wait(instance_semaphore); 
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we release all handler semaphores as well as close the BT socket, closing also the BT read thread
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads
@@ -156,14 +153,14 @@ public class HeartMonitorHandler implements Handler, Runnable
   		connected = false;
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : 	actual Acquisition function, reading sensors and waiting for
-	                result 
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, we first try to connect to the Zephyr for an initial connection (but only once!)
+	 * then, it's a simple wait for the semaphores to be released
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	synchronized public byte[] Acquire(String sensor, String query)
 	{	
 		// if not connected, try now!
@@ -260,14 +257,12 @@ public class HeartMonitorHandler implements Handler, Runnable
 		return reading;
 	}
 
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		switch(sensor.charAt(1))
@@ -283,13 +278,11 @@ public class HeartMonitorHandler implements Handler, Runnable
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - supporting timeline for heart rate and instant speed
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		switch(sensor.charAt(1))
@@ -303,14 +296,14 @@ public class HeartMonitorHandler implements Handler, Runnable
 		}		
 	}
 
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if the monitor is selected by the user to be used
+	 * This does not mean that the sensor has been found via BT! 
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		if (use_monitor == true)
@@ -444,7 +437,6 @@ public class HeartMonitorHandler implements Handler, Runnable
 	{
 		int i;
 		byte header;
-		byte checksum;
 		byte endOfMessage;
 		byte[] payload = null;
 		int payload_length;
@@ -491,7 +483,7 @@ public class HeartMonitorHandler implements Handler, Runnable
                     payload[i] = readfromBT();
 			    	
 		    	// read checksum
-				checksum = readfromBT(); 
+				readfromBT(); 
 
 		    	// read end of message
                 endOfMessage = readfromBT(); 

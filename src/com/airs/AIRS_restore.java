@@ -32,12 +32,18 @@ import android.widget.Toast;
 import android.content.*;
 import android.content.res.Configuration;
 
+/**
+ * Activity to restore the AIRS database
+ *
+ * @see AIRS_backup
+ * @see AIRS_DBAdmin
+ */
 public class AIRS_restore extends Activity
 {
 	// states for handler 
-	public static final int FINISH_ACTIVITY			= 1;
-	public static final int FINISH2_ACTIVITY		= 2;
-	public static final int UPDATE_VALUES			= 3;
+	private static final int FINISH_ACTIVITY			= 1;
+	private static final int FINISH2_ACTIVITY		= 2;
+	private static final int UPDATE_VALUES			= 3;
         
     // preferences
     private SharedPreferences settings;
@@ -46,8 +52,10 @@ public class AIRS_restore extends Activity
 	private TextView mTitle;
 	private TextView ProgressText;
 
-    /** Called when the activity is first created. */
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         // Set up the window layout
@@ -82,25 +90,34 @@ public class AIRS_restore extends Activity
         new RestoreThread();
     }
     
-    @Override
+	/** Called when the activity is paused. 
+     */
+	@Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
-    @Override
+	/** Called when the activity is stopped. 
+     */
+	@Override
     public void onStop() 
     {
         super.onStop();
     }
 
-    @Override
+	/** Called when the activity is destroyed. 
+     */
+	@Override
     public void onDestroy() 
     {
        super.onDestroy();       
     }
      
-    @Override
+	/** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
       //ignore orientation change
@@ -108,7 +125,7 @@ public class AIRS_restore extends Activity
     }
 	
 	// The Handler that gets information back from the other threads, updating the values for the UI
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 

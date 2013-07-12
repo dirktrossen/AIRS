@@ -1,3 +1,19 @@
+/*
+Copyright (C) 2013, TecVis, support@tecvis.co.uk
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation as version 2.1 of the License.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+*/
 package com.airs;
 
 import android.app.Activity;
@@ -17,17 +33,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+/**
+ * Activity to show the selected sensors to record
+ *
+ * @see         AIRS_record_tab
+ * @see AIRS_local
+ */
 public class AIRS_sensorselection extends Activity
 {
     // handler for starting local AIRS
-	public static final int DISCOVER_LOCALLY = 2;
+	private static final int DISCOVER_LOCALLY = 2;
 	
 	private Activity airs;
 
     private AIRS_local 	AIRS_locally;
     private ProgressDialog progressdialog;
 
-    /** Called when the activity is first created. */
+    /** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -42,18 +66,24 @@ public class AIRS_sensorselection extends Activity
         getApplicationContext().bindService(new Intent(this, AIRS_local.class), mConnection, Service.BIND_AUTO_CREATE);   
     }
 
+    /** Called when the activity is paused. 
+     */
     @Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
+    /** Called when the activity is stopped. 
+     */
     @Override
     public void onStop() 
     {
         super.onStop();
     }
 
+    /** Called when the activity is destroyed. 
+     */
     @Override
     public void onDestroy() 
     {
@@ -67,6 +97,9 @@ public class AIRS_sensorselection extends Activity
        }
     }
     
+    /** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
@@ -78,6 +111,9 @@ public class AIRS_sensorselection extends Activity
         return true;
     }
     
+    /** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
@@ -110,6 +146,11 @@ public class AIRS_sensorselection extends Activity
         }
         return true;
     }    
+   
+    
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -117,7 +158,7 @@ public class AIRS_sensorselection extends Activity
     }
 
 	 // The Handler that gets information back from the other threads, starting the various services from the main thread
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 

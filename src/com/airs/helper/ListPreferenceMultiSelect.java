@@ -27,20 +27,38 @@ import android.util.AttributeSet;
  * @author declanshanaghy
  * http://blog.350nice.com/wp/archives/240
  * MultiChoice Preference Widget for Android
+ * Adjusted for use in AIRS
  *
  */
-public class ListPreferenceMultiSelect extends ListPreference 
+public class ListPreferenceMultiSelect extends ListPreference
 {
 	private String separator = "::";
 	private boolean[] mClickedDialogEntryIndices;
-	
-	// Constructor
+
+	/**
+	 * Constructor
+	 * @param context Reference to the calling {@link android.content.Context}
+	 */
+    public ListPreferenceMultiSelect(Context context) 
+    {
+        this(context, null);        
+    }
+    
+	/** 
+	 * Constructor
+	 * @param context Reference to the calling {@link android.content.Context}
+	 * @param attrs Reference to the {@link android.util.AttributeSet} of the layout
+	 */
 	public ListPreferenceMultiSelect(Context context, AttributeSet attrs) 
 	{
         super(context, attrs);
         mClickedDialogEntryIndices = new boolean[getEntries().length];
     }
 	
+    
+	/**
+	 * Set the entries being shown in the multi select list
+	 */
 	@Override
     public void setEntries(CharSequence[] entries) 
 	{
@@ -48,12 +66,11 @@ public class ListPreferenceMultiSelect extends ListPreference
     	if (entries.length != 0)
 	        mClickedDialogEntryIndices = new boolean[entries.length];
     }
-    
-    public ListPreferenceMultiSelect(Context context) 
-    {
-        this(context, null);
-    }
 
+	/**
+	 * Function called by the system when preparing the Preference
+	 * @param builder Reference to the {@link android.app.AlertDialog.Builder} being used
+	 */
     @Override
     protected void onPrepareDialogBuilder(Builder builder) 
     {
@@ -78,6 +95,9 @@ public class ListPreferenceMultiSelect extends ListPreference
         		});
     }
         
+    /**
+     * Goes through the list of entries and sets the checkmarks according to the persistent values
+     */
     private void restoreCheckedEntries() 
     {
     	int i, j;
@@ -102,6 +122,10 @@ public class ListPreferenceMultiSelect extends ListPreference
         	}
     }
 
+    /**
+     * Called when dialog is closed by the user
+     * @param positiveResult has the positive button been pressed (true) or not (false)
+     */
 	@Override
     protected void onDialogClosed(boolean positiveResult) 
 	{

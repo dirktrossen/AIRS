@@ -22,10 +22,20 @@ import android.preference.PreferenceActivity;
 
 import com.airs.*;
 
+/**
+ * Class to implement the SystemHandler configuration UI, based on the HandlerUI interface class
+ *
+ * @see com.airs.handlerUIs.HandlerUI HandlerUI 
+ * @see com.airs.handlers.SystemHandler SystemHandler
+ */
 public class DeviceInfoHandlerUI implements HandlerUI
 {   
-	Context context; 
+	private Context context; 
 	
+	/**
+	 * Initialises the settings entry with the name, description and icon resource ID
+	 * @param context Reference to the {@link android.content.Context} realising this entry
+	 */
 	public HandlerEntry init(Context context)
 	{
 		this.context = context;
@@ -37,21 +47,44 @@ public class DeviceInfoHandlerUI implements HandlerUI
 		return (entry);
 	}
 
+	/**
+	 * Returns the resource ID to the preference XML file containing the layout of the preference
+	 * @return resource ID
+	 */
 	public int setDisplay()
 	{
 		return R.xml.prefsdeviceinfo;
 	}
-
+	
+	/**
+	 * Returns the About String shown when selecting the About menu item in the Options menu
+	 * @return About String of the About text
+	 */
 	public String About()
 	{
 		return context.getString(R.string.DeviceInfoHandlerUI_about);
 	}
 	
+	/**
+	 * Returns the Title for the About Dialog shown when selecting the About menu item in the Options menu
+	 * @return String of the title
+	 */
 	public String AboutTitle()
 	{
 		return context.getString(R.string.DeviceInfoHandlerUI_name);
 	}
 
+    /**
+     * Destroys any resources for this {@link HandlerUI}
+     */
+    public void destroy()
+    {
+    }
+    
+	/**
+	 * Function to configure the Preference activity with any preset value necessary - empty here
+	 * @param prefs Reference to {@link android.preference.PreferenceActivity}
+	 */
 	public void configurePreference(PreferenceActivity prefs)
 	{
 	}

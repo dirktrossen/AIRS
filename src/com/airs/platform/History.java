@@ -23,9 +23,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+/**
+ * Static class to call the {@link TimelineActivity} and {@link MapViewerActivity} for visualisation
+ *
+ */
 public class History 
 { 
-    // start timeline activity
+	/**
+	 * Starts the {@link TimelineActivity}
+	 * @param airs Reference to the {@link android.content.Context} of the calling activity
+	 * @param title String with title of the dialog box being created
+	 * @param Symbol String with the sensor symbol being visualised
+	 */
     static public void timelineView(Context airs, String title, String Symbol)
     {
     	Intent intent = new Intent(airs.getApplicationContext(), TimelineActivity.class);
@@ -42,8 +51,13 @@ public class History
 
  	   	airs.startActivity(intent);
     }
-    
-    // start mapview activity
+
+    /**
+	 * Starts the {@link MapViewerActivity}
+	 * @param airs Reference to the {@link android.content.Context} of the calling activity
+	 * @param title String with title of the dialog box being created
+	 * @param Symbol String with the sensor symbol being visualised
+     */
     static public void mapView(Context airs, String title, String Symbol)
     {
     	Intent intent = new Intent(airs.getApplicationContext(), MapViewerActivity.class);

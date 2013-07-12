@@ -20,10 +20,8 @@ package com.airs.platform;
 import com.airs.helper.SerialPortLogger;
 
 /**
- * @author trossen
- * @date Nov 28, 2004
- * 
- * Purpose: 
+ * Class to handle discovery requests sent by remote application server
+ * Implements a {@link Callback} for the PUBLISH methods being created
  */
 public class Discovery implements Callback, Runnable
 {
@@ -33,7 +31,7 @@ public class Discovery implements Callback, Runnable
 	private String			TO = new String("REMONT AS");
 	private String  		event_name = new String("available");
 	
-	protected static void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
@@ -42,7 +40,7 @@ public class Discovery implements Callback, Runnable
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected static void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		try 
 		{
@@ -53,13 +51,10 @@ public class Discovery implements Callback, Runnable
 		}
 	}
 
-	/***********************************************************************
-	 Function    : Discovery()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : constructor of class
-	***********************************************************************/
+	/**
+	 * Constructor, starting the internal discovery thread
+	 * @param current_EC Reference to the {@link EventComponent} that instantiates this component
+	 */
 	public Discovery(EventComponent current_EC)
 	{
 		this.current_EC = current_EC;
@@ -68,14 +63,9 @@ public class Discovery implements Callback, Runnable
 		new Thread(this).start();
 	}
 	
-	/***********************************************************************
-	 Function    : run()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : Runnable thread of this class for local discovery of
-	               sensors and generating PUBLISH methods
-	***********************************************************************/
+	/** 
+	 * Runnable thread of this class for local discovery of sensors and generating PUBLISH methods
+	 */
 	public void run() 
 	{
 		Sensor discovery_old, current, found;
@@ -172,13 +162,10 @@ public class Discovery implements Callback, Runnable
 		}
 	}
 	 
-	/***********************************************************************
-	 Function    : callback()
-	 Input       : dialog for notification
-	 Output      :
-	 Return      :
-	 Description : callback for CONFIRMs of the publications
-	***********************************************************************/
+	/**
+	 * Callback function for CONFIRMs of the (discovery) publications
+	 * @param dialog Reference to the {@link DIALOG_INFO} for the CONFIRM dialog
+	 */
 	public void callback(DIALOG_INFO dialog)
 	{
 		debug("Discovery::callback:received method");

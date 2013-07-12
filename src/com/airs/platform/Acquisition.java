@@ -20,10 +20,9 @@ package com.airs.platform;
 import com.airs.helper.SerialPortLogger;
 
 /**
- * @author trossen
- * @date Nov 17, 2004
  * 
- * Purpose: handles acquisitions that arrive at the N12 
+ * Class to handle acquisition requests that arrive from remote application server
+ * Implements a {@link Callback} for the CONFIRM methods being created
  */
 public class Acquisition implements Callback
 {
@@ -40,7 +39,7 @@ public class Acquisition implements Callback
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected static void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		try 
 		{
@@ -51,13 +50,10 @@ public class Acquisition implements Callback
 		}
 	}
 
-	/***********************************************************************
-	 Function    : Acquisition()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : constructor of class
-	***********************************************************************/
+	/**
+	 * Constructor
+	 * @param current_EC Reference to {@link EventComponent} that is instantiating the class
+	 */
 	public Acquisition(EventComponent current_EC)
 	{
 		this.current_EC = current_EC;
@@ -72,13 +68,10 @@ public class Acquisition implements Callback
 	}
 	
 	
-	/***********************************************************************
-	 Function    : callback()
-	 Input       : dialog for notification
-	 Output      :
-	 Return      :
-	 Description : callback for subscriptions
-	***********************************************************************/
+	/**
+	 * Callback for notifications that arrive from remote application server
+	 * @param dialog Reference to {@link DIALOG_INFO} that holds the notification info
+	 */
 	public void callback(DIALOG_INFO dialog)
 	{
 		QueryResolver query = null;
@@ -189,7 +182,7 @@ public class Acquisition implements Callback
 		}
 	}
 
-	synchronized void askConfirmation(String query)
+	synchronized private void askConfirmation(String query)
 	{    
         confirm = -1;
         // wait for user input
@@ -197,7 +190,7 @@ public class Acquisition implements Callback
         	sleep(200);		       
  	}
 
-	synchronized void initConfirmation()
+	synchronized private void initConfirmation()
 	{
 	}
 }

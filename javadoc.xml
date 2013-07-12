@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc additionalparam=" -linkoffline http://developer.android.com/reference file:/Users/dirktrossen/Code/android-sdk-mac_86/docs/reference -linkoffline http://developers.google.com/maps/documentation/android/v1/reference/ file:/Users/dirktrossen/Code/android-sdk-mac_86/add-ons/addon-google_apis-google-17/docs/maps_apis" 
+            access="public" author="true" classpath="." 
+            destdir="doc" doctitle="AIRS documentation V1.0" 
+            nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
+            packagenames="com.airs.handlers,com.airs.platform,com.airs,com.airs.handlerUIs,com.airs.helper" 
+            source="1.6" sourcepath="src" 
+            splitindex="true" use="true" version="true">
+           <bottom><![CDATA[<i>Copyright &#169; 2013 TecVis LP, All Rights Reserved.</i>]]></bottom>            
+        </javadoc>
+    </target>
+</project>

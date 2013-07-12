@@ -26,11 +26,9 @@ import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
-/**
- * @author trossen
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+/** 
+ * Class to read media watcher sensors, specifically the MW sensor
+ * @see Handler
  */
 public class MediaWatcherHandler implements Handler
 {
@@ -47,7 +45,7 @@ public class MediaWatcherHandler implements Handler
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
@@ -63,14 +61,13 @@ public class MediaWatcherHandler implements Handler
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, we install the appropriate watchers based on the user selection in the configuration
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
 		StringBuffer readings = null;
@@ -129,38 +126,33 @@ public class MediaWatcherHandler implements Handler
 		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor - doing nothing here!
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - doing nothing here!
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 	}
 
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if any watching is selected by the user in the configuration
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		// is at least one watch type selected?
@@ -168,6 +160,13 @@ public class MediaWatcherHandler implements Handler
 			SensorRepository.insertSensor(new String("MW"), new String("file"), new String("Watched media folder"), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's reading the persistent preferences
+	 * Then, we determine the appropriate directories and arm the semaphore
+	 * Finally, it's arming the semaphore
+	 * @param airs Reference to the calling {@link android.content.Context}
+	 */
 	public MediaWatcherHandler(Context airs)
 	{
 		camera   = HandlerManager.readRMS_b("MediaWatcherHandler::Camera", false);
@@ -189,6 +188,11 @@ public class MediaWatcherHandler implements Handler
 		wait(watcher_semaphore); 
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the watchers and release the handler semaphore
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads

@@ -27,8 +27,19 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+/**
+ * Class to safely copy an entire preference set over
+ * 'Safely' here is in regards to preserving certain preference entries that should not be copied over
+ * This function is used by {@link com.airs.AIRS_shortcut}, {@link com.airs.AIRS_record_tab} and {@link com.airs.AIRS_configure_remote} to handle shortcuts
+ *
+ */
 public class SafeCopyPreferences 
 {
+	/**
+	 * Copy the preferences in a safe way, as explained in the Class description
+	 * @param context Reference to the calling {@link android.content.Context}
+	 * @param shortcutFile File that is copied as the new preference file 
+	 */
 	static public void copyPreferences(Context context, File shortcutFile)
 	{
         long synctime;

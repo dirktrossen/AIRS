@@ -20,10 +20,8 @@ package com.airs.platform;
 import com.airs.helper.SerialPortLogger;
 
 /**
- * @author trossen
- * @date Nov 18, 2004
- * 
- * Purpose: This class is instantiated for each incoming query
+ * This class is instantiated for each incoming query from a remote application server
+ * Currently, however, no query resolving is properly implemented
  */
 public class QueryResolver implements Runnable
 {
@@ -37,7 +35,7 @@ public class QueryResolver implements Runnable
 	// sleep time of query resolver to see if query is fulfilled
 	private int sleeptime		= -1;
 	
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		try 
 		{
@@ -48,19 +46,18 @@ public class QueryResolver implements Runnable
 		}
 	}
 
-	protected void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
 	}
 
-	/***********************************************************************
-	 Function    : QueryResolver()
-	 Input       : EventComponent, Acquisition Component, dialog_id and query 
-	 			   for the subscription
-	 Output      :
-	 Return      :
-	 Description : stores parameters of this query
-	***********************************************************************/
+	/**
+	 * Constructor of this class, storing parameters of this query
+	 * @param current_EC Reference to the {@link EventComponent} instantiating this class
+	 * @param current_Acquisition Reference to the {@link Acquisition} using this query resolver
+	 * @param dialog_id Identifier of the dialog in which this query is executed
+	 * @param Query byte array holding the query itself
+	 */
 	QueryResolver(EventComponent current_EC, Acquisition current_Acquisition, short dialog_id, byte Query[])
 	{
 		// copy parameters 
@@ -70,16 +67,11 @@ public class QueryResolver implements Runnable
 		this.Query 				 = Query;	
 	}
 
-	/***********************************************************************
-	 Function    : run()
-	 Input       : 
-	 Output      :
-	 Return      :
-	 Description : thread for resolving a query - to be started by the 
-	 			   Acquisition component (usually in the callback for a dialog)!!
-	 			   if sending NOTIFY fails, thread returns, i.e., ends
-	 			   NOTIFY could fail due to termination of dialog (e.g., BYE) 
-	***********************************************************************/
+	/**
+	 * Thread for resolving a query - to be started by the {@link Acquisition} component (usually in the callback for a dialog)!!
+	 * If sending NOTIFY fails, thread returns, i.e., ends
+	 * NOTIFY could fail due to termination of dialog (e.g., BYE) 
+	 */
 	public void run() 
 	{
 		Sensor sensor = null; 
@@ -132,15 +124,12 @@ public class QueryResolver implements Runnable
 		sleeptime = poll;
 	}
 	
-	/***********************************************************************
-	 Function    : parse()
-	 Input       : query string
-	 Output      :
-	 Return      : true = valid query; false otherwise
-	 Description : parses incoming query for resource availability and syntactial
-	               correctness (later).  
-	***********************************************************************/
-	Sensor parse(byte[] Query)
+	/**
+	 * parses incoming query for resource availability and syntactial correctness (not yet implemented)
+	 * @param Query byte array with the query string
+	 * @return true, if it is a valid query, false otherwise
+	 */
+	public Sensor parse(byte[] Query)
 	{
 		int polltime;
 		Sensor sensor = null;
@@ -196,13 +185,11 @@ public class QueryResolver implements Runnable
 		return sensor;
 	}
 
-	/***********************************************************************
-	 Function    : s_parse()
-	 Input       : query string for sensor symbol and look up sensor
-	 Output      :
-	 Return      : sensor 
-	 Description : parses incoming query for resource availability.  
-	***********************************************************************/
+	/**
+	 * Parses incoming query for resource availability, i.e., returns appropriate {@link Sensor} reference
+	 * @param Query byte array with the query String
+	 * @return Reference to the {@link Sensor} found in the query string
+	 */
 	static Sensor s_parse(byte[] Query)
 	{
 		// form query to be parsed

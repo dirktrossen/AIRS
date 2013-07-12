@@ -25,10 +25,16 @@ import android.widget.RemoteViews;
 
 import com.airs.*;
 
+/** Widget provider for the blood pressure widget
+ * @see android.appwidget.AppWidgetProvider
+ */
 public class BloodPressureButton_widget extends AppWidgetProvider
 {
-	Context context;
-
+	/**
+	 * Called when widget is updated, including when it is created the first time
+	 * Here, we hook the pressing of the widget to the UI thread, having the UI send a broadcast to the BloodPressureButtonHandler if it pressed
+	 * @see android.appwidget.AppWidgetProvider#onUpdate(android.content.Context, android.appwidget.AppWidgetManager, int[])
+	 */
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) 
     {
@@ -44,23 +50,32 @@ public class BloodPressureButton_widget extends AppWidgetProvider
         views.setOnClickPendingIntent(R.id.heart_button_local, pendingIntent);
 
         // Tell the widget manager
-        appWidgetManager.updateAppWidget(appWidgetIds, views);
-        
-        // save context for later!
-        this.context = context;
+        appWidgetManager.updateAppWidget(appWidgetIds, views);        
     }
     
+    /**
+     * Called when the widget is removed
+     * @see android.appwidget.AppWidgetProvider#onDeleted(android.content.Context, int[])
+     */
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) 
     {
     }
 
+    /**
+     * Called when enabled - doing nothing here
+     * @see android.appwidget.AppWidgetProvider#onEnabled(android.content.Context)
+     */
     @Override
     public void onEnabled(Context context) 
     {
     	// create intent to broadcast?
     }
 
+    /**
+     * Called when disabled - doing nothing here
+     * @see android.appwidget.AppWidgetProvider#onDisabled(android.content.Context)
+     */
     @Override
     public void onDisabled(Context context) 
     {

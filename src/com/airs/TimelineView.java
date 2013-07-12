@@ -27,6 +27,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
+/**
+ * Class to implement a timeline with two colors and a grid
+ * @see TimelineActivity
+ */
 public class TimelineView extends View
 {
     private Paint paint  = new Paint();
@@ -42,6 +46,10 @@ public class TimelineView extends View
     private boolean sizes = false;
     private ProgressBar progress = null;
     
+    /**
+     * Constructor, setting the various color and stroke characteristics for the timeline
+     * @param context Reference to the calling {@link android.content.Context}
+     */
     public TimelineView(Context context) 
     {
         super(context);
@@ -60,6 +68,11 @@ public class TimelineView extends View
         paint_grid.setPathEffect(new DashPathEffect(new float[] {5,10}, 0));
     }
 
+    /**
+     * Constructor, setting the various color and stroke characteristics for the timeline
+     * @param context Reference to the calling {@link android.content.Context}
+     * @param attrs Reference to the {@link android.util.AttributeSet} of the layout drawn for
+     */
     public TimelineView(Context context,  AttributeSet attrs) 
     {
         super(context, attrs);
@@ -78,6 +91,13 @@ public class TimelineView extends View
         paint_grid.setPathEffect(new DashPathEffect(new float[] {5,10}, 0));
     }
 
+    /**
+     * called when size of the view changed
+     * @param xNew new width
+     * @param yNew new height
+     * @param xOld old width
+     * @param yOld old height
+     */
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld)
     {
@@ -87,6 +107,10 @@ public class TimelineView extends View
             height = yNew;
     }
     
+    /**
+     * Called by the UI thread to draw the timeline view
+     * @param canvas Reference to the {@link android.graphics.Canvas} drawn on
+     */
     @Override
     public void onDraw(Canvas canvas) 
     {
@@ -109,6 +133,11 @@ public class TimelineView extends View
     		progress.setVisibility(View.INVISIBLE);
     }
     
+    /**
+     * Push a timeline point (x=time, y=voltage) to the path, which is then later drawn by the onDraw() function
+     * @param time current time of the point
+     * @param voltage current y value of the point
+     */
     public void pushPath(long time, float voltage)
     {    
     	float x = (float)(time - minTime) * scalingX;
@@ -128,12 +157,19 @@ public class TimelineView extends View
     		path.lineTo((float)x, (float)(max-voltage)*scalingY);
     }
     
+    /**
+     * Pushes a point (y=voltage) of the average line from far left to far right, which is then later drawn by the onDraw() function
+     * @param voltage current y value of the point
+     */
     public void pushAverage(float voltage)
     {        	    	
 		path_average.moveTo((float)0, (float)(max-voltage)*scalingY);
 		path_average.lineTo((float)width, (float)(max-voltage)*scalingY);
     }
 
+    /**
+     * Pushes the path information for the grid to be drawn
+     */
     public void pushGrid()
     {   
     	// first the vertical grid lines
@@ -153,6 +189,13 @@ public class TimelineView extends View
     	path_grid.lineTo((float)width/4 * 3, height);
     }
 
+    /**
+     * Sets the min/max information for the timeline view so that the values are properly scaled when pushPath() is called
+     * @param min minimal y value
+     * @param max maximum y value
+     * @param minX minimal x value
+     * @param maxX maximum x value
+     */
     public void setMinMax(float min, float max, long minX, long maxX)
     {
     	this.max = max;
@@ -167,11 +210,19 @@ public class TimelineView extends View
     	path_grid.reset();
     }
 
+    /**
+     * Store a reference to the {@link android.widget.ProgressBar} that is shown during drawing
+     * @param progress
+     */
     public void setProgressBar(ProgressBar progress)
     {
     	this.progress = progress;
     }
     
+    /**
+     * sets the main color of the path
+     * @param color color code
+     */
     public void setMainColor(int color)
     {
     	paint.setColor(color);

@@ -33,6 +33,11 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+/**
+ * Activity to start a local recording via a launcher screen shortcut
+ *
+ * @see         AIRS_restore
+ */
 public class AIRS_shortcut extends Activity
 {
      // preferences
@@ -42,7 +47,10 @@ public class AIRS_shortcut extends Activity
 	 private String preferences, template;
 	 private AlertDialog alert;
 
-	   @Override
+	 /** Called when the activity is first created. 
+	     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+	     */
+	 @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 		    Intent intent= getIntent();
@@ -116,19 +124,25 @@ public class AIRS_shortcut extends Activity
 			}
 	    }
 
-	    @Override
+	 /** Called when the activity is restarted. 
+	     */
+	 @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
-	    @Override
+	 /** Called when the activity is stopped. 
+	     */
+	 @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
-	    @Override
+	 /** Called when the activity is destroyed. 
+	     */
+	 @Override
 	    public void onDestroy() 
 	    {
 	    	// stop service from updating value adapter
@@ -138,7 +152,13 @@ public class AIRS_shortcut extends Activity
 	        super.onDestroy();
 	    }
 
-	    public void onActivityResult(int requestCode, int resultCode, Intent data) 
+	 /**
+	     * Called when called {@link android.app.Activity} has finished. See {@link android.app.Activity} how it works
+	     * @param requestCode ID being used when calling the Activity
+	     * @param resultCode result code being set by the called Activity
+	     * @param data Reference to the {@link android.content.Intent} with result data from the called Activity
+	     */
+	 public void onActivityResult(int requestCode, int resultCode, Intent data) 
 	    {
 	    	return;
 	    }

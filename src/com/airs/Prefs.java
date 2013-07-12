@@ -21,18 +21,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 /**
- * Handles preferences (general and handler-specific ones) for NORS
+ * Handles preferences (general and handler-specific ones) for AIRS
+ * @see AIRS_settings_tab
  */
 public class Prefs extends PreferenceActivity 
 {
 	String AboutTitle, About;
 	
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
@@ -51,7 +56,22 @@ public class Prefs extends PreferenceActivity
         	AIRS_settings_tab.current_handler.configurePreference(this);
     }
 
-    @Override
+	/**
+	 * Called when the activity is destroyed
+	 */
+	@Override
+    public void onDestroy() 
+    {
+        super.onDestroy();
+
+        if (AIRS_settings_tab.current_handler != null)
+        	AIRS_settings_tab.current_handler.destroy();
+    }
+	
+	/** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
+	@Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
     	MenuInflater inflater;
@@ -61,7 +81,10 @@ public class Prefs extends PreferenceActivity
     	return true;
     }
 
-    @Override
+	/** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);

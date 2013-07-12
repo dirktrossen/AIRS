@@ -50,14 +50,19 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+/**
+ * Activity to view the GI/VI sensors on a Google Map view
+ *
+ * @see         MapViewerOverlay
+ * @see  MapViewerOverlayTrack
+ */
 public class MapViewerActivity extends MapActivity implements OnClickListener
 {
 	// offset for full day timestamp
-	public static final long FULL_DAY 		= 1000*60*60*24;	// milliseconds per day
-	
+	private static final long FULL_DAY 		= 1000*60*60*24;	// milliseconds per day
 
     private TextView		mTitle;
-    public  TextView 		mTitle2;
+    private TextView 		mTitle2;
 	private MapView mapView;
     private Bundle bundle;
 	private int  number_values;
@@ -77,6 +82,9 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 	private Cursor values = null;
     private boolean FirstDrawn = true;
 
+    /** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -158,6 +166,8 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
 		addOverlay();    	
     }
     
+    /** Called when the activity is destroyed. 
+     */
     @Override
     public void onDestroy() 
     {
@@ -171,12 +181,17 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
        editor.commit();       
     }
     
-	@Override
+    /** Called to check if route is being displayed in this map (required by Google Maps API). 
+     */
+    @Override
 	protected boolean isRouteDisplayed() 
 	{
 	    return false;
 	}
 	
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -184,6 +199,9 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
       super.onConfigurationChanged(newConfig);
     }
     
+    /** Called when a button has been clicked on by the user
+     * @param v Reference to the {@link android.view.View} of the button
+     */
     public void onClick(View v) 
     {
     	GeoPoint ownPoint;
@@ -201,6 +219,9 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
     	}	
     }
     
+    /** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
@@ -212,6 +233,9 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
         return true;
     }
     
+    /** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	

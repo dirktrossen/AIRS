@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.5.8.1" android:versionCode="155" android:sharedUserId="com.airs">
+      android:versionName="2.5.9" android:versionCode="156" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
    
@@ -87,6 +87,7 @@
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.MoodButton_iconselector" android:exported="false" android:label="@string/AIRS_Mood_Selector"  android:windowSoftInputMode="stateHidden|adjustResize"></activity>
      <activity android:theme="@android:style/Theme" android:name="com.airs.handlers.EventButton_selector" android:exported="false" android:label="@string/AIRS_Event_Selector" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlers.BloodPressureButton_selector" android:exported="false" android:label="@string/AIRS_BloodPressure" android:configChanges="orientation|keyboardHidden" android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+     <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.handlerUIs.LocationHandlerAPs" android:exported="false" android:label="@string/AdaptiveGPS_Hitlist" android:configChanges="orientation|keyboardHidden"></activity>
      <receiver android:name="com.airs.handlers.BloodPressureButton_widget" android:label="@string/AIRS_BloodPressure">
          <meta-data android:name="android.appwidget.provider"
                  android:resource="@xml/airs_widgetprovider_heart"/>

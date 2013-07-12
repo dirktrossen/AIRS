@@ -19,13 +19,24 @@ package com.airs.handlerUIs;
 
 import android.content.Context;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 
 import com.airs.*;
 
+/**
+ * Class to implement the AudioHandler configuration UI, based on the HandlerUI interface class
+ *
+ * @see com.airs.handlerUIs.HandlerUI HandlerUI 
+ * @see com.airs.handlers.AudioHandler AudioHandler
+ */
 public class AudioHandlerUI implements HandlerUI
 {   
-	Context context; 
+	private Context context; 
 	
+	/**
+	 * Initialises the settings entry with the name, description and icon resource ID
+	 * @param context Reference to the {@link android.content.Context} realising this entry
+	 */
 	public HandlerEntry init(Context context)
 	{
 		this.context = context;
@@ -37,21 +48,44 @@ public class AudioHandlerUI implements HandlerUI
 		return (entry);
 	}
 
+	/**
+	 * Returns the resource ID to the preference XML file containing the layout of the preference
+	 * @return resource ID
+	 */
 	public int setDisplay()
 	{
 		return R.xml.prefsaudio;
 	}
 
+	/**
+	 * Returns the About String shown when selecting the About menu item in the Options menu
+	 * @return About String of the About text
+	 */
 	public String About()
 	{
 		return context.getString(R.string.AudioHandlerUI_about);
 	}
 	
+	/**
+	 * Returns the Title for the About Dialog shown when selecting the About menu item in the Options menu
+	 * @return String of the title
+	 */
 	public String AboutTitle()
 	{
 		return context.getString(R.string.AudioHandlerUI_name);
 	}
 	
+    /**
+     * Destroys any resources for this {@link HandlerUI}
+     */
+    public void destroy()
+    {
+    }
+    
+	/**
+	 * Function to configure the Preference activity with any preset value necessary - empty here
+	 * @param prefs Reference to {@link android.preference.PreferenceActivity}
+	 */
 	public void configurePreference(PreferenceActivity prefs)
 	{
 	}

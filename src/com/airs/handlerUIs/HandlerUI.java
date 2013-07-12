@@ -22,11 +22,38 @@ import android.preference.PreferenceActivity;
 
 import com.airs.HandlerEntry;
 
+/**
+ * Interface being implemented by individual HandlerUI classes for each configuration setting entry
+ */
 public interface HandlerUI 
 {
+	/**
+	 * Initialises the settings entry with the name, description and icon resource ID
+	 * @param context Reference to the {@link android.content.Context} realising this entry
+	 */
 	public HandlerEntry init(Context context);
+	/**
+	 * Returns the resource ID to the preference XML file containing the layout of the preference
+	 * @return resource ID
+	 */
 	public int setDisplay();
+	/**
+	 * Returns the About String shown when selecting the About menu item in the Options menu
+	 * @return About String of the About text
+	 */
 	public String About();
+	/**
+	 * Returns the Title for the About Dialog shown when selecting the About menu item in the Options menu
+	 * @return String of the title
+	 */
 	public String AboutTitle();
+	/**
+	 * Function to configure the Preference activity with any preset value necessary
+	 * @param prefs Reference to {@link android.preference.PreferenceActivity}
+	 */
 	public void configurePreference(PreferenceActivity prefs);
+	/**
+	 * Destroys any resources for the handlerUI
+	 */
+	public void destroy();
 }

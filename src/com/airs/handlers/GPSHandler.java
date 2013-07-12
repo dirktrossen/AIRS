@@ -35,15 +35,17 @@ import com.airs.platform.History;
 import com.airs.platform.Sensor;
 import com.airs.platform.SensorRepository;
 
-// this handler has been separated from the standard location handler 
-// in order to prevent blocking of the other sensor types when not being able to get a GPS fix!
+/** 
+ * Class to read GPS-based sensors, specifically the GO, GL, GA, GI, GC, GS sensor
+ * @see Handler
+ */
 public class GPSHandler implements com.airs.handlers.Handler, Runnable
 {
-	public static final int INIT_GPS 	= 1;
-	public static final int KILL_GPS 	= 2;
-	public static final int RESET_AGPS 	= 3;
+	private static final int INIT_GPS 	= 1;
+	private static final int KILL_GPS 	= 2;
+	private static final int RESET_AGPS 	= 3;
 
-	Context airs;
+	private Context airs;
 	// are these there?
 	private boolean enableGPS = false, startedGPS = false, useWifi = false;
 	private boolean   shutdown = false;
@@ -69,15 +71,11 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	private Semaphore bearing_semaphore 	= new Semaphore(1);
 	private Semaphore full_semaphore 		= new Semaphore(1);
 
-	protected void debug(String msg) 
-	{
-		SerialPortLogger.debug(msg);
-	}
 	/**
 	 * Sleep function 
 	 * @param millis
 	 */
-	protected void sleep(long millis) 
+	private void sleep(long millis) 
 	{
 		Waker.sleep(millis);
 	}
@@ -93,14 +91,14 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * Here, we instruct the UI handler to reset the AGPS data as well as register the GPS receiver, if not done before
+	 * if adaptive GPS is selected by the user, we also start the thread for the GPS suppression
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{
  	    // are we shutting down?
@@ -140,14 +138,12 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 			return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		// now read the sensor values
@@ -170,13 +166,11 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		}
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - supporting timeline as well as map view here
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		// now read the sensor values
@@ -197,14 +191,13 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	}
 
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if the GPS has been successfully enabled
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 		if (enableGPS == true)
@@ -218,6 +211,14 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		}		
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's reading the persistent preferences
+	 * Then, we retrieve the adaptive GPS records
+	 * Then, we are trying to obtain a reference to the {@link android.location.LocationManager} - this will fail if there is no GPS on the device
+	 * Finally, it's arming the semaphore
+	 * @param activity Reference to the calling {@link android.content.Context}
+	 */
 	public GPSHandler(Context activity)
 	{
 		// store for later
@@ -264,6 +265,11 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we unregister the location receiver and release all handler semaphores as well as interrupt the adaptive GPS thread
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads
@@ -388,7 +394,8 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	
 	/**
 	 * 
-	 * This thread keeps on listening to WiFis 
+	 * This thread keeps on listening to WiFis and switches off the GPS readings if known WiFis are found
+	 * If requires the recording of WI sensor to be enabled
 	*/
 	public void run() 
 	{
@@ -484,7 +491,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 									bearing_semaphore.tryAcquire(); 
 									full_semaphore.tryAcquire(); 
 									
-									Log.e("Storica", "Did not find nearby wifi");
+									Log.v("AIRS", "Did not find nearby wifi");
 								}							
 							}
 						}
@@ -501,7 +508,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	// The Handler that gets information back from the other threads, initializing GPS
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the GPS
 	// since requestLocationUpdates() can only be called from the main Looper thread!!
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 

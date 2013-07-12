@@ -26,10 +26,20 @@ import android.preference.PreferenceActivity;
 
 import com.airs.*;
 
+/**
+ * Class to implement the HeartMonitorHandler configuration UI, based on the HandlerUI interface class
+ *
+ * @see com.airs.handlerUIs.HandlerUI HandlerUI 
+ * @see com.airs.handlers.HeartMonitorHandler HeartMonitorHandler
+ */
 public class HeartMonitorHandlerUI implements HandlerUI
 {
-	Context context; 
+	private Context context; 
 	
+	/**
+	 * Initialises the settings entry with the name, description and icon resource ID
+	 * @param context Reference to the {@link android.content.Context} realising this entry
+	 */
 	public HandlerEntry init(Context context)
 	{				
 		this.context = context;
@@ -41,21 +51,44 @@ public class HeartMonitorHandlerUI implements HandlerUI
 		return (entry);
 	}
 
+	/**
+	 * Returns the resource ID to the preference XML file containing the layout of the preference
+	 * @return resource ID
+	 */
 	public int setDisplay()
 	{
 		return R.xml.prefsheartmonitor;
 	}
 
+	/**
+	 * Returns the About String shown when selecting the About menu item in the Options menu
+	 * @return About String of the About text
+	 */
 	public String About()
 	{  
 		return context.getString(R.string.HeartMonitorHandlerUI_about);
 	}
 	
+	/**
+	 * Returns the Title for the About Dialog shown when selecting the About menu item in the Options menu
+	 * @return String of the title
+	 */
 	public String AboutTitle()
 	{
 		return context.getString(R.string.HeartMonitorHandlerUI_name);
 	}
 
+    /**
+     * Destroys any resources for this {@link HandlerUI}
+     */
+    public void destroy()
+    {
+    }
+    
+	/**
+	 * Function to configure the Preference activity with any preset value necessary - here collecting the paired BT devices and populating the appropriate ListPreference
+	 * @param prefs Reference to {@link android.preference.PreferenceActivity}
+	 */
 	public void configurePreference(PreferenceActivity prefs)
 	{
 		int foundAlive = 0;

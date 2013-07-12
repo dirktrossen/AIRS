@@ -27,25 +27,29 @@ import com.airs.helper.SerialPortLogger;
 import com.airs.handlers.*;
 /**
  * @author trossen
- * @date Oct 13, 2005
  * 
- * Purpose: initializes the handlers and stores them in static variable
+ * Initializes the handlers and stores them in static variable
  * later being used to point to in sensor repository
  */
 public class HandlerManager 
 {
-    // currently we have maximal 3 handlers
+	/**
+	 * maximum number of handlers supported so far
+	 */
     public final static int max_handlers = 24;
+    /**
+     * Reference to {@link Handler} entries being instantiated
+     */
     static public Handler handlers[] = new Handler[max_handlers];
-    static int inst_handlers = 0; 
+    static private int inst_handlers = 0; 
     static private SharedPreferences settings;
     static private Editor editor;
-
-	protected static void debug(String msg) 
-	{
-		SerialPortLogger.debug(msg);
-	}
 	
+    /**
+     * Creates {@link Handler} entries at the start of the remote or local service
+     * @param nors Reference to the {@link android.content.Context} of the calling activity
+     * @return true if successful
+     */
 	static public boolean createHandlers(Context nors)
 	{		
 	   // store pointer to preferences
@@ -83,6 +87,9 @@ public class HandlerManager
 	   return true;
 	}
 	
+	/**
+	 * Destroys the instantiated {@link Handler} instances
+	 */
 	static public void destroyHandlers()
 	{
 	   int i = 0;
@@ -101,7 +108,12 @@ public class HandlerManager
 	   }
 	}
 	
-	// read string from RMS for persistency
+	/**
+	 * Read string from RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param defaultString Default entry for this entry if it does not exist in store
+	 * @return Persistent reading obtained from RMS store
+	 */
 	static public String readRMS(String store, String defaultString)
 	{
 		String value = null;
@@ -117,7 +129,12 @@ public class HandlerManager
 		return value;
 	}
 
-	// read long from RMS for persistency
+	/**
+	 * Read long variable from RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param defaultint Default entry for this entry if it does not exist in store
+	 * @return Persistent reading obtained from RMS store
+	 */
 	static public long readRMS_l(String store, long defaultint)
 	{
 		long value = 0;
@@ -134,7 +151,12 @@ public class HandlerManager
 		return value;
 	}
 
-	// read integer from RMS for persistency
+	/**
+	 * Read int variable from RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param defaultint Default entry for this entry if it does not exist in store
+	 * @return Persistent reading obtained from RMS store
+	 */
 	static public int readRMS_i(String store, int defaultint)
 	{
 		int value = 0;
@@ -151,7 +173,12 @@ public class HandlerManager
 		return value;
 	}
 
-	// read boolean from RMS for persistency
+	/**
+	 * Read boolean variable from RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param defaultint Default entry for this entry if it does not exist in store
+	 * @return Persistent reading obtained from RMS store
+	 */
 	static public boolean readRMS_b(String store, boolean defaultint)
 	{
 		boolean value = false;
@@ -167,7 +194,11 @@ public class HandlerManager
 		return value;
 	}
 
-	// write string to RMS
+	/**
+	 * Write string variable to RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param value Value for this entry
+	 */
 	static public void writeRMS(String store, String value)
 	{
 		try
@@ -184,7 +215,11 @@ public class HandlerManager
 		}
 	}
 	
-	// write boolean to RMS
+	/**
+	 * Write boolean variable to RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param value Value for this entry
+	 */
 	static public void writeRMS_b(String store, boolean value)
 	{
 		try
@@ -200,7 +235,12 @@ public class HandlerManager
 			SerialPortLogger.debug("ERROR " +  "Exception: " + e.toString());
 		}
 	}
-	// write boolean to RMS
+
+	/**
+	 * Write long variable to RMS for persistency
+	 * @param store Entry in RMS store
+	 * @param value Value for this entry
+	 */
 	static public void writeRMS_l(String store, long value)
 	{
 		try

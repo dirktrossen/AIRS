@@ -27,11 +27,20 @@ import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
+/**
+ * Class to implement the overlay of GI/VI sensors in the Map View
+ *
+ */
 public class MapViewerOverlay extends ItemizedOverlay 
 {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	private Context airs;
 	
+	/**
+	 * Constructor
+	 * @param arg0 {@link android.graphics.drawable.Drawable} of the Overlay item
+	 * @param airs {@link android.content.Context} of the calling {@link android.app.Activity}
+	 */
 	public MapViewerOverlay(Drawable arg0, Context airs) 
 	{
 		super(boundCenterBottom(arg0));
@@ -39,6 +48,11 @@ public class MapViewerOverlay extends ItemizedOverlay
 		this.airs = airs;
 	}
 
+	/**
+	 * Add an item to the overall overlay list
+	 * @param overlay {@link com.google.android.maps.OverlayItem} to be added
+	 * @param marker {@link android.graphics.drawable.Drawable} of this item
+	 */
 	public void addOverlay(OverlayItem overlay, Drawable marker)
 	{
 		// set marker for this item
@@ -47,6 +61,10 @@ public class MapViewerOverlay extends ItemizedOverlay
 	    populate();
 	}
 
+	/**
+	 * Add an item with default marker to the overall overlay list
+	 * @param overlay {@link com.google.android.maps.OverlayItem} to be added
+	 */
 	public void addOverlay(OverlayItem overlay) 
 	{
 	    mOverlays.add(overlay);
@@ -69,6 +87,10 @@ public class MapViewerOverlay extends ItemizedOverlay
 	  return mOverlays.get(i);
 	}
 
+	/**
+	 * Returns number of the overlay items
+	 * @return number of items
+	 */
 	@Override
 	public int size() 
 	{
@@ -76,6 +98,12 @@ public class MapViewerOverlay extends ItemizedOverlay
 		return mOverlays.size();
 	}
 
+	/**
+	 * Draws the overlay items on the Map View
+	 * @param canvas Reference to the {@link android.graphics.Canvas} being drawn on
+	 * @param mapView Reference to the {@link com.google.android.maps.MapView} that this overlay appears on
+	 * @param shadow draw shadow (true) or not (false) under the overlay item
+	 */
 	@Override	
     public void draw(Canvas canvas, MapView mapView, boolean shadow)
     {

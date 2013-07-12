@@ -35,9 +35,14 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Activity to view the current measurements of the ongoing remote recording
+ *
+ * @see         AIRS_remote
+ */
 public class AIRS_remotevalues extends Activity
 {
-	 public static final int REFRESH_VALUES = 1;
+	 private static final int REFRESH_VALUES = 1;
 	 private TextView mTitle;
 	 private TextView mTitle2;
 	 private TextView mValue1, mValue2;
@@ -45,7 +50,10 @@ public class AIRS_remotevalues extends Activity
 	 private Activity act;
 	 private ValuesThread Values;
 
-	   @Override
+	 /** Called when the activity is first created. 
+	     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+	     */
+	 @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 	        // Set up the window layout
@@ -73,19 +81,25 @@ public class AIRS_remotevalues extends Activity
 			 Values = new ValuesThread();
 	    }
 
-	    @Override
+	 /** Called when the activity is restarted. 
+	     */
+	 @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
-	    @Override
+	 /** Called when the activity is stopped. 
+	     */
+	 @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
-	    @Override
+	 /** Called when the activity is stopped. 
+	     */
+	 @Override
 	    public void onDestroy() 
 	    {
 	   		try
@@ -108,12 +122,21 @@ public class AIRS_remotevalues extends Activity
 	        super.onDestroy();
 	    }
 
+	 /**
+	     * Called when called {@link android.app.Activity} has finished. See {@link android.app.Activity} how it works
+	     * @param requestCode ID being used when calling the Activity
+	     * @param resultCode result code being set by the called Activity
+	     * @param data Reference to the {@link android.content.Intent} with result data from the called Activity
+	     */
 	    public void onActivityResult(int requestCode, int resultCode, Intent data) 
 	    {
 	    	return;
 	    }
 
-	   @Override
+	 /** Called when the Options menu is opened
+	     * @param menu Reference to the {@link android.view.Menu}
+	     */
+	 @Override
 	    public boolean onPrepareOptionsMenu(Menu menu) 
 	    {
 	    	MenuInflater inflater;
@@ -124,14 +147,20 @@ public class AIRS_remotevalues extends Activity
 	    	return true;
 	    }
 
-	    @Override
+	 /** Called when the configuration of the activity has changed.
+	     * @param newConfig new configuration after change 
+	     */
+	 @Override
 	    public void onConfigurationChanged(Configuration newConfig) 
 	    {
 	      //ignore orientation change
 	      super.onConfigurationChanged(newConfig);
 	    }
 	    
-	    @Override
+	 /** Called when an option menu item has been selected by the user
+	     * @param item Reference to the {@link android.view.MenuItem} clicked on
+	     */
+	 @Override
 	    public boolean onOptionsItemSelected(MenuItem item) 
 	    {
 	        switch (item.getItemId()) 
@@ -202,7 +231,7 @@ public class AIRS_remotevalues extends Activity
 	  	};
 	  	
 		 // The Handler that gets information back from the other threads, updating the values for the UI
-		 public final Handler mHandler = new Handler() 
+		 private final Handler mHandler = new Handler() 
 	     {
 	        @Override
 	        public void handleMessage(Message msg) 

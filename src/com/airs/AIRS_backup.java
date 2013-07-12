@@ -32,12 +32,16 @@ import android.widget.Toast;
 import android.content.*;
 import android.content.res.Configuration;
 
+/**
+ * Activity to backup the AIRS database
+ *
+ * @see AIRS_restore
+ */
 public class AIRS_backup extends Activity
 {
-	// states for handler 
-	public static final int FINISH_ACTIVITY			= 1;
-	public static final int FINISH2_ACTIVITY		= 2;
-	public static final int UPDATE_VALUES			= 3;
+	private static final int FINISH_ACTIVITY			= 1;
+	private static final int FINISH2_ACTIVITY		= 2;
+	private static final int UPDATE_VALUES			= 3;
          
     // preferences
     private SharedPreferences settings;
@@ -46,7 +50,9 @@ public class AIRS_backup extends Activity
 	private TextView mTitle;
 	private TextView ProgressText;
 
-    /** Called when the activity is first created. */
+    /** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -82,24 +88,33 @@ public class AIRS_backup extends Activity
         new BackupThread();
     }
     
+    /** Called when the activity is paused. 
+     */
     @Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
+    /** Called when the activity is stopped. 
+     */
     @Override
     public void onStop() 
     {
         super.onStop();
     }
 
+    /** Called when the activity is destroyed. 
+     */
     @Override
     public void onDestroy() 
     {
        super.onDestroy();       
     }
      
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -107,8 +122,10 @@ public class AIRS_backup extends Activity
       super.onConfigurationChanged(newConfig);
     }
 	
+    /** Handler for events from outside UI thread. 
+     */
 	// The Handler that gets information back from the other threads, updating the values for the UI
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -132,6 +149,8 @@ public class AIRS_backup extends Activity
        }
     };
 
+    /** Thread for backing up the AIRS database outside the main UI thread. 
+     */
 	private class BackupThread implements Runnable
 	{
 		BackupThread()
@@ -139,6 +158,8 @@ public class AIRS_backup extends Activity
 			new Thread(this).start();
 		}
 		
+	    /** Main thread function 
+	     */
 	     public void run()
 	     {
 	    	 Message finish_msg = mHandler.obtainMessage(FINISH_ACTIVITY);

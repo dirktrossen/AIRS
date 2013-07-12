@@ -29,17 +29,20 @@ import android.telephony.gsm.GsmCellLocation;
 import android.telephony.PhoneStateListener;
 
 import com.airs.helper.SerialPortLogger;
-import com.airs.helper.Waker;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
+/** 
+ * Class to read cellular sensors, specifically the CR, CD, CS, CB, CI, CL, CC sensor
+ * @see Handler
+ */
 public class CellHandler extends PhoneStateListener implements com.airs.handlers.Handler
 {
-	public static final int INIT_SIGNALSTRENGTH = 1;
-	public static final int INIT_DATACONNECTED = 2;
-	public static final int INIT_CELLLOCATION = 3;
+	private static final int INIT_SIGNALSTRENGTH = 1;
+	private static final int INIT_DATACONNECTED = 2;
+	private static final int INIT_CELLLOCATION = 3;
 	
-	Context nors;
+	private Context nors;
 	// phone state classes
 	private TelephonyManager tm;
 	private CellHandler cellhandler;
@@ -68,17 +71,9 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	private Semaphore lac_semaphore	 		= new Semaphore(1);
 	private Semaphore mcc_semaphore	 		= new Semaphore(1);
 	
-	protected void debug(String msg) 
+	private void debug(String msg) 
 	{
 		SerialPortLogger.debug(msg);
-	}
-	/**
-	 * Sleep function 
-	 * @param millis
-	 */
-	protected void sleep(long millis) 
-	{
-		Waker.sleep(millis);
 	}
 
 	private void wait(Semaphore sema)
@@ -92,14 +87,12 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		}
 	}
 
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public byte[] Acquire(String sensor, String query)
 	{	
 		// acquire data and send out
@@ -116,14 +109,12 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/*
+	 * Method to share the last value of the given sensor
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public String Share(String sensor)
 	{		
 		switch(sensor.charAt(1))
@@ -152,13 +143,11 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public void History(String sensor)
 	{
 		switch(sensor.charAt(1))
@@ -172,14 +161,13 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		}		
 	}
 
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module 
-	***********************************************************************/
+	/*
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}, if the GSM properties have been found!
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 	    if (enableProperties == true)
@@ -194,6 +182,13 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		}		
 	}
 
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, arming the semaphore
+	 * Then, seeing if the GSM properties are supported (the sensors only work under GSM!)
+	 * Then, seeing if airplane mode is switched on (not sensors are discovered when in airplane mode)
+	 * @param nors Reference to the calling {@link android.content.Context}
+	 */
 	public CellHandler(Context nors)
 	{
 		this.nors = nors;
@@ -228,6 +223,11 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		}
 	}
 	
+	/**
+	 * Method to release all handler resources
+	 * Here, we release all semaphores and remove the phone state listener
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 		// release all semaphores for unlocking the Acquire() threads
@@ -435,7 +435,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	// The Handler that gets information back from the other threads, initializing phone sensors
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the invidiaul sensors
 	// since registerListener() can only be called from the main Looper thread!!
-	public final Handler mHandler = new Handler() 
+	private final Handler mHandler = new Handler() 
     {
        @Override
        public void handleMessage(Message msg) 
@@ -472,6 +472,11 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
     };
 
 	
+    /** 
+     * Called when the data connection state has changed (e.g., being disconnected)
+     * @param state new state that has been detected
+     * @see android.telephony.PhoneStateListener#onDataConnectionStateChanged(int)
+     */
 	@Override
 	public void onDataConnectionStateChanged (int state)
 	{
@@ -490,6 +495,11 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		}		
 	}
 
+	/** 
+	 * Called when the signal strength has changed
+	 * @param signalStrength strength of the newly detected signal. First, we get the ASU by calling getGsmSignalStrength(), then we calculate the dBm through dBm = -113 + 2* ASU
+	 * @see android.telephony.PhoneStateListener#onSignalStrengthsChanged(android.telephony.SignalStrength)
+	 */
 	@Override
 	public void onSignalStrengthsChanged(SignalStrength signalStrength)
     {
@@ -530,6 +540,11 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 		}
     }
 	
+	/**
+	 * Called when the cell identifier or LAC changed - read the new value and release appropriate semaphore
+	 * @param location Reference to the new {@link android.telephony.CellLocation} that has been detected
+	 * @see android.telephony.PhoneStateListener#onCellLocationChanged(android.telephony.CellLocation)
+	 */
 	@Override
 	public void onCellLocationChanged (CellLocation location)
 	{

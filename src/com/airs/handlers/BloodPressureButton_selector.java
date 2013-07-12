@@ -31,6 +31,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.airs.*;
 
+/** Activity to self-annotate the blood pressure
+ * @see android.app.Activity
+ */
 public class BloodPressureButton_selector extends Activity implements OnClickListener
 {
 	 // preferences
@@ -40,6 +43,10 @@ public class BloodPressureButton_selector extends Activity implements OnClickLis
 	 private boolean selected = false;
 	 private EditText systolic, diastolic;
 	 
+	 /**
+	  * Started when creating the {@link android.app.Activity}
+	  * @see android.app.Activity#onCreate(android.os.Bundle)
+	  */
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {	    
@@ -70,36 +77,60 @@ public class BloodPressureButton_selector extends Activity implements OnClickLis
     		diastolic.setText(settings.getString("BloodPressureButton::diastolic", "80"));
 	    }
 
+	   /** Called when resuming the {@link android.app.Activty}
+	    * @see android.app.Activity#onResume()
+	    */
 	   @Override
 	   public void onResume() 
 	   {
 	        super.onResume();
 	   }
 	   
+	   /**
+	    * Called when Configuration of the system changed
+	    * @param newConfig Reference to the changed {@link android.content.res.Configuration}
+	    * @see android.app.Activity#onConfigurationChanged(android.content.res.Configuration)
+	    */
 	    @Override
 	    public void onConfigurationChanged(Configuration newConfig) 
 	    {
 	    	super.onConfigurationChanged(newConfig);
 	    }
 
+	    /**
+	     * Called when the {@link android.app.Activity} is paused
+	     * @see android.app.Activity#onPause()
+	     */
 	    @Override
 	    public void onPause() 
 	    {
 	        super.onPause();
 	    }
 	   
+	    /**
+	     * Called when {@link android.app.Activity} is restarted
+	     * @see android.app.Activity#onRestart()
+	     */
 	    @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
 	    }
 
+	    /*
+	     * Called when {@link android.app.Activity} is stopped
+	     * @see android.app.Activity#onStop()
+	     */
 	    @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
 	    }
 
+	    /* Called when {@link android.app.Activity} is destroyed
+	     * Here, we obtain the self-annotated text and send a broadcast to the {@link com.airs.handlers.BloodPressureButtonHandler}
+	     * @see android.app.Activity#onDestroy()
+	     */
 	    @Override
 	    public void onDestroy() 
 	    {	    	
@@ -118,7 +149,11 @@ public class BloodPressureButton_selector extends Activity implements OnClickLis
 	        super.onDestroy();
 	    }
 	    
-
+	    /**
+	     * Called when the OK is pressed
+	     * @param v Reference to the buttons {@link android.view.View}
+	     * @see android.view.View.OnClickListener#onClick(android.view.View)
+	     */
 	    public void onClick(View v) 
 		{
 	    	// dispatch depending on button pressed

@@ -20,23 +20,37 @@ package com.airs.platform;
 import com.airs.handlers.*;
 
 /**
- * @author trossen
- * @date Oct 13, 2005
- * 
- * Purpose: repository of all locally available sensors
+ * Maintains a repository of all locally available sensors
  */
 public class SensorRepository 
 {
+	/**
+	 * Reference to the first {@link Sensor} in the repository
+	 */
     static public  Sensor root_sensor = null;
     static private Sensor new_one = null;
     
-    
+    /**
+     * Delete all sensors (by simply setting the first sensor reference to null}
+     */
     static public void deleteSensor()
     {
         root_sensor = null;
     }
     
-    // inserts new sensor in list
+    /**
+     * Inserts new sensor in list, calling appropriate {@link Sensor} instance
+     * @param Symbol String of the sensor symbol (used for retrieving sensors)
+     * @param Unit String of the sensor unit (used in titles of visualisations)
+     * @param Description String of the sensor description (used in titles of visualisations)
+     * @param type String with the type of the sensor (used in the recording thread to handle data differently)
+     * @param scaler Scaler of the values as an exponent of 10
+     * @param min Minimum value of the sensor, if supported, expressed with the scaler in mind
+     * @param max Maximum value of the sensor, if supported, expressed with the scaler in mind
+     * @param hasHistory Flag if {@link Handler} implementing the sensor supports history for it
+     * @param poll Polling time in millisecond - if zero, the handler will block properly when called frequently, e.g., realising the recording through a callback
+     * @param handler Reference to the {@link Handler} implementing the sensor
+     */
     static synchronized public void insertSensor(String Symbol, String Unit, String Description, String type, int scaler, int min, int max, boolean hasHistory, int poll, Handler handler)
     {
         // make copy of sensor object
@@ -51,7 +65,13 @@ public class SensorRepository
         }
     }
     
-    // finds sensor based on Symbol and sets valid flag
+    /**
+     * Finds sensor based on Symbol and sets valid flag
+     * @param Symbol String to sensor symbol trying to find
+     * @param status Status of sensor after being found
+     * @param reason Status string of sensor after being found 
+     * @param thread Reference to {@link java.lang.Runnable} of the acquisition thread being used right now
+     */
     static synchronized public void setSensorStatus(String Symbol, int status, String reason, Runnable thread)
     {
         Sensor current = root_sensor;
@@ -69,7 +89,11 @@ public class SensorRepository
         }
     }
 
-    // finds sensor based on Symbol and returns valid flag
+    /**
+     * Finds sensor based on Symbol and returns its current status
+     * @param Symbol String of the sensor symbol to be found
+     * @return status of the sensor, SENSOR_INVALID if nothing is found
+     */
     static synchronized public int getSensorStatus(String Symbol)
     {
         Sensor current = root_sensor;
@@ -84,7 +108,11 @@ public class SensorRepository
         return Sensor.SENSOR_INVALID;
     }
 
-    // finds sensor based on Symbol and returns handler serving sensor
+    /**
+     * Finds sensor based on Symbol and returns handler serving sensor
+     * @param Symbol String of the sensor symbol to be found
+     * @return Reference to the {@link Handler} that implements the sensor symbol
+     */
     static synchronized public Handler findHandler(String Symbol)
     {
         Sensor current = root_sensor;
@@ -98,7 +126,11 @@ public class SensorRepository
         return null;
     }
 
-    // finds sensor based on Symbol and returns handler serving sensor
+    /**
+     * Finds sensor based on Symbol and returns reference to the {@link Sensor}
+     * @param Symbol String of the sensor symbol to be found
+     * @return Reference to the {@link Sensor} of this symbol
+     */
     static synchronized public Sensor findSensor(String Symbol)
     {
         Sensor current = root_sensor;
@@ -112,7 +144,11 @@ public class SensorRepository
         return null;
     }
     
-    // finds sensor based on Symbol and returns handler serving sensor
+    /**
+     * Finds sensor based on Symbol and returns its scaler
+     * @param Symbol String of the sensor symbol to be found
+     * @return Scaler of the sensor being found
+     */
     static synchronized public int findScaler(String Symbol)
     {
         Sensor current = root_sensor;

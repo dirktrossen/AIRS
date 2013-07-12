@@ -51,6 +51,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Activity to create the list of settings entries and allow for selecting the various HandlerUIs
+ *
+ * @see         HandlerUI
+ * @see AIRS_general_settings
+ */
 public class AIRS_settings_tab extends Activity implements OnItemClickListener
 {
 	// Layout Views
@@ -62,22 +68,17 @@ public class AIRS_settings_tab extends Activity implements OnItemClickListener
     private AIRS_general_settings generalsettings;
   
     // other variables
+    /**
+     * current handlerUI being selected in the settings tab
+     */
     public  static HandlerUI	current_handler;
 	private EditText text;
 
-	protected void sleep(long millis) 
-	{
-		try 
-		{
-			Thread.sleep(millis);
-		} 
-		catch (InterruptedException ignore) 
-		{
-		}
-	}
 
-    /** Called when the activity is first created. */
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         // Set up the window layout
@@ -128,31 +129,43 @@ public class AIRS_settings_tab extends Activity implements OnItemClickListener
 	    		mHandlerArrayList.add(HandlerUIManager.handlers[i].init(this)); 
     }
 
-    @Override
+	/** Called when the activity is paused. 
+     */
+	@Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
-    @Override
+	/** Called when the activity is stopped. 
+     */
+	@Override
     public void onStop() 
     {
         super.onStop();
     }
 
-    @Override
+	/** Called when the activity is destroyed. 
+     */
+	@Override
     public void onDestroy() 
     {
-       super.onDestroy();      
+       super.onDestroy();            
     }
     
-    @Override
+	/** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
     	super.onConfigurationChanged(newConfig);
     }
     
-    @Override
+	/** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
+	@Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
     	MenuInflater inflater;
@@ -163,7 +176,10 @@ public class AIRS_settings_tab extends Activity implements OnItemClickListener
         return true;
     }
 
-    @Override
+	/** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	
     	AlertDialog.Builder builder;
@@ -252,7 +268,14 @@ public class AIRS_settings_tab extends Activity implements OnItemClickListener
         return false;
     }
  
-    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) 
+	/**
+	    * Called when clicking on a list item
+	    * @param av parent view
+	    * @param v View of clicked item
+	    * @param arg2 don't actually know
+	    * @param arg3 item in {@link android.view.ListView} being clicked
+	    */
+	public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) 
     {
 	    int i, j = 0;
 	    Intent settingsActivity;

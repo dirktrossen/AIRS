@@ -13,7 +13,8 @@ License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
-*/package com.airs;
+*/
+package com.airs;
 
 import java.io.File;
 
@@ -45,6 +46,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Activity to view the current measurements of the ongoing local recording
+ *
+ * @see AIRS_local
+ */
 public class AIRS_measurements extends Activity implements OnItemClickListener, OnItemLongClickListener
 {
 	 private TextView mTitle;
@@ -53,7 +59,10 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	 private ListView values;
 	 private Activity act;
 
-	   @Override
+	 /** Called when the activity is first created. 
+	     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+	     */
+	 @Override
 	    public void onCreate(Bundle savedInstanceState) 
 	    {
 	        // Set up the window layout
@@ -80,7 +89,9 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	     		Toast.makeText(getApplicationContext(), getString(R.string.binding_failed), Toast.LENGTH_LONG).show();	        
 	    }
 
-	    @Override
+	 /** Called when the activity is restarted. 
+	     */
+	 @Override
 	    public synchronized void onRestart() 
 	    {
 	        super.onRestart();
@@ -92,7 +103,9 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    	}
 	    }
 
-	    @Override
+	 /** Called when the activity is stopped. 
+	     */
+	 @Override
 	    public void onStop() 
 	    {
 	        super.onStop();
@@ -101,17 +114,28 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    		AIRS_locally.show_values = false;
 	    }
 
-	    @Override
+	 /** Called when the activity is destroyed. 
+	     */
+	 @Override
 	    public void onDestroy() 
 	    {	    		    	
 	        super.onDestroy();
 	    }
 
+	    /**
+	     * Called when called {@link android.app.Activity} has finished. See {@link android.app.Activity} how it works
+	     * @param requestCode ID being used when calling the Activity
+	     * @param resultCode result code being set by the called Activity
+	     * @param data Reference to the {@link android.content.Intent} with result data from the called Activity
+	     */
 	    public void onActivityResult(int requestCode, int resultCode, Intent data) 
 	    {
 	    	return;
 	    }
 	    
+	    /** Called when the configuration of the activity has changed.
+	     * @param newConfig new configuration after change 
+	     */
 	    @Override
 	    public void onConfigurationChanged(Configuration newConfig) 
 	    {
@@ -120,6 +144,11 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    }
 	    
 	    @Override
+	    /**
+	     * Called for dispatching key events sent to the Activity
+	     * @param event Reference to the {@link android.view.KeyEvent} being pressed
+	     * @return true, if consumed, false otherwise
+	     */
 	    public boolean dispatchKeyEvent(KeyEvent event) 
 	    {
 	 		// key de-pressed?
@@ -140,6 +169,9 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        return super.dispatchKeyEvent(event);
 	    }	    
 
+	    /** Called when the Options menu is opened
+	     * @param menu Reference to the {@link android.view.Menu}
+	     */
 	   @Override
 	    public boolean onPrepareOptionsMenu(Menu menu) 
 	    {
@@ -151,7 +183,10 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    	return true;
 	    }
 
-	    @Override
+	   /** Called when an option menu item has been selected by the user
+	     * @param item Reference to the {@link android.view.Menuitem} clicked on
+	     */
+	   @Override
 	    public boolean onOptionsItemSelected(MenuItem item) 
 	    {
 	        switch (item.getItemId()) 
@@ -207,7 +242,13 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        return false;
 	    }
 
-	    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+	   /** Called when a button has been long-clicked on by the user
+	    * @param parent Reference to parent view
+	    * @param view Reference to the View of the button
+	    * @param position position within parent view
+	    * @param id index in a list view
+	     */
+	   public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
 	    {
 	    	String value;
 	    	
@@ -278,6 +319,13 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    	return true;
 	    }
 	    
+	   /**
+	    * Called when clicking on a list item
+	    * @param av parent view
+	    * @param v View of clicked item
+	    * @param arg2 don't actually know
+	    * @param arg3 item in {@link android.view.ListView} being clicked
+	    */
 	    public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) 
 	    {
 	    	// show info for sensor selected

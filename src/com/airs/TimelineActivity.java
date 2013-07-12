@@ -55,14 +55,18 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ZoomButton;
 
+/**
+ * Class to implement a timeline view for all sensors that support it. This activity is started from the {@link com.airs.platform.History} class after an item supporting timeline has been clicked on by the user
+ *
+ */
 public class TimelineActivity extends Activity implements OnTouchListener, OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener
 {   
 	// handler variables
-	public static final int FINISH_ACTIVITY	= 1;
-	public static final int PUSH_VALUES 	= 2;
+	private static final int FINISH_ACTIVITY	= 1;
+	private static final int PUSH_VALUES 	= 2;
 	
 	// offset for full day timestamp
-	public static final long FULL_DAY 		= 1000*60*60*24;	// milliseconds per day
+	private static final long FULL_DAY 		= 1000*60*60*24;	// milliseconds per day
 	
 	// Layout Views
     private TextView		mTitle;
@@ -88,12 +92,14 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
 	private float averageValue;
 	private String Symbol;
     // database variables
-    SQLiteDatabase airs_storage;
+    private SQLiteDatabase airs_storage;
 	private Cursor values = null;
 	private AsyncTask<String, Long, Long> task;
 
-    /** Called when the activity is first created. */
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
     		String title;
@@ -188,25 +194,33 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
 	        task.execute(Symbol);
     }
  
-    @Override
+	/** Called when the activity is resumed. 
+     */
+	@Override
     public void onResume() 
     {
         super.onResume();
     }
 
-    @Override
+	/** Called when the activity is paused. 
+     */
+	@Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
-    @Override
+	/** Called when the activity is stopped. 
+     */
+	@Override
     public void onStop() 
     {
         super.onStop();
     }
 
-    @Override
+	/** Called when the activity is destroyed. 
+     */
+	@Override
     public void onDestroy() 
     {
         super.onDestroy();
@@ -218,7 +232,10 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
      	   values.close();
     }      
     
-    @Override
+	/** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
       //ignore orientation change
@@ -240,7 +257,10 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
       mHandler.sendMessage(push_msg);	
     }
 
-    @Override
+	/** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
+	@Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
     	MenuInflater inflater;
@@ -250,6 +270,9 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
         return true;
     }
 
+	/** Called when a button has been clicked on by the user
+     * @param v Reference to the {@link android.view.View} of the button
+     */
 	@Override
 	public void onClick(View v)
 	{	
@@ -332,6 +355,12 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
     	progressTimeline(0);
 	}
 
+	/**
+	 * Called when time is set in {@link android.widget.TimePicker}
+	 * @param view Reference to {@link android.widget.TimePicker} view
+	 * @param hourOfDay hour of day being chosen
+	 * @param minute minute of hour being chosen
+	 */
 	public void onTimeSet (TimePicker view, int hourOfDay, int minute)
 	{
 		Calendar cal = Calendar.getInstance();
@@ -378,6 +407,13 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
 			mHandler.sendMessage(mHandler.obtainMessage(PUSH_VALUES));	
 	}
 	
+	/**
+	 * Called when date is set in {@link android.widget.DatePicker}
+	 * @param view Reference to {@link android.widget.DatePicker} view
+	 * @param year year being chosen
+	 * @param monthOfYear month of the year being chosen
+	 * @param dayOfMonth day of the month being chosen
+	 */
 	public void onDateSet (DatePicker view, int year, int monthOfYear, int dayOfMonth)
 	{
 		Calendar cal = Calendar.getInstance();
@@ -425,7 +461,10 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
 			mHandler.sendMessage(mHandler.obtainMessage(PUSH_VALUES));	
 	}
 	
-    @Override
+	/** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {
         switch (item.getItemId()) 
@@ -453,7 +492,12 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
         return true;
     }
         
-    @Override
+    /**
+     * Called for dispatching key events sent to the Activity
+     * @param event Reference to the {@link android.view.KeyEvent} being pressed
+     * @return true, if consumed, false otherwise
+     */
+	@Override
     public boolean dispatchKeyEvent(KeyEvent event) 
     {
  		// key de-pressed?
@@ -465,6 +509,11 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
         return super.dispatchKeyEvent(event);
     }
     
+	/**
+	 * Called when touch event occurred
+	 * @param v Reference to the {@link android.view.View} that has focus
+	 * @param me Reference to the {@link android.view.MotionEvent} of the touch event
+	 */
 	public boolean onTouch(View v, MotionEvent me) 
 	{
     	long progress = (long)(valuesShown*repeatJump)/100;
@@ -834,7 +883,7 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
 	}
     
     // The Handler that gets information back from the other services
-    public final Handler mHandler = new Handler() 
+    private final Handler mHandler = new Handler() 
     {
         @Override
         public void handleMessage(Message msg) 

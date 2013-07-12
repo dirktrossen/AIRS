@@ -25,9 +25,17 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+/**
+ * Activity to show the AIRS manual in a {@link android.webkit.WebView}
+ *
+ */
 public class AIRS_manual extends Activity
 {
-    WebView mWebView;
+    private WebView mWebView;
+    
+    /** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
     public void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
@@ -40,6 +48,9 @@ public class AIRS_manual extends Activity
 
     }
     
+    /** Called when the configuration of the activity has changed.
+     * @param newConfig new configuration after change 
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -47,6 +58,9 @@ public class AIRS_manual extends Activity
       super.onConfigurationChanged(newConfig);
     }
     
+    /** Called when the Options menu is opened
+     * @param menu Reference to the {@link android.view.Menu}
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) 
     {
@@ -58,6 +72,9 @@ public class AIRS_manual extends Activity
         return true;
     }
 
+    /** Called when an option menu item has been selected by the user
+     * @param item Reference to the {@link android.view.MenuItem} clicked on
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) 
     {    	    	
@@ -78,6 +95,7 @@ public class AIRS_manual extends Activity
         }
         return false;
     }
+    
     private class HelloWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {

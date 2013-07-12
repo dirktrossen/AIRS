@@ -19,7 +19,6 @@ package com.airs.platform;
 
 
 /**
- * @author trossen
  * Callback interface for all dialog-based callbacks
  */
 public interface Callback 

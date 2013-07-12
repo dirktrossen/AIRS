@@ -25,11 +25,9 @@ import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
 
-/**
- * @author trossen
- *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+/** 
+ * Class to read random number generator sensors, specifically the Rd sensor
+ * @see Handler
  */
 public class RandomHandler implements Handler
 {
@@ -39,14 +37,12 @@ public class RandomHandler implements Handler
 	private byte[] readings = new byte[6];
 	private int polltime=5000;
 	
-	/***********************************************************************
-	 Function    : Acquire()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to acquire sensor data
+	 * @param sensor String of the sensor symbol
+	 * @param query String of the query to be fulfilled - not used here
+	 * @see com.airs.handlers.Handler#Acquire(java.lang.String, java.lang.String)
+	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
 		short random_value = 0;
@@ -68,44 +64,44 @@ public class RandomHandler implements Handler
 		return readings;		
 	}
 	
-	/***********************************************************************
-	 Function    : Share()
-	 Input       : sensor input is ignored here!
-	 Output      :
-	 Return      :
-	 Description : acquires current sensors values and sends to
-	 		 	   QueryResolver component
-	***********************************************************************/
+	/**
+	 * Method to share the last value of the given sensor - here doing nothing
+	 * @param sensor String of the sensor symbol to be shared
+	 * @return human-readable string of the last sensor value
+	 * @see com.airs.handlers.Handler#Share(java.lang.String)
+	 */
 	public synchronized String Share(String sensor)
 	{		
 		return null;		
 	}
 	
-	/***********************************************************************
-	 Function    : History()
-	 Input       : sensor input for specific history views
-	 Output      :
-	 Return      :
-	 Description : calls historical views
-	***********************************************************************/
+	/**
+	 * Method to view historical chart of the given sensor symbol - here doing nothing
+	 * @param sensor String of the symbol for which the history is being requested
+	 * @see com.airs.handlers.Handler#History(java.lang.String)
+	 */
 	public synchronized void History(String sensor)
 	{
 		History.timelineView(airs, "Random [-]", "Rd");
 	}
 	
-	/***********************************************************************
-	 Function    : Discover()
-	 Input       : 
-	 Output      : string with discovery information
-	 Return      : 
-	 Description : provides discovery information of this particular acquisition 
-	 			   module, hardcoded 
-	***********************************************************************/
+	/**
+	 * Method to discover the sensor symbols support by this handler
+	 * As the result of the discovery, appropriate {@link com.airs.platform.Sensor} entries will be added to the {@link com.airs.platform.SensorRepository}
+	 * @see com.airs.handlers.Handler#Discover()
+	 * @see com.airs.platform.Sensor
+	 * @see com.airs.platform.SensorRepository
+	 */
 	public void Discover()
 	{
 	    SensorRepository.insertSensor(new String("Rd"), new String("ticks"), new String("Random Number"), new String("int"), 0, 0, 65535, true, polltime, this);	    
 	}
 	
+	/**
+	 * Constructor, allocating all necessary resources for the handler
+	 * Here, it's reading the interval from the preferences
+	 * @param airs Reference to the calling {@link android.content.Context}
+	 */
 	public RandomHandler(Context airs)
 	{
 		this.airs = airs;
@@ -113,6 +109,10 @@ public class RandomHandler implements Handler
 		polltime = HandlerManager.readRMS_i("RandomHandler::SamplingRate", 5) * 1000;
 	}
 	
+	/**
+	 * Method to release all handler resources - doing nothing here
+	 * @see com.airs.handlers.Handler#destroyHandler()
+	 */
 	public void destroyHandler()
 	{
 	}

@@ -20,39 +20,92 @@ package com.airs.platform;
 import com.airs.handlers.*;
 
 /**
- * @author trossen
- * @date Oct 13, 2005
- * 
- * Purpose: Sensor class, to be used in repository
+ * Sensor class, holding the various pieces of the discovered sensor
+ * To be used in repository
  */
 public class Sensor 
 {
+	/**
+	 * Sensor is valid
+	 */
 	public static final int SENSOR_VALID 		= 0;
+	/**
+	 * Sensor is invalid, e.g., when BT pulse cannot be found when AIRS is started
+	 */
 	public static final int SENSOR_INVALID		= 1;
+	/** Sensor is currently suspended, such as when BT pulse temporarily disconnects
+	 */
 	public static final int SENSOR_SUSPEND		= 2;
 
-	public Handler 	handler;			// points to handler serving this sensor
+	/**
+	 * points to handler serving this sensor
+	 */
+	public Handler 	handler;	
     // entries according to SSI for now
-    public String  	Symbol;				// symbol of the sensor
-    public String  	Unit;				// unit of the sensor
-    public String  	Description;		// descrption of the sensor
-    public String	type;				// data type of the sensor
-    public int		scaler;				// scaler of the sensor
-    public int		min;				// min and max value of sensor reading
+	/**
+	 * symbol of the sensor (see online manual for all supported sensor symbols for now)
+	 */
+    public String  	Symbol;				
+    /**
+     * unit of the sensor
+     */
+    public String  	Unit;		
+    /**
+     * description of the sensor
+     */
+    public String  	Description;
+    /**
+     * data type of the sensor (int, float, txt, str, arr)
+     */
+    public String	type;	
+    /**
+     * scaler of the sensor
+     */
+    public int		scaler;		
+    /**
+     * min value of sensor reading (if supported)
+     */
+    public int		min;	
+    /**
+     * max value of sensor reading (if supported)
+     */
     public int 		max;
-    public boolean  hasHistory;			// does this sensor support history?
-    public int		polltime;			// polling timer
-    public int	    status;				// is sensor valid?
+    /**
+     * does this sensor support history?
+     */
+    public boolean  hasHistory;
+    /**
+     * polling timer - if zero, the sensor is a callback sensor and will block appropriately when called during recording
+     */
+    public int		polltime;
+    /**
+     * status of the timer (valid, invalid, suspended)
+     */
+    public int	    status;		
+    /**
+     * String describing the status further
+     */
     public String	statusString;
-    byte[]  sensor_data = null;
-    byte[]  reading = null;
-    long    last_read;
-    boolean	discovered;
+    private byte[]  sensor_data = null;
+    private byte[]  reading = null;
+    private long    last_read;
+    /**
+     * Flag if sensor has already been discovered or not
+     */
+    public boolean	discovered;
+    /**
+     * Reference to current {@link java.lang.Runnable} that implements the acquisition for this sensor
+     */
     public Runnable acquire_thread;
-    
-    // linked list
+
+    /**
+     * Reference to the next sensor in the repository list
+     */
     public Sensor next;
     
+    /**
+     * Constructor, setting all values appropriately to default values
+     */
     Sensor()
     {
         Symbol = null;
@@ -62,10 +115,21 @@ public class Sensor
         scaler = 0;
         next = null;
         min = max = 0;
-        discovered = false;
     }
     
-    // initialize Sensor based on discovered sensor description 
+    /**
+     * Initialize Sensor based on discovered sensor description 
+     * @param s String of the sensor symbol (used for retrieving sensors)
+     * @param u String of the sensor unit (used in titles of visualisations)
+     * @param d String of the sensor description (used in titles of visualisations)
+     * @param t String with the type of the sensor (used in the recording thread to handle data differently)
+     * @param sc Scaler of the values as an exponent of 10
+     * @param mi Minimum value of the sensor, if supported, expressed with the scaler in mind
+     * @param ma Maximum value of the sensor, if supported, expressed with the scaler in mind
+     * @param history Flag if {@link Handler} implementing the sensor supports history for it
+     * @param poll Polling time in millisecond - if zero, the handler will block properly when called frequently, e.g., realising the recording through a callback
+     * @param h Reference to the {@link Handler} implementing the sensor
+     */
     Sensor(String s, String u, String d, String t, int sc, int mi, int ma, boolean history, int poll, Handler h)
     {
         handler = h;
@@ -82,12 +146,15 @@ public class Sensor
         // our last read value is now minus polltime -> when accessing get_value() the first time, it will acquire initial value right away
         last_read = System.currentTimeMillis() - polltime;
         sensor_data = null;
-        discovered = false;
         status = SENSOR_VALID;
         statusString = null;
     }
-    // acquire method to allow for multiple queries accessing the same sensor values concurrently, 
-    // i.e., this is the point of data acquisition
+    
+    /**
+     * Synchronised acquire method to allow for multiple queries accessing the same sensor values concurrently, i.e., this is the point of data acquisition
+     * @param query String with the Sensor query
+     * @return byte array with the reading in the format array[0]+array[1] = sensor symbol and array[2]+array[3]+... = data of the sensor
+     */
     synchronized public byte[] get_value(String query)
     {
     	// current time
@@ -117,7 +184,10 @@ public class Sensor
     	}
     }
     
-    // for some sensors allow setting polltime
+    /**
+     * For some sensors allow setting polltime
+     * @param poll polling time in milliseconds
+     */
     public void set_polltime(int poll)
     {
     	// only change polltime if new time is smaller than the one set, i.e., set polltime to minimal requested

@@ -54,6 +54,7 @@
 <string name="TimelineAbout">Zeigt den historischen Zeitverlauf des angeklickten Sensors. Du kannst die Anzahl der angezeigten Werte in den Einstellungen ändern.\nVerlasse die Anzeige mit der <b>ZURÜCK</b> Taste!</string>
 <string name="DBadminAbout">Wähle eine der drei Datenbankoperationen: <b>Speichern</b>, <b>Wiederherstellen</b> or <b>Index</b>. Du kannst die Datenbank nur einmal indizieren und diese Operation kann nicht rückgängig gemacht werden.</string>
 <string name="SyncAbout">Erlaubt die Daten seit der letzten Synchronisierung zu sichern.\n\nDu kannst das letzte Synchronisierungsdatum auch manuell ändern für den Fall, dass Du wieder synchronisieren musst.</string>
+<string name="AdaptiveGPSAbout">Diese Liste zeigt die meistbesuchten WiFi APs über eine gegebene Periode an. Es werden nur APs angezeigt an die Du Dich angeschlossen hast!</string>
 <string name="HandlersList">Wähle die Sensoren aus, die Du aufzeichnen willst. Außerdem kannst Du hier verschiedene Einstellungen der Sensoren ändern! Weiterhin kannst Du generelle Einstellungen ändern.</string>
 <string name="Sensor_Selection">Sensorenauswahl</string>
 <string name="HandlerDescription">Handlerbild</string>
@@ -63,6 +64,8 @@
 <string name="OK">OK</string>
 <string name="Cancel">Abbruch</string>
 <string name="Select">Wähle</string>
+<string name="Duration">Dauer</string>
+
 <string name="Getting_Started">Anfangen</string>
 <string name="Getting_Started2">Lokale Aufnahmen:\n
 - wähle \'Lifelogging\' für Lifelogging Einstellungen\n
@@ -325,12 +328,16 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Use_Network_Location_on">Benutzt WiFi und Netzwerkinformation für Standorte</string>
 <string name="Use_Network_Location_off">Benutze nur GPS</string>
 <string name="AdaptiveGPS">Adaptives GPS</string>
-<string name="AdaptiveGPS_on">Benutzt WiFi um GPS zeitweilig abzuschalten, um die Batterielebenszeit zu erhöhen. Dieser Modus kann möglicherweise zu Verzögerungen führen, den GPS Standort zu bestimmen, da GPS wieder neustarten muss.</string>
+<string name="AdaptiveGPS_on">Benutzt WiFi um GPS zeitweilig abzuschalten, um die Batterielebenszeit zu erhöhen. Dies kann zu Verzögerungen führen, den GPS Standort zu bestimmen, da GPS wieder neustarten muss.</string>
 <string name="AdaptiveGPS_off">Benutzt keine WiFi Informationen, um GPS zeitweilig abzuschalten.</string>
 <string name="AdaptiveGPS_Selection">WiFi Auswahl</string>
 <string name="AdaptiveGPS_Selection_on">Wähle WiFi Zugangspunkte in deren Nähe GPS Aufzeichnungen zeitweilig ausgeschaltet wird. Du musst den WI Sensor ausgewählt haben für den adaptiven Modus.</string>
+<string name="AdaptiveGPS_Hitlist">Meistbesuchte WiFis</string>
+<string name="AdaptiveGPS_Hitlist_on">Zeigt die meistbesuchten WiFis, um die adaptive GPS Funktion zu optimieren.</string>
+<string name="AdaptiveGPS_Hitlist_Click">Klicke länger auf irgendeinen Eintrag um zu sehen wie oft dieser WiFi Standort besucht wurde.</string>
 <string name="AdaptiveGPS_Selection_title">Wähle WiFi</string>
 <string name="AdaptiveGPS_NoWifi">Verbinde zu mindestens einem WiFi!</string>
+<string name="AdaptiveGPS_NothingFound">Kann keine WiFi Aufzeichnungen finden - zeichne den WI Sensor für eine Zeit auf!</string>
 <string name="GPS_Interval">GPS Intervall [s]</string>
 <string name="GPS_Interval_on">Abfrageintervall für GPS Standorte in Sekunden</string>
 <string name="AGPS_Refresh_Interval">AGPS Intervall [h]</string>
