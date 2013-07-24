@@ -338,7 +338,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="AdaptiveGPS_Hitlist_Click">Long click on any entry in the list to see how often you visited this WiFi access point.</string>
 <string name="AdaptiveGPS_Selection_title">Choose WiFi</string>
 <string name="AdaptiveGPS_NoWifi">Connect to at least one WiFi!</string>
-<string name="AdaptiveGPS_NothingFound">Cannot find recordings for WiFi - record the WI sensor for some time!</string>
+<string name="AdaptiveGPS_NothingFound">Cannot find recent recordings for WiFi - record the WI sensor for some time!</string>
 <string name="GPS_Interval">GPS Interval [s]</string>
 <string name="GPS_Interval_on">Poll interval for GPS location in seconds</string>
 <string name="AGPS_Refresh_Interval">AGPS Refresh Interval [h]</string>
@@ -426,13 +426,16 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- change in Location settings, providing now a list of most visited WiFi APs in the last week/month\n
-- bugfix in Spotify notication recordings
+- only accept location updates of accuracy defined by user, making network-assisted location the default option\n
+- refinements to lifelogging template
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.5.9.1:\n
+- only accept location updates of accuracy defined by user, making network-assisted location the default option\n
+- refinements to lifelogging template\n\n
 V2.5.9:\n
 - change in Location settings, providing now a list of most visited WiFi APs in the last week/month\n
 - bugfix in Spotify notication recordings\n\n

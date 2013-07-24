@@ -33,7 +33,7 @@
 <boolean name="localDisplay" value="true" />
 <string name="MediaWatcherHandler::PicturesDirectory">/sdcard/Pictures</string>
 <string name="AIRS_local::WM">Off</string>
-<boolean name="LocationHandler::UseWifi" value="false" />
+<boolean name="LocationHandler::UseWifi" value="true" />
 <string name="LightCode">0000ff</string>
 <string name="AIRS_local::WI">On</string>
 <string name="AIRS_local::WF">Off</string>
@@ -145,12 +145,12 @@
 <string name="AIRS_local::BP">On</string>
 <string name="AIRS_local::BM">On</string>
 <string name="EventButtonHandler::Event26">sweating</string>
-<string name="AIRS_local::BN">Off</string>
+<string name="AIRS_local::BN">On</string>
 <string name="EventButtonHandler::Event27">traveling</string>
 <boolean name="LocationHandler::AdaptiveGPS" value="true" />
 <string name="BatteryKill">0</string>
 <boolean name="LocationHandler::GPSON" value="true" />
-<string name="AIRS_local::BT">Off</string>
+<string name="AIRS_local::BT">On</string>
 <string name="WeatherHandler::LocationUpdate">0</string>
 <string name="AIRS_local::BV">Off</string>
 <string name="AIRS_local::Az">Off</string>

@@ -337,7 +337,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="AdaptiveGPS_Hitlist_Click">Klicke länger auf irgendeinen Eintrag um zu sehen wie oft dieser WiFi Standort besucht wurde.</string>
 <string name="AdaptiveGPS_Selection_title">Wähle WiFi</string>
 <string name="AdaptiveGPS_NoWifi">Verbinde zu mindestens einem WiFi!</string>
-<string name="AdaptiveGPS_NothingFound">Kann keine WiFi Aufzeichnungen finden - zeichne den WI Sensor für eine Zeit auf!</string>
+<string name="AdaptiveGPS_NothingFound">Kann keine jüngsten WiFi Aufzeichnungen finden - zeichne den WI Sensor für eine Zeit auf!</string>
 <string name="GPS_Interval">GPS Intervall [s]</string>
 <string name="GPS_Interval_on">Abfrageintervall für GPS Standorte in Sekunden</string>
 <string name="AGPS_Refresh_Interval">AGPS Intervall [h]</string>

@@ -1,3 +1,7 @@
+V2.5.9.1:
+- only accept location updates of accuracy defined by user, making network-assisted location the default option
+- refinements to lifelogging template
+
 V2.5.9: 
 - change in Location settings, providing now a list of most visited WiFi APs in the last week/month
 - bugfix in Spotify notication recordings

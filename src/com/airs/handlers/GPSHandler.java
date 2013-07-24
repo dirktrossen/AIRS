@@ -229,7 +229,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		updatemeter	= HandlerManager.readRMS_i("LocationHandler::LocationUpdate", 100);
 		// read whether or not we need to enable GPS
 		enableGPS = HandlerManager.readRMS_b("LocationHandler::GPSON", false);
-		useWifi = HandlerManager.readRMS_b("LocationHandler::UseWifi", false);
+		useWifi = HandlerManager.readRMS_b("LocationHandler::UseWifi", true);
 		agpsForce = HandlerManager.readRMS_i("LocationHandler::AGPSForce", 3) * 3600*1000;
 		adaptiveWifi = HandlerManager.readRMS_b("LocationHandler::AdaptiveGPS", false);
 		String storedWifis = HandlerManager.readRMS("LocationHandler::AdaptiveGPS_WiFis", null);
@@ -573,6 +573,10 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
         	        	
         	if (location != null)
         	{
+        		// only accept location updates below a certain accuracy to remove outliers
+        		if (location.getAccuracy()>(float)updatemeter)
+        			return;
+        		
         		// is there an old location?
         		if (oldLocation != null)
         		{

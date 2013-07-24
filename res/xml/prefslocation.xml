@@ -29,7 +29,7 @@
     	android:summaryOff="@string/Enable_GPS_off"/>
     <CheckBoxPreference 
         android:dependency="LocationHandler::GPSON"
-        android:defaultValue="false"
+        android:defaultValue="true"
     	android:enabled="true" 
     	android:title="@string/Use_Network_Location" 
     	android:key="LocationHandler::UseWifi" 
