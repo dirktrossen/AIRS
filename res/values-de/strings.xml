@@ -249,8 +249,9 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Local_Storage">Lokaler Speicher</string>
 <string name="Local_Storage_on">Speichere Werte der Sensoren in interner SQLite Datenbank</string>
 <string name="Local_Storage_off">Speichere keine Sensorenwerte</string>
-<string name="Sensor_History">Geschichte der Werte</string>
-<string name="Sensor_History_on"># der historischen Sensorenwerte (0 = ausschalten)</string>
+<string name="AIRS_intents">AIRS Intents</string>
+<string name="AIRS_intents_on">Sende Systemintents für externe Regelmachine</string>
+<string name="AIRS_intents_off">Sende keine Systemintents</string>
 <string name="Wakeup">Aufwecken</string>
 <string name="Wakeup_on">Wecke Handy während der Auszeichnung nur wenn andere Benutzeraktivität existiert</string>
 <string name="Wakeup_off">Handy geht nicht schlafen (zeichnet ununterbrochen auf)</string>

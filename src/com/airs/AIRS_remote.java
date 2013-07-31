@@ -387,6 +387,9 @@ public class AIRS_remote extends Service
 		 {
 			 long vibration[] = {0,200,0};
 
+			 // get power manager
+			 PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+
 			 // get notification manager
 			 mNotificationManager = (NotificationManager)airs.getSystemService(Context.NOTIFICATION_SERVICE); 
 
@@ -395,25 +398,30 @@ public class AIRS_remote extends Service
 				 // sleep for the agreed time
 			     sleep(Reminder_i);
 
-			     // prepare notification to user
-			     Notification notif = new Notification();
-			     notif.when              = System.currentTimeMillis(); 
-			     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
-			     if (Vibrate == true)
-			    	 notif.vibrate			 = vibration;
-				 
-				 if (Lights == true)
-				 {
-	                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
-	                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
-				 }
-	              
-				 // now shoot off alert
-				 mNotificationManager.notify(0, notif);   
-				 sleep(750);
-				 
-				 // and cancel
-	             mNotificationManager.cancel(0);
+		    	 // only shows "still running" notification when screen is off
+		    	 if (pm.isScreenOn() == false)
+		    	 {
+				     // prepare notification to user
+					 Notification notif = new Notification(R.drawable.icon, "", System.currentTimeMillis());
+				     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
+
+				     notif.setLatestEventInfo(getApplicationContext(), "", "", null);
+				     if (Vibrate == true)
+				    	 notif.vibrate			 = vibration;
+					 
+					 if (Lights == true)
+					 {
+		                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+		                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+					 }
+		              
+					 // now shoot off alert
+					 mNotificationManager.notify(0, notif);   
+					 sleep(750);
+					 
+					 // and cancel
+		             mNotificationManager.cancel(0);
+		    	 }
 			 }
 		 }
 	 }

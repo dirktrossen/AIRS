@@ -50,6 +50,14 @@
     	android:summaryOff="@string/Local_Storage_off"/>
     <CheckBoxPreference 
     	android:enabled="true" 
+    	android:title="@string/AIRS_intents" 
+    	android:key="AIRSIntents" 
+    	android:selectable="true" 
+    	android:defaultValue="true" 
+    	android:summaryOn="@string/AIRS_intents_on" 
+    	android:summaryOff="@string/AIRS_intents_off"/>
+    <CheckBoxPreference 
+    	android:enabled="true" 
     	android:title="@string/Wakeup" 
     	android:key="Wakeup" 
     	android:defaultValue="false" 

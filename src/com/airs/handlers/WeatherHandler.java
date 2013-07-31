@@ -45,6 +45,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 /**
  * Class to read weather related sensors, specifically the VT, VF, VH, VC, VW, VI sensor
@@ -344,6 +345,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 				// get current weather conditions
 				try
 				{
+
 					// try to get current location
 					if (manager!=null)
 					{
@@ -365,11 +367,11 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	//		            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
 			            URL url = new URL("http://api.worldweatheronline.com/free/v1/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=st4dghppmrfbtcrhwggn76u8");
 			            // 51914540,900690");
-	
+
 			            /* Parse the xml-data from our URL. */
 			            input = new InputSource(url.openStream());
 			            XMLreader.parse(input);	 
-			            input = null;			            
+			            input = null;	
 					}
 		            
 		            // get current timestamp to see how long the weather reading took all along
@@ -495,7 +497,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         	   if (manager!=null)
         	   {
         		   try
-        		   {        			   
+        		   {     
         			   manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, (float)0, mReceiver);  
         		   }
         		   catch(Exception e)
@@ -534,7 +536,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         }
 
  
-        /** Gets be called on opening tags like:
+        /** Gets to be called on opening tags like:
          * <tag>
          * Can provide attribute(s), when xml was like:
          * <tag attribute="attributeValue">*/

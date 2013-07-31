@@ -250,8 +250,9 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Local_Storage">Local Storage</string>
 <string name="Local_Storage_on">Store sensor values in internal SQLlite database</string>
 <string name="Local_Storage_off">Do not store sensor values</string>
-<string name="Sensor_History">Sensor History</string>
-<string name="Sensor_History_on"># of historical sensor values (0=disable)</string>
+<string name="AIRS_intents">AIRS Intents</string>
+<string name="AIRS_intents_on">Send system intents to allow for external rule engine</string>
+<string name="AIRS_intents_off">Do not send system intents</string>
 <string name="Wakeup">Wakeup</string>
 <string name="Wakeup_on">Wakeup phone during sensing only when there is other user activity</string>
 <string name="Wakeup_off">Keep wake lock to prevent sleeping</string>
@@ -426,16 +427,19 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- only accept location updates of accuracy defined by user, making network-assisted location the default option\n
-- refinements to lifelogging template
+- changed LED notification when AIRS is running, avoiding future notification service problems\n
+- added AIRS intents, sending recorded values as system intents allowing for listening apps to react upon them (such as a rules engine we are working on)
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6:\n
+- changed LED notification when AIRS is running, avoiding future notification service problems\n
+- added AIRS intents, sending recorded values as system intents allowing for listening apps to react upon them (such as a rules engine we are working on)\n\n
 V2.5.9.1:\n
-- only accept location updates of accuracy defined by user, making network-assisted location the default option\n
-- refinements to lifelogging template\n\n
+- only accept location updates of accuracy defined by user\n
+- refinements to lifelogging template, enabling network location by default (in addition to GPS)\n\n
 V2.5.9:\n
 - change in Location settings, providing now a list of most visited WiFi APs in the last week/month\n
 - bugfix in Spotify notication recordings\n\n

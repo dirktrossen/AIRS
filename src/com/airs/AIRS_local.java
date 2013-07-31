@@ -83,6 +83,7 @@ public class AIRS_local extends Service
      */
     public  String template;
 	private int	no_values = 0;
+    private boolean localIntent_b;
     private boolean localStore_b;
     private boolean localDisplay_b;
     private int Reminder_i;
@@ -158,6 +159,7 @@ public class AIRS_local extends Service
 		 	public Thread thread;
 		 	private boolean interrupted = false, pause = false;;
 		 	private boolean started = true;	
+		 	private String value_intent;
 		 	
 			protected void sleep(long millis) 
 			{
@@ -340,6 +342,13 @@ public class AIRS_local extends Service
 					    					else
 					    						fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + String.valueOf(integer) + "'");
 					    				}
+					    				
+					    				// need to create AIRS intent?
+					    				if (localIntent_b == true)
+						    				if (current.scaler != 0)
+						    					value_intent = new String(String.valueOf((double)integer*scaler));
+						    				else
+						    					value_intent = new String(String.valueOf((double)integer));
 					    			}
 					    			
 			    					// here we handle txt sensor values
@@ -359,6 +368,10 @@ public class AIRS_local extends Service
 					    				// need to store locally?
 					    				if (localStore_b == true)
 				    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + new String(sensor_data, 2, sensor_data.length - 2) + "'");
+					    				
+					    				// need to create AIRS intent?
+					    				if (localIntent_b == true)
+					    					value_intent = new String(new String(sensor_data, 2, sensor_data.length - 2));
 					    			}
 			
 				   					// here we handle img and arr sensor values
@@ -390,14 +403,31 @@ public class AIRS_local extends Service
 					    			    		os2.close();
 					    			    		// store filename in recording file
 					    				    	fileOut = new String("'" + String.valueOf(System.currentTimeMillis()) + "','" + current.Symbol + "','" + fileIMG + "'");
-			
+
+							    				// need to create AIRS intent?
+							    				if (localIntent_b == true)
+							    					value_intent = new String(fileIMG);
 					    				    } 
 					    				    catch(Exception e)
 					    				    {
 					    			    		debug("Exception in opening file connection");
 					    				    }
-					    				}
+					    				}					    				
 					    			}
+					    			
+					    			// anything to send via intents?
+					    			if (localIntent_b == true)
+					    				if (value_intent != null)
+					    				{
+					    					// send broadcast intent to signal end of selection to mood button handler
+					    					Intent intent = new Intent("com.airs.sensor." + current.Symbol);
+					    					intent.putExtra("Value", value_intent);
+					    					
+					    					sendBroadcast(intent);
+
+					    					// free memory
+					    					value_intent = null;
+					    				}
 					    			
 					    			// anything to write to file?
 					    			if (fileOut != null)
@@ -484,6 +514,9 @@ public class AIRS_local extends Service
 				    					catch(Exception e) 
 				    					{    					
 				    					}	
+				    					
+				    					// free memory
+				    					fileOut = null;
 					    			}
 			    				}
 			    				
@@ -611,6 +644,9 @@ public class AIRS_local extends Service
 
 		// find out whether or not to wakeup the sensing on user activity
 		Wakeup_b = HandlerManager.readRMS_b("Wakeup", false);
+
+		// find out whether or not to store locally
+		localIntent_b = HandlerManager.readRMS_b("AIRSIntents", true);
 
 		// find out whether or not to store locally
 		localStore_b = HandlerManager.readRMS_b("LocalStore", true);
@@ -1326,7 +1362,10 @@ public class AIRS_local extends Service
 		 public void run()
 		 {
 			 long vibration[] = {0,200,0};
-			 				
+			 
+			 // get power manager
+			 PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+			 
 			 // get notification manager
 			 mNotificationManager = (NotificationManager)airs.getSystemService(Context.NOTIFICATION_SERVICE); 
 
@@ -1337,29 +1376,35 @@ public class AIRS_local extends Service
 			     {
 			    	 Thread.sleep(Reminder_i);
 
-				     // prepare notification to user
-				     Notification notif = new Notification();
-				     notif.when              = System.currentTimeMillis(); 
-				     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
-				     if (Vibrate == true)
-				    	 notif.vibrate			 = vibration;
-					 
-					 if (Lights == true)
-					 {
-		                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
-		                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
-					 }
-		              
-					 // now shoot off alert
-					 mNotificationManager.notify(0, notif);   
-					 sleep(750);
-					 
-					 // and cancel
-		             mNotificationManager.cancel(0);
+			    	 // only shows "still running" notification when screen is off
+			    	 if (pm.isScreenOn() == false)
+			    	 {
+					     // prepare notification to user
+						 Notification notif = new Notification(R.drawable.icon, "", System.currentTimeMillis());
+					     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
+	
+					     notif.setLatestEventInfo(getApplicationContext(), "", "", null);
+					     
+					     if (Vibrate == true)
+					    	 notif.vibrate			 = vibration;
+						 
+						 if (Lights == true)
+						 {
+			                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+			                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+						 }
+			              
+						 // now shoot off alert
+						 mNotificationManager.notify(0, notif);   
+						 sleep(750);
+						 
+						 // and cancel
+			             mNotificationManager.cancel(0);
+			    	 }
 			     }
 			     catch(Exception e)
 			     {
-			    	 debug("AIRS_local::Vibrate thread terminated");
+			    	 debug("AIRS_local::Vibrate thread terminated : " + e.toString());
 			     }
 			 }
 		 }

@@ -1,6 +1,10 @@
+V2.6:
+- changed LED notification when AIRS is running, avoiding future notification service problems
+- added AIRS intents, sending recorded values as system intents allowing for listening apps to react upon them (such as a rules engine we are working on)
+
 V2.5.9.1:
-- only accept location updates of accuracy defined by user, making network-assisted location the default option
-- refinements to lifelogging template
+- only accept location updates of accuracy defined by user
+- refinements to lifelogging template, enabling network location by default (in addition to GPS)
 
 V2.5.9: 
 - change in Location settings, providing now a list of most visited WiFi APs in the last week/month
