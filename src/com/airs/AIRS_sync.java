@@ -19,6 +19,8 @@ package com.airs;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -532,7 +534,10 @@ public class AIRS_sync extends Activity implements OnClickListener
 					    	// set 
 					    	cal.setTimeInMillis(currenttime);
 				    		// store timestamp
-				    		String time = new String(cal.getTime().toString() + "\n");
+//				    		String time = new String(cal.getTime().toString() + "\n");
+					    	// force a date format to address Android 4.3 changes that changed zzz to 'BST' and similar
+				    		DateFormat sdf = new SimpleDateFormat ("EEE MMM dd HH:mm:ss ZZZZ yyyy", Locale.getDefault());
+				    		String time = new String(sdf.format(cal.getTime()) + "\n");
 			    			os.write(time.getBytes(), 0, time.length());				    			
 			    			// save for later
 			    			currentstart = currenttime;

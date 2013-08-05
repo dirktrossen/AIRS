@@ -1,3 +1,6 @@
+V2.6.1:
+- enforce timestamp format for sync files with GMT+0x00 format (caused problems in Android 4.3)
+
 V2.6:
 - changed LED notification when AIRS is running, avoiding future notification service problems
 - added AIRS intents, sending recorded values as system intents allowing for listening apps to react upon them (such as a rules engine we are working on)

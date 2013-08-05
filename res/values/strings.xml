@@ -427,13 +427,14 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- changed LED notification when AIRS is running, avoiding future notification service problems\n
-- added AIRS intents, sending recorded values as system intents allowing for listening apps to react upon them (such as a rules engine we are working on)
+- enforce timestamp format for sync files with GMT+0x00 format (caused problems in Android 4.3)
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6.1:\n
+- enforce timestamp format for sync files with GMT+0x00 format (caused problems in Android 4.3)\n\n
 V2.6:\n
 - changed LED notification when AIRS is running, avoiding future notification service problems\n
 - added AIRS intents, sending recorded values as system intents allowing for listening apps to react upon them (such as a rules engine we are working on)\n\n
