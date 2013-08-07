@@ -427,12 +427,16 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- enforce timestamp format for sync files with GMT+0x00 format (caused problems in Android 4.3)
+- updated notification bar icons to proper sizes\n
+- updated LED notification to re-use existing notification being shown; avoids strange notification when unlocking phone!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6.1.1:\n
+- updated notification bar icons to proper sizes\n
+- updated LED notification to re-use existing notification being shown; avoids strange notification when unlocking phone!\n\n
 V2.6.1:\n
 - enforce timestamp format for sync files with GMT+0x00 format (caused problems in Android 4.3)\n\n
 V2.6:\n

@@ -135,6 +135,7 @@ public class AIRS_local extends Service
     // This is the object that receives interactions from clients
     private final IBinder mBinder = new LocalBinder();
     private VibrateThread Vibrator;
+    private Notification notification;
     private WakeLock wl = null;
     // database variables
     /**
@@ -967,7 +968,7 @@ public class AIRS_local extends Service
 		 }
 
 		 // create notification
-		 Notification notification = new Notification(R.drawable.icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
+		 notification = new Notification(R.drawable.notification_icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
 
 		 // create pending intent for starting the activity
 		 PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_measurements.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -981,7 +982,7 @@ public class AIRS_local extends Service
 		 // don't allow clearing the notification
 		 notification.flags = Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
 
-		 startForeground(R.string.app_name, notification);
+		 startForeground(1, notification);
 		 
          // store start timestamp
          HandlerManager.writeRMS_l("AIRS_local::time_started", System.currentTimeMillis());
@@ -1379,27 +1380,24 @@ public class AIRS_local extends Service
 			    	 // only shows "still running" notification when screen is off
 			    	 if (pm.isScreenOn() == false)
 			    	 {
-					     // prepare notification to user
-						 Notification notif = new Notification(R.drawable.icon, "", System.currentTimeMillis());
-					     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
-	
-					     notif.setLatestEventInfo(getApplicationContext(), "", "", null);
-					     
+					     // prepare notification to user by changing the existing notification
 					     if (Vibrate == true)
-					    	 notif.vibrate			 = vibration;
+					    	 notification.vibrate			 = vibration;
 						 
 						 if (Lights == true)
 						 {
-			                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
-			                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+							 notification.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+							 notification.flags     |= Notification.FLAG_SHOW_LIGHTS; 
 						 }
 			              
-						 // now shoot off alert
-						 mNotificationManager.notify(0, notif);   
+						 // now shoot off alert by updating the existing recording notification
+						 mNotificationManager.notify(1, notification);   
 						 sleep(750);
-						 
-						 // and cancel
-			             mNotificationManager.cancel(0);
+	
+						 // switch off vibrate and lights and update notification again
+						 notification.vibrate = null;
+						 notification.flags &= ~Notification.FLAG_SHOW_LIGHTS;
+						 mNotificationManager.notify(1, notification);   						 
 			    	 }
 			     }
 			     catch(Exception e)
@@ -1440,7 +1438,7 @@ public class AIRS_local extends Service
             	
             	// now create new notification
             	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-       		 	Notification notification = new Notification(R.drawable.icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
+       		 	Notification notification = new Notification(R.drawable.notification_icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
        		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
        		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
        			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Local_Sensing), getString(R.string.killed_at) + " " + Integer.toString(BatteryKill_i) + "% " + getString(R.string.battery) + "...", contentIntent);

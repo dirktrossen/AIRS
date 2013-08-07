@@ -85,6 +85,7 @@ public class AIRS_remote extends Service
     // This is the object that receives interactions from clients
     private final IBinder mBinder = new LocalBinder();
     private VibrateThread Vibrator;
+    private Notification notification;
     private WakeLock wl;
     /**
      * Bytes sent to your own NORS application server during the recording
@@ -236,7 +237,6 @@ public class AIRS_remote extends Service
 	// function blocks -> meant as server kind of 
 	private boolean startRSA()
 	{		
-		Notification notification;
 		PendingIntent contentIntent;
 		
 		// create timer/alarm handling
@@ -261,7 +261,7 @@ public class AIRS_remote extends Service
 
 		// create notification
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		notification = new Notification(R.drawable.icon, "Starting AIRS", System.currentTimeMillis());
+		notification = new Notification(R.drawable.notification_icon, "Starting AIRS", System.currentTimeMillis());
 
 		// create pending intent for starting the activity
 		contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_remotevalues.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -289,7 +289,7 @@ public class AIRS_remote extends Service
 				 Vibrator = new VibrateThread();
 
 			 // update notification
-			 notification = new Notification(R.drawable.icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
+			 notification = new Notification(R.drawable.notification_icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
 
 			 // create pending intent for starting the activity
 			 contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, AIRS_remotevalues.class),  Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -337,7 +337,7 @@ public class AIRS_remote extends Service
            	
            	// now create new notification
            	mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-  		 	Notification notification = new Notification(R.drawable.icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
+  		 	Notification notification = new Notification(R.drawable.notification_icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
   		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
   		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
   			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Remote_Sensing), getString(R.string.killed_at) + " " + Integer.toString(BatteryKill_i) + "% " + getString(R.string.battery) + "...", contentIntent);
@@ -402,25 +402,23 @@ public class AIRS_remote extends Service
 		    	 if (pm.isScreenOn() == false)
 		    	 {
 				     // prepare notification to user
-					 Notification notif = new Notification(R.drawable.icon, "", System.currentTimeMillis());
-				     notif.flags			|= Notification.FLAG_ONLY_ALERT_ONCE;
-
-				     notif.setLatestEventInfo(getApplicationContext(), "", "", null);
 				     if (Vibrate == true)
-				    	 notif.vibrate			 = vibration;
+				    	 notification.vibrate			 = vibration;
 					 
 					 if (Lights == true)
 					 {
-		                notif.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
-		                notif.flags     |= Notification.FLAG_SHOW_LIGHTS; 
+						 notification.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+						 notification.flags     |= Notification.FLAG_SHOW_LIGHTS; 
 					 }
 		              
 					 // now shoot off alert
-					 mNotificationManager.notify(0, notif);   
+					 mNotificationManager.notify(1, notification);   
 					 sleep(750);
 					 
-					 // and cancel
-		             mNotificationManager.cancel(0);
+					 // switch off vibrate and lights and update notification again
+					 notification.vibrate = null;
+					 notification.flags &= ~Notification.FLAG_SHOW_LIGHTS;
+					 mNotificationManager.notify(1, notification);   						 
 		    	 }
 			 }
 		 }
