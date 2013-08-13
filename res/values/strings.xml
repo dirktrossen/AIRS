@@ -427,13 +427,14 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- updated notification bar icons to proper sizes\n
-- updated LED notification to re-use existing notification being shown; avoids strange notification when unlocking phone!
+- signal start/stop of AIRS via AIRS intent for our AIRS ruler release
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6.1.2:\n
+- signal start/stop of AIRS via AIRS intent for our AIRS ruler release\n\n
 V2.6.1.1:\n
 - updated notification bar icons to proper sizes\n
 - updated LED notification to re-use existing notification being shown; avoids strange notification when unlocking phone!\n\n

@@ -1,3 +1,6 @@
+V2.6.1.2:
+- signal start/stop of AIRS via AIRS intent for our AIRS ruler release
+
 V2.6.1.1:
 - updated notification bar icons to proper sizes
 - updated LED notification to re-use existing notification being shown; avoids strange notification when unlocking phone!

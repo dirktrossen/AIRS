@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -763,6 +764,14 @@ public class AIRS_local extends Service
         // kill internal flag
         running = false;
          
+        // anything to send via intents?
+        if (localIntent_b == true)
+			{
+				// send broadcast intent that AIRS has started
+				Intent intent = new Intent("com.airs.local.stopped");				
+				sendBroadcast(intent);
+			}
+
  		SerialPortLogger.debug("AIRS_local::finished destroying service!");
 	}
 	
@@ -1091,6 +1100,15 @@ public class AIRS_local extends Service
         	 execStorage(0, "CREATE TABLE IF NOT EXISTS airs_dates (Year INT, Month INT, Day INT, Types INT);");
 	         execStorage(0, "INSERT into airs_dates (Year, Month, Day, Types) VALUES ('"+ String.valueOf(year) +  "','" + String.valueOf(month) + "','" + String.valueOf(day) + "','1')");	
          }
+         
+         // anything to send via intents?
+         if (localIntent_b == true)
+			{
+				// send broadcast intent that AIRS has started
+				Intent intent = new Intent("com.airs.local.started");
+				
+				sendBroadcast(intent);
+			}
 
 		 return true;
 	 }
