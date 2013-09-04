@@ -18,6 +18,7 @@ package com.airs.handlers;
 
 import java.util.concurrent.Semaphore;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.SensorRepository;
 
@@ -108,7 +109,7 @@ public class BloodPressureButtonHandler implements Handler
 	 */
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("BP"), new String("mmHg"), new String("Blood pressure"), new String("txt"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("BP"), new String("mmHg"), airs.getString(R.string.BP_d), airs.getString(R.string.BP_e), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	/**

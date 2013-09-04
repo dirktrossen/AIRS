@@ -18,6 +18,7 @@ package com.airs.handlers;
 
 import java.util.concurrent.Semaphore;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.SensorRepository;
 
@@ -136,7 +137,7 @@ public class MoodButtonHandler implements Handler
 	 */
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("MO"), new String("Mood"), new String("Mood button widget"), new String("str"), 0, 0, 6, false, 0, this);	    
+		SensorRepository.insertSensor(new String("MO"), new String("Mood"), nors.getString(R.string.MW_d), nors.getString(R.string.MW_e), new String("str"), 0, 0, 6, false, 0, this);	    
 	}
 	
 	/**

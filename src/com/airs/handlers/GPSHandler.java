@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
@@ -202,12 +203,12 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	{
 		if (enableGPS == true)
 		{
-			   SensorRepository.insertSensor(new String("GO"), new String("degrees"), new String("GPS longitude"), new String("int"), -5, -18000000, 18000000, false, 0, this);
-			   SensorRepository.insertSensor(new String("GL"), new String("degrees"), new String("GPS latitude"), new String("int"), -5, -18000000, 18000000, false, 0, this);
-			   SensorRepository.insertSensor(new String("GA"), new String("m"), new String("GPS altitude"), new String("int"), -1, -200, 150000, true, 0, this);
-			   SensorRepository.insertSensor(new String("GI"), new String("txt"), new String("GPS info"), new String("str"), 0, 0, 1, true, 0, this);
-			   SensorRepository.insertSensor(new String("GC"), new String("degrees"), new String("GPS course"), new String("int"), -1, 0, 3600, false, 0, this);
-			   SensorRepository.insertSensor(new String("GS"), new String("m/s"), new String("GPS speed"), new String("int"), -1, 0, 10000, true, 0, this);
+			   SensorRepository.insertSensor(new String("GO"), new String("degrees"), airs.getString(R.string.GO_d), airs.getString(R.string.GO_e), new String("int"), -5, -18000000, 18000000, false, 0, this);
+			   SensorRepository.insertSensor(new String("GL"), new String("degrees"), airs.getString(R.string.GL_d), airs.getString(R.string.GL_e), new String("int"), -5, -18000000, 18000000, false, 0, this);
+			   SensorRepository.insertSensor(new String("GA"), new String("m"), airs.getString(R.string.GA_d), airs.getString(R.string.GA_e), new String("int"), -1, -200, 150000, true, 0, this);
+			   SensorRepository.insertSensor(new String("GI"), new String("txt"), airs.getString(R.string.GI_d), airs.getString(R.string.GI_e), new String("str"), 0, 0, 1, true, 0, this);
+			   SensorRepository.insertSensor(new String("GC"), new String("degrees"), airs.getString(R.string.GC_d), airs.getString(R.string.GC_e), new String("int"), -1, 0, 3600, false, 0, this);
+			   SensorRepository.insertSensor(new String("GS"), new String("m/s"), airs.getString(R.string.GS_d), airs.getString(R.string.GS_e), new String("int"), -1, 0, 10000, true, 0, this);
 		}		
 	}
 	

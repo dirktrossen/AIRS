@@ -18,6 +18,7 @@ package com.airs.handlers;
 
 import java.util.concurrent.Semaphore;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.SensorRepository;
 
@@ -135,7 +136,7 @@ public class EventButtonHandler implements Handler
 	 */
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("EB"), new String("Event"), new String("Event button widget"), new String("str"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("EB"), new String("Event"), nors.getString(R.string.EB_d), nors.getString(R.string.EB_e), new String("str"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	/**

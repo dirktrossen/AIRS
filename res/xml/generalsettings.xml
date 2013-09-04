@@ -95,11 +95,15 @@
     	android:selectable="true" 
     	android:summaryOn="@string/Lights_on" 
     	android:summaryOff="@string/Lights_off"/>  
-    <EditTextPreference
-        android:summary="@string/Color_Code_on"
-        android:defaultValue="00ff00"
+    <ListPreference
+        android:dependency="Lights"
+        android:key="LightCode"
         android:title="@string/Color_Code"
-        android:key="LightCode" android:name="LightCode"/>
+        android:summary="@string/Color_Code_on"
+        android:positiveButtonText="@string/Select"
+        android:entries="@array/lightnotification_values"
+        android:entryValues="@array/lightnotification_entries"
+        android:dialogTitle="@string/Color_Code" />
     </PreferenceCategory>    
     <PreferenceCategory android:title="Debug Settings"> 	
     <CheckBoxPreference 

@@ -55,6 +55,10 @@ public class Sensor
      */
     public String  	Description;
     /**
+     * longer explanation of the sensor
+     */
+    public String  	Explanation;
+    /**
      * data type of the sensor (int, float, txt, str, arr)
      */
     public String	type;	
@@ -111,6 +115,7 @@ public class Sensor
         Symbol = null;
         Unit = null;
         Description = null;
+        Explanation = null;
         type = null;
         scaler = 0;
         next = null;
@@ -130,12 +135,13 @@ public class Sensor
      * @param poll Polling time in millisecond - if zero, the handler will block properly when called frequently, e.g., realising the recording through a callback
      * @param h Reference to the {@link Handler} implementing the sensor
      */
-    Sensor(String s, String u, String d, String t, int sc, int mi, int ma, boolean history, int poll, Handler h)
+    Sensor(String s, String u, String d, String e, String t, int sc, int mi, int ma, boolean history, int poll, Handler h)
     {
         handler = h;
         Symbol = new String(s);
         Unit   = new String(u);
         Description = new String(d);
+        Explanation = new String(e);
         type = new String(t);
         scaler = sc;
         next = null;

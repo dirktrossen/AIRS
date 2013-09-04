@@ -22,6 +22,7 @@ import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 import com.airs.platform.History;
 
+import com.airs.*;
 import android.content.Context;
 import android.media.*;
 
@@ -156,8 +157,8 @@ public class AudioHandler implements Handler
 			return;
 		
 		// here some midlet property check as to whether or not audio capture is supported
-		SensorRepository.insertSensor(new String("AF"), new String("Hz"), new String("Estimated Freq."), new String("int"), 0, 0, 15000, true, polltime, this);
-		SensorRepository.insertSensor(new String("AS"), new String("dB"), new String("Ambient Noise Level"), new String("int"), -2, 0, 1200, true, polltime, this);
+		SensorRepository.insertSensor(new String("AF"), new String("Hz"), airs.getString(R.string.AF_d), airs.getString(R.string.AF_e), new String("int"), 0, 0, 15000, true, polltime, this);
+		SensorRepository.insertSensor(new String("AS"), new String("dB"), airs.getString(R.string.AS_d), airs.getString(R.string.AS_e), new String("int"), -2, 0, 1200, true, polltime, this);
 	}
 	
 	/**
@@ -167,12 +168,12 @@ public class AudioHandler implements Handler
 	 * Then, creating an AudioPlayer just to see if it works (tear it down again right after creation)
 	 * @param nors Reference to the calling {@link android.content.Context}
 	 */
-	public AudioHandler(Context nors)
+	public AudioHandler(Context airs)
 	{
 		boolean buffer_error = false;
 		
 		// store for later
-		airs = nors;
+		this.airs = airs;
 		
 		// now read polltime for audio sampling
 		polltime = HandlerManager.readRMS_i("AudioHandler::samplingpoll", 5) * 1000;

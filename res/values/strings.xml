@@ -251,7 +251,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Local_Storage_on">Store sensor values in internal SQLlite database</string>
 <string name="Local_Storage_off">Do not store sensor values</string>
 <string name="AIRS_intents">AIRS Intents</string>
-<string name="AIRS_intents_on">Send system intents to allow for external rule engine</string>
+<string name="AIRS_intents_on">Send system intents to allow for, e.g., external rule engine such as AIRS Ruler</string>
 <string name="AIRS_intents_off">Do not send system intents</string>
 <string name="Wakeup">Wakeup</string>
 <string name="Wakeup_on">Wakeup phone during sensing only when there is other user activity</string>
@@ -267,8 +267,8 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Lights">Lights</string>
 <string name="Lights_on">Use notification LED as a reminder</string>
 <string name="Lights_off">Do not use notification LED as a reminder</string>
-<string name="Color_Code">Color Code</string>
-<string name="Color_Code_on">Color code of LED notification (in hex)</string>
+<string name="Color_Code">LED Color</string>
+<string name="Color_Code_on">Color of LED notification</string>
 <string name="Debug">Debug</string>
 <string name="Debug_on">Write debug messages in AIRS_debug.txt</string>
 <string name="Debug_off">Do not debug anything</string>
@@ -383,6 +383,139 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Music_path">Music path</string>
 <string name="Music_path_on">Provide the path for music</string>
 
+<string name="AF_d">Ambient Frequency</string>
+<string name="AF_e">Provides the estimated audio frequency, determining the sound pitch. Measured in Hz.</string>
+<string name="AS_d">Ambient Noise Level</string>
+<string name="AS_e">Provides the estimated noise level, measured in dB.</string>
+<string name="BT_d">Surrounding BT Devices</string>
+<string name="BT_e">Provides information about the BT devices around, such as MACs and BT names.</string>
+<string name="BN_d"># surrounding BT Devices</string>
+<string name="BN_e">Provides the number of BT devices around.</string>
+<string name="BD_d">Connected BT Devices</string>
+<string name="BD_e">Provides the BT device(s) the phone is connected to.</string>
+<string name="BP_d">Blood pressure</string>
+<string name="BP_e">Provides blood pressure values that are annotated by the user through the blood pressure phone widget.</string>
+<string name="CA_d">Calendar entry</string>
+<string name="CA_e">Provides the current calendar event(s) from the selected calendar(s).</string>
+<string name="CR_d">Cellular roaming</string>
+<string name="CR_e">Provides the roaming status (0 if not roaming, 1 if roaming).</string>
+<string name="CD_d">Cellular Data connected</string>
+<string name="CD_e">Provides the status of GPRS (0 if off, 1 is on).</string>
+<string name="CS_d">Cellular signal strength in dBm</string>
+<string name="CS_e">Provides the strength of the cellular signal in dBm with -113dBm meaning \'no signal\'.</string>
+<string name="CB_d">Cellular signal strength in bar</string>
+<string name="CB_e">Provides the strength of the cellular signal in number of bars.</string>
+<string name="CI_d">Cell identifier</string>
+<string name="CI_e">Provides the current cell identifier as given by the mobile operator.</string>
+<string name="CL_d">Location Area Code</string>
+<string name="CL_e">Provides the current location area code as given by the mobile operator.</string>
+<string name="CC_d">Mobile Country Code</string>
+<string name="CC_e">Provides the current mobile country code as given by the mobile operator.</string>
+<string name="EB_d">Event button widget</string>
+<string name="EB_e">Provides event descriptions annotated by the user through the Event Widget.</string>
+<string name="ET_d">Shared text</string>
+<string name="ET_e">Provides text shared to AIRS from any application that allows it.</string>
+<string name="GO_d">GPS longitude</string>
+<string name="GO_e"></string>
+<string name="GL_d">GPS latitude</string>
+<string name="GL_e"></string>
+<string name="GA_d">GPS altitude</string>
+<string name="GA_e"></string>
+<string name="GI_d">GPS info</string>
+<string name="GI_e">Provides a combined Long:Lat:Alt string for GPS.</string>
+<string name="GC_d">GPS course</string>
+<string name="GC_e">Provides the heading based on GPS with 0 degrees being North.</string>
+<string name="GS_d">GPS speed</string>
+<string name="GS_e">Provides speed in meters-per-second based on GPS.</string>
+<string name="HP_d">Pulse</string>
+<string name="HP_e">Provides heart rate/pulse through the Zephyr HxM monitor.</string>
+<string name="HI_d">Instant speed</string>
+<string name="HI_e">Provides speed in meter-per-second through the Zephyr HxM monitor.</string>
+<string name="HL_d">Device battery level</string>
+<string name="HL_e">Provides the battery level of the Zephyr HxM monitor.</string>
+<string name="MW_d">Watched media folder</string>
+<string name="MW_e">Provides filenames of media newly created within the pre-defined folder, such as for detecting snapshots taken.</string>
+<string name="MO_d">Mood button widget</string>
+<string name="MO_e">Provides mood as selected or created by the user through the Mood Widget.</string>
+<string name="MP_d">Currently playing</string>
+<string name="MP_e">Provides information about the music playing (artist:album:track).</string>
+<string name="MA_d">Current Artist</string>
+<string name="MA_e">Provides artist for the current music track.</string>
+<string name="ML_d">Current Album</string>
+<string name="ML_e">Provides album name for the current music track.</string>
+<string name="MT_d">Current Track</string>
+<string name="MT_e">Provides name for the current music track.</string>
+<string name="NO_d">Notification</string>
+<string name="NO_e">Provides information on notifications from Skype and Google Hangout.</string>
+<string name="AZ_d">Azimuth</string>
+<string name="AZ_e">Provides the phone\'s azimuth - the angle towards the magnetic pole.</string>
+<string name="PI_d">Pitch</string>
+<string name="PI_e">Provides the phone\'s rotation angle on the short axis relative to when laying flat and upward facing.</string>
+<string name="RO_d">Roll</string>
+<string name="RO_e">Provides the phone\'s rotation angle on the long axis relative to when laying flat and upward facing.</string>
+<string name="PR_d">Proximity</string>
+<string name="PR_e">Provides proximity of any object towards the phone\'s front (usually upper side of) screen.</string>
+<string name="LI_d">Ambient Light</string>
+<string name="LI_e">Provides the light intensity as measured by the phone\'s sensor.</string>
+<string name="PU_d">Ambient Pressure</string>
+<string name="PU_e">Provides the atmospheric pressure as measured by the phone\'s sensor (if available).</string>
+<string name="TM_d">Ambient Temperature</string>
+<string name="TM_e">Provides the ambient temperature measured by phone\'s sensor (if available).</string>
+<string name="HU_d">Ambient rel. Humidity</string>
+<string name="HU_e">Provides the ambient relative humidity measured by phone\'s sensor (if available).</string>
+<string name="RD_d">Random number</string>
+<string name="RD_e">Provides a random value, mainly used for testing purpose.</string>
+<string name="BA_d">Battery Level</string>
+<string name="BA_e">Provides the phone battery level.</string>
+<string name="BV_d">Battery Voltage</string>
+<string name="BV_e">Provides the phone battery voltage.</string>
+<string name="BC_d">Battery charging</string>
+<string name="BC_e">Provides the phone battery charging status (0-if not charging; 1-if charging).</string>
+<string name="BM_d">Battery Temperature</string>
+<string name="BM_e">Provides the phone battery temperature.</string>
+<string name="RM_d">Memory available</string>
+<string name="RM_e">Provides the phone\'s available memory.</string>
+<string name="SC_d">Screen on/off</string>
+<string name="SC_e">Provides the phone\'s screen status (0-off, 1-on).</string>
+<string name="HS_d">Headset plug state</string>
+<string name="HS_e">Records if anything is plugged in into the headset plug.</string>
+<string name="IC_d">Incoming Call</string>
+<string name="IC_e">Provides information about an incoming call: phone number and contact name (if in phonebook).</string>
+<string name="OC_d">Outgoing Call</string>
+<string name="OC_e">Provides information about an outgoing call: phone number and contact name (if in phonebook).</string>
+<string name="SR_d">Received SMS</string>
+<string name="SR_e">Provides information about a received sms: phone number, contact name (if in phonebook) and message.</string>
+<string name="SS_d">Sent SMS</string>
+<string name="SS_e">Provides information about a sent sms: phone number, contact name (if in phonebook) and message.</string>
+<string name="TR_d">Running tasks</string>
+<string name="TR_e">Provides currently running applications on the phone.</string>
+<string name="TV_d">Visible tasks</string>
+<string name="TV_e">Provides currently running applications on the phone requiring user interactions.</string>
+<string name="TE_d">Recording template</string>
+<string name="TE_e">Provides the current AIRS recording template.</string>
+<string name="VT_d">Temperature [C]</string>
+<string name="VT_e">Provides the Celsius temperature as obtained from external web server.</string>
+<string name="VF_d">Temperature [F]</string>
+<string name="VF_e">Provides the Fahrenheit temperature as obtained from external web server.</string>
+<string name="VH_d">Humidity</string>
+<string name="VH_e">Provides the humidity as obtained from external web server.</string>
+<string name="VC_d">Weather Conditions</string>
+<string name="VC_e">Provides a summarized weather info as obtained from external web server.</string>
+<string name="VW_d">Wind</string>
+<string name="VW_e">Provides the wind speed as obtained from external web server.</string>
+<string name="VI_d">Combined Weather info</string>
+<string name="VI_e">Provides a combined weather info as obtained from external web server.</string>
+<string name="WF_d">WLAN info</string>
+<string name="WF_e">Provides combined info about available WiFis.</string>
+<string name="WI_d">WLAN SSID</string>
+<string name="WI_e">Provides SSIDs of available WiFis.</string>
+<string name="WM_d">WLAN MAC address</string>
+<string name="WM_e">Provides MAC addressed of available WiFis.</string>
+<string name="WS_d">Signal strength</string>
+<string name="WS_e">Provides signal strength info of available WiFis.</string>
+<string name="WC_d">WLAN connected</string>
+<string name="WC_e">Provides status information (1 if phone is connected to a WiFi).</string> 
+
 <!-- activity labels -->
 <string name="AIRS_Timeline">AIRS Timeline</string>
 <string name="AIRS_Mood_Selector">AIRS Mood Selector</string>
@@ -427,12 +560,18 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- signal start/stop of AIRS via AIRS intent for our AIRS ruler release
+- changed sensor selection with explanatory information for every sensor\n
+- sensor list now multi-lingual, including the new explanatory information\n
+- changed LED color setting into simple list selection
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6.2:\n
+- changed sensor selection with explanatory information for every sensor\n
+- sensor list now multi-lingual, including the new explanatory information\n
+- changed LED color setting into simple list selection\n\n
 V2.6.1.2:\n
 - signal start/stop of AIRS via AIRS intent for our AIRS ruler release\n\n
 V2.6.1.1:\n

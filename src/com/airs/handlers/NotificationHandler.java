@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.airs.R;
 import com.airs.platform.SensorRepository;
 
 /**
@@ -95,7 +96,7 @@ public class NotificationHandler implements Handler
 	 */
 	public void Discover()
 	{
-	    SensorRepository.insertSensor(new String("NO"), new String("text"), new String("Notification"), new String("txt"), 0, 0, 1, false, 0, this);	    
+	    SensorRepository.insertSensor(new String("NO"), new String("text"), airs.getString(R.string.NO_d), airs.getString(R.string.NO_e), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	/**

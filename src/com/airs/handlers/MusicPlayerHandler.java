@@ -18,6 +18,7 @@ package com.airs.handlers;
 
 import java.util.concurrent.Semaphore;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
@@ -175,10 +176,10 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	 */
 	public void Discover()
 	{
-    	SensorRepository.insertSensor(new String("MP"), new String("Music"), new String("Currently playing"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
-    	SensorRepository.insertSensor(new String("MA"), new String("Artist"), new String("Current Artist"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
-    	SensorRepository.insertSensor(new String("ML"), new String("Album"), new String("Current Album"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
-    	SensorRepository.insertSensor(new String("MT"), new String("Track"), new String("Current Track"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("MP"), new String("Music"), airs.getString(R.string.MP_d), airs.getString(R.string.MP_e), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("MA"), new String("Artist"), airs.getString(R.string.MA_d), airs.getString(R.string.MA_e), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("ML"), new String("Album"), airs.getString(R.string.ML_d), airs.getString(R.string.ML_e), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("MT"), new String("Track"), airs.getString(R.string.MT_d), airs.getString(R.string.MT_e), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
 	}
 	
 	/**

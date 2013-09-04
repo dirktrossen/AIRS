@@ -25,6 +25,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
@@ -308,9 +309,9 @@ public class HeartMonitorHandler implements Handler, Runnable
 	{
 		if (use_monitor == true)
 		{
-			SensorRepository.insertSensor(new String("HL"), new String("%"), new String("Device battery level"), new String("int"), 0, 0, 100, true, 10000, this);
-			SensorRepository.insertSensor(new String("HP"), new String("bpm"), new String("Pulse"), new String("int"), 0, 0, 200, true, 1000, this);
-			SensorRepository.insertSensor(new String("HI"), new String("m/s"), new String("Instant Speed"), new String("int"), -1, 0, 200, true, 1000, this);
+			SensorRepository.insertSensor(new String("HL"), new String("%"), airs.getString(R.string.HL_d), airs.getString(R.string.HL_e), new String("int"), 0, 0, 100, true, 10000, this);
+			SensorRepository.insertSensor(new String("HP"), new String("bpm"), airs.getString(R.string.HP_d), airs.getString(R.string.HP_e), new String("int"), 0, 0, 200, true, 1000, this);
+			SensorRepository.insertSensor(new String("HI"), new String("m/s"), airs.getString(R.string.HI_d), airs.getString(R.string.HI_e), new String("int"), -1, 0, 200, true, 1000, this);
 		}
 	}
 

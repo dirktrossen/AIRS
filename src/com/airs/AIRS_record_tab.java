@@ -474,7 +474,8 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		    			// merely restart without GUI
 		    			AIRS_locally.Restart(false);
 		                // service running message
-		               	Toast.makeText(getApplicationContext(), getString(R.string.AIRS_started_local), Toast.LENGTH_LONG).show();     
+		    			if (settings.getBoolean("AIRS_local::running", false) == true)
+		    				Toast.makeText(getApplicationContext(), getString(R.string.AIRS_started_local), Toast.LENGTH_LONG).show();     
 		               	// finish UI
 		    			finish();
 		    		}
@@ -864,9 +865,6 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		// clear annotation list and timestamps
 		annotations.clear();
 		selected_text = -1;
-		// get adapter and set it
-        customAdapter = new MyCustomBaseAdapter(this, annotations);
-        annotation_list.setAdapter(customAdapter);
 		
     	// path for templates
         external_storage = getExternalFilesDir(null);
@@ -882,6 +880,11 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				for (i=0;i<file_list.length;i++)
 					annotations.add(file_list[i]);
         }
+        
+		// get adapter and set it
+        customAdapter = new MyCustomBaseAdapter(this, annotations);
+        annotation_list.setAdapter(customAdapter);
+        customAdapter.notifyDataSetChanged();
     }
     
   	// Custom adapter for radio + text list entry, defined in manage_template_entry.xml
@@ -917,7 +920,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
   		 {
   			 int i, j;
   			 
-  			 for (i=0;i<ArrayList.size();i++)
+  			 for (i=0;i<viewHolder.size();i++)
   				 // found button?
   				 if (viewHolder.get(i).entry == button || viewHolder.get(i).checked == button)
   				 {
@@ -925,7 +928,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
   					 viewHolder.get(i).checked.setChecked(true);
   					 for (j=0;j<ArrayList.size();j++)
   						 if (j!=i)
-  		  					 viewHolder.get(j).checked.setChecked(false);
+  							viewHolder.get(j).checked.setChecked(false);
   					
   					 return i;
   				 }

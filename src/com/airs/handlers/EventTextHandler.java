@@ -138,7 +138,7 @@ public class EventTextHandler implements com.airs.handlers.Handler
 	 */
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("ET"), new String("Event"), new String("Event text"), new String("str"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("ET"), new String("Event"), airs.getString(R.string.ET_d), airs.getString(R.string.ET_e), new String("str"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	/**

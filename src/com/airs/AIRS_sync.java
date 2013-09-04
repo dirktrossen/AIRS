@@ -62,6 +62,7 @@ public class AIRS_sync extends Activity implements OnClickListener
 	private static final int START_ACTIVITY	= 1;
 	private static final int UPDATE_VALUES	= 2;
 	private static final int FINISH_NO_VALUES_ACTIVITY	= 3;
+	private static final int NO_STORAGE		= 4;
 
 	private static final int NO_SYNC			= 0;
 	private static final int SYNC_STARTED	= 1;
@@ -87,7 +88,8 @@ public class AIRS_sync extends Activity implements OnClickListener
     private File sync_file;
     private WakeLock wl;
     private int syncing = NO_SYNC;
-
+    private Context airs;
+    
     // database variables
     private AIRS_database database_helper;
     private SQLiteDatabase airs_storage;
@@ -100,6 +102,9 @@ public class AIRS_sync extends Activity implements OnClickListener
     {
         // Set up the window layout
         super.onCreate(savedInstanceState);
+        
+        // save for later
+        this.airs = this;
         
         // get default preferences
         settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -385,6 +390,16 @@ public class AIRS_sync extends Activity implements OnClickListener
            case UPDATE_VALUES:
 	    		ProgressText.setText(getString(R.string.Temp_sync_file) + " " + String.valueOf(msg.getData().getLong("Value")/1000));
 	    		break;
+           case NO_STORAGE:
+  	  			Toast.makeText(getApplicationContext(), getString(R.string.Cannot_find_storage), Toast.LENGTH_LONG).show();
+	            // now finish activity
+	            ProgressText.setVisibility(View.INVISIBLE);
+	            progressbar.setVisibility(View.INVISIBLE);
+	            cancelButton.setVisibility(View.INVISIBLE);
+	            
+	            // reset sync state
+	            syncing = NO_SYNC;
+  	  			break;
            default:  
            	break;
            }
@@ -421,7 +436,11 @@ public class AIRS_sync extends Activity implements OnClickListener
 	        File external_storage = getExternalFilesDir(null);
 	        
 	        if (external_storage == null)
-   	  			Toast.makeText(getApplicationContext(), getString(R.string.Cannot_find_storage), Toast.LENGTH_LONG).show();
+	        {
+		        syncing = SYNC_FINISHED;
+		        mHandler.sendMessage(mHandler.obtainMessage(NO_STORAGE));
+   	  			return;
+	        }
 
 	    	sync_file = new File(external_storage, "AIRS_temp");
 	

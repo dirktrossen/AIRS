@@ -36,9 +36,15 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Binder;
 import android.os.Bundle;
@@ -126,7 +132,8 @@ public class AIRS_local extends Service
      * Flag that sensors have been registered
      */
     public boolean registered = false;
-    private ArrayAdapter<String> mSensorsArrayAdapter;
+    private ArrayList<SensorEntry> mSensorsArrayList;
+    private MyCustomBaseAdapter mSensorsArrayAdapter;
     /**
      * List of Values, being used in visualisation activity
      * @see AIRS_measurements
@@ -956,19 +963,13 @@ public class AIRS_local extends Service
 	 */
 	public boolean startMeasurements(boolean restarted)
 	 {
-		 int i, j;
+		 int i, j =0;
 		 Sensor current = null;
 		 
 		 // count values to be displayed		 
-		 current = SensorRepository.root_sensor;
-		 i= j= 0 ;
-		 while(current != null)
-		 {
-	    	if (sensors.isItemChecked(i) == true)
-		    	j++;
-	    	i++;
-	        current = current.next;
-	     }
+		 for (i=0;i<sensors.getCount();i++)
+			if (mSensorsArrayList.get(i).checked == true)
+				j++;
 		 
 		 if (j == 0)
 		 {
@@ -1008,9 +1009,9 @@ public class AIRS_local extends Service
  		 {		 			 
  			 for (i=0;i<sensors.getCount();i++)
  			 {
- 				if (sensors.isItemChecked(i) == true)
+ 				if (mSensorsArrayList.get(i).checked == true)
  				{
- 	 				current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+ 	 				current = SensorRepository.findSensor(mSensorsArrayList.get(i).description.substring(0,2));
 	 				if (current != null)
 	 				{
 				    	if (current.type.equals("float") || current.type.equals("int") || current.type.equals("txt") || current.type.equals("str") )
@@ -1027,10 +1028,10 @@ public class AIRS_local extends Service
 		 // now create measurement threads
 		 for (i=0, j=0;i<sensors.getCount();i++)
 		 {
-			current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+			current = SensorRepository.findSensor(mSensorsArrayList.get(i).description.substring(0,2));
 			if (current != null)
 			{
-				if (sensors.isItemChecked(i) == true)
+				if (mSensorsArrayList.get(i).checked == true)
 				{
  		    		// create reading thread
  		    		if (localDisplay_b == true)
@@ -1122,13 +1123,13 @@ public class AIRS_local extends Service
 		 Sensor current = null;
 
 		 // now create measurement threads
-		 for (i=0;i<sensors.getCount();i++)
+		 for (i=0;i<mSensorsArrayList.size();i++)
 		 {
-			current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
+			current = SensorRepository.findSensor(mSensorsArrayList.get(i).description.substring(0,2));
 			if (current != null)
 			{
     			// save setting in RMS
-				if (sensors.isItemChecked(i) == true)
+				if (mSensorsArrayList.get(i).checked == true)
  	                HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "On");
 		    	else
 	                HandlerManager.writeRMS("AIRS_local::" + current.Symbol, "Off");
@@ -1162,13 +1163,14 @@ public class AIRS_local extends Service
 			started = true;
 
 			airs.setContentView(R.layout.sensors);
-     
+ 
+			// populate list
 	        sensors 	= (ListView)airs.findViewById(R.id.sensorList);
 	        sensors.setItemsCanFocus(false); 
+		    sensors.setDividerHeight(2);
 		    sensors.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        mSensorsArrayAdapter = new ArrayAdapter<String>(airs, android.R.layout.simple_list_item_multiple_choice);
-	        
-	        // Find and set up the ListView for paired devices
+	        mSensorsArrayList = new ArrayList<SensorEntry>();
+	        mSensorsArrayAdapter = new MyCustomBaseAdapter(this);
 	        sensors.setAdapter(mSensorsArrayAdapter);
 
 	        // do discovery on all handlers
@@ -1188,42 +1190,34 @@ public class AIRS_local extends Service
 		    while(current != null)
 		    {
 	    		// add new sensor choice field
-		        mSensorsArrayAdapter.add(current.Symbol + " (" + current.Description + ")");
+		    	SensorEntry entry = new SensorEntry();
+		    	
+		    	entry.description = current.Symbol + " (" + current.Description + ")";
+		    	entry.explanation = current.Explanation;
+
+		    	// try to read RMS
+		    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
+		    	// set selected index to setting in RMS
+		    	if (sensor_setting.compareTo("On") == 0)
+		    		entry.checked = true;
+		    	else
+		    		entry.checked = false;
+
+		    	mSensorsArrayList.add(entry);
 
 		    	// count sensors
 		    	i++;
 		        current = current.next;
 		    }
-		    
-		    // sort list alphabetically
-	        mSensorsArrayAdapter.sort(new Comparator<String>() {
-	        	public int compare(String object1, String object2) {
-	        		return object1.compareTo(object2);
-	        	};
-	        });
-	        // notify ListView of data set change!
-	        mSensorsArrayAdapter.notifyDataSetChanged();
-	        
+		    	   
+		    Collections.sort(mSensorsArrayList, new SortBasedOnName());
+
 		    // save number of sensors for later!
 		    numberSensors = i;
 
-		    // set checked state based on saved settings
-		    for (i=0;i<numberSensors;i++)
-		    {
- 				current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
- 				
- 				if (current != null)
- 				{
-			    	// try to read RMS
-			    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
-			    	// set selected index to setting in RMS
-			    	if (sensor_setting.compareTo("On") == 0)
-			    		sensors.setItemChecked(i, true);
-			    	else
-			    		sensors.setItemChecked(i, false);
- 				}
-		    }
-		    
+	        // notify ListView of data set change!
+	        mSensorsArrayAdapter.notifyDataSetChanged();
+
 			// signal that it is discovered
 			discovered = true;
 	 }	
@@ -1243,8 +1237,9 @@ public class AIRS_local extends Service
 	        sensors 	= (ListView)new ListView(this.getApplicationContext());
 	        sensors.setItemsCanFocus(false); 
 		    sensors.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-	        mSensorsArrayAdapter = new ArrayAdapter<String>(this.getApplicationContext(), android.R.layout.simple_list_item_multiple_choice);
-	        // Find and set up the ListView for paired devices
+		    sensors.setDividerHeight(2);
+	        mSensorsArrayList = new ArrayList<SensorEntry>();
+	        mSensorsArrayAdapter = new MyCustomBaseAdapter(this);
 	        sensors.setAdapter(mSensorsArrayAdapter);
 
 	        // do discovery on all handlers
@@ -1264,42 +1259,34 @@ public class AIRS_local extends Service
 		    while(current != null)
 		    {
 	    		// add new sensor choice field
-		        mSensorsArrayAdapter.add(current.Symbol + " (" + current.Description + ")");
+		    	SensorEntry entry = new SensorEntry();
+		    	
+		    	entry.description = current.Symbol + " (" + current.Description + ")";
+		    	entry.explanation = current.Explanation;
+		    	
+		    	// try to read RMS
+		    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
+		    	// set selected index to setting in RMS
+		    	if (sensor_setting.compareTo("On") == 0)
+		    		entry.checked = true;
+		    	else
+		    		entry.checked = false;
+		    	
+		    	mSensorsArrayList.add(entry);
 
 		    	// count sensors
 		    	i++;
 		        current = current.next;
 		    }
-		    
-		    // sort list alphabetically
-	        mSensorsArrayAdapter.sort(new Comparator<String>() {
-	        	public int compare(String object1, String object2) {
-	        		return object1.compareTo(object2);
-	        	};
-	        });
-	        // notify ListView of data set change!
-	        mSensorsArrayAdapter.notifyDataSetChanged();
-	        
+		    	 
+		    Collections.sort(mSensorsArrayList, new SortBasedOnName());
+
 		    // save number of sensors for later!
 		    numberSensors = i;
 
-		    // set checked state based on saved settings
-		    for (i=0;i<numberSensors;i++)
-		    {
- 				current = SensorRepository.findSensor(mSensorsArrayAdapter.getItem(i).substring(0,2));
- 				
- 				if (current != null)
- 				{
-			    	// try to read RMS
-			    	sensor_setting = HandlerManager.readRMS("AIRS_local::" + current.Symbol, "Off");
-			    	// set selected index to setting in RMS
-			    	if (sensor_setting.compareTo("On") == 0)
-			    		sensors.setItemChecked(i, true);
-			    	else
-			    		sensors.setItemChecked(i, false);
- 				}
-		    }
-
+	        // notify ListView of data set change!
+	        mSensorsArrayAdapter.notifyDataSetChanged();
+	        
 			// signal that it is discovered
 			discovered = true;
 	 }	
@@ -1509,5 +1496,93 @@ public class AIRS_local extends Service
              }
 
          }
-     };     
+     };  
+     
+ 	private class ViewHolder 
+	{
+ 		TextView description;
+ 		TextView explanation;
+ 		CheckBox checked;
+	}
+ 	
+    private class SensorEntry
+    {
+    	String description;
+    	String explanation;
+    	boolean checked;
+    }
+
+    public class SortBasedOnName implements Comparator
+    {
+	    public int compare(Object o1, Object o2) 
+	    {
+	        return ((SensorEntry)o1).description.compareTo(((SensorEntry)o2).description);
+	    }
+    }
+    
+	 // Custom adapter for two line text list view with imageview (icon), defined in handlerentry.xml
+   	private class MyCustomBaseAdapter extends BaseAdapter 
+   	{
+   		 private LayoutInflater mInflater;
+
+   		 public MyCustomBaseAdapter(Context context) 
+   		 {
+   			 mInflater = LayoutInflater.from(context);
+   		 }
+
+   		 public int getCount() 
+   		 {
+   			 return mSensorsArrayList.size();
+   		 }
+
+   		 public SensorEntry getItem(int position) 
+   		 {
+   			 return mSensorsArrayList.get(position);
+   		 }
+
+   		 public long getItemId(int position) 
+   		 {
+   			 return position;
+   		 }
+
+   		 public View getView(int position, View convertView, ViewGroup parent) 
+   		 {
+   			 
+   			 SensorEntry current;
+   			 ViewHolder holder;
+   			 
+			 // get current sensor entry
+   			 current = mSensorsArrayList.get(position);
+   			 if (convertView == null)
+   			 {
+   	   			 // inflate view
+	   			 convertView = mInflater.inflate(R.layout.sensorselection, null);
+	   			 // now get all view information
+	   			 holder = new ViewHolder();
+	   			 holder.description = (TextView) convertView.findViewById(R.id.selection_description);
+	   			 holder.explanation = (TextView) convertView.findViewById(R.id.selection_explanation);
+	   			 holder.checked = (CheckBox)convertView.findViewById(R.id.selection_check);
+	   			 // and save holder entry in tag
+	   			 convertView.setTag(holder);
+   			 }
+   			 else
+   				 holder = (ViewHolder)convertView.getTag();
+
+   			 // set view information
+   			 holder.description.setText(current.description);
+   			 holder.explanation.setText(current.explanation);
+   			 // take care that we get notified of user selections
+   			 holder.checked.setTag(current);
+   			 holder.checked.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
+                 {
+                	 ((SensorEntry)buttonView.getTag()).checked = isChecked;
+                 }
+               });
+   			 holder.checked.setChecked(current.checked);
+   			 
+   			 return convertView;
+   		 }
+   	}
 }

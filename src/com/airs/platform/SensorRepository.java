@@ -51,10 +51,10 @@ public class SensorRepository
      * @param poll Polling time in millisecond - if zero, the handler will block properly when called frequently, e.g., realising the recording through a callback
      * @param handler Reference to the {@link Handler} implementing the sensor
      */
-    static synchronized public void insertSensor(String Symbol, String Unit, String Description, String type, int scaler, int min, int max, boolean hasHistory, int poll, Handler handler)
+    static synchronized public void insertSensor(String Symbol, String Unit, String Description, String Explanation, String type, int scaler, int min, int max, boolean hasHistory, int poll, Handler handler)
     {
         // make copy of sensor object
-        new_one = new Sensor(Symbol, Unit, Description, type, scaler, min, max, hasHistory, poll, handler);
+        new_one = new Sensor(Symbol, Unit, Description, Explanation, type, scaler, min, max, hasHistory, poll, handler);
         // first sensor?
         if (root_sensor == null)
             root_sensor = new_one;

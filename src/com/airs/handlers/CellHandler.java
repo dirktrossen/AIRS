@@ -28,6 +28,7 @@ import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.telephony.PhoneStateListener;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -172,13 +173,13 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	{
 	    if (enableProperties == true)
 	    {
-		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), new String("Cellular roaming"), new String("int"), 0, 0, 1, false, 60000, this);	    
-		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), new String("Cellular Data connected"), new String("int"), 0, 0, 1, false, 0, this);	    
-		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), new String("Cellular signal strength in dBm"), new String("int"), 0, -120, 0, true, 0, this);	    
-		    SensorRepository.insertSensor(new String("CB"), new String("bars"), new String("Cellular signal strength in bar"), new String("int"), 0, 0, 7, true, 0, this);	    
-		    SensorRepository.insertSensor(new String("CI"), new String("ID"), new String("Cell identifier"), new String("int"), 0, 0, 65535, false, 0, this);	    
-		    SensorRepository.insertSensor(new String("CL"), new String("ID"), new String("Location Area Code"), new String("int"), 0, 0, 65535, false, 0, this);	    
-		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), new String("Mobile Country Code"), new String("int"), 0, 0, 65535, false, 0, this);
+		    SensorRepository.insertSensor(new String("CR"), new String("boolean"), nors.getString(R.string.CR_d), nors.getString(R.string.CR_e), new String("int"), 0, 0, 1, false, 60000, this);	    
+		    SensorRepository.insertSensor(new String("CD"), new String("boolean"), nors.getString(R.string.CD_d), nors.getString(R.string.CD_e), new String("int"), 0, 0, 1, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CS"), new String("dBm"), nors.getString(R.string.CS_d), nors.getString(R.string.CS_e), new String("int"), 0, -120, 0, true, 0, this);	    
+		    SensorRepository.insertSensor(new String("CB"), new String("bars"), nors.getString(R.string.CB_d), nors.getString(R.string.CB_e), new String("int"), 0, 0, 7, true, 0, this);	    
+		    SensorRepository.insertSensor(new String("CI"), new String("ID"), nors.getString(R.string.CI_d), nors.getString(R.string.CI_e), new String("int"), 0, 0, 65535, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CL"), new String("ID"), nors.getString(R.string.CL_d), nors.getString(R.string.CL_e), new String("int"), 0, 0, 65535, false, 0, this);	    
+		    SensorRepository.insertSensor(new String("CC"), new String("MCC"), nors.getString(R.string.CC_d), nors.getString(R.string.CC_e), new String("int"), 0, 0, 65535, false, 0, this);
 		}		
 	}
 

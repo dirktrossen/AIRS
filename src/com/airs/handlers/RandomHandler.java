@@ -21,6 +21,7 @@ import java.util.Random;
 
 import android.content.Context;
 
+import com.airs.R;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -94,7 +95,7 @@ public class RandomHandler implements Handler
 	 */
 	public void Discover()
 	{
-	    SensorRepository.insertSensor(new String("Rd"), new String("ticks"), new String("Random Number"), new String("int"), 0, 0, 65535, true, polltime, this);	    
+	    SensorRepository.insertSensor(new String("Rd"), new String("ticks"), airs.getString(R.string.RD_d), airs.getString(R.string.RD_e), new String("int"), 0, 0, 65535, true, polltime, this);	    
 	}
 	
 	/**

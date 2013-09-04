@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import com.airs.AIRS_record_tab;
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
@@ -610,20 +611,20 @@ public class SystemHandler implements com.airs.handlers.Handler
 	 */
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("Ba"), new String("%"), new String("Battery Level"), new String("int"), 0, 0, 100, true, 0, this);	    
-		SensorRepository.insertSensor(new String("BV"), new String("mV"), new String("Battery Voltage"), new String("int"), 0, 0, 10, true, 0, this);	    
-		SensorRepository.insertSensor(new String("Bc"), new String("boolean"), new String("Battery charging"), new String("int"), 0, 0, 1, false, 0, this);	    
-		SensorRepository.insertSensor(new String("BM"), new String("C"), new String("Battery Temperature"), new String("int"), -1, 0, 100, true, 0, this);	    
-		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), new String("Memory available"), new String("int"), 0, 0, 512000000, true, polltime, this);	    
-		SensorRepository.insertSensor(new String("Sc"), new String("Screen"), new String("Screen on/off"), new String("int"), 0, 0, 1, false, 0, this);	    
-		SensorRepository.insertSensor(new String("HS"), new String("Headset"), new String("Headset plug state"), new String("int"), 0, 0, 1, false, 0, this);	    
-    	SensorRepository.insertSensor(new String("IC"), new String("Number"), new String("Incoming Call"), new String("txt"), 0, 0, 1, false, 0, this);	    
-    	SensorRepository.insertSensor(new String("OC"), new String("Number"), new String("Outgoing Call"), new String("txt"), 0, 0, 1, false, 0, this);	    
-    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), new String("Received SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
-    	SensorRepository.insertSensor(new String("SS"), new String("SMS"), new String("Sent SMS"), new String("txt"), 0, 0, 1, false, 0, this);	    
-    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), new String("Running tasks"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
-    	SensorRepository.insertSensor(new String("TV"), new String("Tasks"), new String("Visible programs"), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
-    	SensorRepository.insertSensor(new String("TE"), new String("Template"), new String("Recording template"), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+		SensorRepository.insertSensor(new String("Ba"), new String("%"), airs.getString(R.string.BA_d), airs.getString(R.string.BA_e), new String("int"), 0, 0, 100, true, 0, this);	    
+		SensorRepository.insertSensor(new String("BV"), new String("mV"), airs.getString(R.string.BV_d), airs.getString(R.string.BV_e), new String("int"), 0, 0, 10, true, 0, this);	    
+		SensorRepository.insertSensor(new String("Bc"), new String("boolean"), airs.getString(R.string.BC_d), airs.getString(R.string.BC_e), new String("int"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("BM"), new String("C"), airs.getString(R.string.BM_d), airs.getString(R.string.BM_e), new String("int"), -1, 0, 100, true, 0, this);	    
+		SensorRepository.insertSensor(new String("Rm"), new String("RAM"), airs.getString(R.string.RM_d), airs.getString(R.string.RM_e), new String("int"), 0, 0, 512000000, true, polltime, this);	    
+		SensorRepository.insertSensor(new String("Sc"), new String("Screen"), airs.getString(R.string.SC_d), airs.getString(R.string.SC_e), new String("int"), 0, 0, 1, false, 0, this);	    
+		SensorRepository.insertSensor(new String("HS"), new String("Headset"), airs.getString(R.string.HS_d), airs.getString(R.string.HS_e), new String("int"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("IC"), new String("Number"), airs.getString(R.string.IC_d), airs.getString(R.string.IC_e), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("OC"), new String("Number"), airs.getString(R.string.OC_d), airs.getString(R.string.OC_e), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("SR"), new String("SMS"), airs.getString(R.string.SR_d), airs.getString(R.string.SR_e), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("SS"), new String("SMS"), airs.getString(R.string.SS_d), airs.getString(R.string.SS_e), new String("txt"), 0, 0, 1, false, 0, this);	    
+    	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), airs.getString(R.string.TR_d), airs.getString(R.string.TR_e), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
+    	SensorRepository.insertSensor(new String("TV"), new String("Tasks"), airs.getString(R.string.TV_d), airs.getString(R.string.TV_e), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
+    	SensorRepository.insertSensor(new String("TE"), new String("Template"), airs.getString(R.string.TE_d), airs.getString(R.string.TE_e), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
 	}
 	
 	/**

@@ -90,6 +90,20 @@
         <item>15</item>
         <item>20</item>
     </string-array> 
+    <string-array name="lightnotification_values">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Yellow</item>
+        <item>White</item>
+    </string-array>
+     <string-array name="lightnotification_entries">
+        <item>0xff0000</item>
+        <item>0x00ff00</item>
+        <item>0x0000ff</item>
+        <item>0x00ffff</item>
+        <item>0xffffff</item>
+    </string-array> 
     <string-array name="recordinglabel_entries">
         <item>Local</item>
         <item>Remote</item>

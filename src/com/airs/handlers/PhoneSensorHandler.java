@@ -27,6 +27,7 @@ import android.hardware.Sensor;
 import android.os.Handler;
 import android.os.Message;
 
+import com.airs.R;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
@@ -407,20 +408,20 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		{
 		   if (Orientation != null)
 		   {
-			   SensorRepository.insertSensor(new String("Az"), new String("degrees"), new String("Azimuth"), new String("int"), -1, 0, 3600, true, polltime, this);
-			   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), new String("Pitch"), new String("int"), -1, -1800, 1800, true, polltime, this);
-			   SensorRepository.insertSensor(new String("Ro"), new String("degrees"), new String("Roll"), new String("int"), -1, -900, 900, true, polltime, this);	
+			   SensorRepository.insertSensor(new String("Az"), new String("degrees"), nors.getString(R.string.AZ_d), nors.getString(R.string.AZ_e), new String("int"), -1, 0, 3600, true, polltime, this);
+			   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), nors.getString(R.string.PI_d), nors.getString(R.string.PI_e), new String("int"), -1, -1800, 1800, true, polltime, this);
+			   SensorRepository.insertSensor(new String("Ro"), new String("degrees"), nors.getString(R.string.RO_d), nors.getString(R.string.RO_e), new String("int"), -1, -900, 900, true, polltime, this);	
 		   }
 		   if (Proximity != null)
-			   SensorRepository.insertSensor(new String("PR"), new String("-"), new String("Proximity"), new String("int"), -1, 0, 1000, false, polltime2, this);	
+			   SensorRepository.insertSensor(new String("PR"), new String("-"), nors.getString(R.string.PR_d), nors.getString(R.string.PR_e), new String("int"), -1, 0, 1000, false, polltime2, this);	
 		   if (Light != null)
-			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), new String("Ambient Light"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+			   SensorRepository.insertSensor(new String("LI"), new String("Lux"), nors.getString(R.string.LI_d), nors.getString(R.string.LI_e), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		   if (Pressure != null)
-			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), new String("Ambient Pressure"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+			   SensorRepository.insertSensor(new String("PU"), new String("hPa"), nors.getString(R.string.PU_d), nors.getString(R.string.PU_e), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		   if (Temperature != null)
-			   SensorRepository.insertSensor(new String("TM"), new String("C"), new String("Ambient Temperature"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+			   SensorRepository.insertSensor(new String("TM"), new String("C"), nors.getString(R.string.TM_d), nors.getString(R.string.TM_e), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		   if (Humidity != null)
-			   SensorRepository.insertSensor(new String("HU"), new String("%"), new String("Ambient rel. Humidity"), new String("int"), -1, 0, 50000, true, polltime3, this);	
+			   SensorRepository.insertSensor(new String("HU"), new String("%"), nors.getString(R.string.HU_d), nors.getString(R.string.HU_e), new String("int"), -1, 0, 50000, true, polltime3, this);	
 		}
 	}
 	

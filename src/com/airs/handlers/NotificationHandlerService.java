@@ -41,12 +41,10 @@ public class NotificationHandlerService extends AccessibilityService
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) 
 	{
-		Log.v("AIRS", "NotificationAccessibility: Got event = " + String.valueOf(event.getEventType()));
 	    if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) 
 	    {
 	    	// get notification shown
 	    	Notification notification = (Notification)event.getParcelableData();
-			Log.v("AIRS", "AIRS:NotificationAccessibility: Got event for package " + event.getPackageName().toString());
 	    	
 	    	// now parse the specific packages we support
 	    	// start with GTalk
@@ -69,9 +67,7 @@ public class NotificationHandlerService extends AccessibilityService
 	    	// anything from Spotify?
 	    	if (event.getPackageName().toString().compareTo("com.spotify.mobile.android.ui") == 0)
 	    	{
-		        // now broadcast the capturing of the accessibility service to the handler
-	    		Log.v("Notification", "Spotify : " + notification.tickerText);
-	    		
+		        // now broadcast the capturing of the accessibility service to the handler	    		
 	    		// anything delivered?
 	    		if (notification.tickerText != null)
 	    		{
@@ -111,7 +107,7 @@ public class NotificationHandlerService extends AccessibilityService
 	    AccessibilityServiceInfo info = new AccessibilityServiceInfo();
 	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
 	    info.notificationTimeout = 100;
-	    info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
+	    info.feedbackType = AccessibilityServiceInfo.FEEDBACK_VISUAL;
 	    info.packageNames = new String[] {"com.airs.helpers" };
 //	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.gsf" };
 
@@ -153,7 +149,7 @@ public class NotificationHandlerService extends AccessibilityService
             	    AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
             	    info.notificationTimeout = 100;
-            	    info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
+            	    info.feedbackType = AccessibilityServiceInfo.FEEDBACK_VISUAL;
             	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.talk", "com.spotify.mobile.android.ui"};
             	    setServiceInfo(info);
             	    
@@ -164,7 +160,7 @@ public class NotificationHandlerService extends AccessibilityService
             	    AccessibilityServiceInfo info = new AccessibilityServiceInfo();
             	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
             	    info.notificationTimeout = 100;
-            	    info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
+            	    info.feedbackType = AccessibilityServiceInfo.FEEDBACK_VISUAL;
             	    info.packageNames = new String[] {"com.airs.helpers" };
             	    setServiceInfo(info);   
             	    

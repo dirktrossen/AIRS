@@ -22,6 +22,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.FileObserver;
 
+import com.airs.R;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
@@ -32,6 +33,7 @@ import com.airs.platform.SensorRepository;
  */
 public class MediaWatcherHandler implements Handler
 {
+	private Context airs;
 	private boolean camera, music, pictures, videos;
 	private Semaphore watcher_semaphore 	= new Semaphore(1);
 	private boolean installed = false;
@@ -157,7 +159,7 @@ public class MediaWatcherHandler implements Handler
 	{
 		// is at least one watch type selected?
 		if (camera == true || music == true || pictures == true || videos == true)
-			SensorRepository.insertSensor(new String("MW"), new String("file"), new String("Watched media folder"), new String("txt"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("MW"), new String("file"), airs.getString(R.string.MW_d), airs.getString(R.string.MW_e), new String("txt"), 0, 0, 1, false, 0, this);	    
 	}
 	
 	/**
@@ -169,6 +171,8 @@ public class MediaWatcherHandler implements Handler
 	 */
 	public MediaWatcherHandler(Context airs)
 	{
+		this.airs = airs;
+		
 		camera   = HandlerManager.readRMS_b("MediaWatcherHandler::Camera", false);
 		music    = HandlerManager.readRMS_b("MediaWatcherHandler::Music", false);
 		pictures = HandlerManager.readRMS_b("MediaWatcherHandler::Pictures", false);

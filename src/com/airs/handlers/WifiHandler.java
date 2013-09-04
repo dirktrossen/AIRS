@@ -33,6 +33,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.telephony.PhoneStateListener;
 
+import com.airs.R;
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
@@ -232,11 +233,11 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	{
 	    if (enable == true)
 	    {		
-			SensorRepository.insertSensor(new String("WF"), new String("txt"), new String("WLAN info"), new String("txt"), 0, 0, 1, false, 0, this);
-			SensorRepository.insertSensor(new String("WI"), new String("SSID"), new String("WLAN SSID"), new String("txt"), 0, 0, 1, false, 0, this);	
-			SensorRepository.insertSensor(new String("WM"), new String("MAC"), new String("WLAN MAC address"), new String("txt"), 0, 0, 1, false, 0, this);
-			SensorRepository.insertSensor(new String("WS"), new String("dBm"), new String("Signal strength"), new String("txt"), 0, 0, 1, false, 0, this);
-			SensorRepository.insertSensor(new String("WC"), new String("boolean"), new String("WLAN connected"), new String("int"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WF"), new String("txt"), nors.getString(R.string.WF_d), nors.getString(R.string.WF_e), new String("txt"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WI"), new String("SSID"), nors.getString(R.string.WI_d), nors.getString(R.string.WI_e), new String("txt"), 0, 0, 1, false, 0, this);	
+			SensorRepository.insertSensor(new String("WM"), new String("MAC"), nors.getString(R.string.WM_d), nors.getString(R.string.WM_e), new String("txt"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WS"), new String("dBm"), nors.getString(R.string.WS_d), nors.getString(R.string.WS_e), new String("txt"), 0, 0, 1, false, 0, this);
+			SensorRepository.insertSensor(new String("WC"), new String("boolean"), nors.getString(R.string.WC_d), nors.getString(R.string.WC_e), new String("int"), 0, 0, 1, false, 0, this);
 		}	    
 	}
 	

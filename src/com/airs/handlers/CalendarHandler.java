@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import com.airs.R;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
@@ -96,7 +97,7 @@ public class CalendarHandler implements Handler
 	public void Discover()
 	{
 		if (no_calendars == true)
-			SensorRepository.insertSensor(new String("CA"), new String("-"), new String("Calendar entry"), new String("str"), 0, 0, 1, false, polltime, this);
+			SensorRepository.insertSensor(new String("CA"), new String("-"), airs.getString(R.string.CA_d), airs.getString(R.string.CA_e), new String("str"), 0, 0, 1, false, polltime, this);
 	}
 	
 	/**

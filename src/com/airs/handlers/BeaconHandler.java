@@ -33,6 +33,7 @@ import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.History;
 import com.airs.platform.SensorRepository;
+import com.airs.*;
 
 /** 
  * Class to read audio-related sensors, specifically the BN, BD, BT sensor
@@ -245,9 +246,9 @@ public class BeaconHandler implements Handler, Runnable
 	        }
 	        		        
 		    // if it's there, add sensor
-			SensorRepository.insertSensor(new String("BT"), new String("MAC"), new String("Surrounding BT Devices"), new String("txt"), 0, 0, 1, false, 0, this);	    
-			SensorRepository.insertSensor(new String("BN"), new String("#"), new String("# surrounding BT Devices"), new String("int"), 0, 0, 50, true, 0, this);	    
-			SensorRepository.insertSensor(new String("BD"), new String("MAC"), new String("Connected BT Devices"), new String("txt"), 0, 0, 50, true, polltime, this);	 
+			SensorRepository.insertSensor(new String("BT"), new String("MAC"), nors.getString(R.string.BT_d), nors.getString(R.string.BT_e), new String("txt"), 0, 0, 1, false, 0, this);	    
+			SensorRepository.insertSensor(new String("BN"), new String("#"), nors.getString(R.string.BN_d), nors.getString(R.string.BN_e), new String("int"), 0, 0, 50, true, 0, this);	    
+			SensorRepository.insertSensor(new String("BD"), new String("MAC"), nors.getString(R.string.BD_d), nors.getString(R.string.BD_e), new String("txt"), 0, 0, 50, true, polltime, this);	 
 			
 			// now register for the connected device intents
 			IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
