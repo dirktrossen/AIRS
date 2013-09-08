@@ -560,14 +560,19 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- changed sensor selection with explanatory information for every sensor\n
-- sensor list now multi-lingual, including the new explanatory information\n
-- changed LED color setting into simple list selection
+- improved SS sensor by only recording SMS sent that have been delivered\n
+- repaired NO sensor, including recordings from Spotify\n
+- fixed check for deleted GI/MW sensors\n
+IMPORTANT: if you use the AIRS accessibility service for the NO sensor, you will need to switch off/on the service once in your system settings for it to work again!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6.3:\n
+- improved SS sensor by only recording SMS sent that have been delivered\n
+- repaired NO sensor, including recordings from Spotify\n
+- fixed check for deleted GI/MW sensors\n\n
 V2.6.2:\n
 - changed sensor selection with explanatory information for every sensor\n
 - sensor list now multi-lingual, including the new explanatory information\n

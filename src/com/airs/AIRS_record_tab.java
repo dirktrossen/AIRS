@@ -64,8 +64,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airs.database.AIRS_DBAdmin;
 import com.airs.helper.SafeCopyPreferences;
 import com.airs.helper.SerialPortLogger;
+import com.airs.platform.HandlerUIManager;
 
 /**
  * Activity for the Record tab in the main UI, controlling the recording and managing the templates

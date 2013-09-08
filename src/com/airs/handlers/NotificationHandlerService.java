@@ -72,19 +72,20 @@ public class NotificationHandlerService extends AccessibilityService
 	    		if (notification.tickerText != null)
 	    		{
 	    			// split information in tokens
-	    			String tokens[] = notification.tickerText.toString().split(" - ");
+	    			String tokens[] = notification.tickerText.toString().split("Ñ");
 	    			
-	    			// signal as play state changed event
-					Intent intent = new Intent("com.android.music.playstatechanged");
-					
-					// sorry, it only provides artist and track
-					if (tokens.length == 2)
-					{
-						intent.putExtra("artist", tokens[1]);							
-						intent.putExtra("track", tokens[0]);		
+	    			if (tokens.length == 2)
+	    			{
+		    			// signal as play state changed event
+						Intent intent = new Intent("com.android.music.playstatechanged");
+						
+						intent.putExtra("track", tokens[0].trim());		
+						intent.putExtra("artist", tokens[1].trim());							
 						intent.putExtra("album", "");		
-						sendBroadcast(intent);		    	
+						sendBroadcast(intent);	
 					}
+	    			else
+	    				Log.e("AIRS", "Can't find token!");
 	    		}				
 	    	}
 	    }

@@ -934,8 +934,13 @@ public class SystemHandler implements com.airs.handlers.Handler
     					if(protocol == null)
     					{
     						int type = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("type"));
-    						// for actual state type=2
-    						if(type == 2)
+    						int status = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("status"));
+    						// for actual type=2 and status being not failed (32)
+    						// public static final int STATUS_NONE = -1;
+    						// public static final int STATUS_COMPLETE = 0;
+    						// public static final int STATUS_PENDING = 32;
+    						// public static final int STATUS_FAILED = 64;
+    						if(type == 2 && status != 32)
     						{    
     							smsBodyStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("body")).trim();
     							phoneNoStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("address")).trim();

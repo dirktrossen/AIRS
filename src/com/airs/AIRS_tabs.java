@@ -16,6 +16,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
+import com.airs.database.AIRS_sync;
+
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;

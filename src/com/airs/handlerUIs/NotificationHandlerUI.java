@@ -19,8 +19,8 @@ package com.airs.handlerUIs;
 import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.R;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the NotificationHandler configuration UI, based on the HandlerUI interface class

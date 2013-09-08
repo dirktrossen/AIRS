@@ -26,7 +26,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.airs.R;
 import com.airs.helper.SerialPortLogger;
@@ -461,8 +460,6 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 									speed_semaphore.release(); 
 									bearing_semaphore.release(); 
 									full_semaphore.release(); 
-									
-									Log.e("Storica", "Found nearby wifi");
 								}								
 							}
 							else	// signal that we are not nearby anything -> GPS will start at the next round again
@@ -491,8 +488,6 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 									speed_semaphore.tryAcquire(); 
 									bearing_semaphore.tryAcquire(); 
 									full_semaphore.tryAcquire(); 
-									
-									Log.v("AIRS", "Did not find nearby wifi");
 								}							
 							}
 						}

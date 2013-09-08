@@ -20,7 +20,7 @@ package com.airs.handlerUIs;
 import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Interface being implemented by individual HandlerUI classes for each configuration setting entry

@@ -16,6 +16,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs;
 
+import com.airs.platform.HandlerUIManager;
+
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;

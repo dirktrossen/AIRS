@@ -18,6 +18,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 
 import java.io.File;
 
+import com.airs.database.AIRS_restore;
 import com.airs.helper.SafeCopyPreferences;
 
 import android.app.Activity;

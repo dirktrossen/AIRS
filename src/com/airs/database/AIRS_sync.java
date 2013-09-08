@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */
-package com.airs;
+package com.airs.database;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -23,6 +23,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import com.airs.R;
+import com.airs.platform.HandlerUIManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -88,7 +91,6 @@ public class AIRS_sync extends Activity implements OnClickListener
     private File sync_file;
     private WakeLock wl;
     private int syncing = NO_SYNC;
-    private Context airs;
     
     // database variables
     private AIRS_database database_helper;
@@ -102,9 +104,6 @@ public class AIRS_sync extends Activity implements OnClickListener
     {
         // Set up the window layout
         super.onCreate(savedInstanceState);
-        
-        // save for later
-        this.airs = this;
         
         // get default preferences
         settings = PreferenceManager.getDefaultSharedPreferences(this);

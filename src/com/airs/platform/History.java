@@ -16,8 +16,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.platform;
 
-import com.airs.MapViewerActivity;
-import com.airs.TimelineActivity;
+import com.airs.visualisations.MapViewerActivity;
+import com.airs.visualisations.TimelineActivity;
 
 import android.content.Context;
 import android.content.Intent;

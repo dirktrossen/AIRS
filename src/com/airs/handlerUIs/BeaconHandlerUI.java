@@ -20,6 +20,7 @@ import android.content.Context;
 import android.preference.PreferenceActivity;
 
 import com.airs.*;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the BeaconHandler configuration UI, based on the HandlerUI interface class

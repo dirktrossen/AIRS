@@ -14,51 +14,66 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */
-package com.airs;
+package com.airs.database;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
+
+import com.airs.R;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.*;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Class to index the AIRS database
+ * Activity to restore the AIRS database
  *
- * @see         AIRS_database
+ * @see AIRS_backup
+ * @see AIRS_DBAdmin
  */
-public class AIRS_index extends Activity
+public class AIRS_restore extends Activity
 {
 	// states for handler 
 	private static final int FINISH_ACTIVITY			= 1;
 	private static final int FINISH2_ACTIVITY		= 2;
-
-	// database variables
-    private AIRS_database database_helper;
-    private  SQLiteDatabase airs_storage;
-
+	private static final int UPDATE_VALUES			= 3;
+        
     // preferences
-    private Context airs;
+    private SharedPreferences settings;
   
     // other variables
 	private TextView mTitle;
 	private TextView ProgressText;
 
-    /** Called when the activity is first created. */
-    @Override
+	/** Called when the activity is first created. 
+     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
+     */
+	@Override
     public void onCreate(Bundle savedInstanceState) 
     {
         // Set up the window layout
         super.onCreate(savedInstanceState);
         
-        // get context for thread
-        airs = getApplicationContext();
-        
+        // get default preferences
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+		
+        // setup resources
+		// check if persistent flag is running, indicating the AIRS has been running
+		if (settings.getBoolean("AIRS_local::running", false) == true)
+		{
+	  		Toast.makeText(getApplicationContext(), getString(R.string.Cannot_restore), Toast.LENGTH_LONG).show();
+	  		finish();
+		}
+
 		// set custom title
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.backuprestore_dialog);		
@@ -68,43 +83,43 @@ public class AIRS_index extends Activity
         mTitle = (TextView) findViewById(R.id.title_left_text);
         mTitle.setText(R.string.app_name);
         mTitle = (TextView) findViewById(R.id.title_right_text);
-        mTitle.setText("Index Recordings");
+        mTitle.setText(getString(R.string.Backup_recordings));
 
         // get progress text view
         ProgressText = (TextView) findViewById(R.id.backuprestore_progresstext);
-        ProgressText.setText("Starting indexing");
+        ProgressText.setText(getString(R.string.Starting_restore));
 
-        new IndexThread();
+        new RestoreThread();
     }
     
-    /** Called when the activity is paused. 
+	/** Called when the activity is paused. 
      */
-    @Override
+	@Override
     public synchronized void onPause() 
     {
         super.onPause();
     }
 
-    /** Called when the activity is stopped. 
+	/** Called when the activity is stopped. 
      */
-    @Override
+	@Override
     public void onStop() 
     {
         super.onStop();
     }
 
-    /** Called when the activity is destroyed. 
+	/** Called when the activity is destroyed. 
      */
-    @Override
+	@Override
     public void onDestroy() 
     {
        super.onDestroy();       
     }
      
-    /** Called when the configuration of the activity has changed.
+	/** Called when the configuration of the activity has changed.
      * @param newConfig new configuration after change 
      */
-    @Override
+	@Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
       //ignore orientation change
@@ -120,64 +135,67 @@ public class AIRS_index extends Activity
            switch (msg.what) 
            {
            case FINISH_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_index), Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Cannot_restore2), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
            case FINISH2_ACTIVITY:
-        	   Toast.makeText(getApplicationContext(), getString(R.string.Finished_indexing), Toast.LENGTH_LONG).show();
+        	   Toast.makeText(getApplicationContext(), getString(R.string.Finished_restore), Toast.LENGTH_LONG).show();
         	   finish();
         	   break;
+           case UPDATE_VALUES:
+	    		ProgressText.setText(getString(R.string.Restore_status) + " " + String.valueOf(msg.getData().getLong("Value")/1024) + " kB");
+	    		break;
            default:  
            	break;
            }
        }
     };
 
-	private class IndexThread implements Runnable
+	private class RestoreThread implements Runnable
 	{
-		IndexThread()
+		RestoreThread()
 		{
 			new Thread(this).start();
 		}
 		
-		/** Thread for indexing.
-	     */
-		public void run()
+	     public void run()
 	     {
 	    	 Message finish_msg = mHandler.obtainMessage(FINISH_ACTIVITY);
 	    	 Message finish2_msg = mHandler.obtainMessage(FINISH2_ACTIVITY);
 
 	    	 try 
 	    	 {
-    	        // get database
-    		    try 
-    		    {	            
-    	            // get database
-    	            database_helper = new AIRS_database(airs);
-    	            do
-    	            {
-    	            	airs_storage = database_helper.getWritableDatabase();
-    	            	if (airs_storage == null)
-    	            	{
-    	            		try
-    	            		{
-    	            			Thread.sleep(500);
-    	            		}
-    	            		catch(Exception e)
-    	            		{
-    	            		}
-    	            	}
-    	            }while(airs_storage == null);
-    		    } 
-    		    catch(Exception e)
-    		    {
-    		        mHandler.sendMessage(finish_msg);
-    		    }	    
+	    	        File sd = new File(getExternalFilesDir(null).getAbsolutePath());
 
-     	    	String command = "CREATE INDEX 'time_index' ON 'airs_values' ('timestamp' ASC)";	        	
-    	    	airs_storage.execSQL(command);
-    	    	
-		        mHandler.sendMessage(finish2_msg);
+	    	        if (sd.canWrite()) 
+	    	        {
+	    	            String backupDBPath = "AIRS_backup.db";
+	    	            File currentDB = getDatabasePath(AIRS_database.DATABASE_NAME);
+	    	            File backupDB = new File(sd, backupDBPath);
+
+	    	    		// get backup size information
+	    		        Bundle bundle = new Bundle();
+	    		        bundle.putLong("Value", backupDB.length());
+	    		        Message update_msg = mHandler.obtainMessage(UPDATE_VALUES);
+	    		        update_msg.setData(bundle);
+	    		        mHandler.sendMessage(update_msg);
+
+	    	            if (backupDB.exists()) 
+	    	            {
+	    	                FileChannel dst = new FileOutputStream(currentDB).getChannel();
+	    	                FileChannel src = new FileInputStream(backupDB).getChannel();
+	    	                dst.transferFrom(src, 0, src.size());
+	    	                src.close();
+	    	                dst.close();
+	    	            }
+	    	            else
+    				        mHandler.sendMessage(finish_msg);
+	    	            	
+	    	            
+				        mHandler.sendMessage(finish2_msg);
+	    	        }
+	    	        else
+				        mHandler.sendMessage(finish_msg);
 	    	 } 
 	    	 catch (Exception e) 
      	     {
@@ -186,5 +204,4 @@ public class AIRS_index extends Activity
 	     }
 	 }
 }
-
 

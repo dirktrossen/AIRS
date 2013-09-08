@@ -1,5 +1,7 @@
 com.airs
+com.airs.database
 com.airs.handlerUIs
 com.airs.handlers
 com.airs.helper
 com.airs.platform
+com.airs.visualisations

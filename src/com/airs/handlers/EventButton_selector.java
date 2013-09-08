@@ -51,6 +51,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.airs.*;
+import com.airs.platform.HandlerEntry;
 
 /** Activity to self-annotate events
  * @see android.app.Activity

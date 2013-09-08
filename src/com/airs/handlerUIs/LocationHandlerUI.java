@@ -28,6 +28,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 import com.airs.*;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the GPSHandler and WifiHandler configuration UI, based on the HandlerUI interface class

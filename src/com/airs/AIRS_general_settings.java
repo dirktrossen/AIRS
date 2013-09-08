@@ -19,8 +19,8 @@ package com.airs;
 import android.content.Context;
 import android.preference.PreferenceActivity;
 
-import com.airs.HandlerEntry;
 import com.airs.handlerUIs.HandlerUI;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the general settings of AIRS, based on the HandlerUI interface class
@@ -41,7 +41,7 @@ public class AIRS_general_settings implements HandlerUI
 		HandlerEntry entry = new HandlerEntry();
 		
 		entry.name = new String(context.getString(R.string.main_Configure));
-		entry.description = context.getString(R.string.main_Configure);
+		entry.description = context.getString(R.string.main_Configure2);
 		entry.resid = R.drawable.general1;
 		return (entry);
 	}

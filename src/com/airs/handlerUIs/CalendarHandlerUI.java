@@ -25,6 +25,7 @@ import android.provider.CalendarContract;
 
 import com.airs.*;
 import com.airs.helper.ListPreferenceMultiSelect;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the CalendarHandler configuration UI, based on the HandlerUI interface class

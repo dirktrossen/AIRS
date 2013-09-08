@@ -25,6 +25,7 @@ import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 
 import com.airs.*;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the HeartMonitorHandler configuration UI, based on the HandlerUI interface class

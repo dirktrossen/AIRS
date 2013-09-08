@@ -166,7 +166,7 @@ public class AudioHandler implements Handler
 	 * Here, reading the various RMS values of the preferences
 	 * Then, determining the minimal buffer size for the recording
 	 * Then, creating an AudioPlayer just to see if it works (tear it down again right after creation)
-	 * @param nors Reference to the calling {@link android.content.Context}
+	 * @param airs Reference to the calling {@link android.content.Context}
 	 */
 	public AudioHandler(Context airs)
 	{

@@ -90,6 +90,10 @@ public class Sensor
      * String describing the status further
      */
     public String	statusString;
+    /**
+     * time when sensor was saved in airs_sensor_used for cases where sensors are removed by Storica
+     */
+    public long time_saved;
     private byte[]  sensor_data = null;
     private byte[]  reading = null;
     private long    last_read;

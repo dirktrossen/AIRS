@@ -25,6 +25,8 @@ import java.util.Calendar;
 
 import com.airs.handlerUIs.HandlerUI;
 import com.airs.helper.SerialPortLogger;
+import com.airs.platform.HandlerEntry;
+import com.airs.platform.HandlerUIManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;

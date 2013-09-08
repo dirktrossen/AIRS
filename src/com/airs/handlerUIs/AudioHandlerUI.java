@@ -19,9 +19,9 @@ package com.airs.handlerUIs;
 
 import android.content.Context;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 
 import com.airs.*;
+import com.airs.platform.HandlerEntry;
 
 /**
  * Class to implement the AudioHandler configuration UI, based on the HandlerUI interface class

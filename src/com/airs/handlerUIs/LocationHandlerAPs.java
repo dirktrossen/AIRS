@@ -19,10 +19,8 @@ package com.airs.handlerUIs;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.airs.AIRS_database;
-import com.airs.AIRS_local;
 import com.airs.R;
-import com.airs.platform.HandlerManager;
+import com.airs.database.AIRS_database;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

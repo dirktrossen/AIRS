@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 
+import com.airs.database.AIRS_database;
 import com.airs.helper.SerialPortLogger;
 import com.airs.helper.Waker;
 import com.airs.platform.HandlerManager;
@@ -163,7 +165,7 @@ public class AIRS_local extends Service
 		 	private Sensor current;
 		 	private String line;
 		 	private String values_output = null;
-		 	private long values_time, time_saved;
+		 	private long values_time;
 		 	private int number_values = 0;
 		 	public Thread thread;
 		 	private boolean interrupted = false, pause = false;;
@@ -451,10 +453,10 @@ public class AIRS_local extends Service
 				    				    	if (started == true || timemilli > nextDay)
 				    				    	{
 				    				    		// save time of writing
-				    				    		time_saved = timemilli;
+				    				    		current.time_saved = timemilli;
 
 				    							// is the current data at the next day?
-				    							if (time_saved > nextDay)
+				    							if (current.time_saved > nextDay)
 				    							{
 				    								 // get current day and set time to last millisecond of that day 
 				    						         Calendar cal = Calendar.getInstance();
@@ -467,13 +469,13 @@ public class AIRS_local extends Service
 				    				    		// try to enter into database
 				    				    		try
 				    				    		{
-				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
+				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(current.time_saved) + "','" + current.Symbol + "')");
 				    				    		}
 				    				    		catch(Exception e)
 				    				    		{
 				    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_CREATE3);
 				    				           	 	execStorage(0, AIRS_database.DATABASE_TABLE_INDEX3);
-				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
+				    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(current.time_saved) + "','" + current.Symbol + "')");
 				    				    		}
 				    				    		
 				    				    		started = false;
@@ -485,17 +487,17 @@ public class AIRS_local extends Service
 				    				    			try
 				    				    			{
 				    				    				// try to retrieve the previously saved entry
-						    							String query = new String("SELECT Symbol from 'airs_sensors_used' WHERE Timestamp = " + String.valueOf(time_saved) + " AND Symbol=" + current.Symbol);
+						    							String query = new String("SELECT Symbol from 'airs_sensors_used' WHERE Timestamp = " + String.valueOf(current.time_saved) + " AND Symbol='" + current.Symbol + "'");
 						    							Cursor values = airs_storage.rawQuery(query, null);
 	
 						    							// has old entry been deleted -> then save again
 						    							if (values.getCount() == 0)
 						    							{
-							    				    		time_saved = System.currentTimeMillis();
+							    				    		current.time_saved = System.currentTimeMillis();
 
 							    				    		try
 							    				    		{
-							    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
+							    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(current.time_saved) + "','" + current.Symbol + "')");
 							    				    		}
 							    				    		catch(Exception e)
 							    				    		{
@@ -507,11 +509,12 @@ public class AIRS_local extends Service
 				    				    			}
 					    				    		catch(Exception e)
 					    				    		{
-						    				    		time_saved = System.currentTimeMillis();
+					    				    			Log.e("AIRS", "error re-writing removed sensors:" + e.toString());
+						    				    		current.time_saved = System.currentTimeMillis();
 
 						    				    		try
 						    				    		{
-						    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(time_saved) + "','" + current.Symbol + "')");
+						    				    			execStorage(0, "INSERT into airs_sensors_used (Timestamp, Symbol) VALUES ('" + String.valueOf(current.time_saved) + "','" + current.Symbol + "')");
 						    				    		}
 						    				    		catch(Exception ex)
 						    				    		{

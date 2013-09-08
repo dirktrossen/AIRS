@@ -1,3 +1,8 @@
+V2.6.3:
+- improved SS sensor by only recording SMS sent that have been delivered
+- fixed NO sensor, including recordings from Spotify
+- fixed check for deleted GI/MW sensors
+
 V2.6.2:
 - changed sensor selection with explanatory information for every sensor
 - sensor list now multi-lingual, including the new explanatory information

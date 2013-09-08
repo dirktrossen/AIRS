@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation, Inc.,
 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 */
-package com.airs;
+package com.airs.platform;
 
 import android.app.AlertDialog;
 import android.content.*;
@@ -25,6 +25,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.widget.TextView;
 
+import com.airs.R;
 import com.airs.handlerUIs.*;
 import com.airs.helper.SerialPortLogger;
 
@@ -37,7 +38,7 @@ public class HandlerUIManager
 	/**
 	 * array with HandlerUI references
 	 */
-    static HandlerUI handlers[] = new HandlerUI[12];
+    static public HandlerUI handlers[] = new HandlerUI[12];
     public final static int max_handlers = 12; 
     // preferences
     static private SharedPreferences settings;
@@ -48,7 +49,7 @@ public class HandlerUIManager
      * @param activity Reference to the calling {@link android.app.Activity}
      * @return true, if successful, false otherwise
      */
-	static boolean createHandlerUIs(Context activity)
+	static public boolean createHandlerUIs(Context activity)
 	{
 		int index = 0;
 		
