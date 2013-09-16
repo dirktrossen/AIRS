@@ -3,10 +3,7 @@
 <string name="CalendarHandler::Calendar_names"></string>
 <boolean name="MediaWatcherHandler::Music" value="true" />
 <string name="AIRS_local::GS">On</string>
-<string name="EventButtonHandler::Event38">writing paper</string>
 <long name="SyncTimestamp" value="1369292391198" />
-<string name="EventButtonHandler::Event37">working</string>
-<string name="EventButtonHandler::Event39">writing proposal</string>
 <string name="AIRS_local::HP">On</string>
 <string name="WeatherHandler::WeatherPoll">30</string>
 <boolean name="AIRS_local::Tables2Exists" value="false" />
@@ -94,29 +91,15 @@
 <string name="AIRS_local::EB">On</string>
 <string name="AIRS_local::TV">Off</string>
 <int name="ZoomLevel" value="20" />
-<string name="EventButtonHandler::Event14">listening to presentation</string>
-<string name="EventButtonHandler::Event13">listening to New Year's concert</string>
 <string name="EventButtonHandler::MaxEventDescriptions">40</string>
-<string name="EventButtonHandler::Event12">leaving</string>
-<string name="EventButtonHandler::Event11">intermezzo</string>
-<string name="EventButtonHandler::Event10">in the taxi</string>
-<string name="EventButtonHandler::Event15">meeting</string>
 <string name="AIRS_local::Rd">Off</string>
-<string name="EventButtonHandler::Event16">on a call</string>
-<string name="EventButtonHandler::Event17">paper reviewing</string>
 <string name="EventWidgetBackground">880000ff</string>
-<string name="EventButtonHandler::Event18">paper writing</string>
-<string name="EventButtonHandler::Event19">playing pool</string>
 <string name="AIRS_local::AS">On</string>
 <string name="AudioHandler::samplingpoll">10</string>
 <string name="RandomHandler::SamplingRate">5</string>
-<string name="EventButtonHandler::Event3">having a tea</string>
-<string name="EventButtonHandler::Event2">having a muffin</string>
 <string name="PhoneSensorsHandler::ProximityPoll">10</string>
-<string name="EventButtonHandler::Event1">having a cake</string>
 <string name="AIRS_local::SS">On</string>
 <string name="AIRS_local::SR">On</string>
-<string name="EventButtonHandler::Event0">having a bite</string>
 <string name="AIRS_local::Ro">Off</string>
 <string name="AIRS_local::BD">Off</string>
 <string name="AIRS_local::Rm">On</string>
@@ -126,27 +109,11 @@
 <string>1</string>
 <string>4</string>
 </set>
-<string name="EventButtonHandler::Event9">having lunch</string>
-<string name="EventButtonHandler::Event21">programming</string>
-<string name="EventButtonHandler::Event8">having dinner</string>
-<string name="EventButtonHandler::Event20">presentation</string>
-<string name="EventButtonHandler::Event7">having coffee</string>
-<string name="EventButtonHandler::Event23">riding the bus</string>
-<string name="EventButtonHandler::Event22">relaxing</string>
-<string name="EventButtonHandler::Event6">having breakfast</string>
-<string name="EventButtonHandler::Event5">having an ice cream</string>
-<string name="EventButtonHandler::Event25">sightseeing</string>
-<string name="EventButtonHandler::Event24">shopping</string>
-<string name="EventButtonHandler::Event4">having an amazing cheese cake</string>
 <string name="RecordingSize">4096</string>
 <string name="MediaWatcherHandler::CameraDirectory">/storage/sdcard0/DCIM/Camera</string>
-<string name="EventButtonHandler::Event28">unclogged sink</string>
-<string name="EventButtonHandler::Event29">Waiting</string>
 <string name="AIRS_local::BP">On</string>
 <string name="AIRS_local::BM">On</string>
-<string name="EventButtonHandler::Event26">sweating</string>
 <string name="AIRS_local::BN">On</string>
-<string name="EventButtonHandler::Event27">traveling</string>
 <boolean name="LocationHandler::AdaptiveGPS" value="true" />
 <string name="BatteryKill">0</string>
 <boolean name="LocationHandler::GPSON" value="true" />
@@ -167,15 +134,8 @@
 <boolean name="AIRS_local::TablesExists" value="true" />
 <string name="AIRS_local::CI">Off</string>
 <boolean name="EventButtonHandler::SortAnnotations" value="true" />
-<string name="EventButtonHandler::Event32">waiting for the theatre to start</string>
-<string name="EventButtonHandler::Event31">waiting for the ferry</string>
 <string name="PhoneSensorsHandler::OrientationPoll">5</string>
-<string name="EventButtonHandler::Event30">waiting for concert to start</string>
-<string name="EventButtonHandler::Event36">wondering</string>
 <string name="PhoneSensorsHandler::EnvironmentalPoll">10</string>
 <string name="AIRS_local::CL">Off</string>
-<string name="EventButtonHandler::Event35">watching TV</string>
 <string name="MediaWatcherHandler::VideosDirectory">/sdcard/Videos</string>
-<string name="EventButtonHandler::Event34">walking</string>
-<string name="EventButtonHandler::Event33">waiting for the vaporetto</string>
 </map>

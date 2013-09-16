@@ -363,6 +363,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Camera_Default_off">Definiere eigenen Kamerapfad</string>
 <string name="Camera_path">Kamerapfad</string>
 <string name="Camera_path_on">Bestimme den Pfad für Kamerabilder</string>
+<string name="Camera_path_select">Wähle ein Bild vom Kameraverzeichnis um den korrekten Dateipfad zu bestimmen!</string>
 
 <string name="Pictures">Bilder</string>
 <string name="Pictures_on">Beobachte Bilderverzeichnis</string>

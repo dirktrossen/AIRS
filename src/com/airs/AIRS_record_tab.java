@@ -590,7 +590,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 		        	intent = new Intent();
 		        	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 		        	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, annotations.get(selected_text));
-		        	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon));
+		        	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.shortcut));
 		
 		        	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 		        	sendBroadcast(intent);    

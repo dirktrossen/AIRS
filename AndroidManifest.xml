@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.airs"
-      android:versionName="2.6.3" android:versionCode="163" android:sharedUserId="com.airs">
+      android:versionName="2.6.4" android:versionCode="164" android:sharedUserId="com.airs">
     <supports-screens android:normalScreens="true" android:resizeable="true" android:largeScreens="true" android:smallScreens="true" android:xlargeScreens="true" android:anyDensity="true"></supports-screens>
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"></uses-sdk>
    
@@ -77,6 +77,7 @@
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.database.AIRS_index" android:exported="false" android:label="@string/Index" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.database.AIRS_DBAdmin" android:exported="false" android:label="@string/DB_Admin" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:name="AIRS_manual" android:exported="false" android:label="@string/Manual" android:configChanges="orientation|keyboardHidden"></activity>
+     <activity android:name="com.airs.helper.SelectCameraPathPreference" android:exported="false" android:label="@string/Camera_path_on" android:configChanges="orientation|keyboardHidden"></activity>
      
      <activity android:name="com.airs.visualisations.MapViewerActivity" android:exported="false" android:label="@string/AIRS_Map" android:configChanges="orientation|keyboardHidden"></activity>
      <activity android:theme="@android:style/Theme.Dialog" android:name="com.airs.visualisations.TimelineActivity" android:exported="false" android:label="@string/AIRS_Timeline"></activity>

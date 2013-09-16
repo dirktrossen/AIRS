@@ -364,6 +364,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Camera_Default_off">Define your own camera folder</string>
 <string name="Camera_path">Camera path</string>
 <string name="Camera_path_on">Provide the path for camera pictures</string>
+<string name="Camera_path_select">Select a picture from the camera directory to determine the correct camera path!</string>
 
 <string name="Pictures">Pictures</string>
 <string name="Pictures_on">Watch pictures folder</string>
@@ -560,15 +561,16 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- improved SS sensor by only recording SMS sent that have been delivered\n
-- repaired NO sensor, including recordings from Spotify\n
-- fixed check for deleted GI/MW sensors\n
-IMPORTANT: if you use the AIRS accessibility service for the NO sensor, you will need to switch off/on the service once in your system settings for it to work again!
+- improved selection of camera path by picking camera image from gallery to determine path\n
+- use separate icon for shortcuts
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.6.4:\n
+- improved selection of camera path by picking camera image from gallery to determine path\n
+- use separate icon for shortcuts\n\n
 V2.6.3:\n
 - improved SS sensor by only recording SMS sent that have been delivered\n
 - repaired NO sensor, including recordings from Spotify\n

@@ -46,47 +46,50 @@ public class NotificationHandlerService extends AccessibilityService
 	    	// get notification shown
 	    	Notification notification = (Notification)event.getParcelableData();
 	    	
-	    	// now parse the specific packages we support
-	    	// start with GTalk
-	    	if (event.getPackageName().toString().compareTo("com.google.android.talk") == 0)
-	    	{
-		        // now broadcast the capturing of the accessibility service to the handler
-				Intent intent = new Intent("com.airs.accessibility");
-				intent.putExtra("NotifyText", "gtalk::" + notification.tickerText);		
-				sendBroadcast(intent);		    	
-	    	}
-	    	
-	    	// anything from Skype?
-	    	if (event.getPackageName().toString().compareTo("com.skype.raider") == 0)
-	    	{
-		        // now broadcast the capturing of the accessibility service to the handler
-				Intent intent = new Intent("com.airs.accessibility");
-				intent.putExtra("NotifyText", "skype::Message from " + notification.tickerText);		
-				sendBroadcast(intent);		    	
-	    	}
-	    	// anything from Spotify?
-	    	if (event.getPackageName().toString().compareTo("com.spotify.mobile.android.ui") == 0)
-	    	{
-		        // now broadcast the capturing of the accessibility service to the handler	    		
-	    		// anything delivered?
-	    		if (notification.tickerText != null)
-	    		{
-	    			// split information in tokens
-	    			String tokens[] = notification.tickerText.toString().split("Ñ");
-	    			
-	    			if (tokens.length == 2)
-	    			{
-		    			// signal as play state changed event
-						Intent intent = new Intent("com.android.music.playstatechanged");
-						
-						intent.putExtra("track", tokens[0].trim());		
-						intent.putExtra("artist", tokens[1].trim());							
-						intent.putExtra("album", "");		
-						sendBroadcast(intent);	
-					}
-	    			else
-	    				Log.e("AIRS", "Can't find token!");
-	    		}				
+	    	if (notification != null)
+	    	{    	
+		    	// now parse the specific packages we support
+		    	// start with GTalk
+		    	if (event.getPackageName().toString().compareTo("com.google.android.talk") == 0)
+		    	{
+			        // now broadcast the capturing of the accessibility service to the handler
+					Intent intent = new Intent("com.airs.accessibility");
+					intent.putExtra("NotifyText", "gtalk::" + notification.tickerText);		
+					sendBroadcast(intent);		    	
+		    	}
+		    	
+		    	// anything from Skype?
+		    	if (event.getPackageName().toString().compareTo("com.skype.raider") == 0)
+		    	{
+			        // now broadcast the capturing of the accessibility service to the handler
+					Intent intent = new Intent("com.airs.accessibility");
+					intent.putExtra("NotifyText", "skype::Message from " + notification.tickerText);		
+					sendBroadcast(intent);		    	
+		    	}
+		    	// anything from Spotify?
+		    	if (event.getPackageName().toString().compareTo("com.spotify.mobile.android.ui") == 0)
+		    	{
+			        // now broadcast the capturing of the accessibility service to the handler	    		
+		    		// anything delivered?
+		    		if (notification.tickerText != null)
+		    		{
+		    			// split information in tokens
+		    			String tokens[] = notification.tickerText.toString().split("Ñ");
+		    			
+		    			if (tokens.length == 2)
+		    			{
+			    			// signal as play state changed event
+							Intent intent = new Intent("com.android.music.playstatechanged");
+							
+							intent.putExtra("track", tokens[0].trim());		
+							intent.putExtra("artist", tokens[1].trim());							
+							intent.putExtra("album", "");		
+							sendBroadcast(intent);	
+						}
+		    			else
+		    				Log.e("AIRS", "Can't find token!");
+		    		}				
+		    	}
 	    	}
 	    }
 	}

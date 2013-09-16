@@ -96,7 +96,7 @@ public class AIRS_configure_remote extends Activity
 	        	intent = new Intent();
 	        	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 	        	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, template);
-	        	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon));
+	        	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.shortcut));
 	
 	        	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 	        	sendBroadcast(intent);    

@@ -35,11 +35,19 @@
     	android:summaryOn="@string/Camera_Default_on" 
     	android:summaryOff="@string/Camera_Default_off"
     	android:dependency="MediaWatcherHandler::Camera"/>
-    <EditTextPreference
-        android:summary="@string/Camera_path_on"
+    
+    <Preference android:title="@string/Camera_path"
         android:defaultValue="/sdcard/DCIM/Camera"
-        android:title="@string/Camera_path"
-        android:key="MediaWatcherHandler::CameraDirectory" android:enabled="true" android:dialogIcon="@drawable/folder" android:dependency="MediaWatcherHandler::Camera"/>
+        android:summary="@string/Camera_path_on"
+        android:key="MediaWatcherHandler::CameraDirectory" 
+        android:dependency="MediaWatcherHandler::Camera"        >
+       <intent
+        android:action="android.intent.action.MAIN"
+        android:targetPackage="com.airs"
+        android:targetClass="com.airs.helper.SelectCameraPathPreference"
+        />
+    </Preference> 
+
     <CheckBoxPreference 
         android:defaultValue="false"
     	android:enabled="true" 
