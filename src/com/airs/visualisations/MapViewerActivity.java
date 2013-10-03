@@ -103,69 +103,74 @@ public class MapViewerActivity extends MapActivity implements OnClickListener
         // now open database
         airs_storage = AIRS_local.airs_storage;
 
-       	// get previous zoom level
-       	zoomLevel = settings.getInt("ZoomLevel", 15);
-
-        // start time of measurement
-        // get time of midnight
-		Calendar cal = Calendar.getInstance(Locale.getDefault());
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		cal.set(Calendar.AM_PM, Calendar.AM);
-		startTime = cal.getTimeInMillis();					// timestamp of start of visualisation
-        endTime 	= startTime + FULL_DAY;					// end time
-        
-        // get activity parameters
-        bundle = intent.getExtras();
-
-        Symbol = bundle.getString("com.airs.Symbol");	// get symbol
-
-        // window title as feature
-        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.mapview);
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
-        
-        // get window title fields
-        mTitle = (TextView) findViewById(R.id.title_left_text);
-        mTitle2 = (TextView) findViewById(R.id.title_right_text);
-        mTitle.setText(R.string.app_name);
-       
-        // set listener for buttons
-        ImageButton button 		= (ImageButton)findViewById(R.id.mapview_my_location);
-        button.setOnClickListener(this);
-        button 		= (ImageButton)findViewById(R.id.mapview_last_location);
-        button.setOnClickListener(this);
-
-        // get and set title
-        title = bundle.getString("com.airs.Title");
-        if (title != null)
-        	mTitle2.setText(title);
+        if (airs_storage != null)
+        {
+	       	// get previous zoom level
+	       	zoomLevel = settings.getInt("ZoomLevel", 15);
+	
+	        // start time of measurement
+	        // get time of midnight
+			Calendar cal = Calendar.getInstance(Locale.getDefault());
+			cal.set(Calendar.HOUR, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			cal.set(Calendar.AM_PM, Calendar.AM);
+			startTime = cal.getTimeInMillis();					// timestamp of start of visualisation
+	        endTime 	= startTime + FULL_DAY;					// end time
+	        
+	        // get activity parameters
+	        bundle = intent.getExtras();
+	
+	        Symbol = bundle.getString("com.airs.Symbol");	// get symbol
+	
+	        // window title as feature
+	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+	        setContentView(R.layout.mapview);
+	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.custom_title);
+	        
+	        // get window title fields
+	        mTitle = (TextView) findViewById(R.id.title_left_text);
+	        mTitle2 = (TextView) findViewById(R.id.title_right_text);
+	        mTitle.setText(R.string.app_name);
+	       
+	        // set listener for buttons
+	        ImageButton button 		= (ImageButton)findViewById(R.id.mapview_my_location);
+	        button.setOnClickListener(this);
+	        button 		= (ImageButton)findViewById(R.id.mapview_last_location);
+	        button.setOnClickListener(this);
+	
+	        // get and set title
+	        title = bundle.getString("com.airs.Title");
+	        if (title != null)
+	        	mTitle2.setText(title);
+	        else
+	        	mTitle2.setText("Title");
+	        
+	        // add zoom
+	        mapView = (MapView) findViewById(R.id.mapview);
+	    	mapView.setBuiltInZoomControls(true);
+	    	
+	    	// get controller for map
+	    	mapController = mapView.getController();
+	    	// set zoom level
+	    	mapController.setZoom(zoomLevel);
+	    	
+	    	// create overlays
+	    	mapOverlays = mapView.getOverlays();
+	    	drawable = this.getResources().getDrawable(R.drawable.pin);
+	    	itemizedOverlay = new MapViewerOverlay(drawable, getApplicationContext());
+	    	
+	    	// initiate own location overlay
+	    	ownLocation = new MyLocationOverlay(getApplicationContext(), mapView);
+	    	ownLocation.enableCompass();
+	    	ownLocation.enableMyLocation();
+	
+	    	// now draw markers
+			addOverlay();   
+        }
         else
-        	mTitle2.setText("Title");
-        
-        // add zoom
-        mapView = (MapView) findViewById(R.id.mapview);
-    	mapView.setBuiltInZoomControls(true);
-    	
-    	// get controller for map
-    	mapController = mapView.getController();
-    	// set zoom level
-    	mapController.setZoom(zoomLevel);
-    	
-    	// create overlays
-    	mapOverlays = mapView.getOverlays();
-    	drawable = this.getResources().getDrawable(R.drawable.pin);
-    	itemizedOverlay = new MapViewerOverlay(drawable, getApplicationContext());
-    	
-    	// initiate own location overlay
-    	ownLocation = new MyLocationOverlay(getApplicationContext(), mapView);
-    	ownLocation.enableCompass();
-    	ownLocation.enableMyLocation();
-
-    	// now draw markers
-		addOverlay();    	
+        	finish();
     }
     
     /** Called when the activity is destroyed. 

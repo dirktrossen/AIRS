@@ -15,7 +15,7 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  --> 
-<resources>
+<resources> 
     <string-array name="calendar_values">
         <item>Dummy</item>
     </string-array>
@@ -103,6 +103,18 @@
         <item>0x0000ff</item>
         <item>0x00ffff</item>
         <item>0xffffff</item>
+    </string-array> 
+    <string-array name="uploadfrequency_values">
+        <item>Not at all!</item>
+        <item>Hourly</item>
+        <item>Daily@8pm</item>
+        <item>Weekly on Sunday@8pm</item>
+    </string-array>
+    <string-array name="uploadfrequency_entries">
+        <item>0</item>
+        <item>1</item>
+        <item>10</item>
+        <item>20</item>
     </string-array> 
     <string-array name="recordinglabel_entries">
         <item>Local</item>

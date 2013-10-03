@@ -130,71 +130,76 @@ public class TimelineActivity extends Activity implements OnTouchListener, OnCli
             // now open database
             airs_storage = AIRS_local.airs_storage;
 
-            // get preferences
-            repeatInterval = 500;
-            repeatJump     = 25;
-            showGrid       = true;
-            showAverage       = true;
-
-            // set window title
-	        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-	        setContentView(R.layout.timelineview);
-	        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.timeline_title);
-	        // get window title fields
-	        mTitle = (TextView) findViewById(R.id.timeline_title_text);
-
-	        // set title of window to string with sensor description
-	        title = bundle.getString("com.airs.Title");
-	        if (title != null)
-	        	mTitle.setText(title);
-	        else
-	        	mTitle.setText("-");
-	 
-	        // get Desktop dimensions
-	        Display display = getWindowManager().getDefaultDisplay();       
-	        int width = display.getWidth();
-	        int height = display.getHeight();
-	        
-	        // set dialog dimensions
-	        if (width*9/16 > height)
-	        	getWindow().setLayout(height*16/9, height);  
-	        else
-	        	getWindow().setLayout(width, width*9/16);  
-	        
-	        // get axis text fields
-	        minX  = (TextView) findViewById(R.id.timeline_minx);
-	        maxX  = (TextView) findViewById(R.id.timeline_maxx);
-	        minY  = (TextView) findViewById(R.id.timeline_miny);
-	        maxY  = (TextView) findViewById(R.id.timeline_maxy);
-
-	        // get zoom buttons
-	        zoomIn  = (ZoomButton) findViewById(R.id.timeline_zoomIn);
-	        zoomIn.setOnClickListener(this);
-			zoomIn.setEnabled(true);
-	        zoomOut = (ZoomButton) findViewById(R.id.timeline_zoomOut);
-	        zoomOut.setOnClickListener(this);
-			zoomOut.setEnabled(false);
-
-	        // set listener for button clicks
-	        Button button = (Button) findViewById(R.id.timeline_backward);
-	        button.setOnTouchListener(this);
-	        button = (Button) findViewById(R.id.timeline_forward);
-	        button.setOnTouchListener(this);
-	        ImageView select = (ImageView) findViewById(R.id.timeline_select_maxx);
-	        select.setOnClickListener(this);
-	        select = (ImageView) findViewById(R.id.timeline_select_minx);
-	        select.setOnClickListener(this);
-	        
-	        // set timeline view
-	        DisplayView = (TimelineView) findViewById(R.id.surfaceMeasure);
-	        DisplayView.invalidate();
-	        
-	        // get progress bar
-	        progressbar = (ProgressBar) findViewById(R.id.timeline_progress);
-
-	    	// now draw markers
-	        task = new GatherTask();
-	        task.execute(Symbol);
+            if (airs_storage != null)
+            {
+	            // get preferences
+	            repeatInterval = 500;
+	            repeatJump     = 25;
+	            showGrid       = true;
+	            showAverage       = true;
+	
+	            // set window title
+		        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		        setContentView(R.layout.timelineview);
+		        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.timeline_title);
+		        // get window title fields
+		        mTitle = (TextView) findViewById(R.id.timeline_title_text);
+	
+		        // set title of window to string with sensor description
+		        title = bundle.getString("com.airs.Title");
+		        if (title != null)
+		        	mTitle.setText(title);
+		        else
+		        	mTitle.setText("-");
+		 
+		        // get Desktop dimensions
+		        Display display = getWindowManager().getDefaultDisplay();       
+		        int width = display.getWidth();
+		        int height = display.getHeight();
+		        
+		        // set dialog dimensions
+		        if (width*9/16 > height)
+		        	getWindow().setLayout(height*16/9, height);  
+		        else
+		        	getWindow().setLayout(width, width*9/16);  
+		        
+		        // get axis text fields
+		        minX  = (TextView) findViewById(R.id.timeline_minx);
+		        maxX  = (TextView) findViewById(R.id.timeline_maxx);
+		        minY  = (TextView) findViewById(R.id.timeline_miny);
+		        maxY  = (TextView) findViewById(R.id.timeline_maxy);
+	
+		        // get zoom buttons
+		        zoomIn  = (ZoomButton) findViewById(R.id.timeline_zoomIn);
+		        zoomIn.setOnClickListener(this);
+				zoomIn.setEnabled(true);
+		        zoomOut = (ZoomButton) findViewById(R.id.timeline_zoomOut);
+		        zoomOut.setOnClickListener(this);
+				zoomOut.setEnabled(false);
+	
+		        // set listener for button clicks
+		        Button button = (Button) findViewById(R.id.timeline_backward);
+		        button.setOnTouchListener(this);
+		        button = (Button) findViewById(R.id.timeline_forward);
+		        button.setOnTouchListener(this);
+		        ImageView select = (ImageView) findViewById(R.id.timeline_select_maxx);
+		        select.setOnClickListener(this);
+		        select = (ImageView) findViewById(R.id.timeline_select_minx);
+		        select.setOnClickListener(this);
+		        
+		        // set timeline view
+		        DisplayView = (TimelineView) findViewById(R.id.surfaceMeasure);
+		        DisplayView.invalidate();
+		        
+		        // get progress bar
+		        progressbar = (ProgressBar) findViewById(R.id.timeline_progress);
+	
+		    	// now draw markers
+		        task = new GatherTask();
+		        task.execute(Symbol);
+            }
+            else
+            	finish();
     }
  
 	/** Called when the activity is resumed. 

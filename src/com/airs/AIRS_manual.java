@@ -21,6 +21,7 @@ import com.airs.platform.HandlerUIManager;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,6 +61,25 @@ public class AIRS_manual extends Activity
       super.onConfigurationChanged(newConfig);
     }
     
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) 
+    {
+    	if (event.getAction() == KeyEvent.ACTION_DOWN)
+    		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
+    			return true;
+    	
+ 		// key de-pressed?
+		if (event.getAction() == KeyEvent.ACTION_UP)
+			// is it the BACK key?
+			if (event.getKeyCode()==KeyEvent.KEYCODE_BACK)
+				if (mWebView.canGoBack() == true)
+					mWebView.goBack();
+				else
+					finish();
+		
+        return super.dispatchKeyEvent(event);
+    }
+    
     /** Called when the Options menu is opened
      * @param menu Reference to the {@link android.view.Menu}
      */
@@ -85,15 +105,9 @@ public class AIRS_manual extends Activity
         case R.id.main_about:
        		HandlerUIManager.AboutDialog(getString(R.string.Online_Manual), getString(R.string.ManualAbout));
        		return true;
-        case R.id.web_blog:
-            mWebView.loadUrl("http://dalore.me.uk/DOT/category/airs/");        	
+        case R.id.web_exit:
+        	finish();
         	return true;
-        case R.id.web_back:
-            mWebView.goBack();
-            return true;
-        case R.id.web_forward:
-            mWebView.goForward();
-            return true;
         }
         return false;
     }

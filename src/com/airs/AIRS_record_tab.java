@@ -65,6 +65,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airs.database.AIRS_DBAdmin;
+import com.airs.database.AIRS_upload;
 import com.airs.helper.SafeCopyPreferences;
 import com.airs.helper.SerialPortLogger;
 import com.airs.platform.HandlerUIManager;
@@ -106,7 +107,7 @@ public class AIRS_record_tab extends Activity implements OnClickListener
     private Dialog dialog;
 	private int selected_text = -1;
 	private String[] remote_templates = {"Scenario_1", "Scenario_2", "Scenario_3", "PH2013"};
-	private int remote_file, downloaded_file;
+	private int remote_file, downloaded_file;  
 
 	/** Called when the activity is first created. 
      * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
@@ -157,6 +158,9 @@ public class AIRS_record_tab extends Activity implements OnClickListener
         download_button = (Button)findViewById(R.id.templates_download);
         download_button.setOnClickListener(this);	
                 
+        // now initialise the upload timer
+        AIRS_upload.setTimer(getApplicationContext());
+        
         // copy default template 
 		if (settings.getBoolean("AIRS_local::copy_template", false) == false)
 		{
@@ -647,6 +651,9 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 			    		              	
 			    		              	// save templates for other tabs to use
 			    		              	current_template = new String(annotations.get(selected_text));
+			    		              	
+			    		              	// reset timer
+			    		              	AIRS_upload.setTimer(airs);
 			    		            }	
 		    		                dialog.dismiss();
 		    		           }

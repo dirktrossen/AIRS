@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import android.app.Activity;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Class to handle debug messages to the file system and the ADB

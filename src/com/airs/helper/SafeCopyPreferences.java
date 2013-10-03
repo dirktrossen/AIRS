@@ -42,7 +42,7 @@ public class SafeCopyPreferences
 	 */
 	static public void copyPreferences(Context context, File shortcutFile)
 	{
-        long synctime;
+        long synctime, last_SMS;
         int version, i;
         boolean tables, tables2, first_start, copy_template;
         String music, storedWifis;
@@ -52,6 +52,7 @@ public class SafeCopyPreferences
         settings = PreferenceManager.getDefaultSharedPreferences(context);
         // get values that should not be overwritten!
         synctime = settings.getLong("SyncTimestamp", 0);
+        last_SMS = settings.getLong("SystemHandler::last_SMS", 0);
         version = settings.getInt("Version", 0);	
         tables = settings.getBoolean("AIRS_local::TablesExists", false);	
         tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);
@@ -80,11 +81,15 @@ public class SafeCopyPreferences
 
         try
         {
-            FileChannel src = new FileInputStream(shortcutFile).getChannel();
-            FileChannel dst = new FileOutputStream(preferenceFile).getChannel();
+        	FileInputStream srcStream = new FileInputStream(shortcutFile);
+        	FileOutputStream dstStream = new FileOutputStream(preferenceFile);
+            FileChannel src = srcStream.getChannel();
+            FileChannel dst = dstStream.getChannel();
             dst.transferFrom(src, 0, src.size());
             src.close();
-            dst.close();		                
+            dst.close();
+            srcStream.close();
+            dstStream.close();
         }
         catch(Exception e)
         {
@@ -99,6 +104,7 @@ public class SafeCopyPreferences
 		
 		// write certain back in order for them to not be overwritten!
 		editor.putLong("SyncTimestamp", synctime);
+		editor.putLong("SystemHandler::last_SMS", last_SMS);
 		editor.putInt("Version", version);
 		editor.putBoolean("AIRS_local::TablesExists", tables);
 		editor.putBoolean("AIRS_local::Tables2Exists", tables2);

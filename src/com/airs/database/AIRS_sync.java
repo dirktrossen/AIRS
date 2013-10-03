@@ -38,6 +38,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -72,7 +73,7 @@ public class AIRS_sync extends Activity implements OnClickListener
 	private static final int SYNC_CANCELLED	= 2;
 	private static final int SYNC_FINISHED	= 2;
 	
-	// states for activity management
+	// current batch of recordings for sync
 	private static final int SYNC_BATCH		= 5000;
         
     // preferences
@@ -87,10 +88,16 @@ public class AIRS_sync extends Activity implements OnClickListener
 	private ProgressBar progressbar;
     private long synctime;
 	private int read_data_entries = 0;
+	private File external_storage;
     private Uri share_file;
     private File sync_file;
+	private File fconn;				// public for sharing file when exiting
+	private BufferedOutputStream os = null;
+	private boolean at_least_once_written = false;
+	private long currenttime, currentstart = 0;
     private WakeLock wl;
     private int syncing = NO_SYNC;
+    private Context context;
     
     // database variables
     private AIRS_database database_helper;
@@ -104,6 +111,9 @@ public class AIRS_sync extends Activity implements OnClickListener
     {
         // Set up the window layout
         super.onCreate(savedInstanceState);
+        
+        // save for later
+        this.context = this.getApplicationContext();
         
         // get default preferences
         settings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -252,12 +262,15 @@ public class AIRS_sync extends Activity implements OnClickListener
 	            // set sync text view
 	    		Time timeStamp = new Time();
 	    		timeStamp.set(synctime);
-	            syncText.setText("Last sync: " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
+	            syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
 	            
 	            // also place in preferences!
 	       		editor.putLong("SyncTimestamp", synctime);
 	            // finally commit to storing values!!
 	            editor.commit();
+	            
+	            // set timer again
+	            AIRS_upload.setTimer(context);
 
             }
         	}, year, month, day);
@@ -347,7 +360,10 @@ public class AIRS_sync extends Activity implements OnClickListener
 			            
 			            // finally commit to storing values!!
 			            editor.commit();
-			                        
+			                
+			            // set timer again
+			            AIRS_upload.setTimer(context);
+
 			            // remove temp files
 			            sync_file.delete();
 			    		
@@ -413,6 +429,37 @@ public class AIRS_sync extends Activity implements OnClickListener
 		}
 	     public void run()
 	     {
+	    	  	int i;
+	    	 
+		    	// path for templates
+		        external_storage = getExternalFilesDir(null);
+		        
+		        if (external_storage == null)
+		        {
+			        syncing = SYNC_FINISHED;
+			        mHandler.sendMessage(mHandler.obtainMessage(NO_STORAGE));
+	   	  			return;
+		        }
+		        
+		    	sync_file = new File(external_storage, "AIRS_temp");
+	
+				// get files in directory
+				String [] file_list = sync_file.list(null);
+				
+				// remove files in AIRS_temp directory
+				if (file_list != null)
+					for (i=0;i<file_list.length;i++)
+					{
+						File remove = new File(sync_file, file_list[i]);
+						remove.delete();
+					}
+				
+		        SyncValues();
+		        SyncNotes();
+	     }
+	     
+	     private void SyncValues()
+	     {
 	    	String query;
 			int t_column, s_column, v_column;
 			Cursor values;
@@ -421,39 +468,12 @@ public class AIRS_sync extends Activity implements OnClickListener
 			byte[] writebyte;
 			int number_values;
 			int i;
-			File fconn;				// public for sharing file when exiting
-			BufferedOutputStream os = null;
 			long currentmilli;
 			Calendar cal = Calendar.getInstance();
-			boolean set_timestamp = true, at_least_once_written = false;
-			long currenttime = synctime, currentstart = 0;
+			boolean set_timestamp = true;
 			// use handler to start activity
-	        Message start_msg = mHandler.obtainMessage(START_ACTIVITY);
 	        Message finish2_msg = mHandler.obtainMessage(FINISH_NO_VALUES_ACTIVITY);
-
-	    	// path for templates
-	        File external_storage = getExternalFilesDir(null);
-	        
-	        if (external_storage == null)
-	        {
-		        syncing = SYNC_FINISHED;
-		        mHandler.sendMessage(mHandler.obtainMessage(NO_STORAGE));
-   	  			return;
-	        }
-
-	    	sync_file = new File(external_storage, "AIRS_temp");
 	
-			// get files in directory
-			String [] file_list = sync_file.list(null);
-			
-			// remove files in AIRS_temp directory
-			if (file_list != null)
-				for (i=0;i<file_list.length;i++)
-				{
-					File remove = new File(sync_file, file_list[i]);
-					remove.delete();
-				}
-
 			read_data_entries = 0;
 			try
 			{
@@ -472,7 +492,8 @@ public class AIRS_sync extends Activity implements OnClickListener
 
 		    	// set timestamp when we will have found the first timestamp
 		    	set_timestamp = true;
-		    				    	
+				currenttime = synctime;
+		    	
 				while (syncing == SYNC_STARTED)
 				{
 //						query = new String("SELECT Timestamp, Symbol, Value from 'airs_values' WHERE Timestamp > " + String.valueOf(currenttime) + " ORDER BY Timestamp ASC LIMIT " + String.valueOf(SYNC_BATCH));
@@ -486,16 +507,15 @@ public class AIRS_sync extends Activity implements OnClickListener
 					{
 						// signal end of synchronization
 				        syncing = SYNC_FINISHED;
-				        
-				        // purge file
-				        os.close();
-				        
-			    		if (at_least_once_written == true)
-			    			// use handler to start activity
-					        mHandler.sendMessage(start_msg);
-			    		else
-					        mHandler.sendMessage(finish2_msg);
 
+				        // nothing to write?
+			    		if (at_least_once_written == false)
+			    		{
+					        // purge file
+			    			os.close();
+					        mHandler.sendMessage(finish2_msg);
+			    		}
+			    		
 			    		return;
 					}
 
@@ -505,17 +525,16 @@ public class AIRS_sync extends Activity implements OnClickListener
 					// if nothing is read (anymore)
 					if (number_values == 0)
 					{
-				        // purge file
-				        os.close();
-
 						// signal end of synchronization
 						syncing = SYNC_FINISHED;
 						
-			    		if (at_least_once_written == true)
-			    			// use handler to start activity
-					        mHandler.sendMessage(start_msg);
-			    		else
+				        // nothing to write?
+			    		if (at_least_once_written == false)
+			    		{
+					        // purge file
+			    			os.close();
 					        mHandler.sendMessage(finish2_msg);
+			    		}
 			    		
 			    		return;
 					}
@@ -527,14 +546,16 @@ public class AIRS_sync extends Activity implements OnClickListener
 					
 					if (t_column == -1 || v_column == -1 || s_column == -1)
 					{
-						// signal end of synchronization
+				        // signal end of synchronization
 						syncing = SYNC_FINISHED;
 						
-			    		if (at_least_once_written == true)
-			    			// use handler to start activity
-					        mHandler.sendMessage(start_msg);
-			    		else
+				        // nothing to write?
+			    		if (at_least_once_written == false)
+			    		{
+					        // purge file
+			    			os.close();
 					        mHandler.sendMessage(finish2_msg);
+			    		}
 			    		
 			    		return;
 					}
@@ -616,6 +637,169 @@ public class AIRS_sync extends Activity implements OnClickListener
     			}
 				// signal end of synchronization
     		}	
+			
+	        // nothing to write?
+    		if (at_least_once_written == false)
+		        mHandler.sendMessage(finish2_msg);
+	     }
+	     
+	     private void SyncNotes()
+	     {
+	    	String query;
+			int y_column, m_column, d_column, a_column, c_column, mo_column;
+			Cursor values;
+			String value, symbol;
+			String line_to_write;
+			byte[] writebyte;
+			int number_values;
+			int i;
+			// use handler to start activity
+	        Message start_msg = mHandler.obtainMessage(START_ACTIVITY);
+	        Message finish2_msg = mHandler.obtainMessage(FINISH_NO_VALUES_ACTIVITY);
+
+	    	// path for templates
+	        File external_storage = getExternalFilesDir(null);
+	        
+	        if (external_storage == null)
+	        {
+		        syncing = SYNC_FINISHED;
+		        mHandler.sendMessage(mHandler.obtainMessage(NO_STORAGE));
+   	  			return;
+	        }
+
+			try
+			{
+				currenttime = synctime;
+				// now sync the notes, if any
+				syncing = SYNC_STARTED;
+				while (syncing == SYNC_STARTED)
+				{
+					query = new String("SELECT Year, Month, Day, Annotation, created, modified from 'airs_annotations' WHERE created > " + String.valueOf(currenttime) + " LIMIT " + String.valueOf(SYNC_BATCH));
+					values = airs_storage.rawQuery(query, null);
+					
+					// garbage collect
+					query = null;
+					
+					if (values == null)
+					{
+				        // purge file
+				        os.close();
+
+						// signal end of synchronization
+						syncing = SYNC_FINISHED;
+
+						if (at_least_once_written == true)
+			    			// use handler to start activity
+					        mHandler.sendMessage(start_msg);
+			    		else
+					        mHandler.sendMessage(finish2_msg);
+			    		
+			    		return;
+					}
+
+					// get number of rows
+					number_values = values.getCount();
+
+					// if nothing is read (anymore)
+					if (number_values == 0)
+					{
+				        // purge file
+		    			os.close();
+
+						// signal end of synchronization
+						syncing = SYNC_FINISHED;
+						
+			    		if (at_least_once_written == true)
+			    			// use handler to start activity
+					        mHandler.sendMessage(start_msg);
+			    		else
+					        mHandler.sendMessage(finish2_msg);
+			    		
+			    		return;
+					}
+
+					// get column index for timestamp and value
+					y_column = values.getColumnIndex("Year");
+					m_column = values.getColumnIndex("Month");
+					d_column = values.getColumnIndex("Day");
+					a_column = values.getColumnIndex("Annotation");
+					c_column = values.getColumnIndex("created");
+					mo_column = values.getColumnIndex("modified");
+					
+					if (y_column == -1 || m_column == -1 || d_column == -1 || a_column == -1 || c_column == -1 || mo_column == -1)
+					{
+				        // purge file
+		    			os.close();
+
+						// signal end of synchronization
+						syncing = SYNC_FINISHED;
+						
+			    		if (at_least_once_written == true)
+			    			// use handler to start activity
+					        mHandler.sendMessage(start_msg);
+			    		else
+					        mHandler.sendMessage(finish2_msg);
+			    		
+			    		return;
+					}
+						
+			        Log.e("AIRS", "...reading next batch!");
+
+					// move to first row to start
+		    		values.moveToFirst();
+		    		// read DB values into arrays
+		    		for (i=0;i<number_values;i++)
+		    		{
+		    			// get timestamp
+		    			currenttime = values.getLong(c_column);
+
+		    			// set symbol
+		    			symbol = "UN";
+		    			// create value as concatenation of year:month:day:modified:annotation
+		    			value = String.valueOf(values.getInt(y_column)) + ":" + String.valueOf(values.getInt(m_column)) + ":" + String.valueOf(values.getInt(d_column)) + ":" + String.valueOf(values.getLong(mo_column)) + ":" + values.getString(a_column);
+
+		    			// create line to write to file
+		    			line_to_write = new String("#" + String.valueOf(currenttime-currentstart) + ";" + symbol + ";" + value + "\n");
+
+		    			// now write to file
+			    		writebyte = line_to_write.getBytes();
+
+		    			os.write(writebyte, 0, writebyte.length);
+		    			
+		    			// garbage collect the output data
+		    			writebyte = null;
+		    			line_to_write = null;
+		    			
+		    			// now move to next row
+		    			values.moveToNext();
+		    		}	
+		    				        
+			        // close values to free up memory
+			        values.close();
+				}
+				
+				// close output file
+				os.close();					
+			}
+    		catch(Exception e)
+    		{
+    			try
+    			{
+    				if (os != null)
+    					os.close();
+    			}
+    			catch(Exception ex)
+    			{
+    			}
+				// signal end of synchronization
+    		}	
+			
+    		if (at_least_once_written == true)
+    			// use handler to start activity
+		        mHandler.sendMessage(start_msg);
+    		else
+		        mHandler.sendMessage(finish2_msg);
+
 	     }
 	 }
 }

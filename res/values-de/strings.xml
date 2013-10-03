@@ -44,7 +44,7 @@
 \'Erinnerungsintervall\' bestimmt das Intervall, dass den Benutzer an die Aufzeichnung erinnert durch Vibration und LED Anzeige (0 schaltet die Benachrichtungen ab)\n\n
 \'Debug\' schaltet Debugaufzeichnungen an/aus. \n</string>
 <string name="MapAbout">Zeigt einen Pfad der GPS Aufzeichnungen. Du kannst auf eine Markierung klicken für mehr Information. Du kannst die Karte auf Deine momentane oder die letzte bekannte Position zentrieren (durch die Knöpfe oben rechts). Du kannst auch zwischen Satelliten- und Kartendarstellung umschalten durch die Menüeinträge.</string>
-<string name="ManualAbout">Zeigt das AIRS Benutzerhandbuch (leider nur in Englisch).\nDu brauchst Internetzugang, um die Seite anzuzeigen. Du kannst verschiedene Handbuchkapitel anklicken wie jede andere Webseite. Du kannst auch den <b>AIRS blog</b> lesen mit Hilfe des geeigneten Menüeintrags.</string>
+<string name="ManualAbout">Zeigt das AIRS Benutzerhandbuch (leider nur in Englisch).\nDu brauchst Internetzugang, um die Seite anzuzeigen. Du kannst verschiedene Handbuchkapitel anklicken wie jede andere Webseite. Drücke die BACK Taste, um von Kapiteln zurück zu gehen oder das Manual zu verlassen im Übersichtskapitel.</string>
 <string name="RecordAbout">Starte eine Aufzeichnung und wähle den Modus der Aufzeichnung.\n\nDu kannst auch <b>Muster</b> laden oder löschen, die Du zuvor gespeichert hattest. Du kannst auch Shortcuts zu einem ausgewählten Muster erstellen. Diese Shortcuts werden auf dem Heimbildschirm dargestellt. Wenn Du auf ein Muster klickst, wird dieses automatisch geladen.\n\nZusätzlich zur Erstellung von eigenen Mustern, kannst Du auch Beispiele von unserem Server <b>herunterladen</b>.</string>
 <string name="LocalAbout">Zeigt die Sensoren, die im lokalen Aufnahmemodus verfügbar sind.\nWähle die Sensoren die Du aufzeichnen willst. Durch das Menü kannst Du alle Sensoren anwählen oder alle Anwahlen löschen. Du kannst auch Informationen über die Sensoren ansehen, wie z.B. Typ, Wertebereiche etc, die entdeckt wurden.</string>
 <string name="ValuesAbout">Zeigt die momentanen Werte der Sensoren im lokalen Aufnahmemodus an.\nVon hier aus kannst Du das Programm verlassen oder die Anzeige mit der <b>ZURÜCK</b> Taste verlassen!\Du kannst auch die Anzeige pausieren oder wiederaufnehmen (dies stoppt jedoch nicht den Dienst, der die Werte aufzeichnet in der Datenbank).</string>
@@ -78,6 +78,9 @@
 Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf unsere Website) und lese das AIRS Manual durch das Optionsmenü\n
 </string>
 
+<string name="ConnectGoogle">Google Account</string>
+<string name="ConnectGoogle2">Verbinde zu Google Account für GDrive Backup</string>
+<string name="ConnectGoogle3">Warte bitte um sich mit dem Google Konto zu verbinden!</string>
 <string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
 <string name="Cannot_restore">Kann die Datenbank nicht wiederherstellen wenn AIRS läuft!</string>
 <string name="Backup_recordings">Sicherung</string>
@@ -148,6 +151,9 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Send_local_recordings">Sende Lokale Aufnahmen an:</string>
 <string name="No_values_to_synchronise">Es gibt nichts zu synchronisieren!</string>
 <string name="Temp_sync_file">Temp Datei (kB):</string>
+<string name="Sync_upload">Aufzeichnungen zum Google Drive hochgeladen!</string>
+<string name="Sync_uploading">Aufzeichnungen werden hochgeladen</string>
+<string name="Sync_progress">Fortschritt :</string>
 <string name="AIRS_Map">AIRS Kartenanblick</string>
 <string name="First_sensing">Erste Aufnahme um</string>
 <string name="First_sensing2">mit Wert :</string>
@@ -249,6 +255,10 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Local_Storage">Lokaler Speicher</string>
 <string name="Local_Storage_on">Speichere Werte der Sensoren in interner SQLite Datenbank</string>
 <string name="Local_Storage_off">Speichere keine Sensorenwerte</string>
+<string name="Sync_Settings">Synchronisierungseinstellungen</string>
+<string name="UploadFrequency">Frequenz des Hochladens</string>
+<string name="UploadFrequency_on">Bestimme wie häufig Daten zu GDrive hochgeladen werden sollen (oder auch gar nicht!)</string>
+<string name="Upload_Wifi">Nur über Wifi hochladen</string>
 <string name="AIRS_intents">AIRS Intents</string>
 <string name="AIRS_intents_on">Sende Systemintents für, z.B. externe Regelmachine wie AIRS Ruler</string>
 <string name="AIRS_intents_off">Sende keine Systemintents</string>

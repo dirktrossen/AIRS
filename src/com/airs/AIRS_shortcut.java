@@ -19,6 +19,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 import java.io.File;
 
 import com.airs.database.AIRS_restore;
+import com.airs.database.AIRS_upload;
 import com.airs.helper.SafeCopyPreferences;
 
 import android.app.Activity;
@@ -116,6 +117,9 @@ public class AIRS_shortcut extends Activity
 			     		finish();
 		        	}
 		        }
+		        
+		        // reset the timer to the right setting
+		        AIRS_upload.setTimer(this);
 		        
 		        // start service and connect to it -> then discover the sensors
 		        startService(new Intent(this, AIRS_local.class));

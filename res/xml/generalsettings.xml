@@ -70,8 +70,33 @@
         android:numeric="integer"
         android:title="@string/Battery_kill"
         android:key="BatteryKill" android:name="Battery Kill"/>    
+    </PreferenceCategory> 
+    <PreferenceCategory android:title="@string/Sync_Settings">
+	    <Preference android:title="@string/ConnectGoogle"
+	        android:summary="@string/ConnectGoogle2">
+	       <intent
+	        android:action="android.intent.action.MAIN"
+	        android:targetPackage="com.airs"
+	        android:targetClass="com.airs.helper.ConnectGoogleAccount"
+	        />
+	    </Preference> 
+	    <ListPreference
+	        android:key="UploadFrequency"
+	        android:title="@string/UploadFrequency"
+	        android:summary="@string/UploadFrequency_on"
+	        android:defaultValue="0"
+	        android:positiveButtonText="@string/Select"
+	        android:entries="@array/uploadfrequency_values"
+	        android:entryValues="@array/uploadfrequency_entries"
+	        android:dialogTitle="@string/UploadFrequency" />
+	    <CheckBoxPreference 
+	    	android:enabled="true" 
+	    	android:title="@string/Upload_Wifi" 
+	    	android:key="UploadWifi" 
+	    	android:selectable="true" 
+	    	android:defaultValue="true"/>
     </PreferenceCategory>    
-   <PreferenceCategory android:title="@string/Reminder_Settings"> 	
+    <PreferenceCategory android:title="@string/Reminder_Settings"> 	
     <EditTextPreference
 		android:dialogIcon="@drawable/time"
         android:summary="@string/Reminder_Interval_on"
@@ -100,6 +125,7 @@
         android:key="LightCode"
         android:title="@string/Color_Code"
         android:summary="@string/Color_Code_on"
+        android:defaultValue="0x0000ff"
         android:positiveButtonText="@string/Select"
         android:entries="@array/lightnotification_values"
         android:entryValues="@array/lightnotification_entries"

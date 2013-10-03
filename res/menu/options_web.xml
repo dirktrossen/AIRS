@@ -20,13 +20,7 @@
     <item android:id="@+id/main_about"
           android:icon="@android:drawable/ic_menu_help"
           android:title="@string/Help" />
-    <item android:id="@+id/web_blog"
-          android:icon="@android:drawable/ic_menu_edit"
-          android:title="AIRS blog" />
-    <item android:id="@+id/web_back"
-          android:icon="@android:drawable/ic_media_previous"
-          android:title="@string/Back" />
-    <item android:id="@+id/web_forward"
-          android:icon="@android:drawable/ic_media_next"
-          android:title="@string/Forward" />
+    <item android:id="@+id/web_exit"
+          android:icon="@android:drawable/ic_menu_close_clear_cancel"
+          android:title="@string/Exit" />
     </menu>

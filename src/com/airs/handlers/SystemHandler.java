@@ -78,6 +78,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int headset = 0, oldheadset = -1;
 	private String caller = null, callee = null, smsReceived = null, smsSent = null;
 	private int polltime = 5000;
+	private long last_SMS;
 	private ActivityManager am;
 	private boolean startedBattery = false, startedScreen = false, startedHeadset = false;
 	private boolean startedPhoneState = false, startedOutgoingCall = false, startedSMSReceived = false, startedSMSSent = false;
@@ -933,19 +934,25 @@ public class SystemHandler implements com.airs.handlers.Handler
     					//for send  protocol is null
     					if(protocol == null)
     					{
+    						// now read polltime for audio sampling
+    						last_SMS = HandlerManager.readRMS_i("SystemHandler::lastSMS", 0);
+
     						int type = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("type"));
-    						int status = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("status"));
-    						// for actual type=2 and status being not failed (32)
+    						int date = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("date"));
+    						// for actual type=2 and SMS that has not been read according to timestamp
     						// public static final int STATUS_NONE = -1;
     						// public static final int STATUS_COMPLETE = 0;
     						// public static final int STATUS_PENDING = 32;
     						// public static final int STATUS_FAILED = 64;
-    						if(type == 2 && status != 32)
+    						if(type == 2 && date>last_SMS)
     						{    
     							smsBodyStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("body")).trim();
     							phoneNoStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("address")).trim();
     							
     			                smsSent = new String(phoneNoStr + ":" + getContactByNumber(phoneNoStr) + ":" + smsBodyStr);
+    			                
+    			                // this is the last SMS checked
+    			                HandlerManager.writeRMS_l("SystemHandler::last_SMS", date);
     			                
     							sent_semaphore.release();			// release semaphore
     						}

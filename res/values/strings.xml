@@ -45,7 +45,7 @@
 \'Reminder Interval\' defines the vibration and LED notification interval for the local sensing watchdog (0 switches the vibrate off)\n\n
 \'Debug\' switches the debug output on/off. \n</string>
 <string name="MapAbout">Shows a path of recent GPS recording. You can click on a marker for more information. You can center the map either on your current location or the last stored one (using the buttons on the top right). You can also switch between map or satellite view with the appropriate options menu item.</string>
-<string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage. You can also read the <b>AIRS blog</b> by opening the options menu and selecting the appropriate menu item.</string>
+<string name="ManualAbout">Shows the AIRS online manual.\nYou will need  Internet access for the page to show. You can click on links to various manual chapters like on any other webpage. Use the BACK key to navigate back to higher levels or exit the manual at the main level.</string>
 <string name="RecordAbout">Start recording here, selecting the mode of recording you would like.\n\nYou can also load and delete <b>templates</b> that you stored as well as create shortcuts to a selected template on your launcher screen. Clicking on a template will automatically load the template.\n\nInstead of defining your own templates, you can also <b>download</b> examples from the TecVis server.</string>
 <string name="LocalAbout">Shows the sensors available in local sensing mode.\nChoose the sensors you would like to record. Through the menu, you can select and unselect all sensors (for a clean sheet) as well as look at the sensor repository, giving you information on type, value ranges etc of the sensors that were discovered.</string>
 <string name="ValuesAbout">Shows the current values of the sensors being read in local mode.\nFrom here, you can either <b>Exit</b> the program (and stop the service) or simply stop the display with the <b>BACK</b> key!\nYou can also <b>PAUSE</b> or <b>RESUME</b> the measurement threads (this does not stop the service but halts the recordings only).</string>
@@ -76,9 +76,12 @@
 - start \'AIRS local\' recording from your launcher screen with the created shortcut!\n
 - for more complex visualisations of your recordings, download our Storica app at http://play.google.com/store/apps/details?id=com.storica\n
 - for more information on recording, see http://tecvis.co.uk/software/storica/tips-for-recording\n\n
-For remote recording, download the AIRS application server (see on our websute) and read the AIRS online manual through the options menu\n
+For remote recording, download the AIRS application server (see on our website) and read the AIRS online manual through the options menu\n
 </string>
 
+<string name="ConnectGoogle">Google Account</string>
+<string name="ConnectGoogle2">Connect to Google Account for GDrive Backup</string>
+<string name="ConnectGoogle3">Wait for connecting to your Google Account!</string>
 <string name="Cannot_backup">Cannot backup database while AIRS is running!</string>
 <string name="Cannot_restore">Cannot restore database while AIRS is running!</string>
 <string name="Cannot_create_backup">Cannot create backup file (possible access error or external media does not exist)!</string>
@@ -149,6 +152,9 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Send_local_recordings">Send Local Recordings To:</string>
 <string name="No_values_to_synchronise">There are no values to synchronise!</string>
 <string name="Temp_sync_file">Temp file (kB):</string>
+<string name="Sync_upload">Uploaded recordings!</string>
+<string name="Sync_uploading">Uploading recordings</string>
+<string name="Sync_progress">Progress :</string>
 <string name="AIRS_Map">AIRS Map View</string>
 <string name="First_sensing">First sensing at</string>
 <string name="First_sensing2">with value :</string>
@@ -218,7 +224,7 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Download">Download</string>
 <string name="Values"># Values:</string>
 <string name="transferred">kBytes transferred :</string>
-<string name="Sync_hint">If you want to re-sync, set sync date from the Option menu!</string>
+<string name="Sync_hint">If you want to re-sync, set sync date from the Options menu!</string>
 <string name="Save_as_Template">Save as Template</string>
 <string name="Pause">Pause</string>
 <string name="Resume">Resume</string>
@@ -250,6 +256,10 @@ For remote recording, download the AIRS application server (see on our websute) 
 <string name="Local_Storage">Local Storage</string>
 <string name="Local_Storage_on">Store sensor values in internal SQLlite database</string>
 <string name="Local_Storage_off">Do not store sensor values</string>
+<string name="Sync_Settings">Synchronisation Settings</string>
+<string name="UploadFrequency">Upload Frequency</string>
+<string name="UploadFrequency_on">Set the frequency of uploading recordings to GDrive (or not at all)</string>
+<string name="Upload_Wifi">Upload via Wifi only</string>
 <string name="AIRS_intents">AIRS Intents</string>
 <string name="AIRS_intents_on">Send system intents to allow for, e.g., external rule engine such as AIRS Ruler</string>
 <string name="AIRS_intents_off">Do not send system intents</string>
@@ -561,13 +571,20 @@ For remote recording, download the AIRS application server (see on our websute) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- improved selection of camera path by picking camera image from gallery to determine path\n
-- use separate icon for shortcuts
+- added option of regular upload of recording files to Google Drive\n
+- add Storica user notes to sync files, if those exist\n
+- check SS sensor now with timestamp rather than status - hopefully more reliable!\n
+- BACK key in manual view now goes back in webview (if inside the manual), not back in activity!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7:\n
+- added option of regular upload of recording files to Google Drive\n
+- add Storica user notes to sync files, if those exist\n
+- check SS sensor now with timestamp rather than status - hopefully more reliable!\n
+- BACK key in manual view now goes back in webview (if inside the manual), not back in activity!\n\n
 V2.6.4:\n
 - improved selection of camera path by picking camera image from gallery to determine path\n
 - use separate icon for shortcuts\n\n

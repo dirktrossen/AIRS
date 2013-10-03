@@ -17,15 +17,19 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs;
 
 import com.airs.database.AIRS_sync;
+import com.airs.database.AIRS_upload;
 
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -43,7 +47,7 @@ import android.widget.TabHost.OnTabChangeListener;
  * @see AIRS_sync
  *
  */
-public class AIRS_tabs extends TabActivity implements OnTabChangeListener
+public class AIRS_tabs extends TabActivity implements OnTabChangeListener, OnSharedPreferenceChangeListener
 {
 	static public boolean sensors_shown = false;
 	private int currentTab = 0;
@@ -105,6 +109,9 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
 	    // current tab
 	    tabHost.setCurrentTab(currentTab);
 	    tabHost.setOnTabChangedListener(this);
+	    
+        // register listener to preference changes in order to reset upload timer if needed
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);	  
 	}
 	
     /**
@@ -159,6 +166,17 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener
     {
       //ignore orientation change
       super.onConfigurationChanged(newConfig);
+    }
+
+	/** Called when a shared preference setting has changed.
+     * @param sharedPreferences pointer to preferences
+     * @param key String of the changed key 
+     */
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) 
+    {
+    	// if upload timer setting was changed, reset the timer
+    	if (key.equals("UploadFrequency")) 
+    		AIRS_upload.setTimer(this);
     }
     
 	/** Called when the tab has changed.

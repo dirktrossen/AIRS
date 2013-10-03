@@ -1,3 +1,9 @@
+V2.7:
+- added option of regular upload of recording files to Google Drive
+- add Storica user notes to sync files, if those exist
+- check SS sensor now with timestamp rather than status - hopefully more reliable!
+- BACK key in manual view now goes back in webview (if inside the manual), not back in activity!
+
 V2.6.4:
 - improved selection of camera path by picking camera image from gallery to determine path
 - use separate icon for shortcuts

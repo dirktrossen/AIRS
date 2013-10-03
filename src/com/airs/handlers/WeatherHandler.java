@@ -46,7 +46,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 /**
  * Class to read weather related sensors, specifically the VT, VF, VH, VC, VW, VI sensor
