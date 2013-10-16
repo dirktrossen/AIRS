@@ -137,7 +137,7 @@ public class MoodButtonHandler implements Handler
 	 */
 	public void Discover()
 	{
-		SensorRepository.insertSensor(new String("MO"), new String("Mood"), nors.getString(R.string.MW_d), nors.getString(R.string.MW_e), new String("str"), 0, 0, 6, false, 0, this);	    
+		SensorRepository.insertSensor(new String("MO"), new String("Mood"), nors.getString(R.string.MO_d), nors.getString(R.string.MO_e), new String("str"), 0, 0, 6, false, 0, this);	    
 	}
 	
 	/**

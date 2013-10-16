@@ -107,8 +107,8 @@
     <string-array name="uploadfrequency_values">
         <item>Gar nicht!</item>
         <item>Stündlich</item>
-        <item>Täglich um 20Uhr</item>
-        <item>Wöchentlich am Sonntag um 20Uhr</item>
+        <item>Täglich</item>
+        <item>Wöchentlich</item>
     </string-array>
     <string-array name="uploadfrequency_entries">
         <item>0</item>

@@ -42,17 +42,17 @@ public class SafeCopyPreferences
 	 */
 	static public void copyPreferences(Context context, File shortcutFile)
 	{
-        long synctime, last_SMS;
+        long synctime;
         int version, i;
         boolean tables, tables2, first_start, copy_template;
-        String music, storedWifis;
+        String music, storedWifis, lastSMS;
         SharedPreferences settings;
 
     	// get default preferences and write something in it
         settings = PreferenceManager.getDefaultSharedPreferences(context);
         // get values that should not be overwritten!
         synctime = settings.getLong("SyncTimestamp", 0);
-        last_SMS = settings.getLong("SystemHandler::last_SMS", 0);
+        lastSMS = settings.getString("SystemHandler::lastSeen", "");
         version = settings.getInt("Version", 0);	
         tables = settings.getBoolean("AIRS_local::TablesExists", false);	
         tables2 = settings.getBoolean("AIRS_local::Tables2Exists", false);
@@ -104,7 +104,7 @@ public class SafeCopyPreferences
 		
 		// write certain back in order for them to not be overwritten!
 		editor.putLong("SyncTimestamp", synctime);
-		editor.putLong("SystemHandler::last_SMS", last_SMS);
+		editor.putString("SystemHandler::lastSeen", lastSMS);
 		editor.putInt("Version", version);
 		editor.putBoolean("AIRS_local::TablesExists", tables);
 		editor.putBoolean("AIRS_local::Tables2Exists", tables2);
@@ -118,6 +118,6 @@ public class SafeCopyPreferences
 			editor.putString("EventButtonHandler::Event"+Integer.toString(i), event[i]);
 		editor.putString("EventButtonHandler::EventSelected", event_selected_entry);
 
-		editor.commit();
+		editor.commit(); 
 	}
 }

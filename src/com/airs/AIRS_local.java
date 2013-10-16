@@ -171,7 +171,8 @@ public class AIRS_local extends Service
 		 	private boolean interrupted = false, pause = false;;
 		 	private boolean started = true;	
 		 	private String value_intent;
-		 	
+		    private long nextDay;		// milliseconds for next day starting
+
 			protected void sleep(long millis) 
 			{
 				try 
@@ -196,7 +197,14 @@ public class AIRS_local extends Service
 				this.current = current;
 				line = Integer.toString(j);
 				values_output = new String(current.Symbol + " : - [" + current.Unit + "]");
-				
+			
+				// get current day and set time to last millisecond of that day for next day indicator
+		        Calendar cal = Calendar.getInstance();
+		        cal.set(Calendar.HOUR_OF_DAY, 23);
+		        cal.set(Calendar.MINUTE, 59);
+		        cal.set(Calendar.MILLISECOND, 999);
+		        nextDay = cal.getTimeInMillis();
+		         
 				(thread = new Thread(this, "AIRS: " + current.Symbol)).start();;
 			}
 
@@ -1093,7 +1101,7 @@ public class AIRS_local extends Service
          int month = cal.get(Calendar.MONTH) + 1;
          int day = cal.get(Calendar.DAY_OF_MONTH);
          nextDay = cal.getTimeInMillis();
-         
+
          // mark date now as having values
          try
          {

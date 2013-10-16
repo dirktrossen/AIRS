@@ -1,3 +1,6 @@
+V2.7.1:
+- small bugfixes in SS (SMS sent) sensor and MO (mood) description
+
 V2.7:
 - added option of regular upload of recording files to Google Drive
 - add Storica user notes to sync files, if those exist

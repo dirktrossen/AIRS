@@ -571,15 +571,14 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- added option of regular upload of recording files to Google Drive\n
-- add Storica user notes to sync files, if those exist\n
-- check SS sensor now with timestamp rather than status - hopefully more reliable!\n
-- BACK key in manual view now goes back in webview (if inside the manual), not back in activity!
+- small bugfixes in SS (SMS sent) sensor and MO (mood) description
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.1:\n
+- small bugfixes in SS (SMS sent) sensor and MO (mood) description\n\n
 V2.7:\n
 - added option of regular upload of recording files to Google Drive\n
 - add Storica user notes to sync files, if those exist\n

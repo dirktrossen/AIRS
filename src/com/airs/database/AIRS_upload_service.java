@@ -101,7 +101,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 	@Override
 	public void onCreate() 
 	{
-		Log.e("AIRS", "Started upload service");
+		Log.v("AIRS", "Started upload service");
 		
 		// save for later
 		context = this.getApplicationContext();
@@ -149,7 +149,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 	@Override
 	public void onDestroy() 
 	{
-		Log.e("AIRS", "...destroyed upload service");
+		Log.v("AIRS", "...destroyed upload service");
 	}
 	
 	private class SyncThread implements Runnable
@@ -183,7 +183,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 	        		    // only if right network is available, try to upload
 	        		    if (right_network == true)
 	        		    {		        		    
-		                	Log.e("AIRS", "trying to find AIRS recordings directory");
+		                	Log.v("AIRS", "trying to find AIRS recordings directory");
 		                	
 		                	List<com.google.api.services.drive.model.File> files = service.files().list().setQ("mimeType = 'application/vnd.google-apps.folder'").execute().getItems();
 		                    for (com.google.api.services.drive.model.File f : files) 
@@ -194,7 +194,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		                    
 		                    if (AIRS_dir == null)
 		                    {
-			                	Log.e("AIRS", "...need to create AIRS recordings directory");
+			                	Log.v("AIRS", "...need to create AIRS recordings directory");
 
 			                    // create AIRS recordings directory
 			                    body = new com.google.api.services.drive.model.File();
@@ -213,7 +213,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		                    body.setMimeType("text/plain");
 		                    body.setParents(Arrays.asList(new ParentReference().setId(AIRS_dir.getId())));
 		                    
-		                    Log.e("AIRS", "...trying to upload AIRS recordings");
+		                    Log.v("AIRS", "...trying to upload AIRS recordings");
 	
 		                    // now get the uploader handle and set resumable upload
 		                    insert = service.files().insert(body, mediaContent);
@@ -221,7 +221,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		                    uploader.setDirectUploadEnabled(false);
 		                    uploader.setChunkSize(MediaHttpUploader.DEFAULT_CHUNK_SIZE);
 		                    uploader.setProgressListener(this_service);
-		                	Log.e("AIRS", "...executing upload AIRS recordings");
+		                	Log.v("AIRS", "...executing upload AIRS recordings");
 	
 		                	do
 		                	{
@@ -234,7 +234,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 				                    file = insert.execute();
 				                    if (file != null) 
 				                    {
-					                	Log.e("AIRS", "...writing new sync timestamp");
+					                	Log.v("AIRS", "...writing new sync timestamp");
 							    		// write the time until read for later syncs
 										// put sync timestamp into store
 							       		editor.putLong("SyncTimestamp", new_synctime);
@@ -251,14 +251,14 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 			        		    }
 			        		    else
 			        		    {
-			        		    	Log.e("AIRS", "...sleeping until right network becomes available");
+			        		    	Log.v("AIRS", "...sleeping until right network becomes available");
 			        		    	Waker.sleep(15000);			        		    	
 			        		    }
 		                	}while(right_network == false);
 	        		    }
 	        		    else
 	        		    {
-	        		    	Log.e("AIRS", "...sleeping until right network becomes available");
+	        		    	Log.v("AIRS", "...sleeping until right network becomes available");
 	        		    	Waker.sleep(15000);
 	        		    }
                     }
@@ -270,8 +270,8 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
             }
             else
             {
-            	Log.e("AIRS", "...nothing to sync, it seems");
-            	Log.e("AIRS", "...writing new sync timestamp");
+            	Log.v("AIRS", "...nothing to sync, it seems");
+            	Log.v("AIRS", "...writing new sync timestamp");
 	    		// write the time until read for later syncs
 				// put sync timestamp into store
 	       		editor.putLong("SyncTimestamp", new_synctime);
@@ -311,7 +311,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
     private Drive getDriveService(Context context) 
     {
     	String accountName = settings.getString("AIRS_local::accountname", "");
-    	Log.e("AIRS", "account: " + accountName);
+    	Log.v("AIRS", "account: " + accountName);
     	
 	    credential = GoogleAccountCredential.usingOAuth2(context, Arrays.asList(DriveScopes.DRIVE));
 	    credential.setSelectedAccountName(accountName);
@@ -394,7 +394,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
         // sync until just about now!
         new_synctime = System.currentTimeMillis();
         
-        Log.e("AIRS", "start creating values sync file!");
+        Log.v("AIRS", "start creating values sync file!");
         
         // path for templates
         File external_storage = context.getExternalFilesDir(null);
@@ -483,7 +483,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		    		}
 				}
 					
-		        Log.e("AIRS", "...reading next batch!");
+		        Log.v("AIRS", "...reading next batch!");
 
 				// move to first row to start
 	    		values.moveToFirst();
@@ -574,7 +574,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
         synctime = settings.getLong("SyncTimestamp", 0);
         currenttime = synctime;
                
-        Log.e("AIRS", "start creating sync notes file!");
+        Log.v("AIRS", "start creating sync notes file!");
         
 		try
 		{
@@ -633,7 +633,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		    			return false;
 				}
 					
-		        Log.e("AIRS", "...reading next batch!");
+		        Log.v("AIRS", "...reading next batch!");
 
 				// move to first row to start
 	    		values.moveToFirst();

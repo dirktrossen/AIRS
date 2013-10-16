@@ -107,8 +107,8 @@
     <string-array name="uploadfrequency_values">
         <item>Not at all!</item>
         <item>Hourly</item>
-        <item>Daily@8pm</item>
-        <item>Weekly on Sunday@8pm</item>
+        <item>Daily</item>
+        <item>Weekly</item>
     </string-array>
     <string-array name="uploadfrequency_entries">
         <item>0</item>
