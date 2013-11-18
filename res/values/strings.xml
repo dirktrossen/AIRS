@@ -82,6 +82,7 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="ConnectGoogle">Google Account</string>
 <string name="ConnectGoogle2">Connect to Google Account for GDrive Backup</string>
 <string name="ConnectGoogle3">Wait for connecting to your Google Account!</string>
+<string name="ConnectGoogle4">Cannot find Google Account information on this device!</string>
 <string name="Cannot_backup">Cannot backup database while AIRS is running!</string>
 <string name="Cannot_restore">Cannot restore database while AIRS is running!</string>
 <string name="Cannot_create_backup">Cannot create backup file (possible access error or external media does not exist)!</string>
@@ -151,6 +152,7 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="Interrupt_synchronising">Do you want to interrupt synchronisation?</string>
 <string name="Send_local_recordings">Send Local Recordings To:</string>
 <string name="No_values_to_synchronise">There are no values to synchronise!</string>
+<string name="Regular_sync">You have selected regular uploads in your general settings and can therefore not manually synchronise!</string>
 <string name="Temp_sync_file">Temp file (kB):</string>
 <string name="Sync_upload">Uploaded recordings!</string>
 <string name="Sync_uploading">Uploading recordings</string>
@@ -365,6 +367,7 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="Enable_Accessibility">Enable Accessibility</string>
 <string name="Enable_Accessibility_on">Jumps to System settings to enable the accessibility service required for capturing the IM notifications.</string>
 <string name="accessibility_description">Accessibility service for AIRS local sensing, providing access to the Google Talk and Skype notifications through the NO sensor. It also supports Spotify song changes through the MP/MA/MT sensors.</string>
+<string name="accessibility_spotify">&#8212;</string>
 
 <string name="Camera">Camera</string>
 <string name="Camera_on">Watch camera folder</string>
@@ -571,12 +574,20 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- small bugfixes in SS (SMS sent) sensor and MO (mood) description
+- check in manual sync if background uploading is selected (can only either)\n
+- updated manifest for new Google Play Services (needs to be installed!)\n
+- improved SS sensor\n
+- ensure that only one file is uploaded to GDrive
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.2:\n
+- check in manual sync if background uploading is selected (can only either)\n
+- updated manifest for new Google Play Services (needs to be installed!)\n
+- improved SS sensor\n
+- ensure that only one file is uploaded to GDrive\n\n
 V2.7.1:\n
 - small bugfixes in SS (SMS sent) sensor and MO (mood) description\n\n
 V2.7:\n

@@ -1,3 +1,9 @@
+V2.7.2:
+- check in manual sync if background uploading is selected (can only either)
+- updated manifest for new Google Play Services (needs to be installed!)
+- improved SS sensor
+- ensure that only one file is uploaded to GDrive
+
 V2.7.1:
 - small bugfixes in SS (SMS sent) sensor and MO (mood) description
 

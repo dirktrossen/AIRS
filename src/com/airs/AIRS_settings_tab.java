@@ -242,11 +242,15 @@ public class AIRS_settings_tab extends Activity implements OnItemClickListener
 		    		            	{
 		    		    	            try
 		    		    	            {
-		    		    	                FileChannel src = new FileInputStream(preferenceFile).getChannel();
-		    		    	                FileChannel dst = new FileOutputStream(shortcutFile).getChannel();
+		    		    	            	FileInputStream input = new FileInputStream(preferenceFile); 
+		    		    	            	FileOutputStream output = new FileOutputStream(shortcutFile); 
+		    		    	                FileChannel src = input.getChannel();
+		    		    	                FileChannel dst = output.getChannel();
 		    		    	                dst.transferFrom(src, 0, src.size());
 		    		    	                src.close();
 		    		    	                dst.close();
+		    		    	                input.close();
+		    		    	                output.close();
 		    		    	                
 					    		   			// notify user
 				    		              	Toast.makeText(getApplicationContext(), getString(R.string.Saved_settings) + " '" + text.getText() + "'", Toast.LENGTH_LONG).show();          

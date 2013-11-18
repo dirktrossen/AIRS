@@ -46,6 +46,7 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 /**
  * Class to read system related sensors, specifically the Ba, BV, Bc, BM, Rm, Sc, HS, IC, OC, SR, SS, TR, TV, TE sensor
@@ -76,7 +77,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int battery_charging = 0;
 	private int oldbattery_charging = -1;
 	private int headset = 0, oldheadset = -1;
-	private String caller = null, callee = null, smsReceived = null, smsSent = null;
+	private String caller = null, callee = null, smsReceived = null, smsSent = new String("");
 	private int polltime = 5000;
 	private ActivityManager am;
 	private boolean startedBattery = false, startedScreen = false, startedHeadset = false;
@@ -297,15 +298,28 @@ public class SystemHandler implements com.airs.handlers.Handler
 
 			wait(sent_semaphore);  // block until semaphore available
 
-			// any difference in value?
-			if (smsSent != null)
+			StringBuffer buffer = null;
+			// synchronize access to shared variable!
+			synchronized(smsSent)
 			{
-				// create Stringbuffer with sms number being sent
-			    StringBuffer buffer = new StringBuffer("SS");
-			    buffer.append(smsSent.replaceAll("'","''"));
-			    smsSent = null;
-	    		return buffer.toString().getBytes();
+				// any difference in value?
+				if (smsSent != null)
+				{
+					// create Stringbuffer with sms number being sent
+				    buffer = new StringBuffer("SS");
+				    buffer.append(smsSent.replaceAll("'","''"));
+					SerialPortLogger.debugForced("SS sensor: created buffer to return with:" + buffer.toString());
+				}
+				else
+				{
+					SerialPortLogger.debugForced("SS sensor: buffer is NULL!");
+				}
 			}
+			
+			if (buffer != null)
+				return buffer.toString().getBytes();
+			else
+				return null;
 		}
 		
 		// incoming call?
@@ -905,9 +919,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     };
     
     private class SmsObserver extends ContentObserver 
-    {	
-        private String smsBodyStr = "", phoneNoStr = "";
-        
+    {	        
     	public SmsObserver(Handler handler) 
     	{
     		super(handler);
@@ -920,51 +932,77 @@ public class SystemHandler implements com.airs.handlers.Handler
 
     	public void onChange(boolean selfChange) 
     	{
+    		String smsBodyStr, phoneNoStr;
+    		
     		super.onChange(selfChange);
 
     		try
     		{
     			Cursor sms_sent_cursor = airs.getContentResolver().query(SMS_STATUS_URI, null, null, null, null);
+    			
     			if (sms_sent_cursor != null) 
     			{
     				if (sms_sent_cursor.moveToFirst()) 
     				{
-    					String protocol = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("protocol"));
     					//for send  protocol is null
-    					if(protocol == null)
+    					if(sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("protocol")) == null)
     					{
-    						int type = sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("type"));
 //    						long date = sms_sent_cursor.getLong(sms_sent_cursor.getColumnIndex("date"));
     						// for actual type=2 and SMS that has not been read according to timestamp
     						// public static final int STATUS_NONE = -1;
     						// public static final int STATUS_COMPLETE = 0;
     						// public static final int STATUS_PENDING = 32;
-    						// public static final int STATUS_FAILED = 64;
-    						
-    						// is the date within the last five minutes?
-//       						if(type == 2 && Math.abs(date - System.currentTimeMillis())< 5*60*1000)
-    						if (type == 2)
+    						// public static final int STATUS_FAILED = 64;    						
+    						if (sms_sent_cursor.getInt(sms_sent_cursor.getColumnIndex("type")) == 2)
     						{    
     							smsBodyStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("body")).trim();
     							phoneNoStr = sms_sent_cursor.getString(sms_sent_cursor.getColumnIndex("address")).trim();
+
+    							Log.e("AIRS", "got an SMS sent notification - now checking if seen before");
     							
-    			                smsSent = new String(phoneNoStr + ":" + getContactByNumber(phoneNoStr) + ":" + smsBodyStr);
-    			                
-    			                String lastSeen = HandlerManager.readRMS("SystemHandler::lastSeen", "");
-    			                
-    			                // is SMS different from last seen one?
-    			                if (smsSent.compareTo(lastSeen) != 0)
-    			                {
-    			                	HandlerManager.writeRMS("SystemHandler::lastSeen", smsSent);
-	    							sent_semaphore.release();			// release semaphore
-    			                }
+    							// avoid concurrent access to this shared variable!
+    							synchronized(smsSent)
+    							{
+	    							// do everything locally first!
+	    			                smsSent = new String(phoneNoStr + ":" + getContactByNumber(phoneNoStr) + ":" + smsBodyStr);  			                
+	    			                String lastSeen = HandlerManager.readRMS("SystemHandler::lastSeen", "");
+	    			                
+	    			                boolean seenBefore = true;
+	    			                
+	    			                if (lastSeen != null)
+	    			                {
+		    			                if (smsSent.compareTo(lastSeen) != 0)
+		    			                	seenBefore = false;
+	    			                }
+	    			                else
+	    			                	seenBefore = false;
+	    			                	
+	    			                // is SMS different from last seen one?
+	    			                if (seenBefore == false)
+	    			                {
+	    			                	// write into permanent settings
+	    			                	HandlerManager.writeRMS("SystemHandler::lastSeen", smsSent);
+	    			                	// release semaphore
+		    							sent_semaphore.release();	
+		    							
+		    							SerialPortLogger.debugForced("SS sensor: valid message -> released semaphore!");
+		    								    							
+		    							// discard string for garbage collector
+		    							lastSeen = null;
+	    			                }
+	    			                else 
+	    			                	SerialPortLogger.debugForced("SS sensor: seen that before -> nothing triggered (" + smsSent + ")");
+    							}
     						}
     					}
     				}
-    			}
+        			// close cursor now!
+        			sms_sent_cursor.close();
+    			}    			
     		}
     		catch(Exception sggh)
     		{
+    			Log.e("AIRS", "Exception in SS sensor handling: " + sggh.toString());
     		}
     	}
     	

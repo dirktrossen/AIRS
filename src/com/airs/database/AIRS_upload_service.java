@@ -43,7 +43,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 {
 	// current batch of recordings for sync
 	private static final int SYNC_BATCH		= 5000;
-
+	
     private final IBinder mBinder = new LocalBinder();
     private SharedPreferences settings;
     private Editor editor;
@@ -53,8 +53,6 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
     private long synctime, currenttime, new_synctime, currentstart = 0;
     private File sync_file;
     private Uri share_file;
-	private int read_data_entries = 0;
-	private File external_storage;
 	private File fconn;				// public for sharing file when exiting
 	private BufferedOutputStream os = null;
 	private boolean at_least_once_written = false;
@@ -65,6 +63,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
     private Context context;
     private AIRS_upload_service this_service;
     private boolean wifi_only;
+    private String currentFilename;
     
     public class LocalBinder extends Binder 
     {
@@ -130,7 +129,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 	            // get database
 	            database_helper = new AIRS_database(context);
 	            airs_storage = database_helper.getWritableDatabase();
-	                        
+	              
 		        // start sync thread
 		        new SyncThread();
 		    } 
@@ -212,6 +211,9 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		                    body.setTitle(fileContent.getName());
 		                    body.setMimeType("text/plain");
 		                    body.setParents(Arrays.asList(new ParentReference().setId(AIRS_dir.getId())));
+		                    // NEEDS TESTING - remove if it creates bad uploads!
+		                    // set file ID to file name so that we've get a unique file rather than several ones!!
+		                    body.setId(currentFilename);
 		                    
 		                    Log.v("AIRS", "...trying to upload AIRS recordings");
 	
@@ -424,7 +426,8 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 	    	// make sure that path exists
 	    	sync_file.mkdirs();
 	    	// open file and create, if necessary
-	    	fconn = new File(sync_file, String.valueOf(currentmilli) + ".txt");
+	    	currentFilename = new String(String.valueOf(currentmilli) + ".txt");
+	    	fconn = new File(sync_file, currentFilename);
 			os = new BufferedOutputStream(new FileOutputStream(fconn, true));
 	    	
 			// build URI for sharing

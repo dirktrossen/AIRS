@@ -81,6 +81,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="ConnectGoogle">Google Account</string>
 <string name="ConnectGoogle2">Verbinde zu Google Account für GDrive Backup</string>
 <string name="ConnectGoogle3">Warte bitte um sich mit dem Google Konto zu verbinden!</string>
+<string name="ConnectGoogle4">Kann keine Google Kontoinformationen auf diesem Gerät finden!</string>
 <string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
 <string name="Cannot_restore">Kann die Datenbank nicht wiederherstellen wenn AIRS läuft!</string>
 <string name="Backup_recordings">Sicherung</string>
@@ -150,6 +151,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Interrupt_synchronising">Möchtest Du die Synchronisierung abbrechen?</string>
 <string name="Send_local_recordings">Sende Lokale Aufnahmen an:</string>
 <string name="No_values_to_synchronise">Es gibt nichts zu synchronisieren!</string>
+<string name="Regular_sync">Du hast das automatische Hochladen zu GDrive ausgewählt in den generellen Einstellungen und kannst daher nicht manuell synchronieren!</string>
 <string name="Temp_sync_file">Temp Datei (kB):</string>
 <string name="Sync_upload">Aufzeichnungen zum Google Drive hochgeladen!</string>
 <string name="Sync_uploading">Aufzeichnungen werden hochgeladen</string>
@@ -364,6 +366,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Enable_Accessibility">Accessibility</string>
 <string name="Enable_Accessibility_on">Springt zu den Systemeinstellungen, um die Bedienungshilfen für AIRS einzuschalten. Dieser wird für IM Nachrichten benötigt.</string>
 <string name="accessibility_description">Bedienungshilfe für AIRS Aufzeichnungen mit Zugriff auf Google Talk und Skype Benachrichtigungen durch den NO Sensor. Spotify ist auch unterstützt durch die MP/MA/MT Sensoren.</string>
+<string name="accessibility_spotify">&#8212;</string>
 
 <string name="Camera">Kamera</string>
 <string name="Camera_on">Beobachte Kameraverzeichnis</string>

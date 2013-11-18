@@ -151,7 +151,7 @@ public class AIRS_sync extends Activity implements OnClickListener
         PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
 		 
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AIRS Sync Lock"); 
-        wl.acquire();
+        wl.acquire();        
     }
 
     /** Called when the activity is resumed. 
@@ -235,49 +235,55 @@ public class AIRS_sync extends Activity implements OnClickListener
     		HandlerUIManager.AboutDialog(getString(R.string.main_Sync), getString(R.string.SyncAbout));
     		return true;
         case R.id.sync_setdate:
-	        // now get calendar data
-			Calendar cal = Calendar.getInstance(Locale.getDefault());
-			cal.setTimeInMillis(synctime);
-			int month = cal.get(Calendar.MONTH);
-			int year = cal.get(Calendar.YEAR);
-			int day = cal.get(Calendar.DAY_OF_MONTH);
-
-			DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() 
+        	// if regular uploads are selected, do not allow for changing sync date!
+        	if (Integer.valueOf(settings.getString("UploadFrequency", "0")) != 0)
+    	  		Toast.makeText(getApplicationContext(), getString(R.string.Regular_sync), Toast.LENGTH_LONG).show();
+        	else
         	{
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) 
-            {
-            	// now form synctime from day/month/year selection
-            	Calendar cal = Calendar.getInstance(Locale.getDefault());
-            	cal.set(Calendar.YEAR, year);
-            	cal.set(Calendar.MONTH, month);
-            	cal.set(Calendar.DAY_OF_MONTH, day);
-            	cal.set(Calendar.HOUR, 0);
-            	cal.set(Calendar.MINUTE, 0);
-            	cal.set(Calendar.SECOND, 0);
-            	cal.set(Calendar.MILLISECOND, 1);
-            	cal.set(Calendar.AM_PM, Calendar.AM);
-            	synctime = cal.getTimeInMillis();
-            	
-	            // set sync text view
-	    		Time timeStamp = new Time();
-	    		timeStamp.set(synctime);
-	            syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
-	            
-	            // also place in preferences!
-	       		editor.putLong("SyncTimestamp", synctime);
-	            // finally commit to storing values!!
-	            editor.commit();
-	            
-	            // set timer again
-	            AIRS_upload.setTimer(context);
-
-            }
-        	}, year, month, day);
-			dialog.setTitle(getString(R.string.Set_sync_date));
-			dialog.setMessage(getString(R.string.Set_sync_date2));
-			dialog.show();
-        	return true;
+		        // now get calendar data
+				Calendar cal = Calendar.getInstance(Locale.getDefault());
+				cal.setTimeInMillis(synctime);
+				int month = cal.get(Calendar.MONTH);
+				int year = cal.get(Calendar.YEAR);
+				int day = cal.get(Calendar.DAY_OF_MONTH);
+	
+				DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() 
+	        	{
+	            @Override
+	            public void onDateSet(DatePicker datePicker, int year, int month, int day) 
+	            {
+	            	// now form synctime from day/month/year selection
+	            	Calendar cal = Calendar.getInstance(Locale.getDefault());
+	            	cal.set(Calendar.YEAR, year);
+	            	cal.set(Calendar.MONTH, month);
+	            	cal.set(Calendar.DAY_OF_MONTH, day);
+	            	cal.set(Calendar.HOUR, 0);
+	            	cal.set(Calendar.MINUTE, 0);
+	            	cal.set(Calendar.SECOND, 0);
+	            	cal.set(Calendar.MILLISECOND, 1);
+	            	cal.set(Calendar.AM_PM, Calendar.AM);
+	            	synctime = cal.getTimeInMillis();
+	            	
+		            // set sync text view
+		    		Time timeStamp = new Time();
+		    		timeStamp.set(synctime);
+		            syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
+		            
+		            // also place in preferences!
+		       		editor.putLong("SyncTimestamp", synctime);
+		            // finally commit to storing values!!
+		            editor.commit();
+		            
+		            // set timer again
+		            AIRS_upload.setTimer(context);
+	
+	            }
+	        	}, year, month, day);
+				dialog.setTitle(getString(R.string.Set_sync_date));
+				dialog.setMessage(getString(R.string.Set_sync_date2));
+				dialog.show();
+        	}
+	        return true;
         }
         
         return true;
@@ -288,6 +294,13 @@ public class AIRS_sync extends Activity implements OnClickListener
      */
     public void onClick(View v) 
     {
+    	// if regular uploads are selected, do not allow for manual sync
+    	if (Integer.valueOf(settings.getString("UploadFrequency", "0")) != 0)
+    	{
+	  		Toast.makeText(getApplicationContext(), getString(R.string.Regular_sync), Toast.LENGTH_LONG).show();
+	  		return;
+    	}
+    	
     	if (v.getId() == R.id.sync_start && syncing == NO_SYNC)
 		{
             ProgressText.setText(getString(R.string.Start_synchronising));

@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import com.airs.R;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
@@ -74,7 +75,11 @@ public class NotificationHandlerService extends AccessibilityService
 		    		if (notification.tickerText != null)
 		    		{
 		    			// split information in tokens
-		    			String tokens[] = notification.tickerText.toString().split("Ñ");
+		    			String tokens[] = notification.tickerText.toString().split(getString(R.string.accessibility_spotify));
+		    			
+		    			// try other '-', if previous one did not work
+		    			if (tokens.length != 2)
+		    				tokens = notification.tickerText.toString().split("-");
 		    			
 		    			if (tokens.length == 2)
 		    			{
@@ -87,7 +92,7 @@ public class NotificationHandlerService extends AccessibilityService
 							sendBroadcast(intent);	
 						}
 		    			else
-		    				Log.e("AIRS", "Can't find token!");
+		    				Log.e("AIRS", "Can't find token in '" + notification.tickerText +"'");
 		    		}				
 		    	}
 	    	}

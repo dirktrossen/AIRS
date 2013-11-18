@@ -30,7 +30,7 @@ import android.webkit.WebViewClient;
 
 /**
  * Activity to show the AIRS manual in a {@link android.webkit.WebView}
- *
+ * 
  */
 public class AIRS_manual extends Activity
 {

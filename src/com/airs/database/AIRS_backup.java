@@ -186,11 +186,15 @@ public class AIRS_backup extends Activity
 
 	    	            if (currentDB.exists()) 
 	    	            {
-	    	                FileChannel src = new FileInputStream(currentDB).getChannel();
-	    	                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+	    	            	FileInputStream input = new FileInputStream(currentDB);
+	    	            	FileOutputStream output = new FileOutputStream(backupDB);	    	            	
+	    	                FileChannel src = input.getChannel();
+	    	                FileChannel dst = output.getChannel();
 	    	                dst.transferFrom(src, 0, src.size());
 	    	                src.close();
 	    	                dst.close();
+	    	                input.close();
+	    	                output.close();
 	    	            }
 	    	            
 				        mHandler.sendMessage(finish2_msg);

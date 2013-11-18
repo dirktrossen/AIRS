@@ -11,6 +11,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.airs.R;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -41,8 +42,16 @@ public class ConnectGoogleAccount extends Activity
         // set content of View
         setContentView(R.layout.googleaccounts);
 
-	    credential = GoogleAccountCredential.usingOAuth2(this.getApplicationContext(), Arrays.asList(DriveScopes.DRIVE));
-	    startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);	    
+        try
+        {
+		    credential = GoogleAccountCredential.usingOAuth2(this.getApplicationContext(), Arrays.asList(DriveScopes.DRIVE));
+		    startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);	
+        }
+        catch(Exception e)
+        {
+	  		Toast.makeText(getApplicationContext(), getString(R.string.ConnectGoogle4), Toast.LENGTH_LONG).show();
+        	finish();
+        }
     }
 	
 	/** Called when the activity is resumed. 

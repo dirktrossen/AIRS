@@ -182,11 +182,15 @@ public class AIRS_restore extends Activity
 
 	    	            if (backupDB.exists()) 
 	    	            {
-	    	                FileChannel dst = new FileOutputStream(currentDB).getChannel();
-	    	                FileChannel src = new FileInputStream(backupDB).getChannel();
+	    	            	FileOutputStream output = new FileOutputStream(currentDB);
+	    	            	FileInputStream input = new FileInputStream(backupDB);
+	    	                FileChannel dst = output.getChannel();
+	    	                FileChannel src = input.getChannel();
 	    	                dst.transferFrom(src, 0, src.size());
 	    	                src.close();
 	    	                dst.close();
+	    	                input.close();
+	    	                output.close();
 	    	            }
 	    	            else
     				        mHandler.sendMessage(finish_msg);

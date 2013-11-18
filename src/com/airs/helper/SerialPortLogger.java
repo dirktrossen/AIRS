@@ -20,9 +20,11 @@ package com.airs.helper;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Calendar;
 
 import android.app.Activity;
 import android.os.Environment;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 /**
@@ -73,7 +75,9 @@ public class SerialPortLogger
 	 */	
 	public static synchronized void debugForced(String msg) 
 	{
-		write(msg + "\n");
+		Calendar cal = Calendar.getInstance();
+		
+		write(DateFormat.format("MMM dd h:m:s", cal.getTimeInMillis()) + ": " + msg + "\n");
 		Log.w("AIRS:", msg);
 	}
 
