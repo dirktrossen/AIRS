@@ -22,12 +22,12 @@
     <EditTextPreference
         android:summary="@string/Address_server"
         android:defaultValue="127.0.0.1"
-        android:title="Server name"
+        android:title="@string/Server_name"
         android:key="IPStore" android:name="@string/Server_name"/>
     <EditTextPreference
         android:summary="@string/Port_server"
         android:defaultValue="9000"
-        android:title="Server port"
+        android:title="@string/Port_number"
         android:numeric="integer"
         android:key="IPPort" android:name="@string/Port_number"/>
    </PreferenceCategory>    
@@ -80,7 +80,13 @@
 	        android:targetClass="com.airs.helper.ConnectGoogleAccount"
 	        />
 	    </Preference> 
-	    <ListPreference
+        <EditTextPreference
+	        android:title="@string/FolderGoogle"
+	        android:summary="@string/FolderGoogle2"
+	        android:defaultValue="AIRS"
+	        android:key="GDriveFolder" 
+	        android:name="@string/FolderGoogle"/>
+        <ListPreference
 	        android:key="UploadFrequency"
 	        android:title="@string/UploadFrequency"
 	        android:summary="@string/UploadFrequency_on"

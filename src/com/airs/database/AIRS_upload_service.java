@@ -64,7 +64,9 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
     private AIRS_upload_service this_service;
     private boolean wifi_only;
     private String currentFilename;
-    
+    // GDrive folder
+    private String GDrive_Folder;
+
     public class LocalBinder extends Binder 
     {
     	AIRS_upload_service getService() 
@@ -122,6 +124,9 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
         // get handle to Google Drive
         service = getDriveService(context);
   
+        // get Google drive folder
+        GDrive_Folder = settings.getString("GDriveFolder", "AIRS");
+
         if (service != null)
         {
 		    try 
@@ -183,11 +188,11 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 	        		    if (right_network == true)
 	        		    {		        		    
 		                	Log.v("AIRS", "trying to find AIRS recordings directory");
-		                	
-		                	List<com.google.api.services.drive.model.File> files = service.files().list().setQ("mimeType = 'application/vnd.google-apps.folder'").execute().getItems();
+
+		                	List<com.google.api.services.drive.model.File> files = service.files().list().setQ("mimeType = 'application/vnd.google-apps.folder' AND trashed=false AND 'root' in parents").execute().getItems();
 		                    for (com.google.api.services.drive.model.File f : files) 
 		                    {
-		                    	if (f.getTitle().compareTo("AIRS recordings") == 0)
+		                    	if (f.getTitle().compareTo(GDrive_Folder) == 0)
 		                    		AIRS_dir = f;
 		                    }
 		                    
@@ -197,7 +202,7 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 
 			                    // create AIRS recordings directory
 			                    body = new com.google.api.services.drive.model.File();
-			                    body.setTitle("AIRS recordings");
+			                    body.setTitle(GDrive_Folder);
 			                    body.setMimeType("application/vnd.google-apps.folder");
 			                    AIRS_dir = service.files().insert(body).execute();
 		                    }
@@ -211,9 +216,6 @@ public class AIRS_upload_service extends Service implements MediaHttpUploaderPro
 		                    body.setTitle(fileContent.getName());
 		                    body.setMimeType("text/plain");
 		                    body.setParents(Arrays.asList(new ParentReference().setId(AIRS_dir.getId())));
-		                    // NEEDS TESTING - remove if it creates bad uploads!
-		                    // set file ID to file name so that we've get a unique file rather than several ones!!
-		                    body.setId(currentFilename);
 		                    
 		                    Log.v("AIRS", "...trying to upload AIRS recordings");
 	

@@ -309,15 +309,17 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    	{
 	    	case R.id.mooddefined:
 	    		et = (EditText) findViewById(R.id.moodown);
-	    		
+	    		// get selection
+	    		String selection = et.getText().toString();
+	    		selection = selection.replaceAll("'","''");
+	    		selection = selection.replaceAll(":","");
 	    		// is there a free field?
 	    		for (i=0;i<own_events;i++)
 	    			if (event[i].compareTo("") == 0)
 	    			{
 	    				added = true;
 	    				// add to list
-	    				event[i] = et.getText().toString().replaceAll("'","''");
-	    				event[i] = et.getText().toString().replaceAll(":","");
+	    				event[i] = new String(selection);
 
 	    				// add also to visible list
 		        		addEventIcon(event[i], R.drawable.event_marker);
@@ -329,8 +331,7 @@ public class EventButton_selector extends Activity implements OnItemClickListene
 	    		if (added == false)
 	    		{
 				    // read input string from edit field
-		    		event[0] = et.getText().toString().replaceAll("'","''");
-    				event[0] = et.getText().toString().replaceAll(":","");
+		    		event[0] = new String(selection);
 
 	    			// select this entry
 		    		selected_entry = event[0];

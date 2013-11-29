@@ -311,9 +311,11 @@ public class MoodButton_selector extends Activity implements OnItemClickListener
 	    	case R.id.mooddefined:
 	    		et = (EditText) findViewById(R.id.moodown);
 		    	// read input string from edit field
-	    		mood = et.getText().toString().replaceAll("'","''");
-	    		mood = et.getText().toString().replaceAll(":","");
-	    		mood = et.getText().toString().replaceAll("::","");
+	    		mood = et.getText().toString();
+	    		mood = mood.replaceAll("'","''");
+	    		mood = mood.replaceAll(":","");
+	    		mood = mood.replaceAll("::","");
+
 	    		selected = true;
 	    		own_defined = true;
 	    		finish();

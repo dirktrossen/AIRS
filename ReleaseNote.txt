@@ -1,3 +1,8 @@
+V2.7.3:
+- escape mood and event annotations properly
+- add setting for upload directory
+- bugfix for regular upload
+
 V2.7.2:
 - check in manual sync if background uploading is selected (can only either)
 - updated manifest for new Google Play Services (needs to be installed!)

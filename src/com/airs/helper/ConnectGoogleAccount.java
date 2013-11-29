@@ -20,6 +20,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.ParentReference;
 
 public class ConnectGoogleAccount extends Activity
 {
@@ -30,6 +31,8 @@ public class ConnectGoogleAccount extends Activity
 	private GoogleAccountCredential credential;  
     // preferences
     private SharedPreferences settings;
+    // GDrive folder
+    private String GDrive_Folder;
 
 	/** Called when the activity is first created. 
      * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
@@ -42,6 +45,10 @@ public class ConnectGoogleAccount extends Activity
         // set content of View
         setContentView(R.layout.googleaccounts);
 
+        // get default preferences
+        settings = PreferenceManager.getDefaultSharedPreferences(this);
+        GDrive_Folder = settings.getString("GDriveFolder", "AIRS");
+        
         try
         {
 		    credential = GoogleAccountCredential.usingOAuth2(this.getApplicationContext(), Arrays.asList(DriveScopes.DRIVE));
@@ -104,8 +111,6 @@ public class ConnectGoogleAccount extends Activity
 	    	    // create upload directory here for continuing with the authentication
 	        	createDirectory();
 
-	            // get default preferences
-	            settings = PreferenceManager.getDefaultSharedPreferences(this);
         	    // clear persistent flag
 	           	Editor editor = settings.edit();
 	           	editor.putString("AIRS_local::accountname", accountName);
@@ -139,12 +144,12 @@ public class ConnectGoogleAccount extends Activity
 	                .build();
 	                try
 	                {
-	                	Log.e("AIRS", "trying to find AIRS recordings directory");
+	                	Log.e("AIRS", "trying to find AIRS recordings directory in root");
 	                	
-	                	List<com.google.api.services.drive.model.File> files = service.files().list().setQ("mimeType = 'application/vnd.google-apps.folder'").execute().getItems();
+	                	List<com.google.api.services.drive.model.File> files = service.files().list().setQ("mimeType = 'application/vnd.google-apps.folder' AND trashed=false AND 'root' in parents").execute().getItems();
 	                    for (com.google.api.services.drive.model.File f : files) 
 	                    {
-	                    	if (f.getTitle().compareTo("AIRS recordings") == 0)
+	                    	if (f.getTitle().compareTo(GDrive_Folder) == 0)
 	                    		AIRS_dir = f;
 	                    }
 	                    
@@ -152,14 +157,14 @@ public class ConnectGoogleAccount extends Activity
 	                    {
 		                	Log.e("AIRS", "...need to create AIRS recordings directory");
 
-		                    // create AIRS recordings directory
+		                    // create recordings directory in root!
 		                    body = new com.google.api.services.drive.model.File();
-		                    body.setTitle("AIRS recordings");
+		                    body.setTitle(GDrive_Folder);
+		                    body.setParents(Arrays.asList(new ParentReference().setId("root")));
 		                    body.setMimeType("application/vnd.google-apps.folder");
 		                    AIRS_dir = service.files().insert(body).execute();
-			                com.google.api.services.drive.model.File folder = service.files().insert(body).execute();
 			                if (AIRS_dir != null)
-			                	Log.e("AIRS", "Created folder with id = " + folder.getId());	
+			                	Log.e("AIRS", "Created folder with id = " + AIRS_dir.getId());	
 	                    }
 
 	                    running = false;

@@ -91,6 +91,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore received_semaphore 	= new Semaphore(1);
 	private Semaphore sent_semaphore 		= new Semaphore(1);
 	private Semaphore template_semaphore 	= new Semaphore(1);
+	private SmsObserver smsSentObserver;
 	
 	private void wait(Semaphore sema)
 	{
@@ -115,6 +116,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		byte[] readings = null;
 		int reading_value = 0;
 		boolean read = false, task_first;
+		StringBuffer buffer = null;
 		
 		read = false;
 
@@ -124,7 +126,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			wait(template_semaphore); // block until semaphore available: it will block after the first usage since templates need only one reading!
 
 			// create Stringbuffer with template being used
-		    StringBuffer buffer = new StringBuffer("TE");
+		    buffer = new StringBuffer("TE");
 		    buffer.append(AIRS_record_tab.current_template);
     		return buffer.toString().getBytes();
 		}
@@ -278,7 +280,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			if (smsReceived != null)
 			{
 				// create Stringbuffer with sms number being sent
-			    StringBuffer buffer = new StringBuffer("SR");
+			    buffer = new StringBuffer("SR");
 			    buffer.append(smsReceived.replaceAll("'","''"));
 			    smsReceived = null;
 	    		return buffer.toString().getBytes();
@@ -298,28 +300,20 @@ public class SystemHandler implements com.airs.handlers.Handler
 
 			wait(sent_semaphore);  // block until semaphore available
 
-			StringBuffer buffer = null;
-			// synchronize access to shared variable!
-			synchronized(smsSent)
+			SerialPortLogger.debugForced("SS sensor: Acquire() acquired semaphore");
+
+			// any difference in value?
+			if (smsSent != null)
 			{
-				// any difference in value?
-				if (smsSent != null)
-				{
-					// create Stringbuffer with sms number being sent
-				    buffer = new StringBuffer("SS");
-				    buffer.append(smsSent.replaceAll("'","''"));
-					SerialPortLogger.debugForced("SS sensor: created buffer to return with:" + buffer.toString());
-				}
-				else
-				{
-					SerialPortLogger.debugForced("SS sensor: buffer is NULL!");
-				}
-			}
-			
-			if (buffer != null)
+				// create Stringbuffer with sms number being sent
+			    buffer = new StringBuffer("SS");
+			    buffer.append(smsSent.replaceAll("'","''"));
+			    smsSent = null;
+				SerialPortLogger.debugForced("SS sensor: created buffer to return with:" + buffer.toString());
 				return buffer.toString().getBytes();
+			}
 			else
-				return null;
+				SerialPortLogger.debugForced("SS sensor: buffer is NULL!");			
 		}
 		
 		// incoming call?
@@ -339,7 +333,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			if (caller != null)
 			{
 				// create reading buffer with caller number
-			    StringBuffer buffer = new StringBuffer("IC");
+			    buffer = new StringBuffer("IC");
 			    buffer.append(caller);
 			    caller = null;
 	    		return buffer.toString().getBytes();
@@ -363,7 +357,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 			if (callee !=null)
 			{
 				// create reading buffer with callee number
-			    StringBuffer buffer = new StringBuffer("OC");
+			    buffer = new StringBuffer("OC");
 			    buffer.append(callee);
 			    callee = null;
 	    		return buffer.toString().getBytes();
@@ -410,7 +404,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 					return null;
 				
 				// now create list
-				StringBuffer buffer = new StringBuffer("TR");
+				buffer = new StringBuffer("TR");
 		
 				// start with first task
 				task_first=true;
@@ -469,7 +463,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 					return null;
 				
 				// now create list
-				StringBuffer buffer = new StringBuffer("TV");
+				buffer = new StringBuffer("TV");
 		
 				// start with first task
 				boolean process_first=true;
@@ -666,7 +660,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 			
 	        // get ActivityManager for list of tasks
 		    am  = (ActivityManager) airs.getSystemService(Context.ACTIVITY_SERVICE); 			// if something returned, enter sensor value
-
 		}
 		catch(Exception e)
 		{
@@ -690,9 +683,13 @@ public class SystemHandler implements com.airs.handlers.Handler
 		callee_semaphore.release();
 		received_semaphore.release();
 		sent_semaphore.release();
+		template_semaphore.release();
 
 		if (startedBattery == true || startedScreen==true || startedHeadset == true || startedPhoneState == true || startedOutgoingCall == true || startedSMSReceived == true)
 			airs.unregisterReceiver(SystemReceiver);
+		
+		if (startedSMSSent == true)
+    	    airs.getContentResolver().unregisterContentObserver(smsSentObserver);			
 	}
 	
 	private String getContactByNumber(String number)
@@ -778,7 +775,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	   		   	startedSMSReceived = true;
 		        break;
            case INIT_SMSSENT:
-        	    SmsObserver smsSentObserver = new SmsObserver(new Handler());
+        	    smsSentObserver = new SmsObserver(new Handler());
         	    airs.getContentResolver().registerContentObserver(SMS_STATUS_URI, true, smsSentObserver);
 	   		   	startedSMSSent = true;
 		        break;
@@ -919,7 +916,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     };
     
     private class SmsObserver extends ContentObserver 
-    {	        
+    {	            	
     	public SmsObserver(Handler handler) 
     	{
     		super(handler);
@@ -961,39 +958,37 @@ public class SystemHandler implements com.airs.handlers.Handler
     							Log.e("AIRS", "got an SMS sent notification - now checking if seen before");
     							
     							// avoid concurrent access to this shared variable!
-    							synchronized(smsSent)
-    							{
-	    							// do everything locally first!
-	    			                smsSent = new String(phoneNoStr + ":" + getContactByNumber(phoneNoStr) + ":" + smsBodyStr);  			                
-	    			                String lastSeen = HandlerManager.readRMS("SystemHandler::lastSeen", "");
-	    			                
-	    			                boolean seenBefore = true;
-	    			                
-	    			                if (lastSeen != null)
-	    			                {
-		    			                if (smsSent.compareTo(lastSeen) != 0)
-		    			                	seenBefore = false;
-	    			                }
-	    			                else
+    							// do everything locally first!
+    			                String currentSMS = new String(phoneNoStr + ":" + getContactByNumber(phoneNoStr) + ":" + smsBodyStr);  			                
+    			                String lastSeen = HandlerManager.readRMS("SystemHandler::lastSeen", "");
+    			                
+    			                boolean seenBefore = true;
+    			                
+    			                if (lastSeen != null)
+    			                {
+	    			                if (currentSMS.compareTo(lastSeen) != 0)
 	    			                	seenBefore = false;
-	    			                	
-	    			                // is SMS different from last seen one?
-	    			                if (seenBefore == false)
-	    			                {
-	    			                	// write into permanent settings
-	    			                	HandlerManager.writeRMS("SystemHandler::lastSeen", smsSent);
-	    			                	// release semaphore
-		    							sent_semaphore.release();	
-		    							
-		    							SerialPortLogger.debugForced("SS sensor: valid message -> released semaphore!");
-		    								    							
-		    							// discard string for garbage collector
-		    							lastSeen = null;
-	    			                }
-	    			                else 
-	    			                	SerialPortLogger.debugForced("SS sensor: seen that before -> nothing triggered (" + smsSent + ")");
-    							}
-    						}
+    			                }
+    			                else
+    			                	seenBefore = false;
+    			                	
+    			                // is SMS different from last seen one?
+    			                if (seenBefore == false)
+    			                {
+    			                	smsSent = new String(currentSMS);
+    			                	// write into permanent settings
+    			                	HandlerManager.writeRMS("SystemHandler::lastSeen", smsSent);
+    			                	// release semaphore
+	    							sent_semaphore.release();	
+	    							
+	    							SerialPortLogger.debugForced("SS sensor: valid message -> released semaphore with available permits of " + String.valueOf(sent_semaphore.availablePermits()));
+	    								    							
+	    							// discard string for garbage collector
+	    							lastSeen = null;
+    			                }
+    			                else 
+    			                	SerialPortLogger.debugForced("SS sensor: seen that before -> nothing triggered (" + currentSMS + ")");
+							}
     					}
     				}
         			// close cursor now!
@@ -1002,9 +997,9 @@ public class SystemHandler implements com.airs.handlers.Handler
     		}
     		catch(Exception sggh)
     		{
+    			SerialPortLogger.debugForced("Exception in SS sensor handling: " + sggh.toString());
     			Log.e("AIRS", "Exception in SS sensor handling: " + sggh.toString());
     		}
-    	}
-    	
+		}
     }
 }

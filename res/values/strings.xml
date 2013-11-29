@@ -83,6 +83,8 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="ConnectGoogle2">Connect to Google Account for GDrive Backup</string>
 <string name="ConnectGoogle3">Wait for connecting to your Google Account!</string>
 <string name="ConnectGoogle4">Cannot find Google Account information on this device!</string>
+<string name="FolderGoogle">Upload Folder</string>
+<string name="FolderGoogle2">Select the folder in GDrive root directory to upload to - will be created if it does not exist</string>
 <string name="Cannot_backup">Cannot backup database while AIRS is running!</string>
 <string name="Cannot_restore">Cannot restore database while AIRS is running!</string>
 <string name="Cannot_create_backup">Cannot create backup file (possible access error or external media does not exist)!</string>
@@ -574,15 +576,17 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-- check in manual sync if background uploading is selected (can only either)\n
-- updated manifest for new Google Play Services (needs to be installed!)\n
-- improved SS sensor\n
-- ensure that only one file is uploaded to GDrive
+We now escape mood and event annotations properly so that quote characters are properly added.\n
+We also added a setting for the upload directory to Google Drive and fixed a bug in the regular upload to ensure that the files are uploaded in the one and only defined directory in the root directory!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.3:
+- escape mood and event annotations properly\n
+- add setting for upload directory\n
+- bugfix for regular upload\n\n
 V2.7.2:\n
 - check in manual sync if background uploading is selected (can only either)\n
 - updated manifest for new Google Play Services (needs to be installed!)\n
