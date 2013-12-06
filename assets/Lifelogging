@@ -14,6 +14,7 @@
 <boolean name="ProximityHandler::BTONAsk" value="false" />
 <string name="MusicPlayerHandler::Music">Coldplay:X&amp;Y:The Hardest Part</string>
 <boolean name="Lights" value="true" />
+<string name="AIRS_local::TZ">On</string>
 <string name="AIRS_local::IC">On</string>
 <string name="AIRS_local::PU">On</string>
 <string name="AIRS_local::PS">Off</string>

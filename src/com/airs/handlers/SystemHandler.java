@@ -17,6 +17,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 package com.airs.handlers;
 
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.Semaphore;
 
 import com.airs.AIRS_record_tab;
@@ -61,12 +62,15 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private static final int INIT_OUTGOINGCALL 	= 5;
 	private static final int INIT_SMSRECEIVED 	= 6;
 	private static final int INIT_SMSSENT	 	= 7;
+	private static final int INIT_TIMEZONE	 	= 8;
 
 	static private final Uri SMS_STATUS_URI = Uri.parse("content://sms/");
 
 	private Context airs;
 	private int oldBattery = -1;
 	private int Battery = 0;
+	private int oldOffset = -1;
+	private int Offset = 0;
 	private int voltage = 0;
 	private int old_voltage = -1;
 	private int temperature = 0;
@@ -80,7 +84,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private String caller = null, callee = null, smsReceived = null, smsSent = new String("");
 	private int polltime = 5000;
 	private ActivityManager am;
-	private boolean startedBattery = false, startedScreen = false, startedHeadset = false;
+	private boolean startedTimeZone = false, startedBattery = false, startedScreen = false, startedHeadset = false;
 	private boolean startedPhoneState = false, startedOutgoingCall = false, startedSMSReceived = false, startedSMSSent = false;
 	private Semaphore battery_semaphore 	= new Semaphore(1);
 	private Semaphore screen_semaphore 		= new Semaphore(1);
@@ -91,6 +95,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private Semaphore received_semaphore 	= new Semaphore(1);
 	private Semaphore sent_semaphore 		= new Semaphore(1);
 	private Semaphore template_semaphore 	= new Semaphore(1);
+	private Semaphore timezone_semaphore 	= new Semaphore(1);
 	private SmsObserver smsSentObserver;
 	
 	private void wait(Semaphore sema)
@@ -119,6 +124,27 @@ public class SystemHandler implements com.airs.handlers.Handler
 		StringBuffer buffer = null;
 		
 		read = false;
+
+		// recording template used?
+		if(sensor.compareTo("TZ") == 0)
+		{
+			// has timezone been started?
+			if (startedTimeZone == false)
+			{
+				// send message to handler thread to start timezone
+		        Message msg = mHandler.obtainMessage(INIT_TIMEZONE);
+		        mHandler.sendMessage(msg);	
+			}
+
+			wait(timezone_semaphore); // block until semaphore available: it will block after the first usage since templates need only one reading!
+
+			if (Offset != oldOffset)
+			{
+				read = true;
+				reading_value = Offset; 
+				oldOffset = Offset;
+			}
+		}
 
 		// recording template used?
 		if(sensor.compareTo("TE") == 0)
@@ -633,6 +659,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     	SensorRepository.insertSensor(new String("TR"), new String("Tasks"), airs.getString(R.string.TR_d), airs.getString(R.string.TR_e), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
     	SensorRepository.insertSensor(new String("TV"), new String("Tasks"), airs.getString(R.string.TV_d), airs.getString(R.string.TV_e), new String("txt"), 0, 0, 1, false, polltime, this);	    	    	
     	SensorRepository.insertSensor(new String("TE"), new String("Template"), airs.getString(R.string.TE_d), airs.getString(R.string.TE_e), new String("txt"), 0, 0, 1, false, 0, this);	    	    	
+    	SensorRepository.insertSensor(new String("TZ"), new String("Timezone"), airs.getString(R.string.TZ_d), airs.getString(R.string.TZ_e), new String("int"), 0, 0, 10000000, false, 0, this);	    	    	
 	}
 	
 	/**
@@ -684,8 +711,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 		received_semaphore.release();
 		sent_semaphore.release();
 		template_semaphore.release();
+		timezone_semaphore.release();
 
-		if (startedBattery == true || startedScreen==true || startedHeadset == true || startedPhoneState == true || startedOutgoingCall == true || startedSMSReceived == true)
+		if (startedTimeZone == true || startedBattery == true || startedScreen==true || startedHeadset == true || startedPhoneState == true || startedOutgoingCall == true || startedSMSReceived == true)
 			airs.unregisterReceiver(SystemReceiver);
 		
 		if (startedSMSSent == true)
@@ -739,6 +767,11 @@ public class SystemHandler implements com.airs.handlers.Handler
     	   
            switch (msg.what) 
            {
+           case INIT_TIMEZONE:
+	   		   	intentFilter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
+	   		   	airs.registerReceiver(SystemReceiver, intentFilter);
+	   		   	startedTimeZone = true;
+	   		   	break;  
            case INIT_BATTERY:
 	   		   	intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 	   		   	airs.registerReceiver(SystemReceiver, intentFilter);
@@ -795,6 +828,13 @@ public class SystemHandler implements com.airs.handlers.Handler
         {
             String action = intent.getAction();
 
+            // when timezone changed
+            if (Intent.ACTION_TIMEZONE_CHANGED.compareTo(action) == 0)
+            {
+            	Offset = TimeZone.getDefault().getRawOffset();
+				timezone_semaphore.release();		// release semaphore
+            }
+            
             // When battery changed...
             if (Intent.ACTION_BATTERY_CHANGED.compareTo(action) == 0) 
             {

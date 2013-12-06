@@ -83,7 +83,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="ConnectGoogle3">Warte bitte um sich mit dem Google Konto zu verbinden!</string>
 <string name="ConnectGoogle4">Kann keine Google Kontoinformationen auf diesem Gerät finden!</string>
 <string name="FolderGoogle">Hochladeverzeichnis</string>
-<string name="FolderGoogle2">Wähle das Verzeichnis im GDrive Hauptverzeichnis zum Hochladen - es wird angelegt, falls es nicht existiert.</string>
+<string name="FolderGoogle2">Wähle das Verzeichnis im GDrive Hauptverzeichnis zum Hochladen - es wird angelegt, falls es nicht existiert. Diese Einstellung existiert für jedes Aufzeichnungsmuster!</string>
 <string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
 <string name="Cannot_restore">Kann die Datenbank nicht wiederherstellen wenn AIRS läuft!</string>
 <string name="Backup_recordings">Sicherung</string>
@@ -509,6 +509,8 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="TV_e">Bestimmt die momentan auf dem Handy laufenden Anwendungen, die Benutzereingaben benötigen.</string>
 <string name="TE_d">Aufzeichnungsmuster</string>
 <string name="TE_e">Bestimmt das momentan verwendete AIRS Aufzeichnungsmuster, wie z.B. Reisen.</string>
+<string name="TZ_d">Zeitzone</string>
+<string name="TZ_e">Bestimmt den momentane Zeitzonenoffset von UTC.</string>
 <string name="VT_d">Temperatur [C]</string>
 <string name="VT_e">Bestimmt die Temperatur in Celsius, wie vom externen Webserver erhalten.</string>
 <string name="VF_d">Temperatur [F]</string>

@@ -1,3 +1,6 @@
+V2.7.4:
+- introduced TZ sensor for current timezone, updated with every timezone update
+
 V2.7.3:
 - escape mood and event annotations properly
 - add setting for upload directory
