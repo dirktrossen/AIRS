@@ -1,3 +1,6 @@
+V2.7.5:
+- bugfix for TZ sensor when starting in timezone different from GMT+0
+
 V2.7.4:
 - introduced TZ sensor for current timezone, updated with every timezone update
 

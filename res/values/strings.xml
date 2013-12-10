@@ -578,12 +578,14 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We introduced the TZ sensor, showing the current timezone offset in comparison to the UTC! This is useful to display recording data in relation to the time of recording rather than the time of visualisation.
+We removed a bug in the TZ sensor when starting in timezones different than GMT+0.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.5:\n
+- bugfix for TZ sensor when starting in timezone different from GMT+0\n\n
 V2.7.4:\n
 - introduced TZ sensor for current timezone, updated with every timezone update\n\n
 V2.7.3:\n

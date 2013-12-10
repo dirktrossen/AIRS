@@ -70,7 +70,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int oldBattery = -1;
 	private int Battery = 0;
 	private int oldOffset = -1;
-	private int Offset = 0;
+	private int Offset = TimeZone.getDefault().getRawOffset();
 	private int voltage = 0;
 	private int old_voltage = -1;
 	private int temperature = 0;
