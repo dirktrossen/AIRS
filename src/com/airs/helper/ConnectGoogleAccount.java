@@ -121,9 +121,27 @@ public class ConnectGoogleAccount extends Activity
 	      break;
 	    case REQUEST_AUTHORIZATION:
 	        if (resultCode == Activity.RESULT_OK) 
-	        	createDirectory();
+	        {
+		        String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+		        if (accountName != null) 
+		        {
+		    	    credential.setSelectedAccountName(accountName);
+
+		    	    // create upload directory here for continuing with the authentication
+		        	createDirectory();
+
+	        	    // clear persistent flag
+		           	Editor editor = settings.edit();
+		           	editor.putString("AIRS_local::accountname", accountName);
+	                // finally commit to storing values!!
+	                editor.commit();
+		        }
+	        }
 	        else 
-	        	startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+	        {
+		  		Toast.makeText(getApplicationContext(), getString(R.string.ConnectGoogle5), Toast.LENGTH_LONG).show();
+	        	finish();
+	        }
 	        break;
 	    }  
 	} 
@@ -144,7 +162,7 @@ public class ConnectGoogleAccount extends Activity
 	                .build();
 	                try
 	                {
-	                	Log.e("AIRS", "trying to find AIRS recordings directory in root");
+	                	SerialPortLogger.debugForced("trying to find AIRS recordings directory in root");
 	                	
 	                	List<com.google.api.services.drive.model.File> files = service.files().list().setQ("mimeType = 'application/vnd.google-apps.folder' AND trashed=false AND 'root' in parents").execute().getItems();
 	                    for (com.google.api.services.drive.model.File f : files) 
@@ -155,7 +173,7 @@ public class ConnectGoogleAccount extends Activity
 	                    
 	                    if (AIRS_dir == null)
 	                    {
-		                	Log.e("AIRS", "...need to create AIRS recordings directory");
+		                	SerialPortLogger.debugForced("...need to create AIRS recordings directory");
 
 		                    // create recordings directory in root!
 		                    body = new com.google.api.services.drive.model.File();
@@ -164,19 +182,20 @@ public class ConnectGoogleAccount extends Activity
 		                    body.setMimeType("application/vnd.google-apps.folder");
 		                    AIRS_dir = service.files().insert(body).execute();
 			                if (AIRS_dir != null)
-			                	Log.e("AIRS", "Created folder with id = " + AIRS_dir.getId());	
+			                	SerialPortLogger.debugForced("Created folder with id = " + AIRS_dir.getId());	
 	                    }
 
 	                    running = false;
 	                }
 	                catch (UserRecoverableAuthIOException e) 
 	                {
-		                Log.e("AIRS", "Require authorization - starting activity!");
+		                SerialPortLogger.debugForced("Require authorization - starting activity!");
 	                    startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
+	                    return;
 	                }
 	                catch(Exception e)
 	                {
-	                	Log.e("AIRS", "something went wrong with folder creation: " + e.toString());
+	                	SerialPortLogger.debugForced("something went wrong with folder creation: " + e.toString());
 	                }
 	        	}
 	        	

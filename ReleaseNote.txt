@@ -1,3 +1,6 @@
+V2.7.6: 
+- bugfix for Google account verification when setting in general preferences
+
 V2.7.5:
 - bugfix for TZ sensor when starting in timezone different from GMT+0
 

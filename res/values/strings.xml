@@ -83,6 +83,7 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="ConnectGoogle2">Connect to Google Account for GDrive Backup</string>
 <string name="ConnectGoogle3">Wait for connecting to your Google Account!</string>
 <string name="ConnectGoogle4">Cannot find Google Account information on this device!</string>
+<string name="ConnectGoogle5">You need to grant access for the upload function to work!</string>
 <string name="FolderGoogle">Upload Folder</string>
 <string name="FolderGoogle2">Select the folder in GDrive root directory to upload to - will be created if it does not exist. This setting is specific for each recording template!</string>
 <string name="Cannot_backup">Cannot backup database while AIRS is running!</string>
@@ -578,12 +579,14 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We removed a bug in the TZ sensor when starting in timezones different than GMT+0.
+We removed a bug in the Google account verification when selecting for the first time in the General Settings.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.6:\n
+- bugfix for Google account verification when setting in general preferences\n\n
 V2.7.5:\n
 - bugfix for TZ sensor when starting in timezone different from GMT+0\n\n
 V2.7.4:\n

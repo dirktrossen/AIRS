@@ -82,6 +82,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="ConnectGoogle2">Verbinde zu Google Account für GDrive Backup</string>
 <string name="ConnectGoogle3">Warte bitte um sich mit dem Google Konto zu verbinden!</string>
 <string name="ConnectGoogle4">Kann keine Google Kontoinformationen auf diesem Gerät finden!</string>
+<string name="ConnectGoogle5">Zugriff muss erlaubt werden, damit die Hochladefunktion funktionieren kann!</string>
 <string name="FolderGoogle">Hochladeverzeichnis</string>
 <string name="FolderGoogle2">Wähle das Verzeichnis im GDrive Hauptverzeichnis zum Hochladen - es wird angelegt, falls es nicht existiert. Diese Einstellung existiert für jedes Aufzeichnungsmuster!</string>
 <string name="Cannot_backup">Kann die Datenbank nicht sichern wenn AIRS läuft!</string>
