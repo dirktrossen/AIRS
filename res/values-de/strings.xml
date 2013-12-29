@@ -476,6 +476,8 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="LI_e">Bestimmt die Lichtintensität, gemessen mit einem Handy-internen Sensor (falls verfügbar).</string>
 <string name="PU_d">Umgebungsluftdruck</string>
 <string name="PU_e">Bestimmt den Luftdruck, gemessen mit einem Handy-internen Sensor (falls verfügbar).</string>
+<string name="PD_d">Schrittzahl</string>
+<string name="PD_e">Bestimmt die Anzahl der Schritte am Aufzeichnungstag.</string>
 <string name="TM_d">Umgebungstemperatur</string>
 <string name="TM_e">Bestimmt die Umgebungstemperatur, gemessen mit einem Handy-internen Sensor (falls verfügbar).</string>
 <string name="HU_d">Luftfeuchtigkeit</string>

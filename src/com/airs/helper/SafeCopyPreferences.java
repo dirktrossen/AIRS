@@ -60,7 +60,7 @@ public class SafeCopyPreferences
         copy_template = settings.getBoolean("AIRS_local::copy_template", false);
         music = settings.getString("MusicPlayerHandler::Music", "");
 		storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
-
+		
         // read all entries related to event annotations
 		int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
 		if (own_events<1)

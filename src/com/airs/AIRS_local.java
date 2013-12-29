@@ -1402,6 +1402,8 @@ public class AIRS_local extends Service
 						 
 						 if (Lights == true)
 						 {
+							 notification.ledOffMS = 0;
+							 notification.ledOnMS = 750;
 							 notification.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
 							 notification.flags     |= Notification.FLAG_SHOW_LIGHTS; 
 						 }

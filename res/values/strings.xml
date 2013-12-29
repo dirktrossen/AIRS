@@ -476,6 +476,8 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="LI_e">Provides the light intensity as measured by the phone\'s sensor.</string>
 <string name="PU_d">Ambient Pressure</string>
 <string name="PU_e">Provides the atmospheric pressure as measured by the phone\'s sensor (if available).</string>
+<string name="PD_d">Step Count</string>
+<string name="PD_e">Provides the step count for the recording day.</string>
 <string name="TM_d">Ambient Temperature</string>
 <string name="TM_e">Provides the ambient temperature measured by phone\'s sensor (if available).</string>
 <string name="HU_d">Ambient rel. Humidity</string>
@@ -579,12 +581,14 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We removed a bug in the Google account verification when selecting for the first time in the General Settings.
+We added PD sensor as step counter for those phones (e.g., Nexus 5) that have this feature.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.7:\n
+- added PD sensor as step counter for those phones (e.g., Nexus 5) that have this feature\n\n
 V2.7.6:\n
 - bugfix for Google account verification when setting in general preferences\n\n
 V2.7.5:\n

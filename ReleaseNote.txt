@@ -1,3 +1,6 @@
+V2.7.7:
+- added PD sensor as step counter for those phones (e.g., Nexus 5) that have this feature
+
 V2.7.6: 
 - bugfix for Google account verification when setting in general preferences
 

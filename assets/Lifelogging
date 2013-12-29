@@ -28,6 +28,7 @@
 <string name="LocationHandler::WifiPoll">120</string>
 <boolean name="Wakeup" value="false" />
 <string name="AIRS_local::IH">On</string>
+<string name="AIRS_local::PD">On</string>
 <boolean name="localDisplay" value="true" />
 <string name="MediaWatcherHandler::PicturesDirectory">/sdcard/Pictures</string>
 <string name="AIRS_local::WM">Off</string>
