@@ -581,12 +581,14 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We added PD sensor as step counter for those phones (e.g., Nexus 5) that have this feature.
+We fixed the broken LED notification when recording.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.8:\n
+- fixed broken LED notification when recording\n\n
 V2.7.7:\n
 - added PD sensor as step counter for those phones (e.g., Nexus 5) that have this feature\n\n
 V2.7.6:\n

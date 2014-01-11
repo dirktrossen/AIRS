@@ -654,10 +654,10 @@ public class AIRS_local extends Service
 	private void start_AIRS_local()
 	{
 		// find out whether or not to remind of running
-		Reminder_i = HandlerManager.readRMS_i("Reminder", 0) * 1000;
-		Vibrate    = HandlerManager.readRMS_b("Vibrator", true);
-		Lights     = HandlerManager.readRMS_b("Lights", true);
-		LightCode  = HandlerManager.readRMS("LightCode", "00ff00");
+		Reminder_i 			= HandlerManager.readRMS_i("Reminder", 0) * 1000;
+		Vibrate    			= HandlerManager.readRMS_b("Vibrator", true);
+		Lights     			= HandlerManager.readRMS_b("Lights", true);
+		LightCode  			= HandlerManager.readRMS("LightCode", "00ff00");
 
 		// find out whether or not to kill based on battery condition
 		BatteryKill_i = HandlerManager.readRMS_i("BatteryKill", 0);
@@ -1404,7 +1404,7 @@ public class AIRS_local extends Service
 						 {
 							 notification.ledOffMS = 0;
 							 notification.ledOnMS = 750;
-							 notification.ledARGB   = 0xff000000 | Integer.valueOf(LightCode, 16); 
+							 notification.ledARGB   = 0xff000000 | Integer.decode(LightCode); // Integer.valueOf(LightCode, 16); 
 							 notification.flags     |= Notification.FLAG_SHOW_LIGHTS; 
 						 }
 			              

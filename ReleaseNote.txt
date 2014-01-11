@@ -1,3 +1,6 @@
+V2.7.8:
+- fixed broken LED notification when recording
+
 V2.7.7:
 - added PD sensor as step counter for those phones (e.g., Nexus 5) that have this feature
 
