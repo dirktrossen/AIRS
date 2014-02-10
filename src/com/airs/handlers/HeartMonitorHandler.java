@@ -492,7 +492,7 @@ public class HeartMonitorHandler implements Handler, Runnable
                 // proper end of message?
                 if (endOfMessage == (byte)0x03)
                 {	
-                	int current_pulse = (int)payload[HMX_PULSE];
+                	int current_pulse = (int)(payload[HMX_PULSE] & 0xff);
                 	
                 	// filter too low and too high values
                 	if (current_pulse > 30 & current_pulse<230)

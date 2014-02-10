@@ -417,7 +417,7 @@ public class BeaconHandler implements Handler, Runnable
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 // If it's already paired, skip it, because it's been listed already
                 if (device.getName()!=null)
-                	reading.append(device.getAddress() + "::" + device.getName());
+                	reading.append(device.getAddress() + "::" + device.getName().replaceAll("'","''"));
                 else
                 	reading.append(device.getAddress() + ":: ");
     	        no_devices ++;

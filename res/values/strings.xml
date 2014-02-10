@@ -581,12 +581,16 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We fixed the broken LED notification when recording.
+We fixed a bug that limited the Zephyr heart rate readings to 127. AIRS now restarts when updated while recording and added improvements to BT discovery sensors (BT and BN).
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.9:\n
+- removed bug that limited Zephyr readings to 127 max!\n
+- restart AIRS recording when updated while recording\n
+- improvements to BT discovery sensors (BT, BN)\n\n
 V2.7.8:\n
 - fixed broken LED notification when recording\n\n
 V2.7.7:\n
