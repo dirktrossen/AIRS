@@ -43,7 +43,7 @@ public class SafeCopyPreferences
 	static public void copyPreferences(Context context, File shortcutFile)
 	{
         long synctime;
-        int version, i;
+        int version, i, own_events;
         boolean tables, tables2, first_start, copy_template;
         String music, storedWifis, lastSMS;
         SharedPreferences settings;
@@ -61,12 +61,19 @@ public class SafeCopyPreferences
         music = settings.getString("MusicPlayerHandler::Music", "");
 		storedWifis = settings.getString("LocationHandler::AdaptiveGPS_WiFis", "");
 		
-        // read all entries related to event annotations
-		int own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
-		if (own_events<1)
+		try
+		{
+	        // read all entries related to event annotations
+			own_events = Integer.parseInt(settings.getString("EventButtonHandler::MaxEventDescriptions", "5"));
+			if (own_events<1)
+				own_events = 5;
+			if (own_events>50)
+				own_events = 50;
+		}
+		catch(Exception e)
+		{
 			own_events = 5;
-		if (own_events>50)
-			own_events = 50;
+		}
 
 		String event_selected_entry = settings.getString("EventButtonHandler::EventSelected", "");
 		String[] event = new String[own_events];			

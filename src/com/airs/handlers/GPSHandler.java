@@ -23,6 +23,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -249,7 +250,17 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		{
 			mReceiver = new LocationReceiver();
 			manager = (LocationManager)airs.getSystemService(Context.LOCATION_SERVICE);
-			enableGPS = true;
+			// check if there is some GPS
+			try
+			{
+				LocationProvider gps = manager.getProvider(LocationManager.GPS_PROVIDER);
+				if (gps != null)
+					enableGPS = true;
+			}
+			catch(Exception e)
+			{
+				enableGPS = false;
+			}
 			// arm semaphores
 			wait(longitude_semaphore); 
 			wait(latitude_semaphore); 
