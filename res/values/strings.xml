@@ -18,7 +18,7 @@
  -->
 <resources>
 <string name="app_name">AIRS</string>
-<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen; \n&#169; 2013 TecVis LP
+<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen; \n&#169; 2013-2014 TecVis LP
 \n\nContact: dot@tecvis.co.uk
 \n\nFollow Us on Twitter at @tecvis
 \n\nFacebook: http://www.facebook.com/tecvisuk
@@ -375,11 +375,11 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="Camera">Camera</string>
 <string name="Camera_on">Watch camera folder</string>
 <string name="Camera_off">Do not watch camera folder</string>
-<string name="Camera_Default">Camera Default Path</string>
+<string name="Camera_Default">Camera Path</string>
 <string name="Camera_Default_on">Use system default camera folder</string>
 <string name="Camera_Default_off">Define your own camera folder</string>
-<string name="Camera_path">Camera path</string>
-<string name="Camera_path_on">Provide the path for camera pictures</string>
+<string name="Camera_path">Provide camera path</string>
+<string name="Camera_path_on">Select picture from camera directory</string>
 <string name="Camera_path_select">Select a picture from the camera directory to determine the correct camera path!</string>
 
 <string name="Pictures">Pictures</string>
@@ -581,12 +581,15 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We fixed minor bugs, e.g., regarding checking GPS availability.
+We now properly support daylight saving time in the TZ sensor and also improved the naming settings for the media folder watcher.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.9.2:\n
+- improvements to naming settings for media folder watcher\n
+- properly support daylight saving time offset for TZ sensor\n\n
 V2.7.9.1:\n
 - improved checking of GPS availability\n
 - bugfixes\n\n

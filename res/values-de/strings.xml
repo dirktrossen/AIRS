@@ -17,7 +17,7 @@
  -->
 <resources>
 <string name="app_name">AIRS</string>
-<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen; \n&#169; 2013 TecVis LP
+<string name="Copyright">&#169; 2004-2006 Nokia Corp.\n&#169; 2008-2012 Dirk Trossen; \n&#169; 2013-2014 TecVis LP
 \n\nKontakt: dot@tecvis.co.uk
 \n\nFolge Uns in Twitter unter @tecvis
 \n\nFacebook: http://www.facebook.com/tecvisuk
@@ -374,11 +374,11 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Camera">Kamera</string>
 <string name="Camera_on">Beobachte Kameraverzeichnis</string>
 <string name="Camera_off">Keine Beobachtung des Kameraverzeichnisses</string>
-<string name="Camera_Default">Kamera Standardpfad</string>
+<string name="Camera_Default">Kamerapfad</string>
 <string name="Camera_Default_on">Benutze den Standardpfad des Systems</string>
 <string name="Camera_Default_off">Definiere eigenen Kamerapfad</string>
-<string name="Camera_path">Kamerapfad</string>
-<string name="Camera_path_on">Bestimme den Pfad für Kamerabilder</string>
+<string name="Camera_path">Bestimme Kamerapfad</string>
+<string name="Camera_path_on">Wähle ein Bild vom Kameraverzeichnis</string>
 <string name="Camera_path_select">Wähle ein Bild vom Kameraverzeichnis um den korrekten Dateipfad zu bestimmen!</string>
 
 <string name="Pictures">Bilder</string>

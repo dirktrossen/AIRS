@@ -70,7 +70,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int oldBattery = -1;
 	private int Battery = 0;
 	private int oldOffset = -1;
-	private int Offset = TimeZone.getDefault().getRawOffset();
+	private int Offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
 	private int voltage = 0;
 	private int old_voltage = -1;
 	private int temperature = 0;
@@ -831,7 +831,7 @@ public class SystemHandler implements com.airs.handlers.Handler
             // when timezone changed
             if (Intent.ACTION_TIMEZONE_CHANGED.compareTo(action) == 0)
             {
-            	Offset = TimeZone.getDefault().getRawOffset();
+            	Offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
 				timezone_semaphore.release();		// release semaphore
             }
             

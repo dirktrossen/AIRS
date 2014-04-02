@@ -39,8 +39,7 @@
     <Preference android:title="@string/Camera_path"
         android:defaultValue="/sdcard/DCIM/Camera"
         android:summary="@string/Camera_path_on"
-        android:key="MediaWatcherHandler::CameraDirectory" 
-        android:dependency="MediaWatcherHandler::Camera"        >
+        android:key="MediaWatcherHandler::CameraDirectory" >
        <intent
         android:action="android.intent.action.MAIN"
         android:targetPackage="com.airs"
