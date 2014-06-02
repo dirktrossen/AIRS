@@ -581,12 +581,15 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We now properly support daylight saving time in the TZ sensor and also improved the naming settings for the media folder watcher.
+We addressed a bug in the template selection and improved the DB admin menu.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.9.3:\n
+- address bug in template selection\n
+- improve DB admin menu\n\n
 V2.7.9.2:\n
 - improvements to naming settings for media folder watcher\n
 - properly support daylight saving time offset for TZ sensor\n\n

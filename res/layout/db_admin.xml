@@ -22,28 +22,28 @@
     android:orientation="horizontal"
     android:padding="5dp" >
 
-        <ImageButton
+        <Button
             android:id="@+id/db_backup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/Backup"
-            android:src="@android:drawable/ic_menu_save" />
+            android:drawableTop="@android:drawable/ic_menu_save"
+            android:text="@string/Backup" />
 
-        <ImageButton
+        <Button
             android:id="@+id/db_restore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/Restore"
-            android:src="@android:drawable/ic_menu_recent_history" />
+            android:text="@string/Restore"
+            android:drawableTop="@android:drawable/ic_menu_recent_history" />
 
-        <ImageButton
+        <Button
             android:id="@+id/db_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/Index"
-            android:src="@android:drawable/ic_menu_edit" />
+            android:text="@string/Index"
+            android:drawableTop="@android:drawable/ic_menu_edit" />
 
 </LinearLayout>

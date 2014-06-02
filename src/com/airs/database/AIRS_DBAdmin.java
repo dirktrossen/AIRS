@@ -29,7 +29,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.Toast;
 
 /**
@@ -42,9 +42,9 @@ import android.widget.Toast;
 public class AIRS_DBAdmin extends Activity implements OnClickListener
 {
 	// Layout Views
-    private ImageButton db_backup;
-    private ImageButton db_restore;
-    private ImageButton db_index;
+    private Button db_backup;
+    private Button db_restore;
+    private Button db_index;
 
     /** Called when the activity is first created. 
      * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
@@ -59,11 +59,11 @@ public class AIRS_DBAdmin extends Activity implements OnClickListener
         setContentView(R.layout.db_admin);
 
         // get buttons and set onclick listener
-        db_backup 		= (ImageButton)findViewById(R.id.db_backup);
+        db_backup 		= (Button)findViewById(R.id.db_backup);
         db_backup.setOnClickListener(this);
-        db_restore 		= (ImageButton)findViewById(R.id.db_restore);
+        db_restore 		= (Button)findViewById(R.id.db_restore);
         db_restore.setOnClickListener(this);
-        db_index 		= (ImageButton)findViewById(R.id.db_index);
+        db_index 		= (Button)findViewById(R.id.db_index);
         db_index.setOnClickListener(this);             
     }
     

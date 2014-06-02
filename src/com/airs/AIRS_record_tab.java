@@ -873,7 +873,6 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 
 		// clear annotation list and timestamps
 		annotations.clear();
-		selected_text = -1;
 		
     	// path for templates
         external_storage = getExternalFilesDir(null);
@@ -889,6 +888,12 @@ public class AIRS_record_tab extends Activity implements OnClickListener
 				for (i=0;i<file_list.length;i++)
 					annotations.add(file_list[i]);
         }
+        
+        // select first item if there's at least one
+        if (annotations.size()>0)
+        	selected_text = 0;
+        else
+    		selected_text = -1;
         
 		// get adapter and set it
         customAdapter = new MyCustomBaseAdapter(this, annotations);
