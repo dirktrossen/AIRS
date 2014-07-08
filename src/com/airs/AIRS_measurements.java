@@ -38,10 +38,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,13 +53,14 @@ import android.widget.Toast;
  *
  * @see AIRS_local
  */
-public class AIRS_measurements extends Activity implements OnItemClickListener, OnItemLongClickListener
+public class AIRS_measurements extends Activity implements OnItemClickListener, OnItemLongClickListener, OnClickListener
 {
 	 private TextView mTitle;
 	 private TextView mTitle2;
 	 private AIRS_local AIRS_locally;
 	 private ListView values;
 	 private Activity act;
+	 private Button exit;
 
 	 /** Called when the activity is first created. 
 	     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
@@ -83,7 +86,12 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        // set listener for sensor list
 			values.setOnItemClickListener(this);
 			values.setOnItemLongClickListener(this);
-			
+
+			// Find and set up the ListView for values
+			exit 	= (Button)findViewById(R.id.valuesExit);        
+	        // set listener for sensor list
+			exit.setOnClickListener(this);
+
 	        // bind to service
 	        if (bindService(new Intent(this, AIRS_local.class), mConnection, 0)==false)
 	     		Toast.makeText(getApplicationContext(), getString(R.string.binding_failed), Toast.LENGTH_LONG).show();	        
@@ -183,6 +191,40 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    	return true;
 	    }
 
+		/** Called when a button has been clicked on by the user
+	     * @param v Reference to the {android.view.View} of the button
+	     */
+		public void onClick(View v) 
+	    {
+    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage(getString(R.string.Exit_AIRS))
+    			   .setTitle(getString(R.string.AIRS_Local_Sensing))
+    		       .setCancelable(false)
+    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		    		   if (AIRS_locally != null)
+    		    		   {
+    		    			   // first unbind before stopping service!
+    		    			   unbindService(mConnection);
+    		    			   stopService(new Intent(act, AIRS_local.class));
+    		    		   }
+    		    		   	    		    		   
+    		        	   finish();
+    		           }
+    		       })
+    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
+    		       {
+    		           public void onClick(DialogInterface dialog, int id) 
+    		           {
+    		                dialog.cancel();
+    		           }
+    		       });
+    		AlertDialog alert = builder.create();
+    		alert.show();
+	    }
+		
 	   /** Called when an option menu item has been selected by the user
 	     * @param item Reference to the {@link android.view.Menuitem} clicked on
 	     */
@@ -208,36 +250,6 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	        		AIRS_locally.resume_threads();
 	        	}
 	        	break;
-	        case R.id.local_exit:
-	    		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    		builder.setMessage(getString(R.string.Exit_AIRS))
-	    			   .setTitle(getString(R.string.AIRS_Local_Sensing))
-	    		       .setCancelable(false)
-	    		       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() 
-	    		       {
-	    		           public void onClick(DialogInterface dialog, int id) 
-	    		           {
-	    		    		   if (AIRS_locally != null)
-	    		    		   {
-	    		    			   // first unbind before stopping service!
-	    		    			   unbindService(mConnection);
-	    		    			   stopService(new Intent(act, AIRS_local.class));
-	    		    		   }
-	    		    		   	    		    		   
-	    		        	   finish();
-	    		           }
-	    		       })
-	    		       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() 
-	    		       {
-	    		           public void onClick(DialogInterface dialog, int id) 
-	    		           {
-	    		                dialog.cancel();
-	    		           }
-	    		       });
-	    		AlertDialog alert = builder.create();
-	    		alert.show();
-
-		        return true;
 	        }
 	        return false;
 	    }

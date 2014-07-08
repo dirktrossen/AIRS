@@ -316,13 +316,13 @@ public class AIRS_local extends Service
 				 				else
 				 					output(current.Symbol + " : " + getString(R.string.Sensor_suspended2), false);
 				 				
-								SerialPortLogger.debugForced("HandlerThread for " + current.Symbol + ": suspended, now waiting");
+								SerialPortLogger.debug("HandlerThread for " + current.Symbol + ": suspended, now waiting");
 
 								while (current.status == Sensor.SENSOR_SUSPEND)
 									sleep(5000);
 		    					
 		    					output(current.Symbol + " : - [" + current.Unit + "]", false);
-								SerialPortLogger.debugForced("HandlerThread for " + current.Symbol + ": woken up again");
+								SerialPortLogger.debug("HandlerThread for " + current.Symbol + ": woken up again");
 				 				break;
 				 			case Sensor.SENSOR_VALID:		 			
 					    		// acquire latest value
@@ -718,6 +718,8 @@ public class AIRS_local extends Service
 			   	 // kill Handlers and threads
 			   	 if (started == true)
 			   	 {
+			   		 SerialPortLogger.debug("AIRS_local::terminating handlers");
+
 			   		 // first kill handlers!
 			   		 HandlerManager.destroyHandlers();	
 	
@@ -748,16 +750,7 @@ public class AIRS_local extends Service
 			   		 catch(Exception e)
 			   		 {
 			   			 SerialPortLogger.debugForced("AIRS_local::Exception when terminating Handlerthreads!");
-			   		 }
-			   		 	
-				   	 // create wake lock if held
-				   	 if (wl != null)
-				   		 if (wl.isHeld() == true)
-				   			 wl.release();
-				   	 
-				   	 // if registered for screen activity or battery level -> unregister
-				   	 if (registered == true)
-				         unregisterReceiver(mReceiver);	   	 
+			   		 }			   		 	
 			   	 }
 			   	 
 			   	 // is local storage ongoing -> close file!
@@ -772,10 +765,10 @@ public class AIRS_local extends Service
 			   		 {	   
 			   			 SerialPortLogger.debugForced("AIRS_local::Exception when closing DB!");
 			   		 }
-			   	 } 
+			   	 } 			   	 
 			 }
 		}
-	   	 
+	
 		// and kill persistent flag
         HandlerManager.writeRMS_b("AIRS_local::running", false);
                   
@@ -789,6 +782,15 @@ public class AIRS_local extends Service
 				Intent intent = new Intent("com.airs.local.stopped");				
 				sendBroadcast(intent);
 			}
+
+	   	// release wake lock if held
+	   	if (wl != null)
+	   		 if (wl.isHeld() == true)
+	   			 wl.release();
+	   	 
+	   	// if registered for screen activity or battery level -> unregister
+	   	if (registered == true)
+	         unregisterReceiver(mReceiver);	   	 
 
  		SerialPortLogger.debug("AIRS_local::finished destroying service!");
 	}
@@ -987,8 +989,7 @@ public class AIRS_local extends Service
      		Toast.makeText(getApplicationContext(), getString(R.string.Enable_at_least_one_sensor), Toast.LENGTH_LONG).show();
      		return false;
 		 }
-
-		 // create notification
+		 	    
 		 notification = new Notification(R.drawable.notification_icon, getString(R.string.Started_AIRS), System.currentTimeMillis());
 
 		 // create pending intent for starting the activity

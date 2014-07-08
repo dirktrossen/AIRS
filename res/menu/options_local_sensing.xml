@@ -26,7 +26,4 @@
     <item android:id="@+id/local_resume"
           android:icon="@android:drawable/ic_media_play"
           android:title="@string/Resume" />
-    <item android:id="@+id/local_exit"
-          android:icon="@android:drawable/ic_menu_close_clear_cancel"
-          android:title="@string/Exit" />
 </menu>

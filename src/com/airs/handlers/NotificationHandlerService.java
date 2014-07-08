@@ -46,7 +46,7 @@ public class NotificationHandlerService extends AccessibilityService
 	    {
 	    	// get notification shown
 	    	Notification notification = (Notification)event.getParcelableData();
-	    	
+		    	
 	    	if (notification != null)
 	    	{    	
 		    	// now parse the specific packages we support
@@ -68,7 +68,7 @@ public class NotificationHandlerService extends AccessibilityService
 					sendBroadcast(intent);		    	
 		    	}
 		    	// anything from Spotify?
-		    	if (event.getPackageName().toString().compareTo("com.spotify.mobile.android.ui") == 0)
+		    	if (event.getPackageName().toString().compareTo("com.spotify.music") == 0)
 		    	{
 			        // now broadcast the capturing of the accessibility service to the handler	    		
 		    		// anything delivered?
@@ -76,7 +76,7 @@ public class NotificationHandlerService extends AccessibilityService
 		    		{
 		    			// split information in tokens
 		    			String tokens[] = notification.tickerText.toString().split(getString(R.string.accessibility_spotify));
-		    			
+		    			    			
 		    			// try other '-', if previous one did not work
 		    			if (tokens.length != 2)
 		    				tokens = notification.tickerText.toString().split("-");
@@ -110,8 +110,8 @@ public class NotificationHandlerService extends AccessibilityService
 	{	    
 		// register for any input from the accessbility service
 		IntentFilter intentFilter = new IntentFilter("com.airs.accessibility.start");
-      registerReceiver(SystemReceiver, intentFilter);
-        
+        registerReceiver(SystemReceiver, intentFilter);
+               
         // now switch off initially
 	    AccessibilityServiceInfo info = new AccessibilityServiceInfo();
 	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
@@ -159,7 +159,7 @@ public class NotificationHandlerService extends AccessibilityService
             	    info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
             	    info.notificationTimeout = 100;
             	    info.feedbackType = AccessibilityServiceInfo.FEEDBACK_VISUAL;
-            	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.talk", "com.spotify.mobile.android.ui"};
+            	    info.packageNames = new String[] {"com.skype.raider", "com.google.android.talk", "com.spotify.music"};
             	    setServiceInfo(info);
             	    
             	    started = true;

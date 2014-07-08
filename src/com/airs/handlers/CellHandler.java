@@ -62,6 +62,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	private boolean cell_read 	= false;
 	private boolean lac_read 	= false;
 	private boolean ncc_read 	= false;
+	private boolean shutdown	= false;
 	
 	private boolean startedData = false, startedSignal = false, startedLocation = false;
 	
@@ -96,6 +97,10 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	 */
 	public byte[] Acquire(String sensor, String query)
 	{	
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// acquire data and send out
 		try
 		{
@@ -231,6 +236,9 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads
 		data_semaphore.release();
 		signal_semaphore.release();
@@ -241,7 +249,7 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 
 		// unregister listeners
 		if (enableListener == true)
-			tm.listen(this, PhoneStateListener.LISTEN_NONE);
+			tm.listen(this, PhoneStateListener.LISTEN_NONE);		
 	}
 
 	private byte[] cellReading(String sensor)
@@ -442,6 +450,9 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
        public void handleMessage(Message msg) 
        {      
     	   int events = 0;
+    	   
+    	   if (shutdown == true)
+    		   return;
     	   
            switch (msg.what) 
            {

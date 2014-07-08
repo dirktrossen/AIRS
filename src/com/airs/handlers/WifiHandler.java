@@ -101,7 +101,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	 */
 	public Semaphore connected_semaphore 	= new Semaphore(1);
 	private Thread 		 runnable = null;
-	private boolean		 running = false;
+	private boolean		 running = false, shutdown = false;
 
 	/**
 	 * Sleep function 
@@ -135,6 +135,10 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	public byte[] Acquire(String sensor, String query)
 	{	
 		byte[] reading = null;
+
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
 
 		// has WiFi been started?
 		if (initialized == false)
@@ -293,6 +297,9 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		// release semaphores to unlock any Acquire() threads
 		mac_semaphore.release(); 
 		ssid_semaphore.release(); 
@@ -385,7 +392,7 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 			}
 		}
 		
-		SerialPortLogger.debugForced("WifiHandler::scanning thread - terminating");
+		SerialPortLogger.debug("WifiHandler::scanning thread - terminating");
 	}
 
 	// We use a handler here to allow for the Acquire() function, which runs in a different thread, to issue an initialization of the WiFi
@@ -393,7 +400,11 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
     {
        @Override
        public void handleMessage(Message msg) 
-       {        	
+       {      
+    	   // we are shutting down!
+    	   if (shutdown == true)
+    		   return;
+    	   
            switch (msg.what) 
            {
            case INIT_WIFI:

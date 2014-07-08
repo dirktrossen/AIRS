@@ -41,7 +41,7 @@ public class EventTextHandler implements com.airs.handlers.Handler
 	private Context airs;
 	private String Event, old_Event;
 	private Semaphore event_semaphore 	= new Semaphore(1);
-	private boolean registered = false;
+	private boolean registered = false, shutdown = false;
 	
 	private void wait(Semaphore sema)
 	{
@@ -64,6 +64,10 @@ public class EventTextHandler implements com.airs.handlers.Handler
 	public byte[] Acquire(String sensor, String query)
 	{
 		StringBuffer readings;
+
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
 
 		// event button?
 		if(sensor.compareTo("ET") == 0)
@@ -168,6 +172,9 @@ public class EventTextHandler implements com.airs.handlers.Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		if (registered == true)
 		{
 			Event = null;
@@ -179,7 +186,11 @@ public class EventTextHandler implements com.airs.handlers.Handler
     {
        @Override
        public void handleMessage(Message msg) 
-       {        	
+       {       
+    	   // we are shutting down
+    	   if (shutdown == true)
+    		   return;
+    	   
            switch (msg.what) 
            {
            case SHOW_TOAST:

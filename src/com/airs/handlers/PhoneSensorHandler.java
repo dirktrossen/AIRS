@@ -1,6 +1,6 @@
 /*
 Copyright (C) 2008-2011, Dirk Trossen, airs@dirk-trossen.de
-Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
+Copyright (C) 2013-2014, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -17,8 +17,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.Semaphore;
 
 import android.annotation.SuppressLint;
@@ -46,17 +44,16 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	private static final int INIT_LIGHT 		= 1;
 	private static final int INIT_PROXIMITY 	= 2;
 	private static final int INIT_ORIENTATION 	= 3;
-	private static final int CLOSE_ORIENTATION 	= 4;
-	private static final int INIT_PRESSURE 		= 5;
-	private static final int INIT_TEMPERATURE	= 6;
-	private static final int INIT_HUMIDITY 		= 7;
-	private static final int INIT_PEDOMETER		= 8;
+	private static final int INIT_PRESSURE 		= 4;
+	private static final int INIT_TEMPERATURE	= 5;
+	private static final int INIT_HUMIDITY 		= 6;
+	private static final int INIT_PEDOMETER		= 7;
 
 	private Context nors;
 	private boolean sensor_enable = false;
 	private boolean startedOrientation = false, startedLight = false, startedProximity = false, startedPressure = false, startedTemperature = false, startedHumidity = false, startedPedometer;
 	private SensorManager sensorManager;
-	private android.hardware.Sensor Orientation, Proximity, Light, Pressure, Temperature, Humidity, Pedometer;
+	private android.hardware.Sensor MagField, Accelerometer, Proximity, Light, Pressure, Temperature, Humidity, Pedometer;
 	// polltime for sensor
 	private int polltime = 10000, polltime2 = 10000, polltime3 = 10000;
 	// sensor values
@@ -98,102 +95,72 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		boolean read = false;
 		int value = 0;
 		byte [] readings = null;
-		boolean value_waiting;
 		
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// anything there?
 		if (sensor_enable == true)
 		{
 			// see which sensors are requested
 			if (sensor.equals("Az") == true)
 			{	
-				// is there a value waiting?
-				value_waiting = azimuth_semaphore.tryAcquire();
-				
-				// if not, switch on listener
-				if (value_waiting == false)
+				// has Azimuth been started?
+				if (startedOrientation == false)
 				{
-					// has Azimuth been started?
-					if (startedOrientation == false)
-					{
-						// send message to handler thread to start orientation
-				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
-				        mHandler.sendMessage(msg);	
-					}
-	
-					wait(azimuth_semaphore); 
+					// send message to handler thread to start orientation
+			        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+			        mHandler.sendMessage(msg);	
 				}
+
+				wait(azimuth_semaphore); 
 				if (azimuth != azimuth_old)
 				{
 					read = true;
 					value = (int)(azimuth*10);
 					azimuth_old = azimuth;
-				}
-				
-				// now toggle event listener off, if necessary
-				if (value_waiting == false)
-			        mHandler.sendMessage(mHandler.obtainMessage(CLOSE_ORIENTATION));						
+				}					
 			}
 			
 			if (read == false)
 				if (sensor.equals("Pi") == true)
 				{		
-					// is there a value waiting?
-					value_waiting = pitch_semaphore.tryAcquire();
-					
-					// if not, switch on listener
-					if (value_waiting == false)
+					// has Pitch been started?
+					if (startedOrientation == false)
 					{
-						// has Pitch been started?
-						if (startedOrientation == false)
-						{
-							// send message to handler thread to start GPS
-					        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
-					        mHandler.sendMessage(msg);	
-						}
-	
-						wait(pitch_semaphore); 
+						// send message to handler thread to start GPS
+				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+				        mHandler.sendMessage(msg);	
 					}
+
+					wait(pitch_semaphore); 
 					if (pitch != pitch_old)
 					{
 						read = true;
 						value = (int)(pitch*10);
 						pitch_old = pitch;
-					}
-					
-					// now toggle event listener off, if necessary
-					if (value_waiting == false)
-				        mHandler.sendMessage(mHandler.obtainMessage(CLOSE_ORIENTATION));						
+					}					
 				}
 
 			if (read == false)
 				if (sensor.equals("Ro") == true)
 				{		
-					// is there a value waiting?
-					value_waiting = roll_semaphore.tryAcquire();
-					
-					// if not, switch on listener
-					if (value_waiting == false)
+					// has Roll been started?
+					if (startedOrientation == false)
 					{
-						// has Roll been started?
-						if (startedOrientation == false)
-						{
-							// send message to handler thread to start GPS
-					        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
-					        mHandler.sendMessage(msg);	
-						}
-	
-						wait(roll_semaphore); 
+						// send message to handler thread to start GPS
+				        Message msg = mHandler.obtainMessage(INIT_ORIENTATION);
+				        mHandler.sendMessage(msg);	
 					}
+
+					wait(roll_semaphore); 
 					if (roll != roll_old)
 					{
 						read = true;
 						value = (int)(roll*10);
 						roll_old = roll;
-					}
-
-					// now toggle event listener off, if necessary
-					if (value_waiting == false)
-				        mHandler.sendMessage(mHandler.obtainMessage(CLOSE_ORIENTATION));						
+					}					
 				}	
 			
 			if (read == false)
@@ -202,7 +169,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// has Proximity been started?
 					if (startedProximity == false)
 					{
-						proximity_semaphore.drainPermits();
 						// send message to handler thread to start proximity
 				        Message msg = mHandler.obtainMessage(INIT_PROXIMITY);
 				        mHandler.sendMessage(msg);	
@@ -214,11 +180,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(proximity*10);
 						proximity_old = proximity;
-					}
-					
-					// now toggle event listener off
-			        Message msg = mHandler.obtainMessage(INIT_PROXIMITY);
-			        mHandler.sendMessage(msg);						
+					}					
 				}		
 			
 			if (read == false)
@@ -227,7 +189,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// has Light been started?
 					if (startedLight == false)
 					{
-						light_semaphore.drainPermits();
 						// send message to handler thread to start light
 				        Message msg = mHandler.obtainMessage(INIT_LIGHT);
 				        mHandler.sendMessage(msg);	
@@ -239,11 +200,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(light*10);
 						light_old = light;
-					}
-					
-					// now toggle event listener off
-			        Message msg = mHandler.obtainMessage(INIT_LIGHT);
-			        mHandler.sendMessage(msg);						
+					}					
 				}
 			
 			if (read == false)
@@ -252,7 +209,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// has Pressure been started?
 					if (startedPressure == false)
 					{
-						pressure_semaphore.drainPermits();
 						// send message to handler thread to start pressure
 				        Message msg = mHandler.obtainMessage(INIT_PRESSURE);
 				        mHandler.sendMessage(msg);	
@@ -264,11 +220,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						read = true;
 						value = (int)(pressure*10);
 						pressure_old = pressure;
-					}
-					
-					// now toggle event listener off
-			        Message msg = mHandler.obtainMessage(INIT_PRESSURE);
-			        mHandler.sendMessage(msg);						
+					}					
 				}	
 			
 			if (read == false)
@@ -277,7 +229,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// has Pressure been started?
 					if (startedHumidity == false)
 					{
-						humidity_semaphore.drainPermits();
 						// send message to handler thread to start pressure
 				        Message msg = mHandler.obtainMessage(INIT_HUMIDITY);
 				        mHandler.sendMessage(msg);	
@@ -290,10 +241,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						value = (int)(humidity*10);
 						humidity_old = humidity;
 					}
-					
-					// now toggle event listener off
-			        Message msg = mHandler.obtainMessage(INIT_HUMIDITY);
-			        mHandler.sendMessage(msg);						
 				}	
 			
 			if (read == false)
@@ -302,7 +249,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// has Pressure been started?
 					if (startedTemperature == false)
 					{
-						temperature_semaphore.drainPermits();
 						// send message to handler thread to start pressure
 				        Message msg = mHandler.obtainMessage(INIT_TEMPERATURE);
 				        mHandler.sendMessage(msg);	
@@ -315,10 +261,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 						value = (int)(temperature*10);
 						temperature_old = temperature;
 					}
-					
-					// now toggle event listener off
-			        Message msg = mHandler.obtainMessage(INIT_TEMPERATURE);
-			        mHandler.sendMessage(msg);						
 				}	
 			if (read == false)
 				if (sensor.equals("PD") == true)
@@ -326,7 +268,6 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 					// has Pedometer been started?
 					if (startedPedometer == false)
 					{
-						pedometer_semaphore.drainPermits();
 						// send message to handler thread to start pressure
 				        Message msg = mHandler.obtainMessage(INIT_PEDOMETER);
 				        mHandler.sendMessage(msg);	
@@ -441,7 +382,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	{
 		if (sensor_enable == true)
 		{
-		   if (Orientation != null)
+		   if (MagField != null && Accelerometer != null)
 		   {
 			   SensorRepository.insertSensor(new String("Az"), new String("degrees"), nors.getString(R.string.AZ_d), nors.getString(R.string.AZ_e), new String("int"), -1, 0, 3600, true, polltime, this);
 			   SensorRepository.insertSensor(new String("Pi"), new String("degrees"), nors.getString(R.string.PI_d), nors.getString(R.string.PI_e), new String("int"), -1, -1800, 1800, true, polltime, this);
@@ -480,7 +421,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		try
 		{
 			sensorManager = (SensorManager)nors.getSystemService(Context.SENSOR_SERVICE);
-			Orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+			MagField	= sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+			Accelerometer= sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 			Proximity 	= sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 			Light		= sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 			Pressure	= sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -512,7 +454,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
 		shutdown = true;
+
 		// release all semaphores for unlocking the Acquire() threads
 		pedometer_semaphore.release();
 		humidity_semaphore.release();
@@ -524,8 +468,21 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		roll_semaphore.release();
 		pitch_semaphore.release();
 
-		if (startedLight == true || startedProximity == true || startedOrientation == true || startedPressure == true || startedTemperature == true || startedHumidity == true)
-			sensorManager.unregisterListener(sensorlistener);	
+		// unregister each sensor
+		if (startedLight == true)
+			sensorManager.unregisterListener(lightsensorlistener);
+		if (startedProximity == true)
+	 		sensorManager.unregisterListener(proximitysensorlistener);
+		if (startedOrientation == true)
+	 		sensorManager.unregisterListener(orientationsensorlistener);
+		if (startedPressure == true)
+	 		sensorManager.unregisterListener(pressuresensorlistener);
+		if (startedTemperature == true)
+	 		sensorManager.unregisterListener(temperaturesensorlistener);
+		if (startedHumidity == true)
+	 		sensorManager.unregisterListener(humiditysensorlistener);
+		if (startedPedometer == true)
+	 		sensorManager.unregisterListener(pedometersensorlistener);		
 	}
 
 	// The Handler that gets information back from the other threads, initializing phone sensors
@@ -546,14 +503,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
         			// use old register for sensors before KitKat
           			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-        				startedPedometer = sensorManager.registerListener(sensorlistener, Pedometer, SensorManager.SENSOR_DELAY_NORMAL);
+        				startedPedometer = sensorManager.registerListener(pedometersensorlistener, Pedometer, SensorManager.SENSOR_DELAY_NORMAL);
         			else
-        				startedPedometer = sensorManager.registerListener(sensorlistener, Pedometer, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-        	   else
-        	   {
-        		   sensorManager.unregisterListener(sensorlistener, Pedometer);
-        		   startedPedometer = false;
+        				startedPedometer = sensorManager.registerListener(pedometersensorlistener, Pedometer, SensorManager.SENSOR_DELAY_NORMAL, 0);
         	   }
 	           break;  
            case INIT_HUMIDITY:
@@ -561,14 +513,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
         			// use old register for sensors before KitKat
           			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-        				startedHumidity = sensorManager.registerListener(sensorlistener, Humidity, SensorManager.SENSOR_DELAY_NORMAL);
+        				startedHumidity = sensorManager.registerListener(humiditysensorlistener, Humidity, SensorManager.SENSOR_DELAY_NORMAL);
         			else
-        				startedHumidity = sensorManager.registerListener(sensorlistener, Humidity, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-        	   else
-        	   {
-        		   sensorManager.unregisterListener(sensorlistener, Humidity);
-        		   startedHumidity = false;
+        				startedHumidity = sensorManager.registerListener(humiditysensorlistener, Humidity, SensorManager.SENSOR_DELAY_NORMAL, 0);
         	   }
 	           break;  
            case INIT_TEMPERATURE:
@@ -576,14 +523,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
         			// use old register for sensors before KitKat
           			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-        				startedTemperature = sensorManager.registerListener(sensorlistener, Temperature, SensorManager.SENSOR_DELAY_NORMAL);
+        				startedTemperature = sensorManager.registerListener(temperaturesensorlistener, Temperature, SensorManager.SENSOR_DELAY_NORMAL);
         			else
-        				startedTemperature = sensorManager.registerListener(sensorlistener, Temperature, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-        	   else
-        	   {
-        		   sensorManager.unregisterListener(sensorlistener, Temperature);
-        		   startedTemperature = false;
+        				startedTemperature = sensorManager.registerListener(temperaturesensorlistener, Temperature, SensorManager.SENSOR_DELAY_NORMAL, 0);
         	   }
 	           break;  
            case INIT_PRESSURE:
@@ -591,14 +533,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
         			// use old register for sensors before KitKat
           			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-        				startedPressure = sensorManager.registerListener(sensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL);
+        				startedPressure = sensorManager.registerListener(pressuresensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL);
         			else
-        				startedPressure = sensorManager.registerListener(sensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-        	   else
-        	   {
-        		   sensorManager.unregisterListener(sensorlistener, Pressure);
-        		   startedPressure = false;
+        				startedPressure = sensorManager.registerListener(pressuresensorlistener, Pressure, SensorManager.SENSOR_DELAY_NORMAL, 0);
         	   }
 	           break;  
            case INIT_LIGHT:
@@ -606,14 +543,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
         			// use old register for sensors before KitKat
           			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-        				startedLight = sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
+        				startedLight = sensorManager.registerListener(lightsensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL);
         			else
-        				startedLight = sensorManager.registerListener(sensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-        	   else
-        	   {
-        		   sensorManager.unregisterListener(sensorlistener, Light);
-        		   startedLight = false;
+        				startedLight = sensorManager.registerListener(lightsensorlistener, Light, SensorManager.SENSOR_DELAY_NORMAL, 0);
         	   }
 	           break;  
            case INIT_PROXIMITY:
@@ -621,14 +553,9 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
         			// use old register for sensors before KitKat
         			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-        				startedProximity = sensorManager.registerListener(sensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL);
+        				startedProximity = sensorManager.registerListener(proximitysensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL);
         			else
-        				startedProximity = sensorManager.registerListener(sensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-        	   else
-        	   {
-        		   sensorManager.unregisterListener(sensorlistener, Proximity);
-        		   startedProximity = false;        		   
+        				startedProximity = sensorManager.registerListener(proximitysensorlistener, Proximity, SensorManager.SENSOR_DELAY_NORMAL, 0);
         	   }
 	           break;  
            case INIT_ORIENTATION:
@@ -636,16 +563,15 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
         	   {
            			// use old register for sensors before KitKat
            			if (Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT)
-           				startedOrientation = sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL);
+           			{
+           				startedOrientation = sensorManager.registerListener(orientationsensorlistener, Accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+           				startedOrientation = sensorManager.registerListener(orientationsensorlistener, MagField, SensorManager.SENSOR_DELAY_NORMAL);
+           			}
            			else
-           				startedOrientation = sensorManager.registerListener(sensorlistener, Orientation, SensorManager.SENSOR_DELAY_NORMAL, 0);
-        	   }
-	           break;  
-           case CLOSE_ORIENTATION:
-        	   if (startedOrientation == true)
-        	   {
-	    		   sensorManager.unregisterListener(sensorlistener, Orientation);
-	    		   startedOrientation = false;        		   
+           			{
+           				startedOrientation = sensorManager.registerListener(orientationsensorlistener, Accelerometer, SensorManager.SENSOR_DELAY_NORMAL, 0);
+           				startedOrientation = sensorManager.registerListener(orientationsensorlistener, MagField, SensorManager.SENSOR_DELAY_NORMAL, 0);
+           			}
         	   }
 	           break;  
            default:  
@@ -655,74 +581,192 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
     };
 
 	
-    private SensorEventListener sensorlistener = new SensorEventListener() 
+    private SensorEventListener orientationsensorlistener = new SensorEventListener() 
+    {
+    	private float gravity[] = null;
+    	private float geomag[] = null;
+    	
+    	public void	 onSensorChanged(SensorEvent event)    
+    	{
+    	    //gets the value
+    	    switch (event.sensor.getType()) 
+    	    {
+    	    case Sensor.TYPE_ACCELEROMETER:
+    	        gravity = event.values.clone();
+    	        break;
+
+    	    case Sensor.TYPE_MAGNETIC_FIELD:
+    	        geomag = event.values.clone();
+    	        break;
+    	    }
+    	    getOrientation();    	    
+       	}
+
+    	private void getOrientation()
+    	{
+    		float inR[] = new float[9], I[] = new float[9];
+    		float values[] = new float[3];
+    		
+    	    //if gravity n geomag have value, find the rotation matrix
+            if(gravity != null && geomag != null)
+            {
+                //check the rotation matrix found
+                boolean success = SensorManager.getRotationMatrix(inR, I, gravity, geomag);
+
+                if(success)
+                {                   
+                	// get orientation of the device
+                    SensorManager.getOrientation(inR, values);
+                    // read out values
+                    azimuth = (float)Math.toDegrees((double)values[0]);
+                    azimuth = (azimuth+360)%360;
+                    pitch = (float)Math.toDegrees((double)values[1]);
+                    roll = (float)Math.toDegrees((double)values[2]);
+
+                    // now release the semaphores
+                    azimuth_semaphore.release(); 
+	       			roll_semaphore.release(); 
+	       			pitch_semaphore.release(); 
+	       			
+	       			// now unregister
+	       			sensorManager.unregisterListener(orientationsensorlistener);
+	       			// now flush
+	       			sensorManager.flush(orientationsensorlistener);
+	       			 
+	           		startedOrientation = false;        		   
+                }
+            }   
+    	}
+    	
+		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
+		{
+		}
+    };
+    
+    
+    
+    private SensorEventListener proximitysensorlistener = new SensorEventListener() 
     {
     	public void	 onSensorChanged(SensorEvent event)    
     	{
-    		if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
-    		{
-				 azimuth= event.values[0];
-				 pitch=event.values[1];
-				 roll=event.values[2];	
-
-				 // now release the semaphores
-				 azimuth_semaphore.release(); 
-				 roll_semaphore.release(); 
-				 pitch_semaphore.release(); 
-    		}
-
-    		if (event.sensor.getType() == Sensor.TYPE_PROXIMITY)
-    		{
-				 proximity=event.values[0];
-				 // now release the semaphores
-				 proximity_semaphore.release(); 
-    		}
-    		if (event.sensor.getType() == Sensor.TYPE_LIGHT)
-    		{
-				 light=event.values[0];
-				 // now release the semaphores
-				 light_semaphore.release(); 
-    		}
-    		if (event.sensor.getType() == Sensor.TYPE_PRESSURE)
-    		{
-				 pressure=event.values[0];
-				 // now release the semaphores
-				 pressure_semaphore.release(); 
-    		}
-    		if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE)
-    		{
-				 temperature=event.values[0];
-				 // now release the semaphores
-				 temperature_semaphore.release(); 
-    		}
-    		if (event.sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY)
-    		{
-				 humidity=event.values[0];
-				 // now release the semaphores
-				 humidity_semaphore.release(); 
-    		}
-    		if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER)
-    		{
- 				 // read current counter
- 				 long step_counter = (long)(event.values[0]);
- 				 
- 				 // first reading -> then advance only one step
- 				 if (pedometer_old == -1)
- 					 pedometer = pedometer_last + 1;
- 				 else
- 					 pedometer += step_counter - step_counter_old;
-
- 				 // store old step counter reading from sensor
- 				 step_counter_old = step_counter;
- 				  				 
- 				 // now release the semaphores
-				 pedometer_semaphore.release(); 
-    		}
-
+			 proximity=event.values[0];
+			 // now release the semaphores
+			 proximity_semaphore.release(); 
+			 // now unregister
+			 sensorManager.unregisterListener(proximitysensorlistener, Proximity);
+			 // now flush
+			 sensorManager.flush(proximitysensorlistener);
+			 
+			 startedProximity = false;        		   
        	}
 
 		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
 		{
 		}
-    };  
+    };     
+    
+    private SensorEventListener lightsensorlistener = new SensorEventListener() 
+    {
+    	public void	 onSensorChanged(SensorEvent event)    
+    	{
+			 light=event.values[0];
+			 // now release the semaphores
+			 light_semaphore.release(); 
+			 // now unregister
+			 sensorManager.unregisterListener(lightsensorlistener, Light);
+			 // now flush
+			 sensorManager.flush(lightsensorlistener);
+			 
+    		 startedLight = false;        		   
+       	}
+
+		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
+		{
+		}
+    };     
+    
+    private SensorEventListener pressuresensorlistener = new SensorEventListener() 
+    {
+    	public void	 onSensorChanged(SensorEvent event)    
+    	{
+			 pressure=event.values[0];
+			 // now release the semaphores
+			 pressure_semaphore.release(); 
+			 // now unregister
+			 sensorManager.unregisterListener(pressuresensorlistener, Pressure);
+			 // now flush
+			 sensorManager.flush(pressuresensorlistener);
+			 
+   		 startedPressure = false;        		   
+       	}
+
+		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
+		{
+		}
+    };     
+    
+    private SensorEventListener temperaturesensorlistener = new SensorEventListener() 
+    {
+    	public void	 onSensorChanged(SensorEvent event)    
+    	{
+			 temperature=event.values[0];
+			 // now release the semaphores
+			 temperature_semaphore.release(); 
+			 // now unregister
+			 sensorManager.unregisterListener(temperaturesensorlistener, Temperature);
+			 // now flush
+			 sensorManager.flush(temperaturesensorlistener);
+			 
+			 startedTemperature = false;        		   
+       	}
+
+		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
+		{
+		}
+    };     
+    
+    private SensorEventListener humiditysensorlistener = new SensorEventListener() 
+    {
+    	public void	 onSensorChanged(SensorEvent event)    
+    	{
+			 humidity=event.values[0];
+			 // now release the semaphores
+			 humidity_semaphore.release(); 
+			 // now unregister
+			 sensorManager.unregisterListener(humiditysensorlistener, Humidity);
+			 // now flush
+			 sensorManager.flush(humiditysensorlistener);
+			 
+			 startedHumidity = false;        		   
+       	}
+
+		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
+		{
+		}
+    };     
+    
+    private SensorEventListener pedometersensorlistener = new SensorEventListener() 
+    {
+    	public void	 onSensorChanged(SensorEvent event)    
+    	{
+			 // read current counter
+			 long step_counter = (long)(event.values[0]);
+			 
+			 // first reading -> then advance only one step
+			 if (pedometer_old == -1)
+				 pedometer = pedometer_last + 1;
+			 else
+				 pedometer += step_counter - step_counter_old;
+
+			 // store old step counter reading from sensor
+			 step_counter_old = step_counter;
+			  				 
+			 // now release the semaphores
+			 pedometer_semaphore.release(); 
+       	}
+
+		public void onAccuracyChanged(android.hardware.Sensor sensor, int accuracy) 
+		{
+		}
+    };     
 }

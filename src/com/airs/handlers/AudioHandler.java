@@ -50,7 +50,8 @@ public class AudioHandler implements Handler
 	// availability of player
 	private boolean available = false;
 	private boolean havePlayer = false;
-
+	private boolean shutdown = false;
+	
 	// Player for audio capture
 	private AudioRecord p;
 	private short[] output = null;
@@ -77,6 +78,10 @@ public class AudioHandler implements Handler
 	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// acquire data and send out
 		try
 		{
@@ -225,6 +230,9 @@ public class AudioHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		try
 		{
 			if (p != null)
@@ -268,6 +276,13 @@ public class AudioHandler implements Handler
 				{
 					// start recording
 					p.startRecording();
+					
+					// are we shutting down?
+					if (shutdown == true)
+					{
+						AS_reading = null;		
+						return;
+					}
 					
 					// try to read from AudioRecord player until sample_rate buffer is full, i.e., one second of data!
 				    i = 0;
@@ -368,6 +383,13 @@ public class AudioHandler implements Handler
 					// start recording
 					p.startRecording();
 					
+					// are we shutting down?
+					if (shutdown == true)
+					{
+						AF_reading = null;		
+						return;
+					}
+
 					// try to read from AudioRecord player until sample_rate buffer is full!
 				    i = 0;
 				    while (i < sample_rate)

@@ -55,7 +55,7 @@ public class BeaconHandler implements Handler, Runnable
 	private boolean 	 bt_registered2 = false;
 	private boolean 	 bt_first		= false;
 	private Thread 		 runnable = null;
-	private boolean		 running = false;
+	private boolean		 running = false, shutdown = false;
 	private Semaphore BT_semaphore 	= new Semaphore(1);
 	private Semaphore BN_semaphore 	= new Semaphore(1);
 	private Semaphore finished_semaphore 	= new Semaphore(1);
@@ -97,6 +97,10 @@ public class BeaconHandler implements Handler, Runnable
 	{		
 		int i;
 		StringBuffer devices = null;
+
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
 
 		// Discovery thread started?
 		if (runnable == null)
@@ -303,6 +307,9 @@ public class BeaconHandler implements Handler, Runnable
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down !
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads
 		BT_semaphore.release();
 		BN_semaphore.release();
@@ -310,36 +317,31 @@ public class BeaconHandler implements Handler, Runnable
 		// signal thread to close down
 		if (running == true)
 		{
-			runnable.interrupt();
 			running = false;
+			runnable.interrupt();
 		}
-		
+
 		// cancel any discovery
-		try
-		{
-			finished_semaphore.release();
-			if (bt_registered == true)
-			{
-				try
-				{
-					nors.unregisterReceiver(mReceiver);
-				}
-				catch(Exception e)
-				{
-					bt_registered = false;
-				}
-			}
-			// is discovering right now?
-			if (mBtAdapter != null)
-				if (mBtAdapter.isDiscovering() == true)
-					mBtAdapter.cancelDiscovery();
-		}
-		catch(Exception e)
-		{
-			
-		}
+		if (mBtAdapter != null)
+			if (mBtAdapter.isDiscovering() == true)
+				mBtAdapter.cancelDiscovery();
 		
-		// rewe listening to connected devices?
+		// cancel any discovery wait!
+		finished_semaphore.release();
+		
+//		if (bt_registered == true)
+//		{
+//			try
+//			{
+//				nors.unregisterReceiver(mReceiver);
+//			}
+//			catch(Exception e)
+//			{
+//				bt_registered = false;
+//			}
+//		}
+		
+		// are we listening to connected devices?
 		if (bt_registered2 == true)
 			nors.unregisterReceiver(mReceiver2);
 	}
@@ -392,6 +394,12 @@ public class BeaconHandler implements Handler, Runnable
         	{
         	}
         }
+        
+		// cancel any discovery that might be running due to multi-threading
+		if (mBtAdapter != null)
+			if (mBtAdapter.isDiscovering() == true)
+				mBtAdapter.cancelDiscovery();
+
 		bt_registered = false;
     }	 
     

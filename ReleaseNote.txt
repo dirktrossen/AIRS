@@ -1,3 +1,8 @@
+V2.7.9.4:
+- improved sensor handler teardown procedures
+- re-wrote phone sensor handler
+- added explicit EXIT button to measurement window for faster exit of local recording
+
 V2.7.9.3:
 - address bug in template selection
 - improve DB admin menu

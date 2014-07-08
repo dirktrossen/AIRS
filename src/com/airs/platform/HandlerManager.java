@@ -94,8 +94,10 @@ public class HandlerManager
 	{
 	   int i = 0;
 	   
+	   SerialPortLogger.debug("destroying handlers");
 	   for (i=0;i<inst_handlers;i++)
 	   {
+		   SerialPortLogger.debug("destroying handler " + String.valueOf(i));
 		   try
 		   {
 			   handlers[i].destroyHandler();

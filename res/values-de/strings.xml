@@ -110,6 +110,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Sensor_suspended2">Sensor angehalten - Grund: unbekannt</string>
 <string name="Enable_at_least_one_sensor">Du musst mindestens einen Sensor auswählen bevor Du Aufnahmen startest!</string>
 <string name="Started_AIRS">Startet AIRS</string>
+<string name="Stop_AIRS">Stop AIRS</string>
 <string name="AIRS_Remote_Sensing">AIRS Remote Aufnahmen</string>
 <string name="AIRS_Local_Sensing">AIRS Lokale Aufnahmen</string>
 <string name="AIRS_Sensing">AIRS Aufnahmen</string>
@@ -380,6 +381,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Camera_path">Bestimme Kamerapfad</string>
 <string name="Camera_path_on">Wähle ein Bild vom Kameraverzeichnis</string>
 <string name="Camera_path_select">Wähle ein Bild vom Kameraverzeichnis um den korrekten Dateipfad zu bestimmen!</string>
+<string name="Camera_path_select2">Konnte das Verzeichnis nicht bestimmen! Hast Du ein Bild vom Handy ausgewählt?</string>
 
 <string name="Pictures">Bilder</string>
 <string name="Pictures_on">Beobachte Bilderverzeichnis</string>

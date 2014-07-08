@@ -283,6 +283,9 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 	 */
 	public void destroyHandler()
 	{
+		// signal shutdown
+		shutdown = true;
+
 		// release all semaphores for unlocking the Acquire() threads
 		longitude_semaphore.release();
 		latitude_semaphore.release();
@@ -291,9 +294,10 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		speed_semaphore.release();
 		full_semaphore.release();
 		
-		// signal shutdown
-		shutdown = true;
-
+		mHandler.removeMessages(INIT_GPS);
+		mHandler.removeMessages(KILL_GPS);
+		mHandler.removeMessages(RESET_AGPS);
+		
 		// remove location updates if they were started
 		if (startedGPS == true)
 			manager.removeUpdates(mReceiver);
@@ -427,6 +431,10 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 					// wait for WiFi handler to have found something 
 					wait(handler.nearby_semaphore);
 					
+					// terminate if interrupted
+					if (shutdown == true)
+						return;
+					
 					// read current WiFi APs directly from handler
 					SSID = handler.SSID_reading;
 					
@@ -519,7 +527,11 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
     {
        @Override
        public void handleMessage(Message msg) 
-       {        	
+       {       
+    	   // we are shutting down
+    	   if (shutdown == true)
+    		   return;
+    	   
            switch (msg.what) 
            {
            case INIT_GPS:

@@ -41,7 +41,7 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	private Context airs;
 	private String Music, Artist, Album, Track;
 	private String Music_old;
-	private boolean startedMusicPlayer = false;
+	private boolean startedMusicPlayer = false, shutdown = false;
 	private Semaphore music_semaphore 		= new Semaphore(1);
 	private Semaphore artist_semaphore 		= new Semaphore(1);
 	private Semaphore album_semaphore 		= new Semaphore(1);
@@ -67,6 +67,10 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	 */
 	public byte[] Acquire(String sensor, String query)
 	{	
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// has music player intent been started?
 		if (startedMusicPlayer == false)
 		{
@@ -215,6 +219,9 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads
 		music_semaphore.release();
 		album_semaphore.release();
@@ -234,6 +241,10 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
        public void handleMessage(Message msg) 
        {     
     	   IntentFilter intentFilter;
+    	   
+    	   // we are shutting down
+    	   if (shutdown == true)
+    		   return;
     	   
            switch (msg.what) 
            {

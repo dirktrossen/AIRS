@@ -38,7 +38,7 @@ public class MoodButtonHandler implements Handler
 	private Semaphore event_semaphore 	= new Semaphore(1);
 	private Vibrator vibrator;
 	private String mood= null, old_mood = null;
-	private boolean registered = false;
+	private boolean registered = false, shutdown = false;
 	
 	private void wait(Semaphore sema)
 	{
@@ -63,6 +63,10 @@ public class MoodButtonHandler implements Handler
 		long[] pattern = {0l, 450l, 250l, 450l};
 		StringBuffer readings;
 		
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// mood button?
 		if(sensor.compareTo("MO") == 0)
 		{
@@ -169,6 +173,9 @@ public class MoodButtonHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		if (registered == true)
 		{
 			mood = null;

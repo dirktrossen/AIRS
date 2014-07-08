@@ -81,7 +81,8 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int battery_charging = 0;
 	private int oldbattery_charging = -1;
 	private int headset = 0, oldheadset = -1;
-	private String caller = null, callee = null, smsReceived = null, smsSent = new String("");
+	private String caller = null, callee = null, smsReceived = null, smsSent = null;
+	private boolean shutdown = false;
 	private int polltime = 5000;
 	private ActivityManager am;
 	private boolean startedTimeZone = false, startedBattery = false, startedScreen = false, startedHeadset = false;
@@ -122,6 +123,10 @@ public class SystemHandler implements com.airs.handlers.Handler
 		int reading_value = 0;
 		boolean read = false, task_first;
 		StringBuffer buffer = null;
+		
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
 		
 		read = false;
 
@@ -326,8 +331,6 @@ public class SystemHandler implements com.airs.handlers.Handler
 
 			wait(sent_semaphore);  // block until semaphore available
 
-			SerialPortLogger.debugForced("SS sensor: Acquire() acquired semaphore");
-
 			// any difference in value?
 			if (smsSent != null)
 			{
@@ -335,11 +338,10 @@ public class SystemHandler implements com.airs.handlers.Handler
 			    buffer = new StringBuffer("SS");
 			    buffer.append(smsSent.replaceAll("'","''"));
 			    smsSent = null;
-				SerialPortLogger.debugForced("SS sensor: created buffer to return with:" + buffer.toString());
 				return buffer.toString().getBytes();
 			}
 			else
-				SerialPortLogger.debugForced("SS sensor: buffer is NULL!");			
+				SerialPortLogger.debug("SS sensor: buffer is NULL!");			
 		}
 		
 		// incoming call?
@@ -690,7 +692,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		}
 		catch(Exception e)
 		{
-			SerialPortLogger.debugForced("Semaphore!!!!");
+			SerialPortLogger.debug("Semaphore!!!!");
 		}
 	}
 	
@@ -701,6 +703,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+
 		// release all semaphores for unlocking the Acquire() threads
 		battery_semaphore.release();
 		screen_semaphore.release();
@@ -764,6 +769,10 @@ public class SystemHandler implements com.airs.handlers.Handler
        public void handleMessage(Message msg) 
        {     
     	   IntentFilter intentFilter;
+    	   
+    	   // we are shutting down
+    	   if (shutdown == true)
+    		   return;
     	   
            switch (msg.what) 
            {
@@ -1021,13 +1030,13 @@ public class SystemHandler implements com.airs.handlers.Handler
     			                	// release semaphore
 	    							sent_semaphore.release();	
 	    							
-	    							SerialPortLogger.debugForced("SS sensor: valid message -> released semaphore with available permits of " + String.valueOf(sent_semaphore.availablePermits()));
+	    							SerialPortLogger.debug("SS sensor: valid message -> released semaphore with available permits of " + String.valueOf(sent_semaphore.availablePermits()));
 	    								    							
 	    							// discard string for garbage collector
 	    							lastSeen = null;
     			                }
     			                else 
-    			                	SerialPortLogger.debugForced("SS sensor: seen that before -> nothing triggered (" + currentSMS + ")");
+    			                	SerialPortLogger.debug("SS sensor: seen that before -> nothing triggered (" + currentSMS + ")");
 							}
     					}
     				}
@@ -1037,7 +1046,7 @@ public class SystemHandler implements com.airs.handlers.Handler
     		}
     		catch(Exception sggh)
     		{
-    			SerialPortLogger.debugForced("Exception in SS sensor handling: " + sggh.toString());
+    			SerialPortLogger.debug("Exception in SS sensor handling: " + sggh.toString());
     			Log.e("AIRS", "Exception in SS sensor handling: " + sggh.toString());
     		}
 		}

@@ -40,7 +40,7 @@ public class MediaWatcherHandler implements Handler
 	private OwnObserver camera_observer = null, music_observer = null, pictures_observer = null, videos_observer = null;
 	private String watched_file;
 	private String watched_type;
-	private boolean reading_sensor = false;
+	private boolean reading_sensor = false, shutdown = false;
 	private String camera_directory, music_directory, pictures_directory, videos_directory;
 	
 	/**
@@ -73,6 +73,10 @@ public class MediaWatcherHandler implements Handler
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
 		StringBuffer readings = null;
+
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
 
 		// have observers been installed?
 		if (installed == false)
@@ -199,6 +203,9 @@ public class MediaWatcherHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads
 		watcher_semaphore.release();
 

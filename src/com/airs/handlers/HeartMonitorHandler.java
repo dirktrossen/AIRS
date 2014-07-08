@@ -69,7 +69,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 	private Context airs;
 	
 	// indicator for connectivity
-	private boolean connected = false, tried = false, use_monitor = true;
+	private boolean connected = false, tried = false, use_monitor = true, shutdown = false;
 	private Semaphore pulse_semaphore 		= new Semaphore(1);	
 	private Semaphore battery_semaphore 	= new Semaphore(1);	
 	private Semaphore instance_semaphore 	= new Semaphore(1);	
@@ -124,6 +124,9 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 */
 	public void destroyHandler()
 	{
+		// signal shutdown
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads
 		pulse_semaphore.release();
 		pulse_semaphore.release();
@@ -164,6 +167,10 @@ public class HeartMonitorHandler implements Handler, Runnable
 	 */
 	synchronized public byte[] Acquire(String sensor, String query)
 	{	
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+		
 		// if not connected, try now!
 		if (connected == false)
 		{

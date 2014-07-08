@@ -88,13 +88,18 @@ public class SelectCameraPathPreference extends Activity
     	            String filePath = cursor.getString(columnIndex);
     	            cursor.close();
 
-    	            // get path of image now
-    	            File file = new File(filePath);
-    	            String path = file.getParent();
-    	            
-    	      		Editor edit = settings.edit();
-    	      		edit.putString("MediaWatcherHandler::CameraDirectory", path);
-    	      		
+    	            if (filePath != null)
+    	            {
+	    	            // get path of image now
+	    	            File file = new File(filePath);
+	    	            String path = file.getParent();
+	    	            
+	    	      		Editor edit = settings.edit();
+	    	      		edit.putString("MediaWatcherHandler::CameraDirectory", path);
+    	            }
+    	            else
+    	            	Toast.makeText(getApplicationContext(), getString(R.string.Camera_path_select), Toast.LENGTH_LONG).show();
+
     	      		// now finish the activity
     	      		finish();
     	        }

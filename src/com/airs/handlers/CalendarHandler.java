@@ -41,7 +41,7 @@ public class CalendarHandler implements Handler
 	private int polltime = 60000;
 	private long currentRead = 0;
 	private String[] calendars;
-	private boolean no_calendars = false;
+	private boolean no_calendars = false, shutdown = false;
 	
 	// calendar data
 	private StringBuffer reading;
@@ -54,6 +54,10 @@ public class CalendarHandler implements Handler
 	 */
 	public synchronized byte[] Acquire(String sensor, String query)
 	{
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		// acquire data and send out
 		reading = null;
 		reading = new StringBuffer(sensor);
@@ -136,6 +140,8 @@ public class CalendarHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down
+		shutdown = true;
 	}
 	
 	private void getEntry()

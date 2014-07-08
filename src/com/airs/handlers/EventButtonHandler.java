@@ -38,7 +38,7 @@ public class EventButtonHandler implements Handler
 	private String Event, old_Event;
 	private Semaphore event_semaphore 	= new Semaphore(1);
 	private Vibrator vibrator;
-	private boolean registered = false;
+	private boolean registered = false, shutdown = false;
 
 	private void wait(Semaphore sema)
 	{
@@ -62,6 +62,10 @@ public class EventButtonHandler implements Handler
 	{
 		long[] pattern = {0l, 450l, 250l, 450l, 250l, 450l};
 		StringBuffer readings;
+
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
 
 		// event button?
 		if(sensor.compareTo("EB") == 0)
@@ -168,6 +172,9 @@ public class EventButtonHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		if (registered == true)
 		{
 			Event = null;

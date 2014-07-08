@@ -111,6 +111,7 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="Sensor_suspended2">Sensor suspended - Reason: unknown</string>
 <string name="Enable_at_least_one_sensor">You need to enable at least one sensor before starting the measurements!</string>
 <string name="Started_AIRS">Started AIRS</string>
+<string name="Stop_AIRS">Stop AIRS</string>
 <string name="AIRS_Remote_Sensing">AIRS Remote Sensing</string>
 <string name="AIRS_Local_Sensing">AIRS Local Sensing</string>
 <string name="AIRS_Sensing">AIRS Sensing</string>
@@ -381,6 +382,7 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="Camera_path">Provide camera path</string>
 <string name="Camera_path_on">Select picture from camera directory</string>
 <string name="Camera_path_select">Select a picture from the camera directory to determine the correct camera path!</string>
+<string name="Camera_path_select2">Could not retrieve the path! Did you select a picture that resides on the device?</string>
 
 <string name="Pictures">Pictures</string>
 <string name="Pictures_on">Watch pictures folder</string>

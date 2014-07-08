@@ -35,7 +35,7 @@ public class BloodPressureButtonHandler implements Handler
 {
 	private Context airs;
 	private Semaphore event_semaphore 	= new Semaphore(1);
-	private boolean registered = false;
+	private boolean registered = false, shutdown = false;
 	private StringBuffer BP_reading;
 	private String  blood_pressure;
 	
@@ -59,6 +59,10 @@ public class BloodPressureButtonHandler implements Handler
 	 */
 	public byte[] Acquire(String sensor, String query)
 	{
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		BP_reading = new StringBuffer("BT");	
 
 		// not yet registered -> then do so!!
@@ -138,6 +142,9 @@ public class BloodPressureButtonHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down
+		shutdown = true;
+		
 		if (registered == true)
 		{
 			airs.unregisterReceiver(SystemReceiver);

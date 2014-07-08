@@ -19,14 +19,23 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/valuesExit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:drawableLeft="@android:drawable/ic_delete"
+        android:padding="5dp"
+        android:text="@string/Stop_AIRS" />
+
    <ListView android:id="@+id/valueList"
         android:layout_width="fill_parent"
-        android:layout_height="0dip"
+        android:layout_height="wrap_content"
         android:stackFromBottom="false"
 	    android:textSize="18sp"
 	    android:padding="10dp"
 	    android:clickable="true"
-        android:layout_weight="1"
     />
 </LinearLayout>
 

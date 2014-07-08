@@ -342,6 +342,11 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	
 				// only do location check etc if there's any connectivity to retrieve the weather!
 				wait(connectivity_semaphore); 
+
+				// if killed during sleeping then return now!
+				if (running == false)
+					return;
+
 				// get current weather conditions
 				try
 				{
@@ -363,7 +368,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 					if (movedAway == true)
 					{
 						// request update for that long,lat pair!
-	//			            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
+	//		            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
 	//		            URL url = new URL("http://free.worldweatheronline.com/feed/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=0f86de2f9c161417123108");
 			            URL url = new URL("http://api.worldweatheronline.com/free/v1/weather.ashx?q="+Double.toString(Latitude) + "," + Double.toString(Longitude) + "&format=xml&num_of_days=1&key=st4dghppmrfbtcrhwggn76u8");
 			            // 51914540,900690");
@@ -453,6 +458,9 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	 */
 	public void destroyHandler()
 	{
+		// signal shutdown
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads	
 		temp_c_semaphore.release();
 		temp_f_semaphore.release();
@@ -460,10 +468,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		cond_semaphore.release();
 		wind_semaphore.release();
 		info_semaphore.release();
-		
-		// signal shutdown
-		shutdown = true;
-		
+
+		// release connectivity semaphore
+		connectivity_semaphore.release();
+
 		// signal thread to close down
 		running = false;
 		

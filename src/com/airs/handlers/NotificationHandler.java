@@ -35,6 +35,7 @@ public class NotificationHandler implements Handler
 	private Context airs;
 	private Semaphore notify_semaphore 	= new Semaphore(1);
 	private String notify_text;
+	private boolean shutdown = false;
 	
 	private void wait(Semaphore sema)
 	{
@@ -57,6 +58,10 @@ public class NotificationHandler implements Handler
 	{
 		StringBuffer readings = new StringBuffer("NO");
 		
+		// are we shutting down?
+		if (shutdown == true)
+			return null;
+
 		if(sensor.compareTo("NO") == 0)
 		{
 			wait(notify_semaphore);
@@ -128,6 +133,9 @@ public class NotificationHandler implements Handler
 	 */
 	public void destroyHandler()
 	{
+		// we are shutting down!
+		shutdown = true;
+		
 		// release all semaphores for unlocking the Acquire() threads
 		notify_semaphore.release();
 
