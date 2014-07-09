@@ -631,7 +631,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 	       			// now unregister
 	       			sensorManager.unregisterListener(orientationsensorlistener);
 	       			// now flush
-	       			sensorManager.flush(orientationsensorlistener);
+        			if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
+        				sensorManager.flush(orientationsensorlistener);
 	       			 
 	           		startedOrientation = false;        		   
                 }
@@ -655,7 +656,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			 // now unregister
 			 sensorManager.unregisterListener(proximitysensorlistener, Proximity);
 			 // now flush
-			 sensorManager.flush(proximitysensorlistener);
+			 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
+				 sensorManager.flush(proximitysensorlistener);
 			 
 			 startedProximity = false;        		   
        	}
@@ -675,7 +677,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			 // now unregister
 			 sensorManager.unregisterListener(lightsensorlistener, Light);
 			 // now flush
-			 sensorManager.flush(lightsensorlistener);
+			 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
+				 sensorManager.flush(lightsensorlistener);
 			 
     		 startedLight = false;        		   
        	}
@@ -695,7 +698,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			 // now unregister
 			 sensorManager.unregisterListener(pressuresensorlistener, Pressure);
 			 // now flush
-			 sensorManager.flush(pressuresensorlistener);
+			 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
+				 sensorManager.flush(pressuresensorlistener);
 			 
    		 startedPressure = false;        		   
        	}
@@ -715,7 +719,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			 // now unregister
 			 sensorManager.unregisterListener(temperaturesensorlistener, Temperature);
 			 // now flush
-			 sensorManager.flush(temperaturesensorlistener);
+			 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
+				 sensorManager.flush(temperaturesensorlistener);
 			 
 			 startedTemperature = false;        		   
        	}
@@ -735,7 +740,8 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 			 // now unregister
 			 sensorManager.unregisterListener(humiditysensorlistener, Humidity);
 			 // now flush
-			 sensorManager.flush(humiditysensorlistener);
+			 if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT)
+				 sensorManager.flush(humiditysensorlistener);
 			 
 			 startedHumidity = false;        		   
        	}

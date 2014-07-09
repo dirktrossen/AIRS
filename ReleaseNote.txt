@@ -1,3 +1,6 @@
+V2.7.9.5:
+- addressed bug in phone sensor handler
+
 V2.7.9.4:
 - improved sensor handler teardown procedures
 - re-wrote phone sensor handler

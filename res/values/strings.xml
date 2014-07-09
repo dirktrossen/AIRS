@@ -583,12 +583,18 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We addressed a bug in the template selection and improved the DB admin menu.
+We improved the sensor handler teardown procedures and re-wrote the phone sensor handler. We also added an explicit EXIT button to the measurement window for faster exit of local recording.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.9.5:\n
+- addressed bug in phone sensor handler\n\n
+V2.7.9.4:\n
+- improved sensor handler teardown procedures\n
+- re-wrote phone sensor handler\n
+- added explicit EXIT button to measurement window for faster exit of local recording\n\n
 V2.7.9.3:\n
 - address bug in template selection\n
 - improve DB admin menu\n\n
