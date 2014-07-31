@@ -382,6 +382,8 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Camera_path_on">Wähle ein Bild vom Kameraverzeichnis</string>
 <string name="Camera_path_select">Wähle ein Bild vom Kameraverzeichnis um den korrekten Dateipfad zu bestimmen!</string>
 <string name="Camera_path_select2">Konnte das Verzeichnis nicht bestimmen! Hast Du ein Bild vom Handy ausgewählt?</string>
+<string name="Camera_added_image">Bilder in die AIRS Datenbank eingefügt!</string>
+<string name="Camera_added_image2">Kann keine Bilder von ausserhalb des Kameraverzeichnisses hinzufügen!</string>
 
 <string name="Pictures">Bilder</string>
 <string name="Pictures_on">Beobachte Bilderverzeichnis</string>

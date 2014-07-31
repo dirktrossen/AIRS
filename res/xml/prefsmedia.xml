@@ -53,7 +53,7 @@
     	android:title="@string/Pictures" 
     	android:key="MediaWatcherHandler::Pictures" 
     	android:selectable="true" 
-    	android:summaryOn="@string/Pictures_off" 
+    	android:summaryOn="@string/Pictures_on" 
     	android:summaryOff="@string/Pictures_off"/>
     <EditTextPreference
         android:summary="@string/Pictures_path_on"

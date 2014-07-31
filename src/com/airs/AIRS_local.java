@@ -914,9 +914,17 @@ public class AIRS_local extends Service
 	 public void selectall()
 	 {
 		 int i;
+		 SensorEntry entry;
 		 
+		 // clear checkboxes in sensor list and adapter
     	 for (i=0;i<numberSensors;i++)
+    	 {
     		 sensors.setItemChecked(i, true);
+    		 entry = mSensorsArrayList.get(i);
+    		 entry.checked = true;
+    		 mSensorsArrayList.set(i, entry);
+    	 }
+    	 mSensorsArrayAdapter.notifyDataSetChanged();
      }
 	
 	 /**
@@ -925,10 +933,17 @@ public class AIRS_local extends Service
 	 public void unselectall()
 	 {    	 
 		 int i;
+		 SensorEntry entry;
 
-		 // clear checkboxes in sensor list
+		 // clear checkboxes in sensor list and adapter
     	 for (i=0;i<numberSensors;i++)
+    	 {
     		 sensors.setItemChecked(i, false);
+    		 entry = mSensorsArrayList.get(i);
+    		 entry.checked = false;
+    		 mSensorsArrayList.set(i, entry);
+    	 }
+    	 mSensorsArrayAdapter.notifyDataSetChanged();
      }
 
 	 /**

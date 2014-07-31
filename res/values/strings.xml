@@ -383,6 +383,8 @@ For remote recording, download the AIRS application server (see on our website) 
 <string name="Camera_path_on">Select picture from camera directory</string>
 <string name="Camera_path_select">Select a picture from the camera directory to determine the correct camera path!</string>
 <string name="Camera_path_select2">Could not retrieve the path! Did you select a picture that resides on the device?</string>
+<string name="Camera_added_image">Added image(s) to AIRS database!</string>
+<string name="Camera_added_image2">Cannot add image(s) from outside camera directory to AIRS database!</string>
 
 <string name="Pictures">Pictures</string>
 <string name="Pictures_on">Watch pictures folder</string>
@@ -583,12 +585,16 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We improved the sensor handler teardown procedures and re-wrote the phone sensor handler. We also added an explicit EXIT button to the measurement window for faster exit of local recording.
+You can now share camera pictures to AIRS directly from, e.g., the gallery. The pictures are then added as MW sensor readings in your database!\n
+We also repaired the select/unselect sensor function when picking the sensors to record!
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.9.6:\n
+- select/unselect all sensors working again\n
+- add images from camera directory into recording database by sharing them to AIRS (e.g., from gallery)!\n\n
 V2.7.9.5:\n
 - addressed bug in phone sensor handler\n\n
 V2.7.9.4:\n
