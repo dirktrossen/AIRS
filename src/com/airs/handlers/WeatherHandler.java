@@ -365,7 +365,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 					}
 					
 					// if we moved, try to get weather
-					if (movedAway == true)
+					if (movedAway == true && running == true)
 					{
 						// request update for that long,lat pair!
 	//		            URL url = new URL("http://www.google.com/ig/api?weather=,,," + Integer.toString((int)(Latitude * 1000000)) + "," + Integer.toString((int)(Longitude * 1000000)));
@@ -469,12 +469,15 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		wind_semaphore.release();
 		info_semaphore.release();
 
-		// release connectivity semaphore
-		connectivity_semaphore.release();
-
 		// signal thread to close down
 		running = false;
 		
+		// release connectivity semaphore
+		connectivity_semaphore.release();
+		
+		// release location semaphore
+		location_semaphore.release();
+
 		// kill thread
 		if (runnable != null)
 			runnable.interrupt();
@@ -516,7 +519,7 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	           break;  
            case KILL_GPS:
     		   // request location updates
-        	   if (manager!=null)
+        	   if (manager!=null && startedLocation == true)
         	   {
         		   manager.removeUpdates(mReceiver);  
         		   startedLocation = false;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2013, TecVis LP, support@tecvis.co.uk
+  Copyright (C) 2014, TecVis LP, support@tecvis.co.uk
 
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published by
@@ -15,9 +15,13 @@
   along with this library; if not, write to the Free Software Foundation, Inc.,
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
-<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeNotificationStateChanged"
-    android:accessibilityFeedbackType="feedbackAllMask"
-    android:packageNames="com.airs.handlers"
-    android:description="@string/accessibility_description"
-    android:notificationTimeout="100" />
+<appwidget-provider
+  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="144dp"
+    android:minHeight="72dp"
+    android:updatePeriodMillis="86400000"
+    android:initialLayout="@layout/widgetlayout_combined"
+    android:widgetCategory="keyguard|home_screen"
+    android:previewImage="@drawable/widget_combined"
+    android:resizeMode="horizontal|vertical">
+</appwidget-provider>

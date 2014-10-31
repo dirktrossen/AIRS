@@ -543,6 +543,7 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <!-- activity labels -->
 <string name="AIRS_Timeline">AIRS Timeline</string>
+<string name="AIRS_Mood_Event_Selector">AIRS Joint Mood/Event Selector</string>
 <string name="AIRS_Mood_Selector">AIRS Mood Selector</string>
 <string name="AIRS_Event_Selector">AIRS Event Selector</string>
 <string name="AIRS_Heartrate">AIRS Heartrate</string>
@@ -585,13 +586,13 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-You can now share camera pictures to AIRS directly from, e.g., the gallery. The pictures are then added as MW sensor readings in your database!\n
-We also repaired the select/unselect sensor function when picking the sensors to record!
-</string>
+We removed a timezone bug, discovered after switching back to winter time!</string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------
 \n<b>ReleaseNotes:</b>
 \n\n
+V2.7.9.7:\n
+- removed timezone bug\n\n
 V2.7.9.6:\n
 - select/unselect all sensors working again\n
 - add images from camera directory into recording database by sharing them to AIRS (e.g., from gallery)!\n\n

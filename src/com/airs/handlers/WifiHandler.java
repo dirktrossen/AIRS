@@ -319,9 +319,14 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 			nors.unregisterReceiver(WifiReceiver);
 		
 		// release wifi lock
-		if (wifi_lock != null)
-          if (wifi_lock.isHeld() == true) 
-              wifi_lock.release();
+		try
+		{
+			if (wifi_lock != null)
+				wifi_lock.release();
+		}
+		catch(Exception e)
+		{
+		}
 		
 		// now release the semaphore for the adaptive GPS thread
 		nearby_semaphore.release(); 
@@ -366,11 +371,6 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 					}
 					else
 					{
-						// if wifi is not locked, do so to prevent it from sleeping!
-						if (sleepWIFI == false)
-							if(wifi_lock.isHeld() == false)
-					            wifi_lock.acquire();
-					        
 						// start next scan here!
 						if (wm.startScan() == true)
 							Wifi_scanning = true;
@@ -430,8 +430,12 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
 				nors.registerReceiver(WifiReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
 
+				// if wifi is not locked, do so to prevent it from sleeping!
+				if (sleepWIFI == false)
+		            wifi_lock.acquire();
+
 				// signal to Acquire()
-				initialized = true;
+				initialized = true;				
 			}
    			break;  
            default:  

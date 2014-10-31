@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2011, Dirk Trossen, airs@dirk-trossen.de
-
+  Copyright (C) 2014, TecVis LP, support@tecvis.co.uk
+  
   This program is free software; you can redistribute it and/or modify it
   under the terms of the GNU Lesser General Public License as published by
   the Free Software Foundation as version 2.1 of the License.
@@ -19,9 +19,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical|center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
 
 		<ImageButton
+		    android:id="@+id/event_button_local"
+		    android:layout_width="58dp"
+		    android:layout_height="58dp"
+		    android:layout_gravity="center"
+		    android:layout_margin="7dp"
+		    android:background="@drawable/widget_bg"
+		    android:clickable="true"
+		    android:contentDescription="@string/AIRS_Event_Selector"
+		    android:hapticFeedbackEnabled="false"
+		    android:src="@drawable/widget_local" />
+
+	     <ImageButton
 		    android:id="@+id/mood_button_local"
 		    android:layout_width="58dp"
 		    android:layout_height="58dp"
@@ -32,5 +44,4 @@
 		    android:contentDescription="@string/AIRS_Mood_Selector"
 		    android:hapticFeedbackEnabled="false"
 		    android:src="@drawable/widget_mood" />
-
 </LinearLayout>

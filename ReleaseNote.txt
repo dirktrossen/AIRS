@@ -1,3 +1,9 @@
+V2.7.9.7:
+- removed timezone bug
+- introduced 2x1 combined event and mood widget
+- adjusted layout of widgets to centered 
+- improved weather handler shutdown 
+
 V2.7.9.6:
 - select/unselect all sensors working again
 - add images from camera directory into recording database by sharing them to AIRS (e.g., from gallery)!

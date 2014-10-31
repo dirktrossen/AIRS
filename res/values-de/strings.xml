@@ -543,6 +543,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 
 <!-- activity labels -->
 <string name="AIRS_Timeline">AIRS Zeitverlauf</string>
+<string name="AIRS_Mood_Event_Selector">AIRS Kombinierte Stimmungs/Ereignisauswahl</string>
 <string name="AIRS_Mood_Selector">AIRS Stimmungsauswahl</string>
 <string name="AIRS_Event_Selector">AIRS Ereignisauswahl</string>
 <string name="AIRS_Heartrate">AIRS Puls</string>

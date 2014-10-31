@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlers;
 
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.Semaphore;
@@ -70,7 +71,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private int oldBattery = -1;
 	private int Battery = 0;
 	private int oldOffset = -1;
-	private int Offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
+	private int Offset = 0;
 	private int voltage = 0;
 	private int old_voltage = -1;
 	private int temperature = 0;
@@ -87,7 +88,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 	private ActivityManager am;
 	private boolean startedTimeZone = false, startedBattery = false, startedScreen = false, startedHeadset = false;
 	private boolean startedPhoneState = false, startedOutgoingCall = false, startedSMSReceived = false, startedSMSSent = false;
-	private Semaphore battery_semaphore 	= new Semaphore(1);
+	private Semaphore battery_semaphore1 	= new Semaphore(1);
+	private Semaphore battery_semaphore2 	= new Semaphore(1);
+	private Semaphore battery_semaphore3 	= new Semaphore(1);
 	private Semaphore screen_semaphore 		= new Semaphore(1);
 	private Semaphore charger_semaphore 	= new Semaphore(1);
 	private Semaphore headset_semaphore 	= new Semaphore(1);
@@ -173,7 +176,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		        mHandler.sendMessage(msg);	
 			}
 
-			wait(battery_semaphore); // block until semaphore available
+			wait(battery_semaphore1); // block until semaphore available
 
 			// any difference in value?
 			if (Battery != oldBattery)
@@ -195,7 +198,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		        mHandler.sendMessage(msg);	
 			}
 
-			wait(battery_semaphore); // block until semaphore available
+			wait(battery_semaphore2); // block until semaphore available
 
 			// any difference in value?
 			if (voltage != old_voltage)
@@ -217,7 +220,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		        mHandler.sendMessage(msg);	
 			}
 
-			wait(battery_semaphore); // block until semaphore available
+			wait(battery_semaphore3); // block until semaphore available
 
 			// any difference in value?
 			if (temperature != old_temperature)
@@ -678,7 +681,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 		try
 		{
 			// charge the semaphores to block at next call!
-			battery_semaphore.acquire(); 
+			battery_semaphore1.acquire(); 
+			battery_semaphore2.acquire(); 
+			battery_semaphore3.acquire(); 
 			screen_semaphore.acquire(); 
 			charger_semaphore.acquire(); 
 			headset_semaphore.acquire(); 
@@ -689,6 +694,16 @@ public class SystemHandler implements com.airs.handlers.Handler
 			
 	        // get ActivityManager for list of tasks
 		    am  = (ActivityManager) airs.getSystemService(Context.ACTIVITY_SERVICE); 			// if something returned, enter sensor value
+		    
+		    // get timezone offset
+        	Offset = TimeZone.getDefault().getRawOffset();
+        	// create date of today
+        	Date time = new Date();
+        	time.setTime(System.currentTimeMillis());
+        	// if in DST, add offset to it
+        	if (TimeZone.getDefault().inDaylightTime(time) == true)
+        		Offset += TimeZone.getDefault().getDSTSavings();
+        		Log.e("AIRS", "In DST??");
 		}
 		catch(Exception e)
 		{
@@ -707,7 +722,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 		shutdown = true;
 
 		// release all semaphores for unlocking the Acquire() threads
-		battery_semaphore.release();
+		battery_semaphore1.release();
+		battery_semaphore2.release();
+		battery_semaphore3.release();
 		screen_semaphore.release();
 		charger_semaphore.release();
 		headset_semaphore.release();
@@ -840,7 +857,14 @@ public class SystemHandler implements com.airs.handlers.Handler
             // when timezone changed
             if (Intent.ACTION_TIMEZONE_CHANGED.compareTo(action) == 0)
             {
-            	Offset = TimeZone.getDefault().getRawOffset() + TimeZone.getDefault().getDSTSavings();
+            	Offset = TimeZone.getDefault().getRawOffset();
+            	// create date of today
+            	Date time = new Date();
+            	time.setTime(System.currentTimeMillis());
+            	// if in DST, add offset to it
+            	if (TimeZone.getDefault().inDaylightTime(time) == true)
+            		Offset += TimeZone.getDefault().getDSTSavings();
+            	
 				timezone_semaphore.release();		// release semaphore
             }
             
@@ -858,7 +882,9 @@ public class SystemHandler implements com.airs.handlers.Handler
 	            	battery_charging = 0;
 	            else
 	            	battery_charging = 1;
-				battery_semaphore.release();		// release semaphore
+				battery_semaphore1.release();		// release semaphore
+				battery_semaphore2.release();		// release semaphore
+				battery_semaphore3.release();		// release semaphore
 				charger_semaphore.release();		// release semaphore
 				return;
             }

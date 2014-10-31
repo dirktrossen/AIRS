@@ -785,8 +785,7 @@ public class AIRS_local extends Service
 
 	   	// release wake lock if held
 	   	if (wl != null)
-	   		 if (wl.isHeld() == true)
-	   			 wl.release();
+   			 wl.release();
 	   	 
 	   	// if registered for screen activity or battery level -> unregister
 	   	if (registered == true)

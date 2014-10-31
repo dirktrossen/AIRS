@@ -1,6 +1,5 @@
 package com.airs.database;
 
-import com.airs.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 

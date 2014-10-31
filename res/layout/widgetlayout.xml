@@ -16,9 +16,11 @@
   59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical" >
+
 		<ImageButton
 		    android:id="@+id/event_button_local"
 		    android:layout_width="58dp"
@@ -27,7 +29,7 @@
 		    android:layout_margin="7dp"
 		    android:background="@drawable/widget_bg"
 		    android:clickable="true"
-		    android:contentDescription="Annotation button"
+		    android:contentDescription="@string/AIRS_Event_Selector"
 		    android:hapticFeedbackEnabled="false"
 		    android:src="@drawable/widget_local" />
 

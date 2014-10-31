@@ -1,5 +1,6 @@
 /*
 Copyright (C) 2012, Dirk Trossen, airs@dirk-trossen.de
+Copyright (C) 2014, TecVis LP, support@tecvis.co.uk
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU Lesser General Public License as published by
@@ -151,7 +152,6 @@ public class AIRS_sync extends Activity implements OnClickListener
         PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
 		 
         wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AIRS Sync Lock"); 
-        wl.acquire();        
     }
 
     /** Called when the activity is resumed. 
@@ -168,6 +168,10 @@ public class AIRS_sync extends Activity implements OnClickListener
 		Time timeStamp = new Time();
 		timeStamp.set(synctime);
         syncText.setText(getString(R.string.Last_sync) + " " + timeStamp.format("%H:%M:%S on %d.%m.%Y"));
+
+        // acquire wakelock again
+        if (wl != null)
+        	wl.acquire();        
     }
 
     /** Called when the activity is paused. 
@@ -176,6 +180,10 @@ public class AIRS_sync extends Activity implements OnClickListener
     public synchronized void onPause() 
     {
         super.onPause();
+
+        // release wake lock if held
+ 	    if (wl != null)
+     		 wl.release();
     }
 
     /** Called when the activity is stopped. 
@@ -191,12 +199,7 @@ public class AIRS_sync extends Activity implements OnClickListener
     @Override
     public void onDestroy() 
     {
-       super.onDestroy();     
-      
-       // release wake lock if held
-	   if (wl != null)
-	   	 if (wl.isHeld() == true)
-	   		 wl.release();
+       super.onDestroy();           
     }
      
     /** Called when the configuration of the activity has changed.
