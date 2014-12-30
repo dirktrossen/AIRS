@@ -180,6 +180,9 @@ public class EventTextHandler implements com.airs.handlers.Handler
 			Event = null;
 			airs.unregisterReceiver(SystemReceiver);
 		}
+		
+		// remove all messages
+		mHandler.removeMessages(SHOW_TOAST);
 	}
 	
 	private final Handler mHandler = new Handler() 

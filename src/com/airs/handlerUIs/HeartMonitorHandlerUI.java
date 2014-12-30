@@ -93,7 +93,7 @@ public class HeartMonitorHandlerUI implements HandlerUI
 	public void configurePreference(PreferenceActivity prefs)
 	{
 		int foundAlive = 0;
-		
+
 		// try to find the preference we want to configure
 		ListPreference list = (ListPreference)prefs.findPreference("HeartMonitorHandler::BTStore");
 		if (list==null)

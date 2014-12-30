@@ -330,6 +330,9 @@ public class WifiHandler extends PhoneStateListener implements com.airs.handlers
 		
 		// now release the semaphore for the adaptive GPS thread
 		nearby_semaphore.release(); 
+		
+		// remove all messages
+		mHandler.removeMessages(INIT_WIFI);
 	}
 	
 	/**

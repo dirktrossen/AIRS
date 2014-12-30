@@ -230,6 +230,9 @@ public class MusicPlayerHandler implements com.airs.handlers.Handler
 
 		if (startedMusicPlayer == true)
 			airs.unregisterReceiver(SystemReceiver);
+		
+		// remove all messages
+		mHandler.removeMessages(INIT_MUSIC);
 	}
 		
 	// The Handler that gets information back from the other threads, initializing phone sensors

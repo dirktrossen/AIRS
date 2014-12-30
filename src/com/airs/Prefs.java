@@ -36,6 +36,7 @@ public class Prefs extends PreferenceActivity
 	/** Called when the activity is first created. 
      * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
      */
+	@SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) 
     {

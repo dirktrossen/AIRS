@@ -61,7 +61,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	 private ListView values;
 	 private Activity act;
 	 private Button exit;
-
+	 
 	 /** Called when the activity is first created. 
 	     * @param savedInstanceState a Bundle of the saved state, according to Android lifecycle model
 	     */
@@ -89,7 +89,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 
 			// Find and set up the ListView for values
 			exit 	= (Button)findViewById(R.id.valuesExit);        
-	        // set listener for sensor list
+	        // set listener for EXIT button
 			exit.setOnClickListener(this);
 
 	        // bind to service
@@ -128,6 +128,12 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 	    public void onDestroy() 
 	    {	    		    	
 	        super.onDestroy();
+	    	// stop service from updating value adapter
+	    	if (AIRS_locally!=null)
+	    	{
+	    		AIRS_locally.show_values = false;	    		
+	    		unbindService(mConnection);
+	    	}
 	    }
 
 	    /**
@@ -164,12 +170,6 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 				// is it the BACK key?
 				if (event.getKeyCode()==KeyEvent.KEYCODE_BACK)
 				{
-			    	// stop service from updating value adapter
-			    	if (AIRS_locally!=null)
-			    	{
-			    		AIRS_locally.show_values = false;	    		
-			    		unbindService(mConnection);
-			    	}
 	                finish();
 	                return true;
 				}
@@ -209,6 +209,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
     		    			   // first unbind before stopping service!
     		    			   unbindService(mConnection);
     		    			   stopService(new Intent(act, AIRS_local.class));
+    		    			   AIRS_locally = null;
     		    		   }
     		    		   	    		    		   
     		        	   finish();
@@ -345,7 +346,7 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 		    	AIRS_locally.show_info((int)arg3);		    
 	    }
 	    
-	    private ServiceConnection mConnection = new ServiceConnection() 
+	    private final ServiceConnection mConnection = new ServiceConnection() 
 	    {
 	  	    public void onServiceConnected(ComponentName className, IBinder service) 
 	  	    {
@@ -372,10 +373,10 @@ public class AIRS_measurements extends Activity implements OnItemClickListener, 
 		        	mTitle2.setText("Local Sensing: " + AIRS_locally.template);
 		        else
 		        	mTitle2.setText("Local Sensing");
-
 	  	    }
 	
-	  	    public void onServiceDisconnected(ComponentName className) {
+	  	    public void onServiceDisconnected(ComponentName className) 
+	  	    {
 	  	        // This is called when the connection with the service has been
 	  	        // unexpectedly disconnected -- that is, its process crashed.
 	  	        // Because it is running in our same process, we should never

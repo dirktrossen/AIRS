@@ -25,7 +25,6 @@ import java.util.Locale;
 
 import com.airs.R;
 import com.airs.database.AIRS_database;
-import com.airs.platform.HandlerManager;
 
 import android.app.Activity;
 import android.content.Intent;

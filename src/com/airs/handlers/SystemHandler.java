@@ -422,16 +422,16 @@ public class SystemHandler implements com.airs.handlers.Handler
 		{
 			try
 			{
-				List<ActivityManager.RunningTaskInfo> tasks;
-				ActivityManager.RunningTaskInfo tinfo;
+				List<ActivityManager.RunningAppProcessInfo> processes;
+				ActivityManager.RunningAppProcessInfo pinfo;
 				String task;
 				PackageManager pm = airs.getPackageManager();
 				
 				// get current tasks running
-				tasks = am.getRunningTasks(100);
+				processes = am.getRunningAppProcesses();
 
 				// none???
-				if (tasks == null)
+				if (processes == null)
 					return null;
 				
 				// now create list
@@ -441,11 +441,11 @@ public class SystemHandler implements com.airs.handlers.Handler
 				task_first=true;
 				int i;
 				
-				for (i=0; i<tasks.size(); i++)
+				for (i=0; i<processes.size(); i++)
 				{
-					tinfo = tasks.get(i);
-					// is there at least one task running?
-					if (tinfo.numRunning > 0)
+					pinfo = processes.get(i);
+					// is the process a foreground or perceptible one?
+					if (pinfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND)
 					{
 		            	// first task? -> then no \n at the end of it!
 		            	if (task_first == true)
@@ -454,7 +454,7 @@ public class SystemHandler implements com.airs.handlers.Handler
 		        	        buffer.append("\n");
 	
 		            	// get package name
-		            	task = tinfo.baseActivity.getPackageName();
+		            	task = pinfo.processName;
 		            	try
 		            	{
 		            		ApplicationInfo ai = pm.getApplicationInfo(task, 0);
@@ -703,7 +703,6 @@ public class SystemHandler implements com.airs.handlers.Handler
         	// if in DST, add offset to it
         	if (TimeZone.getDefault().inDaylightTime(time) == true)
         		Offset += TimeZone.getDefault().getDSTSavings();
-        		Log.e("AIRS", "In DST??");
 		}
 		catch(Exception e)
 		{
@@ -739,7 +738,17 @@ public class SystemHandler implements com.airs.handlers.Handler
 			airs.unregisterReceiver(SystemReceiver);
 		
 		if (startedSMSSent == true)
-    	    airs.getContentResolver().unregisterContentObserver(smsSentObserver);			
+    	    airs.getContentResolver().unregisterContentObserver(smsSentObserver);	
+		
+		// remove all messages
+		mHandler.removeMessages(INIT_BATTERY);
+		mHandler.removeMessages(INIT_TIMEZONE);
+		mHandler.removeMessages(INIT_SCREEN);
+		mHandler.removeMessages(INIT_HEADSET);
+		mHandler.removeMessages(INIT_PHONESTATE);
+		mHandler.removeMessages(INIT_OUTGOINGCALL);
+		mHandler.removeMessages(INIT_SMSRECEIVED);
+		mHandler.removeMessages(INIT_SMSSENT);
 	}
 	
 	private String getContactByNumber(String number)

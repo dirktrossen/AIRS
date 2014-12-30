@@ -468,6 +468,15 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		roll_semaphore.release();
 		pitch_semaphore.release();
 
+		// remove all messages
+		mHandler.removeMessages(INIT_HUMIDITY);
+		mHandler.removeMessages(INIT_PEDOMETER);
+		mHandler.removeMessages(INIT_TEMPERATURE);
+		mHandler.removeMessages(INIT_PRESSURE);
+		mHandler.removeMessages(INIT_LIGHT);
+		mHandler.removeMessages(INIT_PROXIMITY);		
+		mHandler.removeMessages(INIT_ORIENTATION);
+
 		// unregister each sensor
 		if (startedLight == true)
 			sensorManager.unregisterListener(lightsensorlistener);
@@ -482,7 +491,7 @@ public class PhoneSensorHandler implements com.airs.handlers.Handler
 		if (startedHumidity == true)
 	 		sensorManager.unregisterListener(humiditysensorlistener);
 		if (startedPedometer == true)
-	 		sensorManager.unregisterListener(pedometersensorlistener);		
+	 		sensorManager.unregisterListener(pedometersensorlistener);				
 	}
 
 	// The Handler that gets information back from the other threads, initializing phone sensors

@@ -129,7 +129,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 	public byte[] Acquire(String sensor, String query)
 	{		
 		byte[] readings = null;
-
+		String readingsString;
+		
  	    // are we shutting down?
 		if (shutdown == true)
 			return null;
@@ -202,8 +203,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			// wait for semaphore
 			wait(cond_semaphore); 
 
-			String vc = new String("VC" + condition);		
-			return vc.getBytes();
+			readingsString = new String("VC" + condition);		
+			return readingsString.getBytes();
 		}
 		
 		// Wind Conditions
@@ -212,8 +213,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			// wait for semaphore
 			wait(wind_semaphore); 
 
-			String vw = new String("VW" + wind);		
-			return vw.getBytes();
+			readingsString = new String("VW" + wind);		
+			return readingsString.getBytes();
 		}
 
 		// All information together
@@ -222,8 +223,8 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 			// wait for semaphore
 			wait(info_semaphore); 
 
-			String vi = new String("VI" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
-			return vi.getBytes();
+			readingsString = new String("VI" + Double.toString(Latitude) + ":" + Double.toString(Longitude) + ":" + Integer.toString(temperature_c) + ":" + Integer.toString(temperature_f)  + ":" + Integer.toString(humidity) + ":" + condition + ":" + wind);		
+			return readingsString.getBytes();
 		}
 		return null;
 	}
@@ -487,6 +488,11 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
 		
 		if (connectivity_listener == true)
 			nors.unregisterReceiver(ConnectivityReceiver);
+		
+		// remove all messages
+		mHandler.removeMessages(INIT_GPS);
+		mHandler.removeMessages(INIT_RECEIVER);
+		mHandler.removeMessages(KILL_GPS);
 	}
 		   
 	// The Handler that gets information back from the other threads, initializing GPS
@@ -554,27 +560,35 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         @Override
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException 
         {
-        		// check for entering current conditions part of message
-	            if (localName.equals("current_condition")) 
-	            {
-					current_cond = true;
-	            }
-	            
-                if (localName.equals("temp_C") && current_cond==true) 
-                	temp_c_element = true;
-                if (localName.equals("temp_F") && current_cond==true) 
-                	temp_f_element = true;
-                if (localName.equals("humidity") && current_cond==true) 
-                	hum_element = true;
-                if (localName.equals("weatherDesc") && current_cond==true) 
-                	cond_element = true;
-                if (localName.equals("windspeedMiles") && current_cond==true) 
-                	wind_element = true;
+        	// no name provided?
+    		if (localName == null)
+    			return;
+    		
+    		// check for entering current conditions part of message
+            if (localName.equals("current_condition")) 
+            {
+				current_cond = true;
+            }
+            
+            if (localName.equals("temp_C") && current_cond==true) 
+            	temp_c_element = true;
+            if (localName.equals("temp_F") && current_cond==true) 
+            	temp_f_element = true;
+            if (localName.equals("humidity") && current_cond==true) 
+            	hum_element = true;
+            if (localName.equals("weatherDesc") && current_cond==true) 
+            	cond_element = true;
+            if (localName.equals("windspeedMiles") && current_cond==true) 
+            	wind_element = true;
         }
         
         public void endElement(String namespaceURI, String localName, String qName) throws SAXException 
         {
-			if (localName.equals("current_condition"))
+        	// no name provided?
+    		if (localName == null)
+    			return;
+
+    		if (localName.equals("current_condition"))
 			{
 				current_cond = false;
                 // signal possible Acquire() thread since we should have read everything now!
@@ -585,6 +599,10 @@ public class WeatherHandler implements com.airs.handlers.Handler, Runnable
         @Override 
         public void characters(char ch[], int start, int length) 
         { 
+          // no proper length provided?
+          if (length == 0)
+        	  return;
+          
           String chars = new String(ch, start, length); 
           chars = chars.trim(); 
 

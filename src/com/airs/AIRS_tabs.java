@@ -51,7 +51,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener, OnSha
 {
 	static public boolean sensors_shown = false;
 	private int currentTab = 0;
-	private int no_tabs = 0;
 	private TabHost tabHost;
 	
 	/** Called when the activity is first created. 
@@ -75,7 +74,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener, OnSha
 	                      res.getDrawable(R.drawable.record))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
-	    no_tabs++;
 
 	    // second tab: sync
 	    intent = new Intent().setClass(this, AIRS_sync.class);
@@ -83,7 +81,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener, OnSha
 	                      res.getDrawable(R.drawable.server))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
-	    no_tabs++;
 	    
 	    // third tab: settings
 	    intent = new Intent().setClass(this, AIRS_settings_tab.class);
@@ -91,8 +88,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener, OnSha
 	                      res.getDrawable(R.drawable.general2))
 	                  .setContent(intent);
 	    tabHost.addTab(spec);
-	    // store tab number
-	    no_tabs++;
 	    
 	    // fourth tab: storica
 		if (Build.VERSION.SDK_INT>=14)
@@ -102,8 +97,6 @@ public class AIRS_tabs extends TabActivity implements OnTabChangeListener, OnSha
 		                      res.getDrawable(R.drawable.visualise))
 		                  .setContent(intent);
 		    tabHost.addTab(spec);
-		    // store tab number
-		    no_tabs++;
 		}
 
 	    // current tab

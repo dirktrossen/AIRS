@@ -332,9 +332,18 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Enable_QSensor">Benutzung des Q Sensors</string>
 <string name="Enable_qsensor_on">Benutze Q Sensor mit dem Versuch beim AIRS Start zu verbinden</string>
 <string name="Enable_qsensor_off">Benutze den Pulsmonitor nicht!</string>
-<string name="Device_Selection">Geräteauswahl</string>
+<string name="Device_Selection">Zephyr Geräteauswahl</string>
 <string name="Device_Selection_on">Wähle eines der möglichen Geräte, dass benutzt werden soll. Du musst mit dem Gerät zumindest einmal verbunden gewesen sein über die Systemeinstellungen! Stelle auch sicher, dass das Gerät eingeschaltet ist wenn Du die AIRS Aufnahmen startest.</string>
+<string name="Device_Selection_Smart">BT Smart Geräteauswahl</string>
+<string name="Device_Selection_Smart_on">Wähle eines der möglichen BT Smart Geräte, dass benutzt werden soll. Stelle auch sicher, dass das Gerät eingeschaltet ist wenn Du die AIRS Aufnahmen startest.</string>
 <string name="Device_Selection_title">Wähle Gerät</string>
+<string name="Device_Selection_title2">Suche nach Geräten</string>
+<string name="Device_Selection_Type">Gerätetypauswahl</string>
+<string name="Device_Selection_Type_on">Wähle den möglichen Gerätetyp, der benutzt werden soll.</string>
+<string name="Device_Type_title">Wähle Gerättyp</string>
+<string name="Device_Selection_Error">Bt Smart ist nicht unterstützt!</string>
+<string name="Device_Selection_Error2">Stelle sicher, dass BT eingeschaltet ist!</string>
+<string name="Device_Selection_Error3">Nichts ausgewählt in der Liste!</string>
 <string name="Averaging_Window">Durchschnittsfenster</string>
 <string name="Averaging_Window_on">Zeitfenster für Durchschnittswerte der Pulsmessungen., glättet die Werte und verringert die Anzahl der Aufzeichnungen.</string>
 <string name="Averaging_Window_title">Wähle Fenster [s]</string>
@@ -368,8 +377,10 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="WiFi_Interval">WiFi Intervall [s]</string>
 <string name="WiFi_Interval_on">Abfrageintervall für WiFi Scans in Sekunden</string>
 <string name="Enable_Accessibility">Accessibility</string>
-<string name="Enable_Accessibility_on">Springt zu den Systemeinstellungen, um die Bedienungshilfen für AIRS einzuschalten. Dieser wird für IM Nachrichten benötigt.</string>
-<string name="accessibility_description">Bedienungshilfe für AIRS Aufzeichnungen mit Zugriff auf Google Talk und Skype Benachrichtigungen durch den NO Sensor. Spotify ist auch unterstützt durch die MP/MA/MT Sensoren.</string>
+<string name="Enable_Accessibility_on">Springt zu den Systemeinstellungen, um die Bedienungshilfen für AIRS einzuschalten. Diese werden für IM und Spotify Nachrichten benötigt.</string>
+<string name="Enable_Notification">Benachrichtigungen</string>
+<string name="Enable_Notification_on">Springt zu den Systemeinstellungen, um die Benachrichtungen für AIRS einzuschalten im "Benachrichtungszugriff" Menü der Systemeinstellungen.</string>
+<string name="accessibility_description">Bedienungshilfe für AIRS Aufzeichnungen mit Zugriff auf Google Talk und Skype Benachrichtigungen durch den NO Sensor. Spotify ist auch unterstützt durch die MP/MA/MT Sensoren.\n\nWICHTIG: In Android 5.0, bitte benutze den Benachrichtungszugriff unter "Ton und Benachrichtigungen" und lasse den AIRS Bedienungshilfedienst ausgeschaltet!</string>
 <string name="accessibility_spotify">&#8212;</string>
 
 <string name="Camera">Kamera</string>

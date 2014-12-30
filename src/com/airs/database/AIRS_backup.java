@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -164,47 +165,61 @@ public class AIRS_backup extends Activity
 	     */
 	     public void run()
 	     {
+	    	 long offset = 0, size, count, MAX_COUNT = 1000000;
 	    	 Message finish_msg = mHandler.obtainMessage(FINISH_ACTIVITY);
 	    	 Message finish2_msg = mHandler.obtainMessage(FINISH2_ACTIVITY);
 
 	    	 try 
 	    	 {
-	    	        File sd = new File(getExternalFilesDir(null).getAbsolutePath());
+	    		 	String backupDBPath = "AIRS_backup.db";
+    	            File backupDB = new File(getExternalFilesDir(null), backupDBPath);
 
-	    	        if (sd.canWrite()) 
-	    	        {
-	    	            String backupDBPath = "AIRS_backup.db";
-	    	            File currentDB = getDatabasePath(AIRS_database.DATABASE_NAME);
-	    	            File backupDB = new File(sd, backupDBPath);
-	    	            
-	    	    		// get backup size information
-	    		        Bundle bundle = new Bundle();
-	    		        bundle.putLong("Value", currentDB.length());
-	    		        Message update_msg = mHandler.obtainMessage(UPDATE_VALUES);
-	    		        update_msg.setData(bundle);
-	    		        mHandler.sendMessage(update_msg);
+    	            File currentDB = getDatabasePath(AIRS_database.DATABASE_NAME);
+    	            
+    	    		// get backup size information
+    		        Bundle bundle = new Bundle();
+    		        bundle.putLong("Value", currentDB.length());
+    		        Message update_msg = mHandler.obtainMessage(UPDATE_VALUES);
+    		        update_msg.setData(bundle);
+    		        mHandler.sendMessage(update_msg);
 
-	    	            if (currentDB.exists()) 
-	    	            {
-	    	            	FileInputStream input = new FileInputStream(currentDB);
-	    	            	FileOutputStream output = new FileOutputStream(backupDB);	    	            	
-	    	                FileChannel src = input.getChannel();
-	    	                FileChannel dst = output.getChannel();
-	    	                dst.transferFrom(src, 0, src.size());
-	    	                src.close();
-	    	                dst.close();
-	    	                input.close();
-	    	                output.close();
-	    	            }
-	    	            
-				        mHandler.sendMessage(finish2_msg);
-	    	        }
-	    	        else
-				        mHandler.sendMessage(finish_msg);
+    		        // does database exist?
+    	            if (currentDB.exists()) 
+    	            {
+    	            	FileInputStream input = new FileInputStream(currentDB);
+    	            	FileOutputStream output = new FileOutputStream(backupDB);	    	            	
+    	                FileChannel src = input.getChannel();
+    	                FileChannel dst = output.getChannel();
+    	                
+    	                // transfer in chunks
+    	                size = src.size();
+    	                while (size>0)
+    	                {
+    	                	// transfer maximum of MAX_COUNT
+    	                	if (size<MAX_COUNT)
+    	                		count = size;
+    	                	else
+    	                		count = MAX_COUNT;
+    	                	
+    	                	dst.transferFrom(src, offset, count);
+    	                	
+    	                	size 	-= count;
+    	                	offset 	+= count;
+    	                }
+    	                
+    	                dst.transferFrom(src, 0, src.size());
+    	                src.close();
+    	                dst.close();
+    	                input.close();
+    	                output.close();
+    	            }
+    	            
+			        mHandler.sendMessage(finish2_msg);
 	    	 } 
 	    	 catch (Exception e) 
      	     {
-			        mHandler.sendMessage(finish_msg);
+	    		 Log.e("AIRS", "Backup error : " + e.toString());
+			     mHandler.sendMessage(finish_msg);
 	    	 }
 	     }
 	 }

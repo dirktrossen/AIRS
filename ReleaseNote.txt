@@ -1,3 +1,10 @@
+V2.8:
+- support for BLE heart rate monitors like Polar H7, Zephyr HxM Smart
+- changed backup/restore to deal with VERY large databases
+- changed TR sensor to foreground applications for Lollipop conformity
+- introduced notification listener for Lollipop devices - use instead of accessibility service
+- improved AS/AF handler
+
 V2.7.9.7:
 - removed timezone bug
 - introduced 2x1 combined event and mood widget

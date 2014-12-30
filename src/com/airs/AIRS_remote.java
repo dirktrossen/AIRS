@@ -235,6 +235,7 @@ public class AIRS_remote extends Service
 	}
 	
 	// function blocks -> meant as server kind of 
+	@SuppressWarnings("deprecation")
 	private boolean startRSA()
 	{		
 		PendingIntent contentIntent;
@@ -324,7 +325,8 @@ public class AIRS_remote extends Service
 	// The Handler that gets information back from the other threads, updating the values for the UI
 	public final Handler mHandler = new Handler() 
     {
-       @Override
+       @SuppressWarnings("deprecation")
+	@Override
        public void handleMessage(Message msg) 
        {
     	   NotificationManager mNotificationManager;

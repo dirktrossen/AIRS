@@ -249,7 +249,12 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
 
 		// unregister listeners
 		if (enableListener == true)
-			tm.listen(this, PhoneStateListener.LISTEN_NONE);		
+			tm.listen(this, PhoneStateListener.LISTEN_NONE);	
+		
+		// remove all handler messages
+		mHandler.removeMessages(INIT_CELLLOCATION);
+		mHandler.removeMessages(INIT_DATACONNECTED);
+		mHandler.removeMessages(INIT_SIGNALSTRENGTH);
 	}
 
 	private byte[] cellReading(String sensor)
@@ -476,7 +481,10 @@ public class CellHandler extends PhoneStateListener implements com.airs.handlers
         	   events |= PhoneStateListener.LISTEN_SIGNAL_STRENGTHS;
            if (startedLocation == true)
         	   events |= PhoneStateListener.LISTEN_CELL_LOCATION;
-        	   
+
+           // unregister anything old now
+           tm.listen(cellhandler, PhoneStateListener.LISTEN_NONE);	
+
            // register listener now
            enableListener = true;
            tm.listen(cellhandler, events);

@@ -305,6 +305,11 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 		// disrupt adaptive GPS thread
 		if (runnable != null)
 			runnable.interrupt();
+		
+		// remove all messages
+		mHandler.removeMessages(INIT_GPS);
+		mHandler.removeMessages(KILL_GPS);
+		mHandler.removeMessages(RESET_AGPS);
 	}
 
 	// read GPS via location API!
@@ -396,7 +401,7 @@ public class GPSHandler implements com.airs.handlers.Handler, Runnable
 				reading[3] = (byte)((value>>16) & 0xff);
 				reading[4] = (byte)((value>>8) & 0xff);
 				reading[5] = (byte)(value & 0xff);
-				return reading.clone();
+				return reading;
 			}
 		}
 		catch(Exception e)

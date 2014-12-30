@@ -160,6 +160,7 @@ public class AIRS_restore extends Activity
 		
 	     public void run()
 	     {
+	    	 long offset = 0, size, count, MAX_COUNT = 1000000;
 	    	 Message finish_msg = mHandler.obtainMessage(FINISH_ACTIVITY);
 	    	 Message finish2_msg = mHandler.obtainMessage(FINISH2_ACTIVITY);
 
@@ -186,7 +187,22 @@ public class AIRS_restore extends Activity
 	    	            	FileInputStream input = new FileInputStream(backupDB);
 	    	                FileChannel dst = output.getChannel();
 	    	                FileChannel src = input.getChannel();
-	    	                dst.transferFrom(src, 0, src.size());
+	    	                
+	    	                // transfer in chunks
+	    	                size = src.size();
+	    	                while (size>0)
+	    	                {
+	    	                	// transfer maximum of MAX_COUNT
+	    	                	if (size<MAX_COUNT)
+	    	                		count = size;
+	    	                	else
+	    	                		count = MAX_COUNT;
+
+	    	                	dst.transferFrom(src, 0, src.size());
+	    	                	
+	    	                	size 	-= count;
+	    	                	offset 	+= count;
+	    	                }
 	    	                src.close();
 	    	                dst.close();
 	    	                input.close();

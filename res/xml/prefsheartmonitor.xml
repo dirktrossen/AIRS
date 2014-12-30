@@ -28,6 +28,25 @@
     <ListPreference
         android:dependency="HeartMonitorHandler::BTON"
 		android:dialogIcon="@drawable/bt2"
+        android:key="HeartMonitorHandler::BTType"
+        android:title="@string/Device_Selection_Type"
+        android:summary="@string/Device_Selection_Type_on"
+        android:positiveButtonText="@string/Select"
+        android:entries="@array/heartmonitorTypes_values"
+        android:entryValues="@array/heartmonitorTypes_entries"
+        android:dialogTitle="@string/Device_Type_title" />
+    <Preference
+        android:dependency="HeartMonitorHandler::BTON"
+        android:title="@string/Device_Selection_Smart"
+        android:summary="@string/Device_Selection_Smart_on">
+        <intent
+             android:action="android.intent.action.VIEW"
+             android:targetPackage="com.airs"
+             android:targetClass="com.airs.handlerUIs.HeartMonitorSmartHandlerUI" />         
+    </Preference>
+    <ListPreference
+        android:dependency="HeartMonitorHandler::BTON"
+		android:dialogIcon="@drawable/bt2"
         android:key="HeartMonitorHandler::BTStore"
         android:title="@string/Device_Selection"
         android:summary="@string/Device_Selection_on"

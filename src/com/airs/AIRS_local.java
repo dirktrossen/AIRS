@@ -106,6 +106,7 @@ public class AIRS_local extends Service
 	private BufferedOutputStream os2;
 	private int numberSensors = 0;
     private ListView sensors;
+    private boolean shutdown = false;
     /**
      * Flag if discovery has been done
      */
@@ -163,7 +164,7 @@ public class AIRS_local extends Service
 	 private class HandlerThread implements Runnable
 	 {
 		 	private Sensor current;
-		 	private String line;
+		 	private int line;
 		 	private String values_output = null;
 		 	private long values_time;
 		 	private int number_values = 0;
@@ -195,7 +196,7 @@ public class AIRS_local extends Service
 			{
 				// copy parameters 
 				this.current = current;
-				line = Integer.toString(j);
+				line = j;
 				values_output = new String(current.Symbol + " : - [" + current.Unit + "]");
 			
 				// get current day and set time to last millisecond of that day for next day indicator
@@ -251,7 +252,7 @@ public class AIRS_local extends Service
 				        Message msg = mHandler.obtainMessage(REFRESH_VALUES);
 				        Bundle bundle = new Bundle();
 				        bundle.putString(TEXT, text);
-						bundle.putString(LINE, line);
+						bundle.putInt(LINE, line);
 						msg.setData(bundle);
 				        mHandler.sendMessage(msg);
 					}
@@ -791,6 +792,14 @@ public class AIRS_local extends Service
 	   	if (registered == true)
 	         unregisterReceiver(mReceiver);	   	 
 
+	   	// signal shutdown
+	   	shutdown = true;
+	   	
+	   	// remove all pending messages
+	   	mHandler.removeMessages(BATTERY_KILL);
+	   	mHandler.removeMessages(REFRESH_VALUES);
+	   	mHandler.removeMessages(SHOW_NOTIFICATION);
+	   	
  		SerialPortLogger.debug("AIRS_local::finished destroying service!");
 	}
 	
@@ -988,6 +997,7 @@ public class AIRS_local extends Service
 	 * @param restarted is this measurements restarted (true) or not (false). 
 	 * @return true if successfully started, false otherwise
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean startMeasurements(boolean restarted)
 	 {
 		 int i, j =0;
@@ -1169,7 +1179,8 @@ public class AIRS_local extends Service
 	  * This function needs calling from a UI thread, e.g., from AIRS_record_tab
 	  * @param airs Reference to the current {@link android.app.Activity}
 	  */
-	 public void Discover(Activity airs)
+	 @SuppressWarnings("unchecked")
+	public void Discover(Activity airs)
 	 {
 			int i;
 			String sensor_setting;
@@ -1252,7 +1263,8 @@ public class AIRS_local extends Service
 	  * Similar to the Discover() function. However, no UI is served here as well as the handlers are assumed to have been created already.
 	  * This function is usually called in the restart modus.
 	  */
-	 private void ReDiscover()
+	 @SuppressWarnings("unchecked")
+	private void ReDiscover()
 	 {
 			int i;
 			String sensor_setting;
@@ -1444,17 +1456,22 @@ public class AIRS_local extends Service
 	 // The Handler that gets information back from the other threads, updating the values for the UI
 	 private final Handler mHandler = new Handler() 
      {
-        @Override
+        @SuppressWarnings("deprecation")
+		@Override
         public void handleMessage(Message msg) 
         {
         	String position;
         	int j;
         	
+        	// shutting down?
+        	if (shutdown == true)
+        		return;
+        	
             switch (msg.what) 
             {
             case REFRESH_VALUES:
             	// parse line from message
-            	j = Integer.parseInt(msg.getData().getString(LINE));
+            	j = msg.getData().getInt(LINE);
             	// refresh appropriate line with given text
 		        mValuesArrayAdapter.setNotifyOnChange(false);
 	            position = mValuesArrayAdapter.getItem(j);
@@ -1471,7 +1488,7 @@ public class AIRS_local extends Service
             	
             	// now create new notification
             	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-       		 	Notification notification = new Notification(R.drawable.notification_icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
+				Notification notification = new Notification(R.drawable.notification_icon, getString(R.string.AIRS_killed), System.currentTimeMillis());
        		 	Intent notificationIntent = new Intent(getApplicationContext(), AIRS_tabs.class);
        		 	PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK);
        			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.AIRS_Local_Sensing), getString(R.string.killed_at) + " " + Integer.toString(BatteryKill_i) + "% " + getString(R.string.battery) + "...", contentIntent);
@@ -1540,7 +1557,8 @@ public class AIRS_local extends Service
     	boolean checked;
     }
 
-    public class SortBasedOnName implements Comparator
+    @SuppressWarnings("rawtypes")
+	public class SortBasedOnName implements Comparator
     {
 	    public int compare(Object o1, Object o2) 
 	    {

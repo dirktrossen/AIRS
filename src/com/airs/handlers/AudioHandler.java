@@ -32,16 +32,16 @@ import android.media.*;
  */
 public class AudioHandler implements Handler
 {
+	private final int SIZE_SHORT = Short.SIZE/8;
 	private Context airs;
 	// beacon data
-	private byte [] AS_reading;
-	private byte [] AF_reading;
+	private byte [] AS_reading = new byte[6];
+	private byte [] AF_reading = new byte[6];
 	// configuration data
 	private int polltime = 5000;
 	private final int CENTRE_POINT = 32768;
 	
 	// audio data
-	private long    frequency = -1;
 	private long    level = -1;
 	private int		sample_rate = 8000;
 	private int 	bufferSize;
@@ -88,11 +88,11 @@ public class AudioHandler implements Handler
 			switch(sensor.charAt(1))
 			{
 				case 'S' :
-					Amplitude(sensor);
-					return AS_reading;
+					if (Amplitude(sensor) == true)
+						return AS_reading;
 				case 'F' :
-					Frequency(sensor);
-					return AF_reading;
+					if (Frequency(sensor) == true)
+						return AF_reading;
 				default:
 					return null;
 			}
@@ -191,10 +191,9 @@ public class AudioHandler implements Handler
 
 		// determine required buffer size
 		bufferSize = AudioRecord.getMinBufferSize(sample_rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-		
-		// actually use sample_rate buffer size
-		if (bufferSize<sample_rate)
-			bufferSize = sample_rate;
+				
+		if (bufferSize<sample_rate * SIZE_SHORT)
+			bufferSize = sample_rate * SIZE_SHORT;
 		
 		// start player and see if it's there!
 		do
@@ -249,23 +248,19 @@ public class AudioHandler implements Handler
 	}
 	
 	// do level determination of sample
-	synchronized private void Amplitude(String sensor)
+	synchronized private boolean Amplitude(String sensor)
 	{
 		long level_new = 0, ampl;
 		double level_d;
-		int i, recorded, read;
+		int i, offset = 0, recorded, read;
+		boolean returnValue = false;
 				
 		// if somebody else is having the player resource, wait until finished
 		while (havePlayer == true)
 			sleep(100);
 		// now we have the player!
 		havePlayer = true;
-		
-		// remove last reading
-		AS_reading = null;
-		
-		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-		
+
 		// now record
 		try
 		{	
@@ -274,45 +269,48 @@ public class AudioHandler implements Handler
 			if (p != null)
 				if (p.getState() == AudioRecord.STATE_INITIALIZED)
 				{
+					// are we shutting down?
+					if (shutdown == true)
+						return false;
+					
 					// start recording
 					p.startRecording();
 					
-					// are we shutting down?
-					if (shutdown == true)
-					{
-						AS_reading = null;		
-						return;
-					}
-					
 					// try to read from AudioRecord player until sample_rate buffer is full, i.e., one second of data!
-				    i = 0;
-				    while (i < sample_rate)
+			    	level_new = 0;			    	
+			    	// try to always read the buffer size we gave originally
+			    	read = sample_rate;
+			    	// read until nothing is left to be read
+				    while (read>0)
 				    {
-				    	// try to always read the buffer size we gave originally
-				    	read = bufferSize;
-				    	if (read>sample_rate-i)
-				    		read = sample_rate-i;
 				    	// now read
-				    	recorded = p.read(output, i, read);
+				    	recorded = p.read(output, offset, read);
 				    	// error in reading?
 				    	if (recorded == AudioRecord.ERROR_INVALID_OPERATION)
 				    	{
 				    		debug("AudioHandler:invalid operation!");
-				    		AS_reading = null;
 				    		havePlayer = false;
-				    		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DEFAULT);
-				    		return;
+				    		p.stop();
+				    		p.release();
+				    		p = null;
+				    		return false;
 				    	}
-				    	i += recorded;
+				    	else
+				    	{
+
+					    	// now substract the already recorded bytes
+					    	read -= recorded;
+					    	// compute offset for next batch
+					    	offset += recorded;
+				    	}
 				    }
 				    // stop and release player again
 				    p.stop();
 				    p.release();
 				    p = null;
 				    
-			    	level_new = 0;
 			    	// count changes in sign
-			    	for (i=0;i<output.length;i++)
+			    	for (i=0;i<sample_rate;i++)
 			    	{
 			    		// given that the PCM encoding delivers unsigned SHORTS, we need to convert the amplitude around the 32768 centre point!
 //			    		ampl = (long)(CENTRE_POINT-Math.abs(output[i]));		    		
@@ -326,52 +324,43 @@ public class AudioHandler implements Handler
 			    	level_d = 10 * Math.log10((double)level_new / (double)output.length) + (double)AA_adjust;
 			    	level_new = (long)(level_d*100);		    	
 			    		 
-					// did anything change in the position?
-					if (level_new != level)
-					{
-						// take positioning info and place in reading field
-						AS_reading = new byte[4 + 2];
-						AS_reading[0] = (byte)sensor.charAt(0);
-						AS_reading[1] = (byte)sensor.charAt(1);
-						AS_reading[2] = (byte)((level_new>>24) & 0xff);
-						AS_reading[3] = (byte)((level_new>>16) & 0xff);
-						AS_reading[4] = (byte)((level_new>>8) & 0xff);
-						AS_reading[5] = (byte)(level_new & 0xff);
-						// now remember old frequency
-						level = level_new;
-					}
-					else
-						AS_reading = null;		
+					// take positioning info and place in reading field
+					AS_reading[0] = (byte)sensor.charAt(0);
+					AS_reading[1] = (byte)sensor.charAt(1);
+					AS_reading[2] = (byte)((level_new>>24) & 0xff);
+					AS_reading[3] = (byte)((level_new>>16) & 0xff);
+					AS_reading[4] = (byte)((level_new>>8) & 0xff);
+					AS_reading[5] = (byte)(level_new & 0xff);
+					
+					returnValue = true;
 				}
 		}
 		catch(Exception e)
 		{
     		debug("AudioHandler:Exception when requesting AudioRecord!");
-			AS_reading = null;
 		}	
 		
-		android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_DEFAULT);
-
 		// don't need player anymore
 		havePlayer = false;
+		
+		// nothing happened when we got here
+		return returnValue;
 	}
 
 	// do frequency determination of sample
-	synchronized private void Frequency(String sensor)
+	synchronized private boolean Frequency(String sensor)
 	{
 		long frequency_new = 0;
-		int i, recorded, read, level=0;
+		int i, recorded, read, offset = 0, level=0;
 		boolean sign = false;
-		
+		boolean returnValue = false;
+
 		// if somebody else is having the player resource, wait until finished
 		while (havePlayer == true)
 			sleep(100);
 		
 		havePlayer = true;
 		
-		// remove last reading
-		AF_reading = null;
-
 		// now record
 		try
 		{
@@ -385,30 +374,29 @@ public class AudioHandler implements Handler
 					
 					// are we shutting down?
 					if (shutdown == true)
-					{
-						AF_reading = null;		
-						return;
-					}
+						return false;
 
-					// try to read from AudioRecord player until sample_rate buffer is full!
-				    i = 0;
-				    while (i < sample_rate)
+			    	// try to always read the buffer size we gave originally
+			    	read = sample_rate;
+			    	// read until nothing is left to be read
+				    while (read>0)
 				    {
-				    	// try to always read the buffer size we gave originally
-				    	read = bufferSize;
-				    	if (read>sample_rate-i)
-				    		read = sample_rate-i;
 				    	// now read
-				    	recorded = p.read(output, i, read);
+				    	recorded = p.read(output, offset, read);
 				    	// error in reading?
 				    	if (recorded == AudioRecord.ERROR_INVALID_OPERATION)
 				    	{
 				    		debug("AudioHandler:invalid operation!");
-				    		AF_reading = null;
 				    		havePlayer = false;
-				    		return;
+				    		return false;
 				    	}
-				    	i += recorded;
+				    	else
+				    	{
+					    	// now substract the already recorded bytes
+					    	read -= recorded;
+					    	// compute offset for next batch
+					    	offset += recorded;
+				    	}
 				    }
 				    // stop and release player again
 				    p.stop();
@@ -416,7 +404,7 @@ public class AudioHandler implements Handler
 				    p = null;
 
 				    // count changes in sign
-			     	for (i=0;i<output.length;i++)
+			     	for (i=0;i<sample_rate;i++)
 			    	{
 			    		if (output[i]<0 && sign == true)
 			    		{	
@@ -432,38 +420,36 @@ public class AudioHandler implements Handler
 			    		// count amplitude level
 		    			level += CENTRE_POINT-(long)(Math.abs((int)output[i]));			    	
 			    	}
-			    	level /= output.length;
+				    // now determine level
+			    	level /= sample_rate;
 			    	  	
-			    	// now adjust frequency to sample rate
-			    	frequency_new = ((frequency_new * (long)sample_rate)/(long)output.length)/2;
 			    	// volume too low?
 			    	if (level<10)
 			    		frequency_new = 0;
-					// did anything change in the frequency?
-					if (frequency_new != frequency)
-					{
-						// take frequency info and place in reading field
-						AF_reading = new byte[4 + 2];
-						AF_reading[0] = (byte)sensor.charAt(0);
-						AF_reading[1] = (byte)sensor.charAt(1);
-						AF_reading[2] = (byte)((frequency_new>>24) & 0xff);
-						AF_reading[3] = (byte)((frequency_new>>16) & 0xff);
-						AF_reading[4] = (byte)((frequency_new>>8) & 0xff);
-						AF_reading[5] = (byte)(frequency_new & 0xff);
-						// now remember old frequency
-						frequency = frequency_new;
-					}
-					else
-						AF_reading = null;		
+			    	else
+				    	// now determine frequency by half of all counted spikes
+				    	frequency_new /= 2;
+
+			    	// take frequency info and place in reading field
+					AF_reading = new byte[4 + 2];
+					AF_reading[0] = (byte)sensor.charAt(0);
+					AF_reading[1] = (byte)sensor.charAt(1);
+					AF_reading[2] = (byte)((frequency_new>>24) & 0xff);
+					AF_reading[3] = (byte)((frequency_new>>16) & 0xff);
+					AF_reading[4] = (byte)((frequency_new>>8) & 0xff);
+					AF_reading[5] = (byte)(frequency_new & 0xff);
+					
+					returnValue = true;
 				}
 		}
 		catch(Exception e)
 		{
     		debug("AudioHandler:Exception when requesting AudioRecord!");
-			AF_reading = null;
 		}
 		
 		// don't need player anymore
 		havePlayer = false;
+		
+		return returnValue;
 	}
 }
