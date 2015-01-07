@@ -20,6 +20,7 @@ import com.airs.R;
 import com.airs.platform.HandlerManager;
 import com.airs.platform.SensorRepository;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,6 +35,7 @@ import android.provider.CalendarContract.Instances;
  * Class to read calendar sensors, specifically the CA sensor
  * @see Handler
  */
+@SuppressLint("NewApi")
 public class CalendarHandler implements Handler
 {
 	private Context airs;

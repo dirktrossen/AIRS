@@ -16,6 +16,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
 */
 package com.airs.handlerUIs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -90,6 +91,7 @@ public class CalendarHandlerUI implements HandlerUI
 	 * Function to configure the Preference activity with any preset value necessary - here we populate the ListPreference for the calendars with all calendars available on this device
 	 * @param prefs Reference to {@link android.preference.PreferenceActivity}
 	 */
+	@SuppressLint("NewApi")
 	public void configurePreference(PreferenceActivity prefs)
 	{	
 		int i;

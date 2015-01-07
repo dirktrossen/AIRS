@@ -1,3 +1,7 @@
+V2.8.1:
+- changed min SDK to 9
+- addressed crash in heart monitor handler on below Android4.3
+
 V2.8:
 - support for BLE heart rate monitors like Polar H7, Zephyr HxM Smart
 - changed backup/restore to deal with VERY large databases

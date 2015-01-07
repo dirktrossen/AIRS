@@ -32,6 +32,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import com.airs.R;
@@ -83,6 +84,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 
     private BluetoothGattCharacteristic battery_characteristic;
     private BluetoothGatt mBluetoothGatt;
+    private mBluetoothGattCallback mGattCallback;
     private BluetoothAdapter mBtAdapter;
     private BluetoothDevice device;
     private BluetoothSocket mmSocket;
@@ -151,6 +153,10 @@ public class HeartMonitorHandler implements Handler, Runnable
 		wait(instance_semaphore); 
 		wait(pulseLE_semaphore); 
 		wait(batteryLE_semaphore);
+		
+		// create callback if API level is fine
+		if (Build.VERSION.SDK_INT>=18)
+			mGattCallback = new mBluetoothGattCallback(); 
 	}
 	
 	/**
@@ -726,7 +732,7 @@ public class HeartMonitorHandler implements Handler, Runnable
 	
 	// Various callback methods defined by the BLE API.
 	@SuppressLint("NewApi")
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() 
+    private class mBluetoothGattCallback extends BluetoothGattCallback 
     {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) 

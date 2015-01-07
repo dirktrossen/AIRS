@@ -597,8 +597,7 @@ For remote recording, download the AIRS application server (see on our website) 
 
 <string name="WhatsNew2" translatable="false">What\'s new in AIRS?</string>
 <string name="WhatsNew" translatable="false">
-We added support for BLE-based heart rate monitors like Polar H7, Zephyr HxM Smart (thanks to C. Herndler for supporting this work!). We also changed backup and restore to deal with VERY large databases as well as changed the TR sensor to foreground applications for Lollipop conformity.\n
-We also introduced notification listener for Lollipop devices to be used instead of the accessibility service and improved the stability of the audio handler.
+We changed the minimal SDK support to 2.3.6 and addressed a crash in the heart monitor handler.
 </string>
 <string name="ReleaseNotes"  translatable="false">
 \n-----------------------------

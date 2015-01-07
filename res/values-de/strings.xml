@@ -96,7 +96,7 @@ Für entfernte Aufnahmen, lade den AIRS Anwendungsserver vom Internet (siehe auf
 <string name="Backup_status">Sichere DB der Größe</string>
 <string name="Restore_status">Wiederherstellen DB der Größe</string>
 <string name="Index_DB">Datenbankindizierung</string>
-<string name="Index_DB_message">Indizieren der Datenbank beschleunigt Visualisierungen gewaltig, wird allerdings die Größe um ca 60% erhöhen! Du brauchst nur einmal zu indizieren.\n\nMöchtest Du fortfahren?</string>
+<string name="Index_DB_message">Indizieren der Datenbank beschleunigt Visualisierungen gewaltig, wird allerdings die Größe um ca 60 Prozent erhöhen! Du brauchst nur einmal zu indizieren.\n\nMöchtest Du fortfahren?</string>
 <string name="Cannot_index">Kann DB nicht indizieren (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
 <string name="Cannot_restore2">Kann DB nicht wiederherstellen (möglicherweise ein Zugriffsfehler oder die externe Karte konnte nicht gefunden werden)!</string>
 <string name="Finished_indexing">Indizierung erfolgreich beendet!</string>
